@@ -1,0 +1,13 @@
+Created tables:
+
+sales_order_detail_packing
+
+
+==========================================
+
+Alter:
+
+product_stock = > is_packed
+sales_order_detail = > product_stock_id
+ 
+

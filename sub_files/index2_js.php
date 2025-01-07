@@ -1,0 +1,316 @@
+<script language="JavaScript">
+    $(document).ready(function() {
+        $("input").keyup(function() {
+            var max = parseFloat($(this).attr('max'));
+            var min = parseFloat($(this).attr('min'));
+            if ($(this).val() > max) {
+                $(this).val(max);
+            } else if ($(this).val() < min) {
+                $(this).val(min);
+            }
+        });
+
+        $('table.display2').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ]
+        });
+        $("table.pagelength100").dataTable().fnDestroy();
+        $('table.pagelength100').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [100, 150, 200, -1],
+                [100, 150, 200, "All"]
+            ]
+        });
+        $("table.pagelength50").dataTable().fnDestroy();
+        $('table.pagelength50').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_2").dataTable().fnDestroy();
+        $('table.pagelength50_2').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_3").dataTable().fnDestroy();
+        $('table.pagelength50_3').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_4").dataTable().fnDestroy();
+        $('table.pagelength50_4').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_5").dataTable().fnDestroy();
+        $('table.pagelength50_5').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_6").dataTable().fnDestroy();
+        $('table.pagelength50_6').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_7").dataTable().fnDestroy();
+        $('table.pagelength50_7').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_8").dataTable().fnDestroy();
+        $('table.pagelength50_8').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_9").dataTable().fnDestroy();
+        $('table.pagelength50_9').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+        $("table.pagelength50_10").dataTable().fnDestroy();
+        $('table.pagelength50_10').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [50, 100, 200, -1],
+                [50, 100, 200, "All"]
+            ]
+        });
+    });
+</script>
+<?php
+if (isset($module) && ($module == 'sub_user_roles')) { ?>
+    <script language="JavaScript">
+        $(".checkbox").click(function() {
+            var className = $(this).attr('class');
+            var result = className.split(" ");
+            $.each(result, function(key, value) {
+                if (value != 'checkbox') {
+                    $("#" + value).prop("checked", true);
+                }
+            });
+            var menu_id = $(this).attr("id");
+            if ($(this).prop("checked")) {
+                $("." + menu_id).prop("checked", true);
+            } else {
+                $("." + menu_id).prop("checked", false);
+            }
+        });
+        $("#all_checked").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox").prop("checked", true);
+            } else {
+                $(".checkbox").prop("checked", false);
+            }
+        });
+    </script>
+<?php } ?>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.timepicker').timepicker();
+    });
+</script>
+<?php
+if (isset($module)) { ?>
+    <script type="text/javascript">
+        $(".checkbox").click(function() {
+            var className = $(this).attr('class');
+            var result = className.split(" ");
+            $.each(result, function(key, value) {
+                if (value != 'checkbox') {
+                    $("#" + value).prop("checked", true);
+                }
+            });
+            var menu_id = $(this).attr("id");
+            if ($(this).prop("checked")) {
+                $("." + menu_id).prop("checked", true);
+            } else {
+                $("." + menu_id).prop("checked", false);
+            }
+        });
+        $("#all_checked").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox").prop("checked", true);
+            } else {
+                $(".checkbox").prop("checked", false);
+            }
+        });
+        $("#all_checked2").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox2").prop("checked", true);
+            } else {
+                $(".checkbox2").prop("checked", false);
+            }
+        });
+        $("#all_checked3").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox3").prop("checked", true);
+            } else {
+                $(".checkbox3").prop("checked", false);
+            }
+        });
+        $("#all_checked4").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox4").prop("checked", true);
+            } else {
+                $(".checkbox4").prop("checked", false);
+            }
+        });
+        $("#all_checked5").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox5").prop("checked", true);
+            } else {
+                $(".checkbox5").prop("checked", false);
+            }
+        });
+        $("#all_checked6").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox6").prop("checked", true);
+            } else {
+                $(".checkbox6").prop("checked", false);
+            }
+        });
+        $("#all_checked7").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox7").prop("checked", true);
+            } else {
+                $(".checkbox7").prop("checked", false);
+            }
+        });
+        $("#all_checked8").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox8").prop("checked", true);
+            } else {
+                $(".checkbox8").prop("checked", false);
+            }
+        });
+        $("#all_checked9").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox9").prop("checked", true);
+            } else {
+                $(".checkbox9").prop("checked", false);
+            }
+        });
+        $("#all_checked10").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox10").prop("checked", true);
+            } else {
+                $(".checkbox10").prop("checked", false);
+            }
+        });
+
+        function change_status(e, record_id) {
+            var value = $(e).html();
+            value = $.trim(value);
+            if (value == 'Enable') {
+                value2 = 'Disable';
+                value = '0';
+
+            } else if (value == 'Disable') {
+                value2 = 'Enable';
+                value = '1';
+            } else if (value == 'Show') {
+                value = 'Disable';
+                value2 = 'Hide';
+            } else if (value == 'Hide') {
+                value = 'Enable';
+                value2 = 'Show';
+            } else if (value == 'Yes') {
+                value2 = 'No';
+                value = '0';
+
+            } else if (value == 'No') {
+                value2 = 'Yes';
+                value = '1';
+            }
+            MaterialDialog.dialog(
+                "Do you want to change the status of the record?", {
+                    title: "",
+                    modalType: "modal-fixed-footer", // Can be empty, modal-fixed-footer or bottom-sheet
+                    buttons: {
+                        // Use by default close and confirm buttons
+                        close: {
+                            className: "blue",
+                            text: "Cancel",
+                            callback: function() {}
+                        },
+                        confirm: {
+                            className: "red",
+                            text: "Yes",
+                            modalClose: true,
+                            callback: function() {
+                                var module = "<?php echo $module; ?>";
+                                $.post('components/<?php echo $module_folder_directory; ?><?php echo $module; ?>/index.php', {
+                                    record_id: record_id,
+                                    type: "update",
+                                    module: module,
+                                    value: value
+                                }, function(res) {
+                                    if (res) {
+                                        $(e).html(value2)
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            );
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            $(".sno_width_30").css("width", "30px");
+            $(".sno_width_40").css("width", "40px");
+            $(".sno_width_50").css("width", "50px");
+            $(".sno_width_60").css("width", "60px");
+            $(".sno_width_30").css("min-width", "10px");
+        });
+
+        $(".twoDecimalNumber").keyup(function() {
+            var numberDecimal1 = this.value;
+            var numberDecima2 = numberDecimal1.match(/^\d+\.?\d{0,2}/);
+            $(this).val(numberDecima2);
+        });
+
+        $(".oneDecimalNumber").keyup(function() {
+            var numberDecimal1 = this.value;
+            var numberDecima2 = numberDecimal1.match(/^\d+\.?\d{0,1}/);
+            $(this).val(numberDecima2);
+        });
+
+        $(".zeorDecimalNumber").keyup(function() {
+            var numberDecimal1 = this.value;
+            var numberDecima2 = numberDecimal1.match(/^\d+\.?\d{0,0}/);
+            $(this).val(numberDecima2);
+        });
+    </script>
+<?php }

@@ -1,0 +1,227 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f9;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.5em;
+}
+
+#camera,
+#speaker,
+#mic,
+#keyboard,
+.keyboard,
+#battery {
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#battery {
+    background: linear-gradient(to bottom, #00b3f4 1%, #00a5d4 100%);
+    color: #fff;
+}
+
+#mic {
+    background: linear-gradient(45deg, #701e96 0, #5b00a5 39%, #751ebc 70%, #6b15b2 100%);
+    color: #fff;
+}
+
+#keyboard {
+    padding: 10px;
+    background-color: #272727;
+}
+
+.keyboard {
+    width: 1024px;
+    background-color: #89aac9;
+    color: #fff;
+    margin: auto;
+}
+
+table#keyboard {
+    width: 100%;
+    margin: 20px 0;
+}
+
+td {
+    padding: 0;
+}
+
+.key_row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.key_un,
+.key_pressed_m {
+    padding: 10px 20px;
+    margin: 5px;
+    border: 2px solid #fff;
+    border-radius: 5px;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    color: #ccc;
+}
+
+.key_un2 {
+    padding: 10px 20px;
+    margin-left: 33px;
+    margin-right: 35px;
+}
+
+.key_un.pressed {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.key_un.failed {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.key_row i {
+    font-size: 20px;
+}
+
+.statistics {
+    margin-top: 30px;
+    font-size: 24px;
+}
+
+.progress-bar {
+    width: 100%;
+    margin: auto;
+    background-color: #ddd;
+    height: 35px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.progress {
+    height: 100%;
+    background-color: #4caf50;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.speaker_btn {
+    width: 300px;
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.previous_next_btn {
+    display: inline-block;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+.bg_red {
+    background-color: red;
+}
+
+.bg_blue {
+    background-color: rgb(27, 72, 151);
+}
+
+.bg_yellow {
+    background-color: rgb(222, 198, 12);
+}
+
+.row {
+    width: 100%;
+    display: inline-block;
+}
+
+.col2 {
+    width: 15%;
+    display: inline-block;
+    margin: 20px;
+}
+
+.col3 {
+    width: 22%;
+    display: inline-block;
+    margin: 20px;
+}
+
+.col4 {
+    width: 31%;
+    display: inline-block;
+    margin: 10px;
+}
+
+.col6 {
+    width: 47%;
+    display: inline-block;
+    margin: 10px;
+}
+
+.col8 {
+    width: 64%;
+    display: inline-block;
+    margin: 10px;
+}
+
+.col10 {
+    width: 80%;
+    display: inline-block;
+    margin: 10px;
+}
+
+.col12 {
+    width: 95%;
+    display: inline-block;
+    margin: 10px;
+}
+
+#submitTest {
+    border-radius: 5px;
+}
+
+.color-red {
+    color: red;
+}
+
+
+.input_text {
+    padding: 10px !important;
+    border-radius: 5px !important;
+}

@@ -1,0 +1,13 @@
+RewriteEngine on
+
+#ErrorDocument 404 http://localhost/albert_warehouse_erp/sadmin/404
+#ErrorDocument 500 http://localhost/albert_warehouse_erp/sadmin/500
+
+ErrorDocument 404 https://creativeworkflows.ai/sadmin/404
+ErrorDocument 500 https://creativeworkflows.ai/sadmin/500
+
+RewriteRule ^404$ 404.php
+RewriteRule ^500$ 500.php
+RewriteRule ^home$ index.php
+RewriteRule ^signin$ signin.php
+RewriteRule ^signout$ signout.php

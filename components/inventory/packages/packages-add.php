@@ -1,0 +1,367 @@
+<?php
+if (!isset($module)) {
+	require_once('../../../conf/functions.php');
+	disallow_direct_school_directory_access();
+}
+if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
+	$product_sku 		= uniqid();
+	$product_category 	= 7;
+	$case_pack 			= 10;
+	$product_id			= "2001";
+	$pack_desc			= "pack_desc: " . date('Ymd');
+}
+$db 					= new mySqlDB;
+$selected_db_name 		= $_SESSION["db_name"];
+$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
+$user_id 				= $_SESSION["user_id"];
+
+
+if ($cmd == 'edit') {
+	$title_heading = "Update " . $main_menu_name;
+	$button_val = "Save";
+}
+if ($cmd == 'add') {
+	$title_heading 	= "Add " . $main_menu_name;
+	$button_val 	= "Add";
+	$id 			= "";
+}
+if ($cmd == 'edit' && isset($id) && $id > 0) {
+	$sql_ee				= "SELECT a.* FROM packages a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee			= $db->query($conn, $sql_ee);
+	$row_ee				= $db->fetch($result_ee);
+	$package_name		= $row_ee[0]['package_name'];
+	$product_category	= $row_ee[0]['product_category'];
+	$product_ids		= explode(",", $row_ee[0]['product_ids']);
+	$stock_in_hand		= $row_ee[0]['stock_in_hand'];
+}
+extract($_POST);
+foreach ($_POST as $key => $value) {
+	if (!is_array($value)) {
+		$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+		$$key = $data[$key];
+	}
+}
+if (isset($is_Submit) && $is_Submit == 'Y') {
+
+	$field_name = "product_ids";
+	if (isset(${$field_name}) && sizeof(${$field_name}) == "0") {
+		$error[$field_name] 		= "Select atleat one Compatible Product";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "stock_in_hand";
+	if (isset(${$field_name}) && ${$field_name} == ""  && $cmd != 'edit') {
+		$error[$field_name] 	= "Required";
+		${$field_name . "_valid"} = "invalid";
+	}
+	$field_name = "product_category";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 	= "Required";
+		${$field_name . "_valid"} = "invalid";
+	}
+	$field_name = "package_name";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 	= "Required";
+		${$field_name . "_valid"} = "invalid";
+	}
+	if (empty($error)) {
+
+		$product_ids_str = implode(",", $product_ids);
+
+		if ($cmd == 'add') {
+			if (access("add_perm") == 0) {
+				$error['msg'] = "You do not have add permissions.";
+			} else {
+				$sql_dup	= " SELECT a.* 
+								FROM packages a 
+								WHERE a.package_name	= '" . $package_name . "'
+								AND a.product_category	= '" . $product_category . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) { //product_sku, case_pack,
+					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, package_name, product_category, stock_in_hand, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						$id 			= mysqli_insert_id($conn);
+						$package_no		= "PP" . $id;
+						$sql6 			= "UPDATE packages SET package_no = '" . $package_no . "' WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql6);
+
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+						$product_sku = $package_name = $product_category = $case_pack = $stock_in_hand = "";
+						unset($product_ids);
+						unset($all_checked);
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
+			}
+		} else if ($cmd == 'edit') {
+			if (access("edit_perm") == 0) {
+				$error['msg'] = "You do not have edit permissions.";
+			} else {
+				$sql_dup	= " SELECT a.* FROM packages a 
+								WHERE a.package_name		= '" . $package_name . "'
+								AND a.product_category	= '" . $product_category . "'
+								AND a.id			   != '" . $id . "'";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+
+					$sql_c_up = "UPDATE packages SET 	package_name		= '" . $package_name . "', 
+														product_category	= '" . $product_category . "',  
+ 														product_ids			= '" . $product_ids_str . "', 
+ 														
+														update_date			= '" . $add_date . "',
+														update_by			= '" . $_SESSION['username'] . "',
+														update_ip			= '" . $add_ip . "'
+								WHERE id = '" . $id . "'   ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$msg['msg_success'] = "Record Updated Successfully.";
+					} else {
+						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
+			}
+		}
+	} else {
+		$error['msg'] = "Please check required fields in form";
+	}
+}
+?>
+<!-- BEGIN: Page Main-->
+<div id="main" class="<?php echo $page_width; ?>">
+	<div class="row">
+		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
+		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
+			<!-- Search for small screen-->
+			<div class="container">
+				<div class="row">
+					<div class="col s10 m6 l6">
+						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
+						<ol class="breadcrumbs mb-0">
+							<li class="breadcrumb-item"><?php echo $title_heading; ?>
+							</li>
+							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
+							</li>
+						</ol>
+					</div>
+					<div class="col s2 m6 l6">
+						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
+							List
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col s12 m12 l12">
+			<div id="Form-advance" class="card card card-default scrollspy">
+				<div class="card-content">
+					<?php
+					if (isset($error['msg'])) { ?>
+						<div class="card-alert card red lighten-5">
+							<div class="card-content red-text">
+								<p><?php echo $error['msg']; ?></p>
+							</div>
+							<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+					<?php } else if (isset($msg['msg_success'])) { ?>
+						<div class="card-alert card green lighten-5">
+							<div class="card-content green-text">
+								<p><?php echo $msg['msg_success']; ?></p>
+							</div>
+							<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+					<?php } ?>
+					<h4 class="card-title">Offer Master Info</h4><br>
+					<form method="post" autocomplete="off" action="">
+						<input type="hidden" name="is_Submit" value="Y" />
+						<input type="hidden" id="cmd" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
+						<input type="hidden" id="id" name="id" value="<?php if (isset($id)) echo $id; ?>" />
+						<div class="row">
+							<?php
+							$field_name 	= "package_name";
+							$field_label 	= "Package / Part Name";
+							?>
+							<div class="input-field col m3 s12">
+								<i class="material-icons prefix">question_answer</i>
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							<div class="input-field col m3 s12">
+								<?php
+								$field_name 	= "product_category";
+								$field_label 	= "Category";
+								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type != 'Device' ORDER BY category_name ";
+								$result1 		= $db->query($conn, $sql1);
+								$count1 		= $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">Select</option>
+										<?php
+										if ($count1 > 0) {
+											$row1	= $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['category_name']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
+							</div>
+							<?php
+							$field_name 	= "stock_in_hand";
+							$field_label 	= "Stock In Hand";
+							?>
+							<div class="input-field col m3 s12">
+								<i class="material-icons prefix">question_answer</i>
+								<input id="<?= $field_name; ?>" <?php if (isset($cmd) && $cmd == 'edit') {
+																	echo "disabled";
+																} ?> type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																															echo ${$field_name};
+																														} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																					echo ${$field_name . "_valid"};
+																																				} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+						</div>
+						<div class="row">
+							<?php
+							$field_name 	= "product_ids";
+							$field_label 	= "Compatible Product";
+							?>
+							<label>
+								<b>
+									<?= $field_label; ?>
+									<span class="color-red"> * <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</b>
+							</label>
+							<label>
+								<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+																															echo "checked";
+																														} ?> />
+								<span></span>
+							</label>
+							<br>
+							<?php
+							$sql1 			= " SELECT a.*, b.category_name
+												FROM products a
+												INNER JOIN product_categories b ON b.id = a.product_category
+												WHERE a.enabled = 1 
+												ORDER BY a.product_uniqueid ";
+							$result1	= $db->query($conn, $sql1);
+							$count1		= $db->counter($result1);
+							if ($count1 > 0) {
+								$row1 = $db->fetch($result1);
+								foreach ($row1 as $data2) { ?>
+									<div class="input-field col m2 s12">
+										<label>
+											<input type="checkbox" value="<?php echo $data2['id']; ?>" name="<?= $field_name; ?>[]" id="<?= $field_name; ?>" class="checkbox" <?php if (isset(${$field_name}) && in_array($data2['id'], ${$field_name})) { ?> checked <?php } ?>>
+											<span><?php echo $data2['product_uniqueid']; ?></span>
+										</label>
+									</div>
+							<?php }
+							} ?>
+						</div>
+						<div class="row">
+							<div class="input-field col m12 s12"><br></div>
+						</div>
+						<div class="row">
+							<div class="input-field col m6 s12">
+								<?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+									<button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val; ?>
+										<i class="material-icons right">send</i>
+									</button>
+								<?php } ?>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<?php include("sub_files/add_product_modal.php") ?>
+	<?php include("sub_files/add_vender_modal.php") ?>
+</div>
+<br><br><br><br>
+<!-- END: Page Main-->
+<!-- END: Page Main-->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<script>
+	$(document).on('click', '#add_product_btn', function(e) {
+
+		var product_desc = $("#product_desc").val();
+		var product_category = $("#product_category").val();
+		var detail_desc = $("#detail_desc").val();
+		var product_uniqueid = $("#product_uniqueid").val();
+		var cmd = $("#cmd").val();
+		var id = $("#id").val();
+
+		var dataString = 'type=add_product2&product_desc=' + product_desc + '&product_uniqueid=' + product_uniqueid + '&product_category=' + product_category + '&detail_desc=' + detail_desc + '&cmd=' + cmd + '&id=' + id;
+		$.ajax({
+			type: "POST",
+			url: "ajax/ajax_add_entries.php",
+			data: dataString,
+			cache: false,
+			success: function(data) {
+				if (data != 'Select') {
+					$("#product_uniqueid").val("");
+					$("#product_desc").val("");
+					$('#product_category').val("").trigger('change');
+					$("#detail_desc2").val("");
+					$("#product_id").append(data);
+				}
+			},
+			error: function() {
+				;
+			}
+		});
+	});
+</script>

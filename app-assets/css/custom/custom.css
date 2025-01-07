@@ -1,0 +1,85 @@
+.color-green {
+	color: green !important;
+}
+
+.color-red {
+	color: red !important;
+}
+
+.color-blue {
+	color: blue !important;
+}
+
+.color-black {
+	color: black !important;
+}
+
+.color-white {
+	color: white !important;
+}
+
+.custom_checkbox {
+	opacity: 1 !important;
+	position: relative !important;
+	width: 20px !important;
+	height: 20px !important;
+}
+
+.text_align_center {
+	text-align: center !important;
+}
+
+.font_20 {
+	font-size: 20px !important;
+}
+
+.font_15 {
+	font-size: 15px !important;
+}
+
+.check_all_label {
+	padding: 20px !important;
+	font-size: 20px !important;
+}
+
+.dashboard_button_bg {
+	background-color: #c55a11 !important;
+	border-radius: 60px !important;
+}
+
+.select2div {
+	padding-left: 40px;
+}
+
+.select2div_main {
+	padding-left: 13px;
+	;
+}
+
+.custom_radio25 {
+	width: 25%;
+	float: left;
+}
+
+.custom_radio33 {
+	width: 33%;
+	float: left;
+}
+
+.custom_radio {
+	width: 50%;
+	float: left;
+}
+
+.custom_radio50 {
+	width: 50%;
+	float: left;
+}
+
+.excel_data_textarea {
+	height: 400px !important;
+}
+
+.width_heading_table_custom_col {
+	width: 200px !important;
+}

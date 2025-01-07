@@ -1,0 +1,216 @@
+<?php
+if (!isset($module)) {
+	require_once('../../../../conf/functions.php');
+	disallow_direct_school_directory_access();
+}
+if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
+	$category_name	= "Computer";
+}
+$db 					= new mySqlDB;
+$selected_db_name 		= $_SESSION["db_name"];
+$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
+$user_id 				= $_SESSION["user_id"];
+if ($cmd == 'edit') {
+	$title_heading = "Update Product Category";
+	$button_val = "Save";
+}
+if ($cmd == 'add') {
+	$title_heading 	= "Add Product Category";
+	$button_val 	= "Add";
+	$id 			= "";
+}
+if ($cmd == 'edit' && isset($id)) {
+
+	$sql_ee				= "SELECT a.* FROM product_categories a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee			= $db->query($conn, $sql_ee);
+	$row_ee				= $db->fetch($result_ee);
+	$category_name		= $row_ee[0]['category_name'];
+	$category_type		= $row_ee[0]['category_type'];
+}
+extract($_POST);
+foreach ($_POST as $key => $value) {
+	if (!is_array($value)) {
+		$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+		$$key = $data[$key];
+	}
+}
+if (isset($is_Submit) && $is_Submit == 'Y') {
+	$field_name = "category_type";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name]	= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "category_name";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name]	= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	if (empty($error)) {
+		if ($cmd == 'add') {
+			if (access("add_perm") == 0) {
+				$error['msg'] = "You do not have add permissions.";
+			} else {
+				$sql_dup	= " SELECT a.* FROM product_categories a  WHERE a.category_name	= '" . $category_name . "' AND a.category_type	= '" . $category_type . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+					$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $category_name . "', '" . $category_type . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+						$category_name = "";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
+			}
+		} else if ($cmd == 'edit') {
+			if (access("edit_perm") == 0) {
+				$error['msg'] = "You do not have edit permissions.";
+			} else {
+				$sql_dup	= " SELECT a.* FROM product_categories a WHERE a.category_name = '" . $category_name . "' AND a.id != '" . $id . "'";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+					$sql_c_up = "UPDATE product_categories SET 	category_name			= '" . $category_name . "', 
+																category_type			= '" . $category_type . "',
+																update_date				= '" . $add_date . "',
+																update_by				= '" . $_SESSION['username'] . "',
+																update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																update_ip				= '" . $add_ip . "',
+																update_timezone			= '" . $timezone . "',
+																update_from_module_id	= '" . $module_id . "'
+								WHERE id = '" . $id . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$msg['msg_success'] = "Record Updated Successfully.";
+					} else {
+						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
+			}
+		}
+	}
+} ?>
+<!-- BEGIN: Page Main-->
+<div id="main" class="<?php echo $page_width; ?>">
+	<div class="row">
+		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
+		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
+			<!-- Search for small screen-->
+			<div class="container">
+				<div class="row">
+					<div class="col s10 m6 l6">
+						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
+						<ol class="breadcrumbs mb-0">
+							<li class="breadcrumb-item"><?php echo $title_heading; ?>
+							</li>
+							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
+							</li>
+						</ol>
+					</div>
+					<div class="col s2 m6 l6">
+						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
+							List
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col s12 m12 l12">
+			<div id="Form-advance" class="card card card-default scrollspy">
+				<div class="card-content">
+					<?php
+					if (isset($error['msg'])) { ?>
+						<div class="card-alert card red lighten-5">
+							<div class="card-content red-text">
+								<p><?php echo $error['msg']; ?></p>
+							</div>
+							<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+					<?php } else if (isset($msg['msg_success'])) { ?>
+						<div class="card-alert card green lighten-5">
+							<div class="card-content green-text">
+								<p><?php echo $msg['msg_success']; ?></p>
+							</div>
+							<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">×</span>
+							</button>
+						</div>
+					<?php } ?>
+					<h4 class="card-title">Detail Form</h4><br>
+					<form method="post" autocomplete="off">
+						<input type="hidden" name="is_Submit" value="Y" />
+						<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
+						<div class="row">
+							<div class="input-field col m4 s12">
+								<?php
+								$field_name 	= "category_name";
+								$field_label 	= "Category";
+								?>
+								<i class="material-icons prefix">description</i>
+								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							<div class="input-field col m3 s12">
+								<?php
+								$field_name 	= "category_type";
+								$field_label 	= "Type";
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
+																														echo ${$field_name . "_valid"};
+																													} ?>">
+										<option value="">Select</option>
+										<option value="Device" <?php if (isset(${$field_name}) && ${$field_name} == 'Device') { ?> selected="selected" <?php } ?>>Device</option>
+										<option value="Package Material" <?php if (isset(${$field_name}) && ${$field_name} == 'Package Material') { ?> selected="selected" <?php } ?>>Package Material</option>
+										<option value="Parts" <?php if (isset(${$field_name}) && ${$field_name} == 'Parts') { ?> selected="selected" <?php } ?>>Parts</option>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="input-field col m4 s12">
+								<?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+									<button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val; ?>
+										<i class="material-icons right">send</i>
+									</button>
+								<?php } ?>
+							</div>
+						</div>
+					</form>
+				</div>
+				<?php //include('sub_files/right_sidebar.php');
+				?>
+			</div>
+		</div>
+
+
+	</div><br><br><br><br>
+	<!-- END: Page Main-->

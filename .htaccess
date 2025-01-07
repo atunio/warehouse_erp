@@ -1,0 +1,26 @@
+RewriteEngine on
+
+# ensure https
+#RewriteCond %{HTTP:X-Forwarded-Proto} !https
+#RewriteCond %{HTTPS} off
+#RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+#ErrorDocument 404 https://creativeworkflows.ai/404
+#ErrorDocument 500 https://creativeworkflows.ai/500
+
+ErrorDocument 404 http://localhost/albert_warehouse_erp/404
+ErrorDocument 500 http://localhost/albert_warehouse_erp/500
+
+RewriteRule ^404$ 404.php
+RewriteRule ^500$ 500.php
+RewriteRule ^home$ index2.php
+RewriteRule ^main$ index.php
+RewriteRule ^signin$ signin.php
+RewriteRule ^signout$ signout.php
+RewriteRule ^forget-password$ forget_password.php
+RewriteRule ^authentication$ authentication.php
+ RewriteRule ^test$ chromebook_diagnostic.php
+
+ 
+ 
+

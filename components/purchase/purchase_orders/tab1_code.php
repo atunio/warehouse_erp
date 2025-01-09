@@ -22,6 +22,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	else{
 		$warranty_period_in_days = '28';
 	}
+	$order_status = 1;
 }
 if (isset($test_on_local) && $test_on_local == 1 && isset($cmd2) &&  $cmd2 == 'add') {
 	// $product_id					= "2001";
@@ -99,6 +100,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$is_wiped_po			= $row_ee[0]['is_wiped_po'];
 	$is_imaged_po			= $row_ee[0]['is_imaged_po'];
 	$vendor_days			= $row_ee[0]['vendor_days'];
+	$order_status           = $row_ee[0]['order_status'];
 	$warranty_period_in_days = $row_ee[0]['warranty_period_in_days'];
 	if($warranty_period_in_days >0){
 		$warranty_period_in_days = $row_ee[0]['warranty_period_in_days'];
@@ -186,8 +188,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* 
 								FROM purchase_orders a 
-								WHERE a.vender_id	= '" . $vender_id . "'
-								AND a.po_date		= '" . $po_date1 . "'";
+								WHERE a.vender_id		= '" . $vender_id . "'
+								AND a.vender_invoice_no	= '" . $vender_invoice_no . "' 
+								AND a.po_date			= '" . $po_date1 . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
@@ -284,75 +287,76 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												update_timezone			= '" . $timezone . "'
 					WHERE id = '" . $id . "' ";
 		$ok = $db->query($conn, $sql_c_up);
+		$k = 0;
+		if(isset($order_status) && $order_status == 1){
+			$sql_dup = " DELETE FROM purchase_order_detail WHERE po_id	= '" . $id . "'";
+			$db->query($conn, $sql_dup);
 
-		$sql_dup = " DELETE FROM purchase_order_detail WHERE po_id	= '" . $id . "'";
-		$db->query($conn, $sql_dup);
-
-		$filtered_product_ids = array_values(array_filter($product_ids));
-		$i = $k = 0; // Initialize the counter before the loop
-		$r = 1;
-		foreach ($filtered_product_ids as $data_p) {
-			$is_tested_val = "No";
-			$is_imaged_val = "No";
-			$is_wiped_val = "No";
-			if (isset(${"isimage_iswipped_istested_".$r} ) && is_array(${"isimage_iswipped_istested_".$r})) {
-				// Initialize flags
-				foreach (${"isimage_iswipped_istested_".$r} as $datas) {
-					if ($datas == "Tested") {
-						$is_tested_val = "Yes";
-					} 
-					if ($datas == "Imaged") {
-						$is_imaged_val = "Yes";
-					} 
-					if ($datas == "Wipped") {
-						$is_wiped_val = "Yes";
+			$filtered_product_ids = array_values(array_filter($product_ids));
+			$i = 0; // Initialize the counter before the loop
+			$r = 1;
+			foreach ($filtered_product_ids as $data_p) {
+				$is_tested_val = "No";
+				$is_imaged_val = "No";
+				$is_wiped_val = "No";
+				if (isset(${"isimage_iswipped_istested_".$r} ) && is_array(${"isimage_iswipped_istested_".$r})) {
+					// Initialize flags
+					foreach (${"isimage_iswipped_istested_".$r} as $datas) {
+						if ($datas == "Tested") {
+							$is_tested_val = "Yes";
+						} 
+						if ($datas == "Imaged") {
+							$is_imaged_val = "Yes";
+						} 
+						if ($datas == "Wipped") {
+							$is_wiped_val = "Yes";
+						}
 					}
+					// Set the arrays with the final values
+					$is_tested[$i] = $is_tested_val;
+					$is_imaged[$i] = $is_imaged_val;
+					$is_wiped[$i] = $is_wiped_val;
 				}
-				// Set the arrays with the final values
-				$is_tested[$i] = $is_tested_val;
-				$is_imaged[$i] = $is_imaged_val;
-				$is_wiped[$i] = $is_wiped_val;
-			}
-			$r++;
-			
-			$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
-			$result_dup = $db->query($conn, $sql_dup);
-			$count_dup 	= $db->counter($result_dup);
-
-			if ($count_dup == 0) {
-				// Check if all required array elements exist
-				$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, package_id, package_material_qty, product_condition, is_tested, is_wiped, is_imaged, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-						VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $package_id[$i] . "', '" . $package_material_qty[$i] . "', '" . $product_condition[$i] . "', '". $is_tested_val ."' , '". $is_wiped_val ."' , '". $is_imaged_val ."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
-				$ok = $db->query($conn, $sql6);
-				if ($ok) {
-					$k++; // Increment the counter only if the insertion is successful
-				}
+				$r++;
 				
-			} else {
-				// Update logic with array element checks
-				if (isset($order_qty[$i], $order_price[$i], $package_id[$i], $package_material_qty[$i], $product_condition[$i])) {
-					$sql_c_up = "UPDATE purchase_order_detail SET product_id = '" . $data_p . "', 
-								order_qty = '" . $order_qty[$i] . "', 
-								order_price = '" . $order_price[$i] . "', 
-								product_condition = '" . $product_condition[$i] . "', 
-								package_id = '" . $package_id[$i] . "', 
-								package_material_qty = '" . $package_material_qty[$i] . "', 
-								update_date = '" . $add_date . "',
-								update_by = '" . $_SESSION['username'] . "',
-								update_by_user_id = '" . $_SESSION['user_id'] . "',
-								update_ip = '" . $add_ip . "',
-								update_timezone = '" . $timezone . "' 
-								WHERE po_id = '" . $id . "'";
-					$ok = $db->query($conn, $sql_c_up);
+				$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
+				$result_dup = $db->query($conn, $sql_dup);
+				$count_dup 	= $db->counter($result_dup);
+
+				if ($count_dup == 0) {
+					// Check if all required array elements exist
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, package_id, package_material_qty, product_condition, is_tested, is_wiped, is_imaged, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+							VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $package_id[$i] . "', '" . $package_material_qty[$i] . "', '" . $product_condition[$i] . "', '". $is_tested_val ."' , '". $is_wiped_val ."' , '". $is_imaged_val ."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$k++; // Increment the counter only if the insertion is successful
 					}
+					
+				} else {
+					// Update logic with array element checks
+					if (isset($order_qty[$i], $order_price[$i], $package_id[$i], $package_material_qty[$i], $product_condition[$i])) {
+						$sql_c_up = "UPDATE purchase_order_detail SET product_id = '" . $data_p . "', 
+									order_qty = '" . $order_qty[$i] . "', 
+									order_price = '" . $order_price[$i] . "', 
+									product_condition = '" . $product_condition[$i] . "', 
+									package_id = '" . $package_id[$i] . "', 
+									package_material_qty = '" . $package_material_qty[$i] . "', 
+									update_date = '" . $add_date . "',
+									update_by = '" . $_SESSION['username'] . "',
+									update_by_user_id = '" . $_SESSION['user_id'] . "',
+									update_ip = '" . $add_ip . "',
+									update_timezone = '" . $timezone . "' 
+									WHERE po_id = '" . $id . "'";
+						$ok = $db->query($conn, $sql_c_up);
+						if ($ok) {
+							$k++; // Increment the counter only if the insertion is successful
+						}
+					}
 				}
+				$i++;
+				
 			}
-			$i++;
-			
 		}
-
 		if($k == 1){
 			if (isset($error2['msg'])) unset($error2['msg']);
 			$msg2['msg_success'] = "Record has been added successfully.";

@@ -262,7 +262,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <?php if (($cmd == 'add' && access("add_perm") == 1)) { ?>
+                            <?php if (($cmd == 'add' &&  access("add_perm") == 1)) { ?>
                                 <div class="row">
                                     <div class="input-field col m6 s12">
                                         <button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val; ?>
@@ -287,12 +287,19 @@
                                         
                                         <th style="width: %;">
                                             Product &nbsp;
+                                            <?php
+                                            if(isset($order_status) && $order_status == 1){
+                                            ?>
                                             <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn cyan waves-effect waves-light custom_btn_size">
                                                 Import Products
                                             </a> &nbsp;&nbsp;
-                                            <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                <i class="material-icons  dp48 md-36">add_circle</i>
-                                            </a> 
+                                            
+                                                <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                                    <i class="material-icons  dp48 md-36">add_circle</i>
+                                                </a> 
+                                            <?php
+                                            }
+                                            ?>
                                         </th>
                                         <th style="width: 120px;">Condition</th>
                                         <th style="width: 100px;">Qty</th>
@@ -305,6 +312,11 @@
                                 </thead>
                                 <tbody>
                                     <?php 
+                                    $disabled = $readonly = "";
+                                    if(isset($order_status) && $order_status != 1){
+                                        $disabled = "disabled='disabled'";
+                                        $readonly = "readonly='readonly'";
+                                    }
                                     for($i = 1; $i <= 50; $i++) {
                                         $field_name     = "product_ids";
                                         $field_id       = "productids_".$i;
@@ -341,7 +353,7 @@
                                         ?>
                                         <tr class="dynamic-row" id="row_<?=$i;?>" <?php echo $style; ?>>
                                             <td>
-                                                <select name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product-select <?=$field_name?>_<?=$i?>">
+                                                <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product-select <?=$field_name?>_<?=$i?>">
                                                     <option value="">Select a product</option>
                                                     <?php
                                                     if ($count1 > 0) {
@@ -360,7 +372,7 @@
                                                 $field_label     = "Product Condition";
                                                 ?>
             
-                                                    <select name="<?=$field_name?>[]" id="<?=$field_id?>" class="browser-default custom_condition_class">
+                                                    <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="browser-default custom_condition_class">
                                                         <option value="">Select</option>
                                                         <option value="A" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "A") { ?> selected="selected" <?php } ?>>A</option>
                                                         <option value="B" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "B") { ?> selected="selected" <?php } ?>>B</option>
@@ -374,7 +386,7 @@
                                                 $field_id       = "orderqty_".$i;
                                                 $field_label     = "Quantity";
                                                 ?>
-                                                <input name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id;?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                                <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id;?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
                                             </td>
                                             <td>
                                                 <?php
@@ -382,7 +394,7 @@
                                                 $field_id       = "orderprice_".$i;
                                                 $field_label     = "Unit Price";
                                                 ?>
-                                                <input name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                                <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
                                             </td>
                                             <td>
                                                 <?php
@@ -390,7 +402,7 @@
                                                 $field_id       = "packageid_".$i;
                                                 $field_label    = "Packaging Material / Part";
                                                 ?>
-                                                <select name="<?= $field_name; ?>[]" id="<?= $field_id; ?>" class="package_id select2-theme browser-default custom_condition_class select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
+                                                <select <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" id="<?= $field_id; ?>" class="package_id select2-theme browser-default custom_condition_class select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
                                                                                                                                                                             echo ${$field_name . "_valid"};
                                                                                                                                                                         } ?>">
                                                     
@@ -424,7 +436,7 @@
                                                 $field_id       = "packagematerialqty_".$i;
                                                 $field_label    = "Package Material Qty";
                                                 ?>
-                                                <input name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                                <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
                                             </td>
                                             <td>
                                                 <?php
@@ -432,7 +444,7 @@
                                                 $field_id       = "isimage_iswipped_istested_".$i;
                                                 $field_label     = "Imaged / Wipped / Tested";
                                                 ?>
-                                                <select name="<?=$field_id;?>[]" id="<?=$field_id?>" multiple="multiple" class="select2 browser-default custom_condition_class select2-hidden-accessible">
+                                                <select <?php echo $disabled; echo $readonly; ?>  name="<?=$field_id;?>[]" id="<?=$field_id?>" multiple="multiple" class="select2 browser-default custom_condition_class select2-hidden-accessible">
                                                     <option value="">Select</option>
                                                     <option value="Tested" <?php if (isset($is_tested[$i-1]) && $is_tested[$i-1]    == 'Yes')   { ?> selected="selected" <?php } ?>>Tested</option>
                                                     <option value="Imaged" <?php if (isset($is_imaged[$i-1]) && $is_imaged[$i-1]    == 'Yes')   { ?> selected="selected" <?php } ?>>Imaged</option>
@@ -440,12 +452,15 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
-                                                    <i class="material-icons dp48">cancel</i>
-                                                </a> &nbsp;
-                                                <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
-                                                    <i class="material-icons dp48">add_circle</i>
-                                                </a>&nbsp;&nbsp;
+                                                <?php if(isset($order_status) && $order_status == 1){ ?>
+                                                        <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
+                                                            <i class="material-icons dp48">cancel</i>
+                                                        </a> &nbsp;
+                                                        <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
+                                                            <i class="material-icons dp48">add_circle</i>
+                                                        </a>&nbsp;&nbsp;
+                                                <?php }
+                                                ?>
                                             </td>
                                         </tr>
                                     <?php }  
@@ -467,7 +482,7 @@
                                     $field_label     = "Private Note";
                                     ?>
                                     <i class="material-icons prefix">description</i>
-                                    <textarea id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "><?php if (isset(${$field_name})) {
+                                    <textarea <?php echo $disabled; echo $readonly; ?> id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "><?php if (isset(${$field_name})) {
                                                                                                                                                 echo ${$field_name};
                                                                                                                                             } ?></textarea>
                                     <label for="<?= $field_name; ?>">
@@ -485,7 +500,7 @@
                                     $field_label     = "Public Note";
                                     ?>
                                     <i class="material-icons prefix">description</i>
-                                    <textarea id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "><?php if (isset(${$field_name})) {
+                                    <textarea <?php echo $disabled; echo $readonly; ?> id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "><?php if (isset(${$field_name})) {
                                                                                                                                                 echo ${$field_name};
                                                                                                                                             } ?></textarea>
                                     <label for="<?= $field_name; ?>">

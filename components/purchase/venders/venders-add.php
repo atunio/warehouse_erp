@@ -7,6 +7,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$vender_name	= "xyz";
 	$address		= "address";
 	$phone_no		= "876544321";
+	$warranty_period_in_days	= "15";
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -30,6 +31,7 @@ if ($cmd == 'edit' && isset($id)) {
 	$address			= $row_ee[0]['address'];
 	$note_about_vender	= $row_ee[0]['note_about_vender'];
 	$vender_type		= $row_ee[0]['vender_type'];
+	$warranty_period_in_days	= $row_ee[0]['warranty_period_in_days'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -60,6 +62,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
+	$field_name = "warranty_period_in_days";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
 
 	if (empty($error)) {
 		if ($cmd == 'add') {
@@ -74,8 +81,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".venders(subscriber_users_id, vender_name, address, phone_no, vender_type, note_about_vender, add_date, add_by, add_ip)
-							VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".venders(subscriber_users_id, vender_name, address, phone_no, vender_type, note_about_vender,warranty_period_in_days, add_date, add_by, add_ip)
+							VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '". $warranty_period_in_days ."','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 
@@ -112,7 +119,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 													address                     = '" . $address . "', 
 													vender_type					= '" . $vender_type . "', 
 													note_about_vender			= '" . $note_about_vender . "', 
-													
+													warranty_period_in_days		= '" . $warranty_period_in_days . "', 
 													update_date 				= '" . $add_date . "',
 													update_by 					= '" . $_SESSION['username'] . "',
 													update_ip 					= '" . $add_ip . "'
@@ -203,7 +210,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-							<div class="input-field col m3 s12">
+							<div class="input-field col m2 s12">
 								<?php
 								$field_name 	= "phone_no";
 								$field_label 	= "Vendor Phone";
@@ -223,7 +230,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<?php
 								$field_name 	= "address";
 								$field_label 	= "Address";
@@ -276,6 +283,27 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</label>
 								</div>
 							</div>
+							<div class="input-field col m2 s12">
+								<?php
+								$field_name 	= "warranty_period_in_days";
+								$field_label 	= "Warranty in Days";
+								?>
+								<i class="material-icons prefix pt-2">question_answer</i>
+								<input type="number" id="<?= $field_name; ?>" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																																echo ${$field_name};
+																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																						echo ${$field_name . "_valid"};
+																																					} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							
 							<div class="input-field col m12 s12">
 								<?php
 								$field_name 	= "note_about_vender";

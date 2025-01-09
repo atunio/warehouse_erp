@@ -31,30 +31,7 @@ if (!isset($cmd8)) {
 if (!isset($cmd9)) {
 	$cmd9 = "";
 }
-
-
-if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
-	$vender_id					= "1";
-	$po_date 					= date('d/m/Y');
-	$estimated_receive_date 	= date('d/m/Y');
-	$po_desc					= "purchase order desc : " . date('YmdHis');
-	$is_tested_po				= "Yes";
-	$is_wiped_po				= "Yes";
-	$is_imaged_po				= "Yes";
-	$order_status				= "0";
-}
-if (isset($test_on_local) && $test_on_local == 1 && (!isset($$cmd2) || (isset($$cmd2) && $cmd2 == 'add'))) {
-	$product_id					= "2001";
-	$order_qty					= "1";
-	$order_price				= "500";
-	$product_po_desc			= "product_po_desc: " . date('YmdHis');
-	$is_tested					= "Yes";
-	$is_wiped					= "Yes";
-	$is_imaged					= "Yes";
-	$product_condition			= "A Grade";
-	$warranty_period_in_days	= "15";
-	$vender_invoice_no			= date('YmdHis');
-}
+ 
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
@@ -186,7 +163,6 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-
 include('tab1_code.php');
 include('tab2_code.php');
 include('tab3_code.php');
@@ -214,37 +190,121 @@ if (isset($cmd) && $cmd == 'add' && !(isset($cmd3))) {
 }
 if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') || (isset($cmd3) && $cmd3 == 'edit') || (isset($cmd4) && $cmd4 == 'edit') || (isset($cmd5) && $cmd5 == 'edit') || (isset($cmd6) && $cmd6 == 'edit')) {
 	$button_val = "Save";
-} ?>
+} 
+$general_heading = "PO Profile";?>
+<style> 
+	table.addproducttable td {
+		padding-top: 2px !important;
+		padding-bottom: 2px !important;
+		padding-left: 10px !important;
+		padding-right: 10px !important;
+		border: 1px solid rgba(0, 0, 0, .12) !important;
+		font-size: 12px !important;
+	}
+	table.addproducttable th{
+		padding-top: 5px !important;
+		padding-bottom: 5px !important;
+		padding-left: 10px !important;
+		padding-right: 10px !important;
+		border: 1px solid rgba(0, 0, 0, .12) !important;
+	}
+	table.addproducttable td input{
+		font-size: 12px !important;
+	}
+	table.addproducttable tr {
+		line-height: 1.5 !important; /* or you can use other values like 1.2, 2, etc. */
+	}
+	.custom_padding_section{
+		padding-top: 5px !important;
+		padding-bottom: 5px !important;
+	}
+	.custom_margin_section{
+		margin-top: 2px !important;
+		margin-bottom: 2px !important;
+	}
+	.custom_input{
+		border: 1px solid rgba(0, 0, 0, .12) !important;
+		border-radius: 5px !important;
+		margin-top: 6px !important;
+		margin-right: 6px !important;
+		padding: 6px !important;
+		height: 15px !important;
+		width: 85% !important;
+		line-height: 1;
+	}
+	select.custom_condition_class {
+		display: block;
+		width: 100%; /* Full width to fit the table cell */
+		height: 28px; /* Set the height to match the design */
+		padding: 0 30px 0 5px; /* Increase padding to create space for the arrow */
+		border: 1px solid #bdbdbd; /* Light border color */
+		border-radius: 4px; /* Slightly rounded corners */
+		background-color: #fff; /* White background */
+		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSIxMiAxNiA3IDExIDE3IDExIDEyIDE2IiBzdHlsZT0iZmlsbDpyZ2IoMTMyLCAxMjcsIDEyNyk7Ii8+PC9zdmc+'); /* Base64-encoded SVG for larger down arrow with specified color */
+		background-repeat: no-repeat;
+		background-position: right 10px center;
+		background-size: 18px; /* Increase size of the arrow */
+		appearance: none; /* Remove default browser arrow */
+		outline: #bdbdbd;
+		font-size: 12px !important /* Adjust font size */
+		line-height: 1; /* Set line height */
+		color: #333; /* Text color */
+	}
+
+	/* Hover and focus states for better interaction feedback */
+	select.custom_condition_class:hover {
+		border-color: #bdbdbd; /* Darker border on hover */
+	}
+
+	select.custom_condition_class:focus {
+		border-color: #2196f3; /* Blue border on focus */
+		box-shadow: 0 0 5px rgba(33, 150, 243, 0.5); /* Blue glow */
+	}
+	.padding_custom_msg{
+		padding-top: 0px !important;
+		padding-bottom: 0px !important;
+	}
+	.padding_custom_msg2{
+		padding-top: 5px !important;
+		padding-bottom: 5px !important;
+	}
+
+	.add-more, .remove-row {
+		font-size: 20px !important;
+		/* display: inline-flex !important; */
+		align-items: center !important;
+		justify-content: center !important;
+		width: 25px !important;
+		height: 25px !important;
+		padding: 0px !important;
+		border-radius: 15% !important;
+		text-decoration: none !important;
+	}
+
+	.add-more i, .remove-row i {
+		font-size: inherit !important;/* Inherit font size from parent anchor tag */
+		line-height: 0 !important; Ensure icons are vertically centered */
+	}
+	.custom_btn_size{
+		height: 25px !important;
+		line-height: 25px !important;
+		padding: 0 1rem !important;
+	}
+	.custom_margin_bottom_col{
+		margin-bottom: 0px !important;
+	}
+	.custom_input_heigh{
+		height: 30px !important;
+	}
+</style>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
-		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="row">
-						<div class="col s10 m10 20">
-							<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
-							<ol class="breadcrumbs mb-0">
-								<li class="breadcrumb-item"><?php echo $title_heading; ?>
-								</li>
-								<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a></li>
-							</ol>
-						</div>
-						<div class="col m2 s12 m2 4">
-							<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-								List
-							</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div> 
 		<div class="col m12 s12">
 			<div class="container">
 				<!-- Account settings -->
-				<section class="tabs-vertical mt-1 section">
+				<section class="tabs-vertical section">
 					<div class="row">
 						<div class="col m12 s12">
 							<!-- tabs  -->
@@ -257,234 +317,234 @@ if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') |
 								<?php
 								if (isset($error['msg'])) { ?>
 
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } ?>
 								<?php
 								if (isset($error2['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error2['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg2['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg2['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error2_2['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error2_2['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg2_2['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg2_2['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error3['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error3['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg3['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg3['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error3_2['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error3_2['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg3_2['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg3_2['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error4['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error4['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg4['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg4['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error5['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error5['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg5['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg5['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error6['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error6['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg6['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg6['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error7['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error7['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg7['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg7['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php }
 								if (isset($error8['msg'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card red lighten-5">
-											<div class="card-content red-text">
+									<div class="col 24 s12">
+										<div class="card-alert card red lighten-5 padding_custom_msg">
+											<div class="card-content red-text padding_custom_msg2">
 												<p><?php echo $error8['msg']; ?></p>
 											</div>
 											<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } else if (isset($msg8['msg_success'])) { ?>
-									<div class="col 24 s12"><br>
-										<div class="card-alert card green lighten-5">
-											<div class="card-content green-text">
+									<div class="col 24 s12">
+										<div class="card-alert card green lighten-5 padding_custom_msg">
+											<div class="card-content green-text padding_custom_msg2">
 												<p><?php echo $msg8['msg_success']; ?></p>
 											</div>
 											<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
-										</div><br>
+										</div>
 									</div>
 								<?php } ?>
 							</div>
@@ -505,7 +565,6 @@ if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') |
 			</div>
 		</div>
 	</div>
-	<?php include("sub_files/add_repair_type_modal.php") ?>
 	<?php include("sub_files/add_product_modal.php") ?>
 	<?php include("sub_files/add_vender_modal.php") ?>
 </div>
@@ -533,6 +592,5 @@ if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') |
 		// 
 	});
 </script>
-<?php include("sub_files/add_repair_type_js_code.php") ?>
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>

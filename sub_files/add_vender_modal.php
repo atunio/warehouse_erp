@@ -27,7 +27,7 @@
         </div>
     </div> <br>
     <div class="row">
-        <div class="input-field col m12 s12">
+        <div class="input-field col m6 s12">
             <?php
             $field_name     = "phone_no";
             $field_label     = "Vender Phone";
@@ -41,6 +41,26 @@
             <label for="<?= $field_name; ?>">
                 <?= $field_label; ?>
                 <span class="color-red"> * <?php
+                                            if (isset($error[$field_name])) {
+                                                echo $error[$field_name];
+                                            } ?>
+                </span>
+            </label>
+        </div>
+        <div class="input-field col m6 s12">
+            <?php
+            $field_name 	= "warranty_period_in_days";
+            $field_label 	= "Warranty in Days";
+            ?>
+            <i class="material-icons prefix pt-2">question_answer</i>
+            <input type="number" id="<?= $field_name; ?>" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                            echo ${$field_name};
+                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                } ?>">
+            <label for="<?= $field_name; ?>">
+                <?= $field_label; ?>
+                <span class="color-red">* <?php
                                             if (isset($error[$field_name])) {
                                                 echo $error[$field_name];
                                             } ?>
@@ -68,6 +88,7 @@
             </label>
         </div>
     </div>
+
     <div class="row">
         <div class="input-field col m12 s12">
             <?php
@@ -90,12 +111,12 @@
     </div>
     <div class="row">
         <div class="input-field col m6 s12">
-            <a href="#" name="add_vender_btn" id="add_vender_btn" class="btn modal-close cyan waves-effect waves-light right">
+            <a href="javascript:void(0)" name="add_vender_btn" id="add_vender_btn" class="btn modal-close cyan waves-effect waves-light right">
                 Add<i class="material-icons right">send</i>
             </a>
         </div>
         <div class="input-field col m6 s12">
-            <a href="#" name="close_vender_btn" class="btn modal-close waves-red" />Close</a>
+            <a href="javascript:void(0)" name="close_vender_btn" class="btn modal-close waves-red" />Close</a>
         </div>
     </div>
     <br><br>

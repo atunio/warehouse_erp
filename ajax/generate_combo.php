@@ -10,6 +10,7 @@ foreach ($_REQUEST as $key => $value) {
 	}
 }
 extract($_REQUEST);
+
 switch ($source_field) {
 	case 'status_id_rma_record':
 

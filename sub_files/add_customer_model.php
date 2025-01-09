@@ -159,12 +159,12 @@
     </div> <br>
     <div class="row">
         <div class="input-field col m6 s12">
-            <a href="#" name="add_customer_btn" id="add_customer_btn" class="btn modal-close cyan waves-effect waves-light right">
+            <a href="javascript:void(0)" name="add_customer_btn" id="add_customer_btn" class="btn modal-close cyan waves-effect waves-light right">
                 Add<i class="material-icons right">send</i>
             </a>
         </div>
         <div class="input-field col m6 s12">
-            <a href="#" name="close_customer_btn" class="btn modal-close waves-red" />Close</a>
+            <a href="javascript:void(0)" name="close_customer_btn" class="btn modal-close waves-red" />Close</a>
         </div>
     </div>
     <br><br>

@@ -4,11 +4,12 @@
                                         echo "none";
                                     } ?>;">
     <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px;">
-        <div class="row">
-            <div class="col s10 m12 l8">
-                <h5 class="breadcrumbs mt-0 mb-0"><span>Diagnostic</span></h5>
-            </div>
-        </div>
+        <h5 class="media-heading">
+            <?= $general_heading;?> => Diagnostic &nbsp;&nbsp;
+            <a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
+                Back PO List
+            </a>
+        </h5> 
         <?php
         if (isset($id) && isset($po_no)) {  ?>
             <div class="row">

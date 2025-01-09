@@ -131,8 +131,8 @@ switch ($type) {
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql    = "INSERT INTO venders(subscriber_users_id, vender_name, phone_no, `address`, note_about_vender, add_date, add_by, add_ip)
-                            VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $note_about_vender . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+                $sql    = "INSERT INTO venders(subscriber_users_id, vender_name, phone_no, `address`, note_about_vender,warranty_period_in_days, add_date, add_by, add_ip)
+                            VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $note_about_vender . "', '". $warranty_period_in_days ."','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
                 $ok     = $db->query($conn, $sql);
                 if ($ok) {
                     $vender_id = mysqli_insert_id($conn);
@@ -404,6 +404,20 @@ switch ($type) {
             if ($ok) {
                 echo "Success";
             }
+        }
+        break;
+    case 'vendor_get_warranty_period_days':
+        if (isset($vender_id)) {
+            $sql_v = "SELECT * FROM venders WHERE id = '".$vender_id."' ";
+            $result_v	= $db->query($conn, $sql_v);
+            $count_v  = $db->counter($result_v);
+            if($count_v > 0){
+                $row_v		= $db->fetch($result_v);
+                $warranty_period_in_days = $row_v[0]['warranty_period_in_days'];
+            }
+            echo  $warranty_period_in_days;
+        }else{
+            echo  "0";
         }
         break;
 }

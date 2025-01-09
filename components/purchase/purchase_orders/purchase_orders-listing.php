@@ -37,8 +37,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl			= "	 
-					SELECT * FROM (
+$sql_cl			= " SELECT * FROM (
 						SELECT '' AS offer_no, aa.po_no, aa.estimated_receive_date, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
 								aa.id AS po_id_master,   
 								c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
@@ -151,8 +150,6 @@ $page_heading 	= "List Purchase Orders ";
 											</div>
 										</div>
 									<?php } ?>
-									<h4 class="card-title"><?php echo $page_heading; ?></h4>
-
 									<form method="post" autocomplete="off" enctype="multipart/form-data">
 										<input type="hidden" name="is_Submit" value="Y" />
 										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
@@ -240,10 +237,7 @@ $page_heading 	= "List Purchase Orders ";
 																		</a>
 																	<?php } else {
 																		echo $data['po_no'];
-																	} ?>
-																	</br>
-																	<?php echo dateformat2($data['po_date']); ?>
-																	<br>
+																	} ?> &nbsp;
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
@@ -340,6 +334,8 @@ $page_heading 	= "List Purchase Orders ";
 																			?>
 																		</span>
 																	</span>
+																	</br>
+																	<?php echo dateformat2($data['po_date']); ?>
 																</td>
 																<td>
 																	<?php echo dateformat2($data['estimated_receive_date']);
@@ -350,7 +346,7 @@ $page_heading 	= "List Purchase Orders ";
 																	if ($data['is_wiped_po'] == 'Yes') {
 																		echo "<b>Wiped, </b>";
 																	}
-																	if ($data['is_wiped_po'] == 'Yes') {
+																	if ($data['is_imaged_po'] == 'Yes') {
 																		echo "<b>Imaged</b>";
 																	} ?>
 																</td>

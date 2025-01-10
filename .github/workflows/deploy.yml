@@ -1,0 +1,41 @@
+name: Deploy to FTP with ENV
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Create .env file
+      run: |
+        mkdir -p conf
+        echo "DB_USER=${{ secrets.DB_USER }}" > conf/.env
+        echo "DB_PASS=${{ secrets.DB_PASS }}" >> conf/.env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> conf/.env
+    
+    - name: FTP Deploy
+      uses: SamKirkland/FTP-Deploy-Action@4.3.3
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /digit-school.fr/public_html/
+        exclude: |
+         **/mpdf/**
+         **/phpspreadsheet/**
+         **/starter-kit/**
+         **/app-assets/**
+         **/.git*
+         **/.git*/**
+         **/node_modules/**
+         **/assets/**
+         **/components/**
+         **/sadmin/**
+         **/sendGrid/**
+         **/src/**
+         **/sub_files/**
+         **/translations/**
+         README.md

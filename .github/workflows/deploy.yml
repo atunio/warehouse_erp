@@ -24,18 +24,6 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         server-dir: /creativeworkflows.ai/public_html/
         exclude: |
-         **/mpdf/**
-         **/phpspreadsheet/**
-         **/starter-kit/**
-         **/app-assets/**
          **/.git*
          **/.git*/**
-         **/node_modules/**
-         **/assets/**
-         **/components/**
-         **/sadmin/**
-         **/sendGrid/**
-         **/src/**
-         **/sub_files/**
-         **/translations/**
          README.md

@@ -40,7 +40,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 $sql_cl			= "	 
 					SELECT * FROM (
 						SELECT  aa.so_no, aa.estimated_ship_date, aa.order_status, 
-								aa.id AS sale_order_id_master, aa.customer_invoice_no, aa.order_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
+								aa.id AS sale_order_id_master, aa.customer_po_no, aa.order_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
 								c.customer_name, f.status_name AS po_status_name
 						FROM sales_orders aa
 						LEFT JOIN customers c ON c.id = aa.customer_id
@@ -58,7 +58,7 @@ if (isset($flt_customer_name) && $flt_customer_name != "") {
 	$sql_cl 	.= " AND t1.customer_name LIKE '%" . trim($flt_customer_name) . "%' ";
 }
 if (isset($flt_customer_invoice_no) && $flt_customer_invoice_no != "") {
-	$sql_cl 	.= " AND t1.customer_invoice_no LIKE '%" . trim($flt_customer_invoice_no) . "%' ";
+	$sql_cl 	.= " AND t1.customer_po_no LIKE '%" . trim($flt_customer_invoice_no) . "%' ";
 }
 $sql_cl	.= " 	GROUP BY t1.sale_order_id_master	
 				ORDER BY  t1.sale_order_id_master DESC";
@@ -71,44 +71,42 @@ $page_heading 	= "List Sales Orders ";
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
+		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
+			<!-- Search for small screen-->
+			<div class="container">
+				<div class="row">
+					<div class="col m8 l8">
+						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
+						<ol class="breadcrumbs mb-0">
+							<li class="breadcrumb-item"><a href="home">Home</a>
+							</li>
+							</li>
+							<li class="breadcrumb-item active">List</li>
+						</ol>
+					</div>
+					<div class="col m2 l2">
+						<?php if (access("add_perm") == 1) { ?>
+							<a class="btn waves-effect waves-light blue darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+								Import
+							</a>
+						<?php } ?>
+					</div>
+					<div class="col m2 l2">
+						<?php if (access("add_perm") == 1) { ?>
+							<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">Add New</a>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="col s12">
 			<div class="container">
-				<div class="section section-data-tables"> 
-					
-				
-					<div class="row">
-						<div class="col s12">
-							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top_bottom"> 
-									<div class="row">
-										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-											<h6 class="media-heading">
-												<?php echo $page_heading; ?>
-											</h6>
-										</div>
-										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-											<?php 
-											if (access("add_perm") == 1) { ?>
-												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-													New
-												</a> 
-											<?php } 
-											if (access("add_perm") == 1) { ?>
-												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-													Import
-												</a>
-											<?php }?>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+				<div class="section section-data-tables">
 					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top">
+							<div class="card">
+								<div class="card-content">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -136,7 +134,9 @@ $page_heading 	= "List Sales Orders ";
 												</div>
 											</div>
 										</div>
-									<?php } ?>  
+									<?php } ?>
+									<h4 class="card-title"><?php echo $page_heading; ?></h4>
+
 									<form method="post" autocomplete="off" enctype="multipart/form-data">
 										<input type="hidden" name="is_Submit" value="Y" />
 										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
@@ -192,11 +192,9 @@ $page_heading 	= "List Sales Orders ";
 													<tr>
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>SO No</th>
-																	<th>Order Date</th>
+																	<th>SO No</br>Order Date</th>
 																	<th>Expected Ship Date</th>
- 																	<th>Customer</th>
- 																	<th>Invoice#</th>
+ 																	<th>Customer / Invoice#</th>
 																	<th>Category Wise Qty</th>
  																	<th>Action</th>';
 														echo $headings;
@@ -222,6 +220,9 @@ $page_heading 	= "List Sales Orders ";
 																	<?php } else {
 																		echo $data['so_no'];
 																	} ?>
+																	</br>
+																	<?php echo dateformat2($data['order_date']); ?>
+																	<br>
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
@@ -279,10 +280,14 @@ $page_heading 	= "List Sales Orders ";
 																		</span>
 																	</span>
 																</td>
-																<td><?php echo dateformat2($data['order_date']); ?></td>
-																<td><?php echo dateformat2($data['estimated_ship_date']); ?></td>
-																<td><?php echo $data['customer_name']; ?></td>
-																<td><?php echo $data['customer_invoice_no']; ?></td>
+																<td>
+																	<?php echo dateformat2($data['estimated_ship_date']); ?>
+																</td>
+																<td>
+																	<b>Customer: </b><?php echo $data['customer_name']; ?></br>
+																	<?php if ($data['customer_po_no'] != '') echo "<b>Invoice#: </b>" . $data['customer_po_no']; ?>
+
+																</td>
 																<td>
 																	<?php
 																	$sql3		= " SELECT d.category_name, sum(aa2.order_qty) as order_qty

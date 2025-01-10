@@ -286,15 +286,15 @@ $general_heading = "PO Profile";?>
 		line-height: 0 !important; Ensure icons are vertically centered */
 	}
 	.custom_btn_size{
-		height: 25px !important;
-		line-height: 25px !important;
+		height: 30px !important;
+		line-height: 28px !important;
 		padding: 0 1rem !important;
 	}
 	.custom_margin_bottom_col{
 		margin-bottom: 0px !important;
 	}
 	.custom_input_heigh{
-		height: 30px !important;
+		height: 35px !important;
 	}
 </style>
 <!-- BEGIN: Page Main-->

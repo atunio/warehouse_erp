@@ -21,8 +21,8 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("so_no", "order_date", "customer", "customer_po_no",  "internal_note",  "estimated_ship_date", "order_status", "product_id", "product_desc", "product_category", "order_qty", "order_price", "product_condition", "warranty_period_in_days");
-$master_columns 			= array("so_no", "order_date", "customer", "customer_po_no", "internal_note", "estimated_ship_date", "order_status");  // db fields
+$supported_column_titles	= array("so_no", "order_date", "customer", "customer_invoice_no",  "internal_note",  "estimated_ship_date", "order_status", "product_id", "product_desc", "product_category", "order_qty", "order_price", "product_condition", "warranty_period_in_days");
+$master_columns 			= array("so_no", "order_date", "customer", "customer_invoice_no", "internal_note", "estimated_ship_date", "order_status");  // db fields
 $duplication_columns 		= array("so_no");
 $required_columns 			= array("so_no", "customer", "product_id", "product_category", "order_qty", "order_price");
 

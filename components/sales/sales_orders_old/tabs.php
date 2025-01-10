@@ -1,13 +1,3 @@
-<style>
-.tabs .tab a:hover, .tabs .tab a.active {
-    color:rgb(7, 123, 218);
-    background-color: rgba(17, 116, 245, 0.15);
-}
-.tabs .tab a.active {
-    color:rgb(7, 123, 218);
-    background-color: rgba(17, 116, 245, 0.15);
-}
-</style>
 <div class="row"> 
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
         <li class="tab">
@@ -81,4 +71,3 @@
         <li class="indicator" style="left: 0px; right: auto;"></li>
     </ul>
 </div>
-  

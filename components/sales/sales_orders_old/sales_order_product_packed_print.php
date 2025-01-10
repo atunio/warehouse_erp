@@ -124,7 +124,7 @@ $mpdf = new \Mpdf\Mpdf([
 ]);
 $sql_ee1 = "SELECT a.*, c.product_desc,b2.packing_type, d.category_name,b.order_status, 
 					c.product_uniqueid, b1.order_qty,b1.order_price,b1.product_so_desc,
-					b1.product_stock_id,b.so_no, b.customer_invoice_no, b.order_date
+					b1.product_stock_id,b.so_no, b.customer_po_no, b.order_date
 			FROM `sales_order_detail_packing` a  
 			INNER JOIN sales_orders b ON b.id = a.sale_order_id
 			INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = a.sale_order_id
@@ -139,7 +139,7 @@ $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
 	$row_cl 		= $db->fetch($result_ee11);
 	$so_no 			= $row_cl[0]["so_no"];
-	$customer_invoice_no = $row_cl[0]["customer_invoice_no"];
+	$customer_po_no = $row_cl[0]["customer_po_no"];
 	$order_date 	= dateformat2($row_cl[0]["order_date"]);
 
 	$report_data = '<div class="">
@@ -148,7 +148,7 @@ if ($counter_ee11 > 0) {
 						</div>
 						<div>
 							<p>	&nbsp;  <strong>Order#: </strong>' . $so_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										<strong>Customer No#: </strong>' . $customer_invoice_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<strong>Customer No#: </strong>' . $customer_po_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 										<strong>Order Date: </strong>' . $order_date . '</p>
 						</div>
 						<table class="table1">

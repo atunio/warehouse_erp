@@ -16,7 +16,7 @@
                     <h6 class="media-heading"><span class=""><?php echo "<b>Sale Order No: </b>" . $so_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_invoice_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_po_no; ?></span></h6>
 
                 </div>
             </div>

@@ -9,7 +9,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$order_date 				= date('d/m/Y');
 	$origin_id					= "1";
 	$estimated_ship_date	 	= date('d/m/Y');
-	$customer_invoice_no				= date('YmdHis');
+	$customer_po_no				= date('YmdHis');
 	$fullfilment_id				= "1";
 	$terms_id					= "1";
 	$requested_shipment_id		= "1";
@@ -24,7 +24,7 @@ if (isset($test_on_local) && $test_on_local == 1 && (!isset($cmd2))) {
 	$product_so_desc			= "product_so_desc: " . date('YmdHis');
 	$product_condition			= "A Grade";
 	$warranty_period_in_days	= "15";
-	$customer_invoice_no				= date('YmdHis');
+	$customer_po_no				= date('YmdHis');
 	$is_tested					= "Yes";
 	$is_wiped					= "Yes";
 	$is_imaged					= "Yes";
@@ -90,7 +90,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_date					= str_replace("-", "/", convert_date_display($row_ee[0]['order_date']));
 	$origin_id					=  $row_ee[0]['origin_id'];
 	$estimated_ship_date		= str_replace("-", "/", convert_date_display($row_ee[0]['estimated_ship_date']));
-	$customer_invoice_no				=  $row_ee[0]['customer_invoice_no'];
+	$customer_po_no				=  $row_ee[0]['customer_po_no'];
 	$fullfilment_id				=  $row_ee[0]['fullfilment_id'];
 	$terms_id					=  $row_ee[0]['terms_id'];
 	$requested_shipment_id		=  $row_ee[0]['requested_shipment_id'];
@@ -124,7 +124,7 @@ foreach ($_POST as $key => $value) {
 //echo "================================================================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> herreeee.........";die;
 if (isset($is_Submit) && $is_Submit == 'Y') {
 
-	$field_name = "customer_invoice_no";
+	$field_name = "customer_po_no";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
@@ -161,14 +161,14 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								FROM sales_orders a 
 								WHERE a.customer_id	= '" . $customer_id . "'
 								AND a.order_date		= '" . $order_date1 . "'
-								AND a.customer_invoice_no	= '" . $customer_invoice_no . "' ";
+								AND a.customer_po_no	= '" . $customer_po_no . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql6 = "INSERT INTO " . $selected_db_name . ".sales_orders(subscriber_users_id, customer_id, source_id, order_date, origin_id,estimated_ship_date, 
-											customer_invoice_no,fullfilment_id,terms_id,requested_shipment_id,batch_id,public_note,internal_note,add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+											customer_po_no,fullfilment_id,terms_id,requested_shipment_id,batch_id,public_note,internal_note,add_date, add_by, add_by_user_id, add_ip, add_timezone) 
 									VALUES('" . $subscriber_users_id . "', '" . $customer_id . "',  '" . $source_id . "', '" . $order_date1  . "', '" . $origin_id  . "', '" . $estimated_ship_date1  . "',
-									'" . $customer_invoice_no  . "','" . $fullfilment_id . "' , '" . $terms_id . "' , '" . $requested_shipment_id . "' , '" . $batch_id . "' , '" . $public_note . "' , '" . $internal_note . "',
+									'" . $customer_po_no  . "','" . $fullfilment_id . "' , '" . $terms_id . "' , '" . $requested_shipment_id . "' , '" . $batch_id . "' , '" . $public_note . "' , '" . $internal_note . "',
 											'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 
 
@@ -198,7 +198,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$sql_dup	= " SELECT a.* FROM sales_orders a 
 								WHERE a.customer_id	= '" . $customer_id . "'
 								AND a.order_date	= '" . $order_date1 . "' 
-								AND a.customer_invoice_no	= '" . $customer_invoice_no . "' 
+								AND a.customer_po_no	= '" . $customer_po_no . "' 
 								AND a.id		   != '" . $id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
@@ -208,7 +208,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 															order_date				= '" . $order_date1 . "',
 															origin_id				= '" . $origin_id . "',
 															estimated_ship_date 	= '" . $estimated_ship_date1 . "',
-															customer_invoice_no 			= '" . $customer_invoice_no . "',
+															customer_po_no 			= '" . $customer_po_no . "',
 															fullfilment_id			= '" . $fullfilment_id . "',
 															terms_id				= '" . $terms_id . "',
 															requested_shipment_id	= '" . $requested_shipment_id . "',

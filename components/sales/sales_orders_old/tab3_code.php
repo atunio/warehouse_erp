@@ -26,8 +26,8 @@ if (isset($cmd2) && $cmd2 == 'edit' && isset($detail_id)) {
 	} else {
 		$error3['msg'] = "No record found";
 	}
-}   
-extract($_POST);  
+}
+extract($_POST);
 foreach ($_POST as $key => $value) {
 	if (!is_array($value)) {
 		$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));

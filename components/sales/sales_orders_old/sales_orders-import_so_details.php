@@ -11,27 +11,28 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-$title_heading			= "Import RMA Data";
+$title_heading			= "Import Products in SO";
 $button_val				= "Preview";
 
-$po_no = $vender_invoice_no = $vender_name = "";
+$so_no = $customer_po_no = $vender_name = "";
 
 if (isset($id) && $id > 0) {
-	$sql_ee 		= " SELECT a.*, b.vender_name
-						FROM purchase_orders a 
-						LEFT JOIN venders b ON b.id = a.vender_id
+	$sql_ee 		= " SELECT a.*, b.customer_name
+						FROM sales_orders a 
+						LEFT JOIN customers b ON b.id = a.customer_id
 						WHERE a.id = '" . $id . "' ";
 	$result_ee		= $db->query($conn, $sql_ee);
 	$counter_ee1	= $db->counter($result_ee);
 	if ($counter_ee1 > 0) {
 		$row_ee				= $db->fetch($result_ee);
-		$po_no				= $row_ee[0]['po_no'];
-		$vender_invoice_no	= $row_ee[0]['vender_invoice_no'];
-		$vender_name		= $row_ee[0]['vender_name'];
+		$so_no				= $row_ee[0]['so_no'];
+		$customer_po_no	= $row_ee[0]['customer_po_no'];
+		$customer_name		= $row_ee[0]['customer_name'];
 	} else {
 		$error['msg'] = "No record found";
 	}
 }
+
 extract($_POST);
 foreach ($_POST as $key => $value) {
 	if (!is_array($value)) {
@@ -40,10 +41,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
-$master_columns				= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
-$duplication_columns 		= array("record_id");
-$required_columns 			= array("record_id");
+$supported_column_titles	= array("serial_no",  "order_price", "product_so_desc");
+$master_columns				= array("serial_no", "order_price", "product_so_desc");
+$duplication_columns 		= array("serial_no");
+$required_columns			= array("serial_no",  "order_price");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -87,7 +88,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 
-$master_table	= "purchase_order_detail_receive_rma";
+$master_table	= "sales_order_detail";
 $added 			= 0;
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
@@ -137,161 +138,72 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	$all_data = $modified_array;
 	$t = 1;
-	if (empty($error)) {
-		if (isset($all_data) && sizeof($all_data) > 0) {
+	if (isset($all_data) && sizeof($all_data) > 0) {
+		foreach ($duplication_columns  as $dup_data) {
+			$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
+			foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
+				$db_column = $dup_data;
+				if ($dup_data == 'serial_no') {
+					$db_column 	= "serial_no";
+					$sql1		= " SELECT * FROM sales_order_detail a
+									INNER JOIN product_stock b ON b.id = a.product_stock_id
+									WHERE a.sales_order_id = '" . $id . "'
+									AND b." . $db_column . " = '" . $duplicate_colum_values1 . "' ";  
+					$result1	= $db->query($conn, $sql1);
+					$count1		= $db->counter($result1);
+					if ($count1 > 0) {
+						$duplicate_data_array[] = $duplicate_colum_values1;
+						if (!isset($error['msg'])) {
+							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already added.";
+						} else {
+							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already added.";
+						}
+					}
+				} 
+			}
+		}
+		if (empty($error)) {
 			foreach ($all_data  as $data1) {
 				$update_master = $columns = $column_data = "";
-				if (isset($data1['record_id']) && $data1['record_id'] != '') {
-					$receive_id_1		= $data1['record_id'];
-					$base_product_id 	= $data1['base_product_id'];
-					$serial 			= $data1['serial_no'];
+				if (isset($data1['serial_no']) && $data1['serial_no'] != '' && $data1['serial_no'] != NULL && $data1['serial_no'] != 'blank') {
 
-					if (isset($receive_id_1) && $receive_id_1 > 0) {
+					$insert_db_field_id_detail	= "product_stock_id";
+					$insert_db_field_id_detai2	= "serial_no";
+					$table1 					= "product_stock";
+
+					$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data1['serial_no'] . "' AND is_packed = 0 AND p_total_stock > 0 ";
+					$result1	= $db->query($conn, $sql1);
+					$count1		= $db->counter($result1);
+					if ($count1 > 0) {
+						$row1 							= $db->fetch($result1);
+						${$insert_db_field_id_detail}	= $row1[0]['id'];
 						foreach ($data1 as $key => $data) {
 							if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
 								$data = "";
 							}
 							if ($key != "" && $key != 'is_insert') {
-
+	
 								$insert_db_field_id		= $key;
 								${$insert_db_field_id} 	= $data;
-
-								if ($key == 'rma_status') {
-									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-										$insert_db_field_id_detail	= "status_id";
-										$insert_db_field_id_detai2	= "status_name";
-										$table1 					= "inventory_status";
-
-										$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
-										$result1	= $db->query($conn, $sql1);
-										$count1		= $db->counter($result1);
-										if ($count1 > 0) {
-											$row1 							= $db->fetch($result1);
-											${$insert_db_field_id_detail}	= $row1[0]['id'];
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
-										}
-									}
-								} else if ($key == 'repair_type') {
-									$insert_db_field_id_detail	= "repair_type";
-									if ($data1['rma_status'] == 'Repair') {
-										if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-											$insert_db_field_id_detai2	= "repair_type_name";
-											$table1 					= "repair_types";
-
-											$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
-											$result1	= $db->query($conn, $sql1);
-											$count1		= $db->counter($result1);
-											if ($count1 > 0) {
-												$row1 							= $db->fetch($result1);
-												${$insert_db_field_id_detail}	= $row1[0]['id'];
-												$update_master .= "`" . $key . "` = '" . ${$insert_db_field_id_detail} . "', ";
-											} else {
-												$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, " . $insert_db_field_id_detai2 . ", add_date, add_by, add_ip, add_timezone, added_from_module_id)
-														VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-												$ok = $db->query($conn, $sql6);
-												if ($ok) {
-													${$insert_db_field_id_detail} = mysqli_insert_id($conn);
-													$update_master .= "`" . $key . "` = '" . ${$insert_db_field_id_detail} . "', ";
-												}
-											}
-										} else {
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '', ";
-										}
-									} else {
-										$update_master .= "`" . $insert_db_field_id_detail . "` = '', ";
-									}
-								} else if ($key == 'sub_location') {
-									$insert_db_field_id_detail	= "sub_location_id";
-									if ($data1['rma_status'] == 'Repair' || $data1['rma_status'] == 'Partial Refund') {
-										if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-											${$insert_db_field_id_detail}	= 0;
-											$field 			= "sub_location_name";
-											$table 			= "warehouse_sub_locations";
-
-											$sql1 			= "SELECT * FROM " . $table . " WHERE " . $field . " = '" . $data . "' ";
-											$result1 		= $db->query($conn, $sql1);
-											$count1 		= $db->counter($result1);
-											if ($count1 > 0) {
-												$row1 							= $db->fetch($result1);
-												${$insert_db_field_id_detail}	= $row1[0]['id'];
-											} else {
-												$sql6 = "INSERT INTO " . $selected_db_name . "." . $table . "(subscriber_users_id, warehouse_id, " . $field . ", purpose, sub_location_type, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-														 VALUES('" . $subscriber_users_id . "', '1', '" . $data . "', 'Repair',  'bin', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-												$ok = $db->query($conn, $sql6);
-												if ($ok) {
-													${$insert_db_field_id_detail}	= mysqli_insert_id($conn);
-												}
-											}
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
-										} else {
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
-										}
-									} else {
-										$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
-									}
-								} else if ($key == 'tracking_no') {
-									if ($data1['rma_status'] != 'Repair' && $data1['rma_status'] != 'Partial Refund') {
-										if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-											$update_master .= "`" . $key . "` = '" . $data . "', ";
-										} else {
-											$update_master .= "`" . $key . "` = '', ";
-										}
-									} else {
-										$update_master .= "`" . $key . "` = '', ";
-									}
-								} else if ($key == 'new_value') {
-									$insert_db_field_id_detail		= "new_value";
-									if ($data1['rma_status'] == 'Repair' || $data1['rma_status'] == 'Partial Refund') {
-										if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-											${$insert_db_field_id_detail}	= $data;
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
-
-											$actual_price = $reduced_price = 0;
-											$sql_pd1		= "	SELECT a.*, a.price
-																FROM purchase_order_detail_receive a
-																INNER JOIN product_stock b ON a.id = b.receive_id
-																WHERE a.id = '" . $receive_id_1 . "' ";
-											$result_pd1		= $db->query($conn, $sql_pd1);
-											$count_pd1		= $db->counter($result_pd1);
-											if ($count_pd1 > 0) {
-												$row_st1 = $db->fetch($result_pd1);
-												$actual_price = $row_st1[0]['price'];
-											}
-											if ($actual_price > $new_value) {
-												$reduced_price = $actual_price - $new_value;
-												$update_master .= "`reduced_price` = '" . $reduced_price . "', ";
-											} else {
-												$update_master .= "`reduced_price` = '0', ";
-											}
-										} else {
-											$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
-										}
-									} else {
-										$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
-										$update_master .= "`reduced_price` = '0', ";
-									}
-								} else if ($insert_db_field_id != 'record_id' && $insert_db_field_id != 'base_product_id' && $insert_db_field_id != 'serial_no'  && $insert_db_field_id != 'po_price') {
-									$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
+								
+								if ($key == 'serial_no') {
+									$insert_db_field_id = "product_stock_id";
+ 									$columns 		.= ", " . $insert_db_field_id;
+									$column_data 	.= ", '" . $product_stock_id . "'";
+								}
+								else{
+									$columns 		.= ", " . $insert_db_field_id;
+									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 								}
 							}
+						} 
+						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(sales_order_id " . $columns . ", order_qty, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+								VALUES('" . $id . "' " . $column_data . ", 1, '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$added++;
 						}
-						if ($update_master != "" && isset($receive_id_1) && $receive_id_1 > 0) {
-							$sql6 = " 	UPDATE " . $selected_db_name . "." . $master_table . " SET  " . $update_master . "
- 																										update_date 			= '" . $add_date . "', 
-																										update_by 				= '" . $_SESSION['username'] . " Imported', 
-																										update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																										update_ip 				= '" . $add_ip . "', 
-																										update_timezone			= '" . $timezone . "', 
-																										update_from_module_id	= '" . $module_id . "'
-											WHERE receive_id = '" . $receive_id_1 . "' ";
-							// echo "<br>" . $sql6;
-							$db->query($conn, $sql6);
-							$ok = $db->query($conn, $sql6);
-							if ($ok) {
-								$added++;
-							}
-						}
-					}
+					} 
 				}
 			}
 		}
@@ -299,15 +211,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	if ($added > 0) {
 		if ($added == 1) {
-			$msg['msg_success'] = $added . " record has been mapped successfully.";
+			$msg['msg_success'] = $added . " record has been imported successfully.";
 		} else {
-			$msg['msg_success'] = $added . " records have been mapped successfully.";
+			$msg['msg_success'] = $added . " records have been imported successfully.";
 		}
 	} else {
 		if (!isset($error['msg'])) {
-			$error['msg'] = " No record has been mapped.";
+			$error['msg'] = " No record has been import.";
 		} else {
-			$error['msg'] = "No record has been mapped.<br><br>" . $error['msg'];
+			$error['msg'] = "No record has been imported.<br><br>" . $error['msg'];
 		}
 	}
 }
@@ -325,13 +237,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<ol class="breadcrumbs mb-0">
 							<li class="breadcrumb-item"><?php echo $title_heading; ?>
 							</li>
-							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">PO List</a>
+							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">SO List</a>
 							</li>
 						</ol>
 					</div>
 					<div class="col s2 m6 l6">
-						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab7") ?>" data-target="dropdown1">
-							PO Profile
+						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>" data-target="dropdown1">
+							SO Profile
 						</a>
 					</div>
 				</div>
@@ -350,13 +262,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if (isset($id)) {  ?>
 						<div class="row">
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Sale Order No: </b>" . $so_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Name: </b>" . $vender_name; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Customer Name: </b>" . $customer_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_po_no; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>
@@ -439,6 +351,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if (strtolower($s_heading) == 'record_id') {
 											$cell_format = "Number (Unique)";
 										}
+										if (strtolower($s_heading) == 'is_tested' || strtolower($s_heading) == 'is_wiped' || strtolower($s_heading) == 'is_imaged') {
+											$cell_format = "Yes / No";
+										}
+										if (strtolower($s_heading) == 'order_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
+											$cell_format = "Number";
+										}  
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>
@@ -596,12 +514,33 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														}
 														if (in_array($db_column_excel, $duplication_columns)) {
 
-															if ($db_column == 'serial') {
-																$db_column = "serial_no_barcode";
+															if ($db_column == 'product_stock_id') {
+																$db_column = "serial_no";
 															}
-															$row_color = "color-green"; ?>
-															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
-														<?php
+
+															$sql_dup 	= "  SELECT * FROM sales_order_detail a
+																			INNER JOIN product_stock b ON b.id = a.product_stock_id
+																			WHERE a.sales_order_id = '" . $id . "'
+																			AND " . $db_column . " = '" . htmlspecialchars($cell) . "' ";  //echo "<br>" . $sql_dup;
+															$result_dup	= $db->query($conn, $sql_dup);
+															$count_dup	= $db->counter($result_dup);
+															if ($count_dup > 0) {
+																$row_color 	= "color-red";
+																$is_error 	= 1;
+																$is_insert 	= "No";
+																if ($row_error_status != "") {
+																	$row_error_status .= ", Duplicate " . $db_column_excel;
+																} else {
+																	$row_error_status = "Duplicate " . $db_column_excel;
+																} ?>
+																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
+															<?php
+															} else {
+																$row_color = "color-green"; ?>
+																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
+															<?php
+															} ?>
+ 														<?php
 														} else {
 															$row_color = "color-green";  ?>
 															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">

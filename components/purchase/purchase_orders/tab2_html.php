@@ -3,26 +3,33 @@
                                     } else {
                                         echo "none";
                                     } ?>;">
-    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px;">
-        
-        <h5 class="media-heading">
-            <?= $general_heading;?> => Logistics &nbsp;&nbsp;
-            <a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-                Back PO List
-            </a>
-        </h5> 
+    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
+        <div class="row">
+            <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+                <h6 class="media-heading">
+                    <?= $general_heading;?> => Logistics
+                </h6>
+            </div>
+            <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
+                    New
+                </a>
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
+                    PO List
+                </a>
+            </div> 
+        </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
             <div class="row">
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Purchase Order No: </b>" . $po_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice No: </b>" . $vender_invoice_no; ?></span></h6>
-
-                </div>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                </div> 
             </div>
-        <?php }  ?>
+        <?php }  ?> 
     </div>
 
     <?php

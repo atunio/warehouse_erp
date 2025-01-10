@@ -36,58 +36,44 @@ $count_cl    = $db->counter($result_cl);
                                     } else {
                                         echo "none";
                                     } ?>;">
-    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
-        <div class="row">
-            <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-                <h6 class="media-heading">
-                    <?= $general_heading;?> --> Shipments 
-                </h6>
-            </div>
-            <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-                    New
-                </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-                    PO List
-                </a>
-            </div> 
-        </div>
-        <?php
-        if (isset($id) && isset($so_no)) {  ?>
+
+    <?php
+    if (isset($id) && isset($so_no)) {  ?>
+        <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px;">
             <div class="row">
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>SO#:</b>" . $so_no; ?></span></h6>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Sale Order No: </b>" . $so_no; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
+                <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Order Date: </b>" . $order_date_disp; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice#: </b>" . $customer_invoice_no; ?></span></h6>
-                </div> 
-            </div>
-        <?php }  ?> 
-    </div>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_po_no; ?></span></h6>
 
-    <?php
-    if (!isset($id)) { ?>
-        <div class="card-panel">
-            <div class="row">
-                <!-- Search for small screen-->
-                <div class="container">
-                    <div class="card-alert card red">
-                        <div class="card-content white-text">
-                            <p>Please add master record first</p>
-                        </div>
-                        <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
                 </div>
             </div>
+            <?php
+            if (isset($error2['msg'])) { ?>
+                <div class="card-alert card red lighten-5">
+                    <div class="card-content red-text">
+                        <p><?php echo $error2['msg']; ?></p>
+                    </div>
+                    <button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php } else if (isset($msg2['msg_success'])) { ?>
+                <div class="card-alert card green lighten-5">
+                    <div class="card-content green-text">
+                        <p><?php echo $msg2['msg_success']; ?></p>
+                    </div>
+                    <button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php } ?>
         </div>
-    <?php } ?>
-
-    <?php
+        <?php
         if (!isset($detail_id)) {
             $detail_id1 = "";
         } else {
@@ -109,7 +95,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "packed_box_no";
                         $field_label     = "Box #";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <?php
                             $sql1       = " SELECT DISTINCT b.packing_type, a.box_no 
                                             FROM sales_order_detail_packing a 
@@ -148,7 +134,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "packed_pallet_no";
                         $field_label     = "Pallet #";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <?php
                             $sql1       = " SELECT DISTINCT a.pallet_no 
                                             FROM sales_order_detail_packing a 
@@ -187,7 +173,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "shipment_courier_id";
                         $field_label     = "Courier";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <?php
                             $sql1             = "SELECT * FROM couriers WHERE enabled = 1 ORDER BY courier_name ";
                             $result1         = $db->query($conn, $sql1);
@@ -221,7 +207,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "shipment_tracking_no";
                         $field_label    = "Tracking No";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <i class="material-icons prefix">description</i>
                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
@@ -241,7 +227,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "shipment_sent_date";
                         $field_label     = "Shipment Send Date (d/m/Y)";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <i class="material-icons prefix">date_range</i>
                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
@@ -261,7 +247,7 @@ $count_cl    = $db->counter($result_cl);
                         $field_name     = "expected_delivery_date";
                         $field_label     = "Expected Delivery Date (d/m/Y)";
                         ?>
-                        <div class="input-field col m4 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12">
                             <i class="material-icons prefix">date_range</i>
                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
@@ -279,10 +265,10 @@ $count_cl    = $db->counter($result_cl);
                         </div>
                     </div>
                     <div class="row">
-                        <div class=" col m5 s12"></div>
-                        <div class=" col m2 s12">
+                        <div class="input-field col m3 s12"></div>
+                        <div class="input-field col m4 s12">
                             <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                <button class="btn custom_btn_size waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Shipment</button>
+                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Shipment</button>
                             <?php } ?>
                         </div>
                     </div>
@@ -310,14 +296,16 @@ $count_cl    = $db->counter($result_cl);
             if ($count_log > 0) { ?>
                 <div class="card-panel">
                     <div class="row">
-                        <div class="col m11 s12">
-                            <h5 class="h5">Shipments Detail</h5>
+                        <div class="col m8 s12">
+                            <h5>Shipments Detail</h5>
                         </div>
                         <div class="col m1 s12">
-                            <a href="export/export_sales_order_shipmnet_detail.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 custom_btn_size btn waves-effect waves-light gradient-45deg-green-teal">
+                            <a href="export/export_sales_order_shipmnet_detail.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-6 btn waves-effect waves-light gradient-45deg-green-teal">
                                 <i class="material-icons medium icon-demo">vertical_align_bottom</i>
                             </a>
-                            <a class="mb-2 btn custom_btn_size waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_shipmnet_details_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+                        </div>
+                        <div class="col m1 s12">
+                            <a class="mb-6 btn waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_shipmnet_details_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
                                 <i class="material-icons medium icon-demo">print</i>
                             </a>
                         </div>
@@ -383,9 +371,26 @@ $count_cl    = $db->counter($result_cl);
                         </div>
                     </div>
                 </div>
-            <?php
+        <?php
             }
         }
-    ?>
-    
+    }
+    if (isset($id) && !isset($so_no)) { ?>
+        <div class="card-panel">
+            <div class="row">
+                <!-- Search for small screen-->
+                <div class="container">
+                    <div class="card-alert card red">
+                        <div class="card-content white-text">
+                            <p>Please add master record first</p>
+                        </div>
+                        <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php
+    } ?>
 </div>

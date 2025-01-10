@@ -14,7 +14,7 @@ $user_id 				= $_SESSION["user_id"];
 $title_heading			= "Import Products in SO";
 $button_val				= "Preview";
 
-$so_no = $customer_po_no = $vender_name = "";
+$so_no = $customer_invoice_no = $vender_name = "";
 
 if (isset($id) && $id > 0) {
 	$sql_ee 		= " SELECT a.*, b.customer_name
@@ -26,7 +26,7 @@ if (isset($id) && $id > 0) {
 	if ($counter_ee1 > 0) {
 		$row_ee				= $db->fetch($result_ee);
 		$so_no				= $row_ee[0]['so_no'];
-		$customer_po_no	= $row_ee[0]['customer_po_no'];
+		$customer_invoice_no	= $row_ee[0]['customer_invoice_no'];
 		$customer_name		= $row_ee[0]['customer_name'];
 	} else {
 		$error['msg'] = "No record found";
@@ -268,7 +268,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								<h6 class="media-heading"><span class=""><?php echo "<b>Customer Name: </b>" . $customer_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_po_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_invoice_no; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>

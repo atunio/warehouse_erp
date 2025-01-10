@@ -3,67 +3,76 @@
                                     } else {
                                         echo "none";
                                     } ?>;">
-    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
-        <div class="row">
-            <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-                <h6 class="media-heading">
-                    <?= $general_heading;?> --> Packing 
-                </h6>
-            </div>
-            <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-                    New
-                </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-                    SO List
-                </a>
-            </div> 
-        </div>
-        <?php
-        if (isset($id) && isset($so_no)) {  ?>
+    <?php
+    if (isset($id) && isset($so_no)) { ?>
+        <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px;">
             <div class="row">
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>SO#:</b>" . $so_no; ?></span></h6>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Sale Order No: </b>" . $so_no; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
+                <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Order Date: </b>" . $order_date_disp; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice#: </b>" . $customer_invoice_no; ?></span></h6>
-                </div> 
-            </div>
-        <?php }  ?> 
-    </div>
-    <?php
-    if (!isset($id)) { ?>
-        <div class="card-panel">
-            <div class="row">
-                <!-- Search for small screen-->
-                <div class="container">
-                    <div class="card-alert card red">
-                        <div class="card-content white-text">
-                            <p>Please add master record first</p>
-                        </div>
-                        <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Customer Invoice No: </b>" . $customer_po_no; ?></span></h6>
+
                 </div>
             </div>
+            <?php
+            if (isset($error4['msg'])) { ?>
+                <div class="card-alert card red lighten-5">
+                    <div class="card-content red-text">
+                        <p><?php echo $error4['msg']; ?></p>
+                    </div>
+                    <button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php } else if (isset($msg4['msg_success'])) { ?>
+                <div class="card-alert card green lighten-5">
+                    <div class="card-content green-text">
+                        <p><?php echo $msg4['msg_success']; ?></p>
+                    </div>
+                    <button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php }
+            if (isset($error3['msg'])) { ?>
+                <div class="card-alert card red lighten-5">
+                    <div class="card-content red-text">
+                        <p><?php echo $error3['msg']; ?></p>
+                    </div>
+                    <button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php } else if (isset($msg3['msg_success'])) { ?>
+                <div class="card-alert card green lighten-5">
+                    <div class="card-content green-text">
+                        <p><?php echo $msg3['msg_success']; ?></p>
+                    </div>
+                    <button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+            <?php } ?>
         </div>
-    <?php
-    }
-    ?>
-     <div class="card-panel" style="padding-bottom: 10px;">
-        <h5 class="h5">Single Packing</h5>
+        <?php
+        $td_padding = "padding:5px 15px !important;";
+        ?>
+        <div class="card-panel">
             <div class="card-content">
-                <form id="barcodeForm2" class="" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
+                <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab3" value="Y" />
                     <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                         echo encrypt($_SESSION['csrf_session']);
                                                                     } ?>">
 
-                    
+                    <h5>Single Packing</h5>
+                    <div class="row">
+                        <div class="input-field col m12 s12"> </div>
+                    </div>
                     <div class="row">
                         <div class="input-field col m2 s12">
                             <?php
@@ -140,7 +149,7 @@
                                 </span>
                             </label>
                         </div>
-                        <div class="input-field col m5 s12">
+                        <div class="input-field col m6 s12">
                             <?php
                             $field_name     = "product_stock_id";
                             $field_label    = "Bar Code";
@@ -181,13 +190,21 @@
                                 </label>
                             </div>
                         </div>
-                        <div class=" col m1 s12">
-                        <br>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m12 s12"></div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m4 s12"></div>
+                        <div class="input-field col m4 s12">
                             <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                <button class=" custom_btn_size btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Add</button>
+                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Add Packing</button>
                             <?php } ?>
                         </div>
-                        <div class=" col m5 s12"></div>
+                        <div class="input-field col m4 s12"></div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m12 s12"></div>
                     </div>
                 </form>
             </div>
@@ -207,15 +224,15 @@
                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
-                <div class="card-panel" style="padding-bottom: 0px;">
+                <div class="card-panel">
                     <div class="row">
                         <div class="col m6 s12">
-                            <h5 class="h5">Box Dimensions</h5>
+                            <h5>Box Dimensions</h5>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col s12">
-                            <table id="page-length-option1" class="bordered dimentiontable">
+                            <table id="page-length-option1" class=" bordered">
                                 <thead>
                                     <tr>
                                         <?php
@@ -241,11 +258,12 @@
                                         if ($count_dm1 > 0) {
                                             $row_dm1 = $db->fetch($result_dm1);
                                             foreach ($row_dm1 as $datadm1) {
-                                                $detail_id_r11 = $datadm1['box_no']?>
+                                                $detail_id_r11 = $datadm1['box_no']
+                                    ?>
                                                 <tr>
                                                     <td style="width: 400px;"><?= $datadm['packing_type']; ?> <?= $datadm['box_no']; ?></td>
                                                     <td style="width: 150px;">
-                                                        <input type="hidden" class="custom_input" name="box_no_array[]" value="<?php echo $detail_id_r1; ?>" />
+                                                        <input type="hidden" name="box_no_array[]" value="<?php echo $detail_id_r1; ?>" />
                                                         <?php
                                                         $field_name             = "box_weight";
                                                         $field_label            = "Box Weight";
@@ -261,7 +279,7 @@
                                                             </span>
                                                         <?php
                                                         } ?>
-                                                        <input type="number" class="custom_input" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
+                                                        <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                     </td>
                                                     <td style="width: 150px;">
                                                         <?php
@@ -281,7 +299,7 @@
                                                         <?php
                                                         } ?>
 
-                                                        <input type="number" class="custom_input" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
+                                                        <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                     </td>
                                                     <td style="width: 150px;">
                                                         <?php
@@ -301,12 +319,13 @@
                                                         <?php
                                                         } ?>
 
-                                                        <input type="number" class="custom_input" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
+                                                        <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                     </td>
                                                 </tr>
                                             <?php
                                             }
-                                        } else {?>
+                                        } else {
+                                            ?>
                                             <tr>
                                                 <td style="width: 400px;"><?= $datadm['packing_type']; ?> <?= $datadm['box_no']; ?></td>
                                                 <td style="width: 150px;">
@@ -319,11 +338,13 @@
                                                         <span class="color-red"><?php
                                                                                 echo $error5[$field_name]; ?>
                                                         </span>
-                                                    <?php } ?>
+                                                    <?php
+                                                    } ?>
                                                     <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                 </td>
                                                 <td style="width: 150px;">
                                                     <?php
+
                                                     $field_name     = "box_height";
                                                     $field_label    = "Box Height";
                                                     $set_value      = "";
@@ -331,7 +352,9 @@
                                                         <span class="color-red"><?php
                                                                                 echo $error5[$field_name]; ?>
                                                         </span>
-                                                    <?php } ?>
+                                                    <?php
+                                                    } ?>
+
                                                     <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                 </td>
                                                 <td style="width: 150px;">
@@ -344,7 +367,9 @@
                                                         <span class="color-red"><?php
                                                                                 echo $error5[$field_name]; ?>
                                                         </span>
-                                                    <?php } ?>
+                                                    <?php
+                                                    } ?>
+
                                                     <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $set_value; ?>" style=" text-align: center;" />
                                                 </td>
                                             </tr>
@@ -354,15 +379,20 @@
                             </table>
                         </div>
                     </div>
-                    
                     <div class="row">
-                        <div class=" col m5 s12"></div>
-                        <div class="input-field col m2 s12">
+                        <div class="input-field col m12 s12"></div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m4 s12"></div>
+                        <div class="input-field col m4 s12">
                             <?php if ((access("add_perm") == 1)  || (access("edit_perm") == 1)) { ?>
-                                <button class="custom_btn_size btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update Box Dimentions</button>
+                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update Box Dimentions</button>
                             <?php } ?>
                         </div>
-                        <div class="col m5 s12"></div>
+                        <div class="input-field col m4 s12"></div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m12 s12"></div>
                     </div>
                 </div>
             </form>
@@ -381,7 +411,7 @@
         $result_cl    = $db->query($conn, $sql_cl);
         $count_cl    = $db->counter($result_cl);
         if ($count_cl > 0) { ?>
-            <div class="card-panel" style="padding-bottom: 0px;">
+            <div class="card-panel">
                 <div class="card-content">
                     <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab3_1" value="Y" />
@@ -389,7 +419,7 @@
                                                                             echo encrypt($_SESSION['csrf_session']);
                                                                         } ?>">
                         <div class="">
-                            <h5 class="h5">Bulk Packing</h5>
+                            <h5>Bulk Packing</h5>
                             <div class="section section-data-tables">
                                 <div class="row">
                                     <div class="col s12">
@@ -406,10 +436,9 @@
                                                     </th>
                                                     <?php
                                                     $headings  = '
-                                                                    <th>Product ID</th>
-                                                                    <th>Product Description</th>
-                                                                    <th>Category</th>
-                                                                    <th>Serial No</th> ';
+                                                                        <th>Product ID</th>
+                                                                        <th>Product Description</th>
+                                                                        <th>Serial No</th> ';
                                                     echo $headings;
                                                     ?>
                                                 </tr>
@@ -422,7 +451,8 @@
                                                     foreach ($row_cl as $data) {
                                                         $detail_id1 = $data['id'];
                                                         $detail_id2 = $data['product_stock_id'];
-                                                        $serial_no  = $data['serial_no'];?>
+                                                        $serial_no  = $data['serial_no'];
+                                                ?>
                                                         <tr>
                                                             <td style="text-align: center;">
                                                                 <?php
@@ -436,11 +466,11 @@
                                                                 <?php } ?>
                                                             </td>
                                                             <td><?php echo "" . $data['product_uniqueid']; ?></td>
-                                                            <td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
                                                             <td>
+                                                                <?php echo ucwords(strtolower($data['product_desc'])); ?><br>
                                                                 <?php
                                                                 if ($data['category_name'] != "") {
-                                                                    echo  " " . $data['category_name'] . "";
+                                                                    echo  " (" . $data['category_name'] . ")";
                                                                 } ?>
                                                             </td>
                                                             <td><?php echo "" . $data['serial_no']; ?></td>
@@ -529,14 +559,19 @@
                                     </span>
                                 </label>
                             </div>
-                            <div class=" col m2 s12"><br>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col m4 s12"></div>
+                            <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12 custom_btn_size" type="submit" name="add">Add Bulk Packing</button>
+                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Add Bulk Packing</button>
                                 <?php } ?>
                             </div>
-                            <div class=" col m4 s12"></div>
+                            <div class="input-field col m4 s12"></div>
                         </div>
-                        
+                        <div class="row">
+                            <div class="input-field col m12 s12"></div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -561,89 +596,94 @@
                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
-                <div class="card-panel" style="padding-bottom: 0px;">
+                <div class="card-panel">
                     <div class="row">
-                        <div class="col m11 s12">
-                            <h5 class="h5">Packed Products</h5>
+                        <div class="col m8 s12">
+                            <h5>Packed Products</h5>
                         </div>
                         <div class="col m1 s12">
-                            <a href="export/export_sales_order_product_packed.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 custom_btn_size btn waves-effect waves-light gradient-45deg-green-teal">
+                            <a href="export/export_sales_order_product_packed.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-6 btn waves-effect waves-light gradient-45deg-green-teal">
                                 <i class="material-icons medium icon-demo">vertical_align_bottom</i>
                             </a>
-                            <a class="mb-2 btn custom_btn_size waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_product_packed_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+                        </div>
+                        <div class="col m1 s12">
+                            <a class="mb-6 btn waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_product_packed_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
                                 <i class="material-icons medium icon-demo">print</i>
                             </a>
                         </div>
-                        <div class="section section-data-tables">
-                            <div class="row">
-                                <div class="col s12">
-                                    <table id="page-length-option" class=" display pagelength50_4 dataTable dtr-inline ">
-                                        <thead>
-                                            <tr>
-                                                <?php
-                                                echo $headings = '	<th style="text-align: center;">S.No</th>'; ?>
-                                                <th style="text-align: center;">
-                                                    <label>
-                                                        <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1" <?php if (isset($all_checked3) && $all_checked3 == '1') {
-                                                                                                                                                        echo "checked";
-                                                                                                                                                    } ?> />
-                                                        <span></span>
-                                                    </label>
-                                                </th>
-                                                <?php
-                                                $headings  = '
-                                                                <th>Product ID</th>
-                                                                <th>Product Description</th>
-                                                                <th>Category</th>
-                                                                <th>Serial No</th>
-                                                                <th>Packing Type</th>
-                                                                <th>Box#</th>
-                                                                <th>Pallet#</th> ';
-                                                echo $headings;
-                                                ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                    </div>
+
+                    <div class="section section-data-tables">
+                        <div class="row">
+                            <div class="col s12">
+                                <table id="page-length-option" class=" display pagelength50_4 dataTable dtr-inline ">
+                                    <thead>
+                                        <tr>
                                             <?php
-                                            $i = 0;
-                                            if ($count_cl > 0) {
-                                                $row_cl = $db->fetch($result_cl);
-                                                foreach ($row_cl as $data) {
-                                                    $detail_id1     = $data['id'];
-                                                    $detail_id2     = $data['product_stock_id']; ?>
-                                                    <tr>
-                                                        <td style="text-align: center;">
-                                                            <?php echo $i + 1; ?>
-                                                        </td>
-                                                        <td style="text-align: center;">
-                                                            <?php
-                                                            if (access("delete_perm") == 1 && $data['is_shipped'] == 0) { ?>
-                                                                <label style="margin-left: 25px;">
-                                                                    <input type="checkbox" name="packedItems[]" id="packedItems[]" value="<?= $detail_id1; ?>^<?= $detail_id2; ?>" class="checkbox3 filled-in" />
-                                                                    <span></span>
-                                                                </label>
-                                                            <?php } ?>
-                                                        </td>
-                                                        <td><?php echo "" . $data['product_uniqueid']; ?></td>
-                                                        <td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
-                                                        <td>
-                                                            <?php
-                                                            if ($data['category_name'] != "") {
-                                                                echo  "" . $data['category_name'] . "";
-                                                            } ?>
-                                                        </td>
-                                                        <td><?php echo "" . $data['serial_no']; ?></td>
-                                                        <td><?php echo $data['packing_type']; ?></td>
-                                                        <td><?php echo $data['box_no']; ?></td>
-                                                        <td><?php if (isset($data['pallet_no']) && $data['pallet_no'] > 0) echo "Pallet " . $data['pallet_no']; ?></td>
-                                                    </tr>
-                                            <?php $i++;
-                                                }
-                                            } ?>
-                                    </table>
-                                </div>
+                                            echo $headings = '	<th style="text-align: center;">S.No</th>'; ?>
+                                            <th style="text-align: center;">
+                                                <label>
+                                                    <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1" <?php if (isset($all_checked3) && $all_checked3 == '1') {
+                                                                                                                                                    echo "checked";
+                                                                                                                                                } ?> />
+                                                    <span></span>
+                                                </label>
+                                            </th>
+                                            <?php
+                                            $headings  = '
+                                                            <th>Product Detail</th>
+                                                            <th>Serial No</th>
+                                                            <th>Packing Type</th>
+                                                            <th>Box#</th>
+                                                            <th>Pallet#</th> ';
+                                            echo $headings;
+                                            ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $i = 0;
+                                        if ($count_cl > 0) {
+                                            $row_cl = $db->fetch($result_cl);
+                                            foreach ($row_cl as $data) {
+                                                $detail_id1     = $data['id'];
+                                                $detail_id2     = $data['product_stock_id']; ?>
+                                                <tr>
+                                                    <td style="text-align: center;">
+                                                        <?php echo $i + 1; ?>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <?php
+                                                        if (access("delete_perm") == 1 && $data['is_shipped'] == 0) { ?>
+                                                            <label style="margin-left: 25px;">
+                                                                <input type="checkbox" name="packedItems[]" id="packedItems[]" value="<?= $detail_id1; ?>^<?= $detail_id2; ?>" class="checkbox3 filled-in" />
+                                                                <span></span>
+                                                            </label>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php echo "" . $data['product_uniqueid']; ?><br>
+
+                                                        <?php echo ucwords(strtolower($data['product_desc'])); ?>
+                                                        <?php
+                                                        if ($data['category_name'] != "") {
+                                                            echo  " (" . $data['category_name'] . ")";
+                                                        } ?>
+                                                    </td>
+                                                    <td><?php echo "" . $data['serial_no']; ?></td>
+                                                    <td><?php echo $data['packing_type']; ?></td>
+                                                    <td><?php echo $data['box_no']; ?></td>
+                                                    <td><?php if (isset($data['pallet_no']) && $data['pallet_no'] > 0) echo "Pallet " . $data['pallet_no']; ?></td>
+                                                </tr>
+                                        <?php $i++;
+                                            }
+                                        } ?>
+                                </table>
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m12 s12">&nbsp;</div>
                     </div>
                     <div class="row">
                         <div class="input-field col m4 s12">
@@ -683,12 +723,12 @@
                                 </label>
                             </div>
                         </div>
-                        <div class=" col m3 s12 "><br>
+                        <div class="input-field col m4 s12">
                             <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12 custom_btn_size" type="submit" name="deletepserial">Unpack / Remove from Packing</button>
+                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Unpack / Remove from Packing</button>
                             <?php } ?>
                         </div>
-                        
+                        <div class="input-field col m4 s12"></div>
                     </div>
                 </div>
             </form>
@@ -706,21 +746,25 @@
             <div class="card-panel">
 
                 <div class="row">
-                    <div class="col m11 s12">
-                        <h5 class="h5">Category Wise</h5>
+                    <div class="col m8 s12">
+                        <h5>Summary</h5>
                     </div>
                     <div class="col m1 s12">
-                        <a href="export/export_sales_order_packed_summary.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 btn custom_btn_size waves-effect waves-light gradient-45deg-green-teal">
+                        <a href="export/export_sales_order_packed_summary.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-6 btn waves-effect waves-light gradient-45deg-green-teal">
                             <i class="material-icons medium icon-demo">vertical_align_bottom</i>
                         </a>
-                        <a class="mb-2 btn custom_btn_size waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_packed_summary_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+                    </div>
+                    <div class="col m1 s12">
+                        <a class="mb-6 btn waves-effect waves-light cyan" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/sales_order_packed_summary_print.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
                             <i class="material-icons medium icon-demo">print</i>
                         </a>
                     </div>
                 </div>
                 <div class="section section-data-tables">
+
                     <div class="row">
                         <div class="col s12">
+
                             <table id="page-length-option" class=" display pagelength50_6 dataTable dtr-inline ">
                                 <thead>
                                     <tr>
@@ -740,7 +784,8 @@
                                     if ($count_cl > 0) {
                                         $row_cl = $db->fetch($result_cl);
                                         foreach ($row_cl as $data) {
-                                            $pallet_no = $data['pallet_no'];?>
+                                            $pallet_no = $data['pallet_no'];
+                                    ?>
                                             <tr>
                                                 <td style="text-align: center;"><?php echo $i + 1; ?></td>
                                                 <td><?php echo $data['packing_type']; ?></td>
@@ -778,7 +823,7 @@
             <div class="card-panel">
                 <div class="row">
                     <div class="col m8 s12">
-                        <h5>Product Wise</h5>
+                        <h5>Summary Detail</h5>
                     </div>
                     <div class="col m1 s12">
                         <a href="export/export_sales_order_packed_summary_details.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-6 btn waves-effect waves-light gradient-45deg-green-teal">
@@ -841,5 +886,33 @@
                 </div>
             </div>
         <?php
-        }?>
+        }
+    }
+    if (!isset($id) && !isset($so_no)) { ?>
+        <div class="card-panel">
+            <div class="row">
+                <!-- Search for small screen-->
+                <div class="container">
+                    <div class="card-alert card red">
+                        <div class="card-content white-text">
+                            <p>Please add master record first</p>
+                        </div>
+                        <button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php } ?>
 </div>
+<script>
+    function autoSubmit2(event) {
+        var keycode_value = event.keyCode;
+        if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {
+
+        } else {
+            document.getElementById('barcodeForm2').submit();
+        }
+    }
+</script>

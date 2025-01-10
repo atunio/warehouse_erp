@@ -350,13 +350,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if (isset($id)) {  ?>
 						<div class="row">
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Purchase Order No: </b>" . $po_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
 								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Name: </b>" . $vender_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice No: </b>" . $vender_invoice_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>

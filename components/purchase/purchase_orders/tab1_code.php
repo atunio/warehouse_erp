@@ -110,7 +110,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	}
 	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
 	$estimated_receive_date	= str_replace("-", "/", convert_date_display($row_ee[0]['estimated_receive_date']));
-	$sql_ee1						= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
+
+	$sql_ee1	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
 	$result_ee1	= $db->query($conn, $sql_ee1);
 	$count_ee1  = $db->counter($result_ee1);
 	if($count_ee1 > 0){
@@ -326,35 +327,24 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				if ($count_dup == 0) {
 					// Check if all required array elements exist
 					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, package_id, package_material_qty, product_condition, is_tested, is_wiped, is_imaged, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-							VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $package_id[$i] . "', '" . $package_material_qty[$i] . "', '" . $product_condition[$i] . "', '". $is_tested_val ."' , '". $is_wiped_val ."' , '". $is_imaged_val ."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+							 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $package_id[$i] . "', '" . $package_material_qty[$i] . "', '" . $product_condition[$i] . "', '". $is_tested_val ."' , '". $is_wiped_val ."' , '". $is_imaged_val ."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$k++; // Increment the counter only if the insertion is successful
 					}
-					
+					$i++;
 				} else {
-					// Update logic with array element checks
-					if (isset($order_qty[$i], $order_price[$i], $package_id[$i], $package_material_qty[$i], $product_condition[$i])) {
-						$sql_c_up = "UPDATE purchase_order_detail SET product_id = '" . $data_p . "', 
-									order_qty = '" . $order_qty[$i] . "', 
-									order_price = '" . $order_price[$i] . "', 
-									product_condition = '" . $product_condition[$i] . "', 
-									package_id = '" . $package_id[$i] . "', 
-									package_material_qty = '" . $package_material_qty[$i] . "', 
-									update_date = '" . $add_date . "',
-									update_by = '" . $_SESSION['username'] . "',
-									update_by_user_id = '" . $_SESSION['user_id'] . "',
-									update_ip = '" . $add_ip . "',
-									update_timezone = '" . $timezone . "' 
-									WHERE po_id = '" . $id . "'";
-						$ok = $db->query($conn, $sql_c_up);
-						if ($ok) {
-							$k++; // Increment the counter only if the insertion is successful
-						}
-					}
+					$product_ids[$i] 			= "";
+					$product_condition[$i] 		= "";
+					$package_material_qty[$i]	= "";
+					$package_id[$i]				= "";
+					$order_price[$i] 			= "";
+					$order_qty[$i] 				= "";
+					$is_tested[$i] 				= "";
+					$is_wiped[$i] 				= "";
+					$is_imaged[$i] 				= ""; 
+					$i++;
 				}
-				$i++;
-				
 			}
 		}
 		if($k == 1){

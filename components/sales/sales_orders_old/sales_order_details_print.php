@@ -122,74 +122,75 @@ $mpdf = new \Mpdf\Mpdf([
 	'margin_left' => 5,
 	'margin_right' => 5,
 ]);
-$sql_ee1 = "SELECT a.*, c.product_desc,b2.packing_type, d.category_name,b.order_status, 
-					c.product_uniqueid, b1.order_qty,b1.order_price,b1.product_so_desc,
-					b1.product_stock_id,b.so_no, b.customer_invoice_no, b.order_date
-			FROM `sales_order_detail_packing` a  
-			INNER JOIN sales_orders b ON b.id = a.sale_order_id
-			INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = a.sale_order_id
-			INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND c1.serial_no = a.serial_no_barcode
-			INNER JOIN products c ON c.id = c1.product_id
-			INNER JOIN packing_types b2 ON b2.id = a.packing_type
-			LEFT JOIN product_categories d ON d.id = c.product_category
-			WHERE b1.sales_order_id ='" . $id . "'
-			ORDER BY a.serial_no_barcode ";
+$sql_ee1 = "SELECT a.*, c1.product_desc, c.serial_no,d.category_name,b.order_status, c1.product_uniqueid, 
+					f.product_sku, g.category_name as package_material_category_name, f.package_name, c.is_packed,
+					b.so_no, b.customer_po_no, b.order_date,
+					h.sub_location_name, h.sub_location_type
+			FROM sales_order_detail a  
+			INNER JOIN sales_orders b ON b.id = a.sales_order_id
+			INNER JOIN product_stock c ON c.id = a.product_stock_id
+			INNER JOIN products c1 ON c1.id = c.product_id
+			LEFT JOIN product_categories d ON d.id = c1.product_category
+			LEFT JOIN packages f ON f.id = a.package_id
+			LEFT JOIN product_categories g ON g.id = f.product_category
+			LEFT JOIN warehouse_sub_locations h ON h.id = c.sub_location
+			WHERE a.sales_order_id = '" . $id . "' 
+			ORDER BY h.sub_location_name, d.category_name, c1.product_uniqueid, c.serial_no ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
 	$row_cl 		= $db->fetch($result_ee11);
 	$so_no 			= $row_cl[0]["so_no"];
-	$customer_invoice_no = $row_cl[0]["customer_invoice_no"];
+	$customer_po_no = $row_cl[0]["customer_po_no"];
 	$order_date 	= dateformat2($row_cl[0]["order_date"]);
-
+ 
 	$report_data = '<div class="">
 						<div class="header">
-							<h1>Sale Order Packed Products</h1>
+							<h1>Sale Order Details</h1>
 						</div>
 						<div>
 							<p>	&nbsp;  <strong>Order#: </strong>' . $so_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										<strong>Customer No#: </strong>' . $customer_invoice_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<strong>Customer No#: </strong>' . $customer_po_no . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 										<strong>Order Date: </strong>' . $order_date . '</p>
 						</div>
 						<table class="table1">
 							<thead>
 								<tr>
 									<th>S.No</th>
+									<th>Location</th>
 									<th>Product ID</th>
 									<th>Product Detail</th>
-									<th>Serial No</th>
-									<th>Box</th>
-									<th>Pallet#</th>
+									<th>Serial#</th>
 								</tr>
 							</thead>
-							<tbody>';
-	$i = 0;
-	$pallet_no_dis = "";
-	foreach ($row_cl as $data) {
-		$product_uniqueid	= $data['product_uniqueid'];
-		$product_desc		= ucwords(strtolower($data['product_desc']));
-		$category_name     	= $data['category_name'];
-		$serial_no     		= $data['serial_no_barcode'];
-		$packing_type 		= $data['packing_type'];
-		$box_no 			= $data['box_no'];
-		$pallet_no 			= $data['pallet_no'];
-		if (isset($pallet_no) && $pallet_no > 0) {
-			$pallet_no_dis =  "Pallet " . $pallet_no;
-		}
-		if ($category_name != "") {
-			$product_desc .=  " (" . $category_name . ")";
-		}
-		$report_data .= '<tr>
-															<td style="text-align: center;">' . ($i + 1) . '</td>
-															<td>' . $product_uniqueid . '</td>
-															<td>' . $product_desc . '</td>
-															<td>' . $serial_no . '</td>
-															<td>' . $packing_type . ' ' . $box_no . '</td>
-															<td>' . $pallet_no_dis . '</td>
+							<tbody>';  
+								$i = 0;
+                                foreach ($row_cl as $data) {
+                                         $product_uniqueid	= $data['product_uniqueid'];  
+                                        $product_desc		= ucwords(strtolower($data['product_desc']));  
+                                        $category_name     	= $data['category_name'];  
+                                        $serial_no     		= $data['serial_no'];  
+                                        $order_price     	= $data['order_price'];  
+                                        $location     		= $data['sub_location_name']; 
+                                        $sub_location_type	= $data['sub_location_type'];  
+										if ($category_name != "") {
+											$product_desc .=  " (" . $category_name . ")";
+										} 
+										if ($sub_location_type != "") {
+											$location .=  " (" . $sub_location_type . ")";
+										} 
+										
+										$report_data .= '<tr>
+															<td style="text-align: center;">'.($i + 1).'</td>
+															<td>'. ucwords(strtolower($location)).'</td>
+															<td>'. $product_uniqueid.'</td>
+															<td>'. $product_desc.'</td>
+															<td>'. $serial_no.'</td>
                                         				</tr>';
-		$i++;
-	}
-	$report_data .= '	</tbody>
+										 
+                                 	$i++;
+                                }  
+		$report_data .= '	</tbody>
 						</table> 
 					</div>';
 	$report_data = $report_data . $css;
@@ -197,8 +198,8 @@ if ($counter_ee11 > 0) {
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
-	$mpdf->SetTitle('Sales Order Packed Products - ' . $so_no);
-	$file_name = "Sales_Order_Packed_Products_" . $so_no . "_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Sales Order Details - '.$so_no);
+	$file_name = "Sales_Order_Details_" . $so_no . "_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
@@ -206,7 +207,7 @@ if ($counter_ee11 > 0) {
 	$report_data = $report_data . $css;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
-	$mpdf->SetTitle('Sales Order Packed Products');
-	$file_name = "Sales_Order_Packed_Products_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Sales Order Details');
+	$file_name = "Sales_Order_Details_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 }

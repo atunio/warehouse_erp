@@ -235,7 +235,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<ol class="breadcrumbs mb-0">
 							<li class="breadcrumb-item"><?php echo $title_heading; ?>
 							</li>
-							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">PO List</a>
+							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
 							</li>
 						</ol>
 					</div>

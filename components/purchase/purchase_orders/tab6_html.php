@@ -11,12 +11,7 @@
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-                    New
-                </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-                    PO List
-                </a>
+                <?php include("tab_action_btns.php");?>
             </div> 
         </div>
         <?php

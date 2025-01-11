@@ -3,32 +3,26 @@
                                     } else {
                                         echo "none";
                                     } ?>;">
-    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
+    <div class="card-panel">
         <div class="row">
-            <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-                <h6 class="media-heading">
-                    <?= $general_heading;?> --> Logistics 
-                </h6>
+            <div class="col s10 m12 l8">
+                <h5 class="breadcrumbs mt-0 mb-0"><span>Logistics</span></h5>
             </div>
-            <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
         </div>
         <?php
-        if (isset($id) && isset($po_no)) {  ?>
+        if (isset($id)) {  ?>
             <div class="row">
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Purchase Order No: </b>" . $po_no; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Order Date: </b>" . $order_date_disp; ?></span></h6>
+                <div class="input-field col m4 s12">
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice No: </b>" . $vender_invoice_no; ?></span></h6>
+
                 </div>
-                <div class=" col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
             </div>
-        <?php }  ?> 
+        <?php }  ?>
     </div>
+
     <?php
     if (!isset($id)) { ?>
         <div class="card-panel">
@@ -46,17 +40,19 @@
                 </div>
             </div>
         </div>
-    <?php
-    }?>
+    <?php } ?>
     <?php
     if (isset($cmd2_1) && $cmd2_1 == 'edit') { ?>
         <div class="card-panel">
             <h5>Update Single Record</h5>
-            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2_1=edit&detail_id=" . $detail_id . "&active_tab=tab2") ?>" method="post">
+            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=" . $cmd2 . "&cmd2_1=edit&detail_id=" . $detail_id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_1" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="detail_id" value="<?php if (isset($detail_id)) echo $detail_id; ?>" />
+                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
+                <input type="hidden" name="active_tab" value="tab2" />
                 <div class="row">
                     <div class="input-field col m4 s12">
                         <?php
@@ -72,8 +68,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -92,8 +88,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -113,8 +109,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -123,7 +119,7 @@
                         <?php
                         $field_name     = "status_id_update";
                         $field_label     = "Status";
-                        $sql1             = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(" . $logistics_page_status . ") ORDER BY status_name DESC ";
+                        $sql1             = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(" . $logistics_page_status . ") ORDER BY status_name ";
                         $result1         = $db->query($conn, $sql1);
                         $count1         = $db->counter($result1);
                         ?>
@@ -144,8 +140,8 @@
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
                                 <span class="color-red">* <?php
-                                                            if (isset($error3[$field_name])) {
-                                                                echo $error3[$field_name];
+                                                            if (isset($error2[$field_name])) {
+                                                                echo $error2[$field_name];
                                                             } ?>
                                 </span>
                             </label>
@@ -165,8 +161,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"><?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                             </span>
                         </label>
@@ -185,23 +181,23 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"><?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                             </span>
                         </label>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col m5 s12"></div>
-                    <div class="input-field col m2 s12">
-                        <?php if (access("add_perm") == 1) { ?>
+                    <div class="input-field col m4 s12"></div>
+                    <div class="input-field col m4 s12">
+                        <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
                             <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
                         <?php } ?>
                     </div>
-                    <div class="input-field col m5 s12">
+                    <div class="input-field col m4 s12">
                         <br>
-                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>">Cancel</a>
+                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=" . $cmd2 . "&active_tab=tab2") ?>">Cancel</a>
                     </div>
                 </div>
             </form>
@@ -221,11 +217,13 @@
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
         if ($count_log > 0) { ?>
-            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
+            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=" . $cmd2 . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>"> 
+                                                                } ?>">
+                <input type="hidden" name="active_tab" value="tab2" />
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m12 s12">
@@ -289,11 +287,11 @@
                                                 <td style="<?= $td_padding; ?>">
                                                     <?php
                                                     if ($data['edit_lock'] == 0 && access("edit_perm") == 1) { ?>
-                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=edit&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
+                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2=" . $cmd2 . "&cmd2_1=edit&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
                                                             <i class="material-icons dp48">edit</i>
                                                         </a> &nbsp;
 
-                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=delete&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
+                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2=" . $cmd2 . "&cmd2_1=delete&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
                                                             <i class="material-icons dp48">delete</i>
                                                         </a>
                                                     <?php } ?>
@@ -339,15 +337,15 @@
                                 <label for="<?= $field_name; ?>">
                                     <?= $field_label; ?>
                                     <span class="color-red">* <?php
-                                                                if (isset($error3[$field_name])) {
-                                                                    echo $error3[$field_name];
+                                                                if (isset($error2[$field_name])) {
+                                                                    echo $error2[$field_name];
                                                                 } ?>
                                     </span>
                                 </label>
                             </div>
                         </div>
                         <div class="input-field col m2 s12">
-                            <?php if (access("edit_perm")) { ?>
+                            <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
                                 <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
                             <?php } ?>
                         </div>
@@ -356,12 +354,16 @@
             </form>
     <?php }
     } ?>
-    <form class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
+    <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=" . $cmd2 . "&active_tab=tab2") ?>" method="post">
         <div class="card-panel">
             <input type="hidden" name="is_Submit_tab2" value="Y" />
-             <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+            <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+            <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                 echo encrypt($_SESSION['csrf_session']);
-                                                            } ?>">  
+                                                            } ?>">
+            <input type="hidden" name="active_tab" value="tab2" />
+
+
             <div class="row">
                 <div class="input-field col m4 s12">
                     <?php
@@ -377,8 +379,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red">*<?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                         </span>
                     </label>
@@ -397,8 +399,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"> * <?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                         </span>
                     </label>
@@ -417,8 +419,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"> * <?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                         </span>
                     </label>
@@ -448,8 +450,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red">* <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -469,8 +471,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"><?php
-                                                if (isset($error3[$field_name])) {
-                                                    echo $error3[$field_name];
+                                                if (isset($error2[$field_name])) {
+                                                    echo $error2[$field_name];
                                                 } ?>
                         </span>
                     </label>
@@ -489,22 +491,21 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"><?php
-                                                if (isset($error3[$field_name])) {
-                                                    echo $error3[$field_name];
+                                                if (isset($error2[$field_name])) {
+                                                    echo $error2[$field_name];
                                                 } ?>
                         </span>
                     </label>
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col m5 s12"></div>
-                <div class="input-field col m2 s12">
-                    <?php
-                    if (access("add_perm")) { ?>
+                <div class="input-field col m4 s12"></div>
+                <div class="input-field col m4 s12">
+                    <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
                         <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Create</button>
                     <?php } ?>
                 </div>
-                <div class="input-field col m5 s12"></div>
+                <div class="input-field col m4 s12"></div>
             </div>
         </div>
     </form>

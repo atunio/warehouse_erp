@@ -31,13 +31,8 @@
                             Save changes
                         </button>
                 <?php }
-                } ?>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-                    New
-                </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-                    SO List
-                </a>
+                } 
+                include("tab_action_btns.php");?>
             </div>
         </div>
     </div> 
@@ -357,15 +352,15 @@
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="input-field col m6 s12">
-                            <?php if (($cmd == 'add' && access("add_perm") == 1)) { ?>
+                    <?php if (($cmd == 'add' && access("add_perm") == 1)) { ?>
+                        <div class="row">
+                            <div class="input-field col m6 s12">
                                 <button class="btn cyan waves-effect waves-light right custom_btn_size" type="submit" name="action"><?php echo $button_val; ?>
                                     <i class="material-icons right">send</i>
                                 </button>
-                            <?php } ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php } ?>
                     <?php if(isset($cmd) && $cmd == 'add'){?>
                     </form>
                     <?php } ?>
@@ -386,7 +381,7 @@
                                         if(isset($order_status) && $order_status == 1){
                                         ?>
                                         <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
-                                            Import Sale Order Details
+                                            Import
                                         </a> 
                                         &nbsp;&nbsp;
                                         <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
@@ -475,7 +470,6 @@
                                                         <option value="<?php echo $data2['product_stock_id']; ?>" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == $data2['product_stock_id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?>, Serial#: - <?php echo $data2['serial_no']; ?>, Purchase Price: - <?php echo $data2['price']; ?> </option>
                                                 <?php }
                                                 } ?>
-                                                <option value="product_add_modal">+Add New Product</option>
                                             </select>
                                         </td>
                                         <td>

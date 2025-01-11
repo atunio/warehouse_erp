@@ -31,7 +31,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 }
 if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Pkg_Logistics") == 0) {
-		$error3['msg'] = "You do not have add permissions.";
+		$error2['msg'] = "You do not have add permissions.";
 	} else {
 		$sql_ee1 = " DELETE FROM package_materials_order_detail_logistics WHERE id = '" . $detail_id . "'";
 		$ok = $db->query($conn, $sql_ee1);
@@ -44,26 +44,22 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 				$sql_c_up = "UPDATE  package_materials_order_detail
 												SET 	
 													order_product_status	= '" . $before_logistic_status_dynamic . "',
-					
+
 													update_timezone			= '" . $timezone . "',
 													update_date				= '" . $add_date . "',
 													update_by				= '" . $_SESSION['username'] . "',
-													update_by_user_id		= '" . $_SESSION['user_id'] . "',
-													update_ip				= '" . $add_ip . "',
-													update_from_module_id	= '" . $module_id . "'
+													update_ip				= '" . $add_ip . "'
 						WHERE po_id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
 				$sql_c_up = "UPDATE  package_materials_orders
 												SET 	
 													order_status		= '" . $before_logistic_status_dynamic . "',
-					
-													update_timezone			= '" . $timezone . "',
-													update_date				= '" . $add_date . "',
-													update_by				= '" . $_SESSION['username'] . "',
-													update_by_user_id		= '" . $_SESSION['user_id'] . "',
-													update_ip				= '" . $add_ip . "',
-													update_from_module_id	= '" . $module_id . "'
+
+													update_timezone		= '" . $timezone . "',
+													update_date			= '" . $add_date . "',
+													update_by			= '" . $_SESSION['username'] . "',
+													update_ip			= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
@@ -74,7 +70,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 					${$array_key1} = $array_data1;
 				}
 			}
-			$msg3['msg_success'] = "Record has been added successfully.";
+			$msg2['msg_success'] = "Record has been added successfully.";
 		}
 	}
 }
@@ -86,82 +82,82 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	$expected_arrival_date1	= "0000-00-00";
 
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
-		$error3['status_id'] = "Required";
+		$error2['status_id'] = "Required";
 	}
 	if (!isset($logistics_cost) || (isset($logistics_cost)  && ($logistics_cost == ""))) {
-		$error3['logistics_cost'] = "Required";
+		$error2['logistics_cost'] = "Required";
 	}
 	if (isset($tracking_no) && $tracking_no == "") {
-		$error3['tracking_no'] = "Required";
+		$error2['tracking_no'] = "Required";
 	} else {
 		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no . "' "; //echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
-			$error3['tracking_no'] = "The tracking no is already exist.";
+			$error2['tracking_no'] = "The tracking no is already exist.";
 		}
 	}
 	if (isset($shipment_date) && $shipment_date == "") {
-		$error3['shipment_date'] = "Required";
+		$error2['shipment_date'] = "Required";
 	} else {
 		$shipment_date1 = convert_date_mysql_slash($shipment_date);
 	}
 	if (isset($expected_arrival_date) && $expected_arrival_date == "") {
-		$error3['expected_arrival_date'] = "Required";
+		$error2['expected_arrival_date'] = "Required";
 	} else {
 		$expected_arrival_date1 = convert_date_mysql_slash($expected_arrival_date);
 	}
 	if (isset($courier_name) && $courier_name == "") {
-		$error3['courier_name'] = "Required";
+		$error2['courier_name'] = "Required";
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
-		$error3['msg'] = "Please add master record first";
+		$error2['msg'] = "Please add master record first";
 	}
-	if (empty($error3)) {
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
-			if (access("add_perm") == 0) {
-				$error3['msg'] = "You do not have add permissions.";
-			} else {
-				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-				$ok = $db->query($conn, $sql6);
-				if ($ok) {
-					$tracking_no = "";
-					$sql_c_up = "UPDATE  package_materials_order_detail SET order_product_status	= '" . $status_id . "',
-
-																			update_timezone			= '" . $timezone . "',
-																			update_date				= '" . $add_date . "',
-																			update_by				= '" . $_SESSION['username'] . "',
-																			update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																			update_ip				= '" . $add_ip . "',
-																			update_from_module_id	= '" . $module_id . "'
-								WHERE po_id = '" . $id . "' ";
-					$db->query($conn, $sql_c_up);
-					$k++;
-					if (isset($error3['msg'])) unset($error3['msg']);
+			if ($cmd2 == 'add') {
+				if (access("add_perm") == 0) {
+					$error2['msg'] = "You do not have add permissions.";
 				} else {
-					$error3['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, add_date, add_by, add_ip, add_timezone)
+							 VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						$tracking_no = "";
+						$sql_c_up = "UPDATE  package_materials_order_detail SET order_product_status	= '" . $status_id . "',
+																		update_timezone		= '" . $timezone . "',
+																		update_date			= '" . $add_date . "',
+																		update_by			= '" . $_SESSION['username'] . "',
+																		update_ip			= '" . $add_ip . "'
+									WHERE po_id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
+						$k++;
+						if (isset($error2['msg'])) unset($error2['msg']);
+					} else {
+						$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
+
 			if ($k > 0) {
-				$sql_c_up = "UPDATE  package_materials_orders SET 	order_status			= '" . $logistic_status_dynamic . "',
-																	logistics_cost			= '" . $logistics_cost . "',
-																	update_timezone			= '" . $timezone . "',
-																	update_date				= '" . $add_date . "',
-																	update_by				= '" . $_SESSION['username'] . "',
-																	update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																	update_ip				= '" . $add_ip . "',
-																	update_from_module_id	= '" . $module_id . "'
+
+				$sql_c_up = "UPDATE  package_materials_orders SET 	order_status	= '" . $logistic_status_dynamic . "',
+															logistics_cost	= '" . $logistics_cost . "',
+															update_timezone	= '" . $timezone . "',
+															update_date		= '" . $add_date . "',
+															update_by		= '" . $_SESSION['username'] . "',
+															update_ip		= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
-				if (isset($msg3['msg_success'])) {
-					$msg3['msg_success'] .= "<br>Logistics info has been added successfully.";
+
+				if (isset($msg2['msg_success'])) {
+					$msg2['msg_success'] .= "<br>Logistics info has been added successfully.";
 				} else {
-					$msg3['msg_success'] = "Logistics info has been added successfully.";
+					$msg2['msg_success'] = "Logistics info has been added successfully.";
 				}
 
 				if ($_SERVER['HTTP_HOST'] != 'localhost') {
@@ -174,7 +170,7 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check Error in form.";
+		$error2['msg'] = "Please check Error in form.";
 	}
 }
 
@@ -182,13 +178,13 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
 
 	if (isset($logistics_cost_update) && $logistics_cost_update == "") {
-		$error3['logistics_cost_update'] = "Required";
+		$error2['logistics_cost_update'] = "Required";
 	}
 	if (!isset($status_id_update) || (isset($status_id_update)  && ($status_id_update == "0" || $status_id_update == ""))) {
-		$error3['status_id'] = "Required";
+		$error2['status_id'] = "Required";
 	}
 	if (isset($tracking_no_update) && $tracking_no_update == "") {
-		$error3['tracking_no_update'] = "Required";
+		$error2['tracking_no_update'] = "Required";
 	} else {
 		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no_update . "'
@@ -197,7 +193,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
-			$error3['tracking_no_update'] = "The tracking no is already exist.";
+			$error2['tracking_no_update'] = "The tracking no is already exist.";
 		}
 	}
 	if (isset($shipment_date_update) && $shipment_date_update == "") {
@@ -211,17 +207,17 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		$expected_arrival_date_update1 = convert_date_mysql_slash($expected_arrival_date_update);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
-		$error3['msg'] = "Please add master record first";
+		$error2['msg'] = "Please add master record first";
 	}
 	if (isset($courier_name_update) && $courier_name_update == "") {
-		$error3['courier_name_update'] = "Required";
+		$error2['courier_name_update'] = "Required";
 	}
 	if (!isset($detail_id) || (isset($detail_id)  && ($detail_id == "0" || $detail_id == ""))) {
-		$error3['msg'] = "Please click to edit anyone record";
+		$error2['msg'] = "Please click to edit anyone record";
 	}
-	if (empty($error3)) {
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$sql_c_up = "UPDATE  package_materials_order_detail_logistics 
 										SET 
@@ -235,23 +231,19 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 											update_timezone			= '" . $timezone . "',
 											update_date				= '" . $add_date . "',
 											update_by				= '" . $_SESSION['username'] . "',
-											update_by_user_id		= '" . $_SESSION['user_id'] . "',
-											update_ip				= '" . $add_ip . "',
-											update_from_module_id	= '" . $module_id . "'
+											update_ip				= '" . $add_ip . "'
 						WHERE id = '" . $detail_id . "' ";
 			$ok = $db->query($conn, $sql_c_up);
 			if ($ok) {
 
 				$sql_c_up = "UPDATE  package_materials_orders
 											SET 	
-												logistics_cost			= '" . $logistics_cost_update . "',
+												logistics_cost		= '" . $logistics_cost_update . "',
 
-												update_timezone			= '" . $timezone . "',
-												update_date				= '" . $add_date . "',
-												update_by				= '" . $_SESSION['username'] . "',
-												update_by_user_id		= '" . $_SESSION['user_id'] . "',
-												update_ip				= '" . $add_ip . "',
-												update_from_module_id	= '" . $module_id . "'
+												update_timezone		= '" . $timezone . "',
+												update_date			= '" . $add_date . "',
+												update_by			= '" . $_SESSION['username'] . "',
+												update_ip			= '" . $add_ip . "'
 							WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
@@ -267,9 +259,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 												update_timezone			= '" . $timezone . "',
 												update_date				= '" . $add_date . "',
 												update_by				= '" . $_SESSION['username'] . "',
-												update_by_user_id		= '" . $_SESSION['user_id'] . "',
-												update_ip				= '" . $add_ip . "',
-												update_from_module_id	= '" . $module_id . "'
+												update_ip				= '" . $add_ip . "'
 					WHERE po_id = '" . $id . "' ";
 					$db->query($conn, $sql_c_up);
 
@@ -277,12 +267,10 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 											SET 	
 												order_status		= '" . $logistic_status_dynamic . "',
 
-												update_timezone			= '" . $timezone . "',
-												update_date				= '" . $add_date . "',
-												update_by				= '" . $_SESSION['username'] . "',
-												update_by_user_id		= '" . $_SESSION['user_id'] . "',
-												update_ip				= '" . $add_ip . "',
-												update_from_module_id	= '" . $module_id . "'
+												update_timezone		= '" . $timezone . "',
+												update_date			= '" . $add_date . "',
+												update_by			= '" . $_SESSION['username'] . "',
+												update_ip			= '" . $add_ip . "'
 					WHERE id = '" . $id . "' ";
 					$db->query($conn, $sql_c_up);
 
@@ -293,35 +281,34 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 						${$array_key1} = $array_data1;
 					}
 				}
-				$msg3['msg_success'] = "Record has been updated successfully.";
+				$msg2['msg_success'] = "Record has been updated successfully.";
 			} else {
-				$error3['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+				$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check the error in form.";
+		$error2['msg'] = "Please check the error in form.";
 	}
 }
 if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 	extract($_POST);
+
 	if (!isset($logistics_status) || (isset($logistics_status)  && ($logistics_status == "0" || $logistics_status == ""))) {
-		$error3['logistics_status'] = "Required";
+		$error2['logistics_status'] = "Required";
 	}
-	if (empty($error3)) {
+
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			if (isset($logistics_ids) && sizeof($logistics_ids) > 0) {
 				$k = 0;
 				foreach ($logistics_ids as $logistics_id) {
 					$sql_c_up = "UPDATE  package_materials_order_detail_logistics SET 	logistics_status	= '" . $logistics_status . "',
-
-																						update_timezone			= '" . $timezone . "',
-																						update_date				= '" . $add_date . "',
-																						update_by				= '" . $_SESSION['username'] . "',
-																						update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																						update_ip				= '" . $add_ip . "',
-																						update_from_module_id	= '" . $module_id . "'
+																				update_timezone		= '" . $timezone . "',
+																				update_date			= '" . $add_date . "',
+																				update_by			= '" . $_SESSION['username'] . "',
+																				update_ip			= '" . $add_ip . "'
 										WHERE id = '" . $logistics_id . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -338,9 +325,7 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 														update_timezone			= '" . $timezone . "',
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
-														update_by_user_id		= '" . $_SESSION['user_id'] . "',
 														update_ip				= '" . $add_ip . "'
-														update_from_module_id	= '" . $module_id . "'
 							WHERE po_id = '" . $id . "' ";
 							$db->query($conn, $sql_c_up);
 
@@ -348,12 +333,10 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 													SET 	
 														order_status		= '" . $logistics_status . "',
 
-														update_timezone			= '" . $timezone . "',
-														update_date				= '" . $add_date . "',
-														update_by				= '" . $_SESSION['username'] . "',
-														update_by_user_id		= '" . $_SESSION['user_id'] . "',
-														update_ip				= '" . $add_ip . "',
-														update_from_module_id	= '" . $module_id . "'
+														update_timezone		= '" . $timezone . "',
+														update_date			= '" . $add_date . "',
+														update_by			= '" . $_SESSION['username'] . "',
+														update_ip			= '" . $add_ip . "'
 							WHERE id = '" . $id . "' ";
 							$db->query($conn, $sql_c_up);
 
@@ -366,24 +349,24 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 						}
 
 						$k++;
-						if (isset($error3['msg'])) unset($error3['msg']);
+						if (isset($error2['msg'])) unset($error2['msg']);
 					} else {
-						$error3['msg'] = "There is Error, Please check it again OR contact Support Team.";
+						$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				}
 				if ($k > 0) {
-					if (isset($msg3['msg_success'])) {
-						$msg3['msg_success'] .= "<br>Logistics status  has been updated successfully.";
+					if (isset($msg2['msg_success'])) {
+						$msg2['msg_success'] .= "<br>Logistics status  has been updated successfully.";
 					} else {
-						$msg3['msg_success'] = "Logistics status has been added successfully.";
+						$msg2['msg_success'] = "Logistics status has been added successfully.";
 					}
 					$logistics_status = "";
 				}
 			} else {
-				$error3['msg'] = "Please select atleast one record.";
+				$error2['msg'] = "Please select atleast one record.";
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check required fields in the form.";
+		$error2['msg'] = "Please check required fields in the form.";
 	}
 }

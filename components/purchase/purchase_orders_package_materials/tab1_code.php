@@ -1,71 +1,274 @@
 <?php
-if (isset($cmd) && $cmd == 'edit' && isset($id)) {
-	$button_edu = "Edit";
-	$sql_ee 	= " SELECT a.* FROM package_materials_orders a WHERE a.id = '" . $id . "' ";
-	//echo $sql_ee;
-	$result_ee 			= $db->query($conn, $sql_ee);
-	$counter_ee1		= $db->counter($result_ee);
-	if ($counter_ee1 > 0) {
-		$row_ee					= $db->fetch($result_ee);
-		$po_no					= $row_ee[0]['po_no'];
-		$sub_user_id			= $row_ee[0]['sub_user_id'];
-		$vender_id				= $row_ee[0]['vender_id'];
-		$order_status			= $row_ee[0]['order_status'];
-		$po_desc				= $row_ee[0]['po_desc'];
-		$vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
-		$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
-		$estimated_receive_date	= str_replace("-", "/", convert_date_display($row_ee[0]['estimated_receive_date']));
+if (!isset($module)) {
+	require_once('../../../conf/functions.php');
+	disallow_direct_school_directory_access();
+}
+$po_date = date('d/m/Y');
+if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
+	$vender_id					= "1";
+	$vender_invoice_no			= date('YmdHis');
+	$po_date 					= date('d/m/Y');
+	$po_desc					= "purchase order desc : " . date('YmdHis');
+	$order_status    			= "1";
+}
+$db 					= new mySqlDB;
+$selected_db_name 		= $_SESSION["db_name"];
+$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
+$user_id 				= $_SESSION["user_id"];
+
+if (isset($cmd3) && $cmd3 == 'disabled') {
+	$sql_c_upd = "UPDATE package_materials_order_detail set	enabled = 0,
+
+															update_date				= '" . $add_date . "',
+															update_by				= '" . $_SESSION['username'] . "',
+															update_by_user_id		= '" . $_SESSION['user_id'] . "',
+															update_ip				= '" . $add_ip . "',
+															update_timezone			= '" . $timezone . "',
+															update_from_module_id	= '" . $module_id . "'
+				WHERE id = '" . $detail_id . "' ";
+	$enabe_ok = $db->query($conn, $sql_c_upd);
+	if ($enabe_ok) {
+		$msg2['msg_success'] = "Record has been disabled.";
 	} else {
-		$error['msg'] = "No record found";
+		$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+	}
+}
+if (isset($cmd3) && $cmd3 == 'enabled') {
+	$sql_c_upd = "UPDATE package_materials_order_detail set	enabled 				= 1,
+
+															update_date				= '" . $add_date . "',
+															update_by				= '" . $_SESSION['username'] . "',
+															update_by_user_id		= '" . $_SESSION['user_id'] . "',
+															update_ip				= '" . $add_ip . "',
+															update_timezone			= '" . $timezone . "',
+															update_from_module_id	= '" . $module_id . "'
+				WHERE id = '" . $detail_id . "' ";
+	$enabe_ok = $db->query($conn, $sql_c_upd);
+	if ($enabe_ok) {
+		$msg2['msg_success'] = "Record has been enabled.";
 	}
 }
 
+if ($cmd == 'edit') {
+	$title_heading 	= "Update Sale Order";
+	$button_val 	= "Save";
+}
+if ($cmd == 'add') {
+	$title_heading 	= "Create Sale Order";
+	$button_val 	= "Create";
+	$id 			= "";
+}
 
-if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
-	extract($_POST);
-	if (isset($sub_user_id) && $sub_user_id == "") {
-		$error['sub_user_id'] = "Required";
+$title_heading2	= "Add Order Product";
+$button_val2 	= "Add";
+if (isset($cmd2) && $cmd2 == 'edit') {
+	$title_heading2  = "Update Order Product";
+	$button_val2 	= "Save";
+}
+
+if ($cmd == 'edit' && isset($id) && $id > 0) {
+	$sql_ee					= "SELECT a.* FROM package_materials_orders a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee				= $db->query($conn, $sql_ee);
+	$row_ee					= $db->fetch($result_ee); 
+	
+	$po_no					= $row_ee[0]['po_no'];
+	$vender_id				= $row_ee[0]['vender_id'];
+	$po_desc				= $row_ee[0]['po_desc'];
+	$public_note			= $row_ee[0]['public_note'];
+	$vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
+	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
+	$order_date_disp		= dateformat2($row_ee[0]['po_date']);
+	$order_status    		= $row_ee[0]['order_status'];
+
+	$package_id 				= [];
+	$order_qty 					= [];
+	$order_price 				= [];
+	$product_po_desc 			= []; 
+	$product_condition			= [];
+	$warranty_period_in_days	= [];
+
+	$sql_ee1		= "SELECT a.* FROM package_materials_order_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+	$result_ee1		= $db->query($conn, $sql_ee1);
+	$count_ee1  	= $db->counter($result_ee1);
+	if($count_ee1 > 0){
+		$row_ee1	= $db->fetch($result_ee1);
+		foreach($row_ee1 as $data2){ 
+			$package_id[]				= $data2['package_id'];
+			$order_qty[]				= $data2['order_qty'];
+			$order_price[]				= $data2['order_price'];
+			$product_po_desc[]			= $data2['product_po_desc'];
+			$product_condition[]		= $data2['product_condition'];
+			$warranty_period_in_days[]	= $data2['warranty_period_in_days'];
+		}
 	}
-	if (empty($error)) {
-		if (po_permisions("Pkg_PO_Detail") == 0) {
-			$error['msg'] = "You do not have edit permissions.";
-		} else {
-			$sql_c_up = "UPDATE  package_materials_orders 
-										SET 
-											sub_user_id 			= '" . $sub_user_id . "',
-											
-											update_timezone			= '" . $timezone . "',
-											update_date				= '" . $add_date . "',
-											update_by				= '" . $_SESSION['username'] . "',
-											update_by_user_id		= '" . $_SESSION['user_id'] . "',
-											update_ip				= '" . $add_ip . "'
-						WHERE id = '" . $id . "' ";
-			$ok = $db->query($conn, $sql_c_up);
-			if ($ok) {
-				$msg['msg_success'] = "Record has been updated successfully.";
+}
+extract($_POST);
+foreach ($_POST as $key => $value) {
+	if (!is_array($value)) {
+		$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+		$$key = $data[$key];
+	}
+}
+if (isset($is_Submit) && $is_Submit == 'Y') {
+
+	$field_name = "vender_id";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "vender_invoice_no";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "po_date";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	if (empty($error2)) {
+		$po_date1 = NULL;
+		if (isset($po_date) && $po_date != "") {
+			$po_date1 = convert_date_mysql_slash($po_date);
+		}
+		if ($cmd == 'add') {
+			if (access("add_perm") == 0) {
+				$error['msg'] = "You do not have add permissions.";
 			} else {
-				$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+				$sql_dup	= " SELECT a.* 
+								FROM package_materials_orders a 
+								WHERE a.vender_id	= '" . $vender_id . "'
+								AND a.po_date		= '" . $po_date1 . "'
+								AND a.vender_invoice_no	= '" . $vender_invoice_no . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) { 
+					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_orders(subscriber_users_id, vender_id, vender_invoice_no, po_date, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						$id					= mysqli_insert_id($conn);
+						$po_no				= "PPO" . $id;
+						$po_date_disp		= dateformat2($po_date1);
+						$cmd 				= 'edit';
+
+						$sql6 = " UPDATE package_materials_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql6); 
+						$msg['msg_success'] = "Purchase Order has been created successfully.";
+						// $vender_id = $vender_invoice_no = $po_date = $vender_invoice_no = "";
+						$po_date 	= date("d/m/Y");
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
+			}
+		} else if ($cmd == 'edit') {
+			if (access("edit_perm") == 0) {
+				$error['msg'] = "You do not have edit permissions.";
+			} else {
+				$sql_dup	= " SELECT a.* FROM package_materials_orders a 
+								WHERE a.vender_id		= '" . $vender_id . "'
+								AND a.po_date			= '" . $po_date1 . "' 
+								AND a.vender_invoice_no	= '" . $vender_invoice_no . "' 
+								AND a.id		   	   != '" . $id . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+					$sql_c_up = "UPDATE package_materials_orders SET 	vender_id				= '" . $vender_id . "',
+																		po_date					= '" . $po_date1 . "',
+ 																		vender_invoice_no		= '" . $vender_invoice_no . "', 
+
+																		update_date				= '" . $add_date . "',
+																		update_by				= '" . $_SESSION['username'] . "',
+																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																		update_ip				= '" . $add_ip . "',
+																		update_timezone			= '" . $timezone . "',
+																		update_from_module_id	= '" . $module_id . "'
+								WHERE id = '" . $id . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$msg['msg_success'] = "Record Updated Successfully.";
+					} else {
+						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+					}
+				} else {
+					$error['msg'] = "This record is already exist.";
+				}
 			}
 		}
 	}
 }
+if (isset($is_Submit2) && $is_Submit2 == 'Y') {
+	if (empty($error)) {
+		$po_date1 = NULL;
+		if (isset($po_date) && $po_date != "") {
+			$po_date1 = convert_date_mysql_slash($po_date);
+		}
+		$sql_dup	= " SELECT a.* FROM package_materials_orders a 
+						WHERE a.vender_id		= '" . $vender_id . "'
+						AND a.po_date			= '" . $po_date1 . "' 
+						AND a.vender_invoice_no	= '" . $vender_invoice_no . "' 
+						AND a.id		   	   != '" . $id . "' ";
+		$result_dup	= $db->query($conn, $sql_dup);
+		$count_dup	= $db->counter($result_dup);
+		if ($count_dup == 0) {
+			$sql_c_up = "UPDATE package_materials_orders SET	vender_id				= '" . $vender_id . "',
+																po_date					= '" . $po_date1 . "',
+																vender_invoice_no		= '" . $vender_invoice_no . "', 
+																po_desc					= '" . $po_desc . "', 
+																public_note				= '" . $public_note . "',
 
-if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
-	if (empty($error2)) {
-		$order_status =  $logistic_status_dynamic;
-	}
-}
-if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
-	$order_status =  $before_logistic_status_dynamic;
-}
+																update_date				= '" . $add_date . "',
+																update_by				= '" . $_SESSION['username'] . "',
+																update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																update_ip				= '" . $add_ip . "',
+																update_timezone			= '" . $timezone . "',
+																update_from_module_id	= '" . $module_id . "'
+						WHERE id = '" . $id . "' ";
+			$ok = $db->query($conn, $sql_c_up);
+		}
+		$k = 0;
+		if(isset($order_status) && $order_status == 1){
+			$sql_dup = " DELETE FROM package_materials_order_detail WHERE po_id	= '" . $id . "'";
+			$db->query($conn, $sql_dup);
 
-if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
-	if (empty($error2)) {
-		$order_status =  $logistic_status_dynamic;
-	}
-}
-if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
-	if (empty($error2)) {
-		$order_status =  $logistics_status;
+			$filtered_id = (array_values(array_filter($package_ids)));
+
+			$i = 0; // Initialize the counter before the loop
+			$r = 1;
+			foreach ($filtered_id as $package_id) {
+				$sql_dup	= " SELECT a.* 
+								FROM package_materials_order_detail a 
+								WHERE a.po_id	= '" . $id . "'
+								AND a.package_id	= '" . $package_id . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail(po_id, package_id, product_po_desc, order_qty, order_price , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "', '" . $package_id . "', '" . $product_po_desc[$i]  . "', '" . $order_qty[$i]  . "', '" . $order_price[$i]  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						$k++; // Increment the counter only if the insertion is successful
+					}
+					$i++;
+				}
+				else{ 
+					$package_ids[$i] 		= "";
+					$order_qty[$i] 			= "";
+					$order_price[$i]		= "";
+					$product_po_desc[$i]	= "";
+					$i++;
+				}
+			}
+		}
+		if($k == 1){
+			if (isset($error2['msg'])) unset($error2['msg']);
+			$msg2['msg_success'] = "Record has been added successfully.";
+		}else{
+			if (isset($error2['msg'])) unset($error2['msg']);
+			$msg2['msg_success'] = "Record has been added successfully.";
+		} 
 	}
 }

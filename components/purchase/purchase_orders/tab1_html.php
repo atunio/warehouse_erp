@@ -32,12 +32,7 @@
                         </button>
                 <?php }
                 } ?>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>" data-target="dropdown1">
-                    New
-                </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-                    PO List
-                </a>
+                <?php include("tab_action_btns.php");?>
             </div>
         </div>
     </div> 
@@ -55,7 +50,7 @@
                 
                         <input type="hidden" name="is_Submit" value="Y" />
                         <?php } ?>
-                        <div class="row">
+                        <div class="row" style="margin-top: 10px;">
                             <?php
                             $field_name     = "po_date";
                             $field_label     = "Order Date (d/m/Y)";
@@ -75,27 +70,7 @@
                                                                 } ?>
                                     </span>
                                 </label>
-                            </div>
-                            <?php
-                            $field_name     = "estimated_receive_date";
-                            $field_label     = "Expected Arrival Date (d/m/Y)";
-                            ?>
-                            <div class="input-field col m3 s12 custom_margin_bottom_col">
-                                <i class="material-icons prefix">date_range</i>
-                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                    echo ${$field_name};
-                                                                                                                } ?>" class=" datepicker validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                    } ?> custom_input_heigh">
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red">* <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
+                            </div>  
                             <?php
                             $field_name     = "vender_invoice_no";
                             $field_label     = "Vendor Invoice #";
@@ -154,26 +129,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m3 s12 custom_margin_bottom_col"> 
-                                <?php
-                                $field_name 	= "warranty_period_in_days";
-                                $field_label 	= "Warranty Period in Days";
-                                ?>
-                                <i class="material-icons prefix pt-2">question_answer</i>
-                                <input type="number" id="<?= $field_name; ?>" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                                echo ${$field_name};
-                                                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                    } ?> custom_input_heigh">
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red">* <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
                             <div class="input-field col m3 s12 custom_margin_bottom_col">
                                 <?php
                                 $field_name     = "is_tested_po";
@@ -293,8 +248,8 @@
                                         <?php
                                         if(isset($order_status) && $order_status == 1){
                                         ?>
-                                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn cyan waves-effect waves-light custom_btn_size">
-                                            Import Products
+                                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
+                                            Import
                                         </a> &nbsp;&nbsp;
                                         
                                             <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
@@ -307,8 +262,6 @@
                                     <th style="width: 120px;">Condition</th>
                                     <th style="width: 100px;">Qty</th>
                                     <th style="width: 100px;">Price</th>
-                                    <th style="width: 300px;">Package Material</th>
-                                    <th style="width: 100px;">Pkg Qty</th>
                                     <th style="width: 300px;">Imaged/Wipped/Tested</th>
                                     <th style="width: 150px;">Actions</th> 
                                 </tr>
@@ -319,9 +272,7 @@
                                     
                                     unset($product_ids);
                                     unset($product_condition);
-                                    unset($package_material_qty);
-                                    unset($package_id);
-                                    unset($order_price);
+                                     unset($order_price);
                                     unset($order_qty);
                                     unset($is_tested);
                                     unset($is_wiped);
@@ -335,13 +286,11 @@
                                         foreach($row_ee1 as $data2){
                                             $product_ids[]			= $data2['product_id'];
                                             $product_condition[]	= $data2['product_condition'];
-                                            $package_material_qty[]	= $data2['package_material_qty'];
-                                            $package_id[]			= $data2['package_id'];
-                                            $order_price[]			= $data2['order_price'];
+                                             $order_price[]			= $data2['order_price'];
                                             $order_qty[]			= $data2['order_qty'];
                                             $is_tested[]			= $data2['is_tested'];
                                             $is_wiped[]				= $data2['is_wiped'];
-                                            $is_imaged[]			= $data2['is_imaged'];
+                                            $is_imaged[]			= $data2['is_imaged']; 
                                         }
                                     }
                                 }
@@ -406,7 +355,7 @@
                                             ?>
         
                                                 <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="browser-default custom_condition_class">
-                                                    <option value="">Select</option>
+                                                    <option value="">N/A</option>
                                                     <option value="A" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "A") { ?> selected="selected" <?php } ?>>A</option>
                                                     <option value="B" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "B") { ?> selected="selected" <?php } ?>>B</option>
                                                     <option value="C" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "C") { ?> selected="selected" <?php } ?>>C</option>
@@ -428,49 +377,7 @@
                                             $field_label     = "Unit Price";
                                             ?>
                                             <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
-                                        </td>
-                                        <td>
-                                            <?php
-                                            $field_name     = "package_id";
-                                            $field_id       = "packageid_".$i;
-                                            $field_label    = "Packaging Material / Part";
-                                            ?>
-                                            <select <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" id="<?= $field_id; ?>" class="package_id select2-theme browser-default custom_condition_class select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                                
-                                                <?php
-                                                    $sql1       = " SELECT  a.id, b.category_name, a.package_name
-                                                                    FROM packages a
-                                                                    INNER JOIN product_categories b ON b.id = a.product_category
-                                                                    WHERE 1=1
-                                                                    AND a.enabled = 1
-                                                                    ORDER BY b.category_name, a.package_name ";
-                                                    $result1    = $db->query($conn, $sql1);
-                                                    $count1     = $db->counter($result1);
-                                                    if ($count1 > 0) {
-                                                        $row1    = $db->fetch($result1); ?>
-                                                        <option value="">Selectaaa</option>
-                                                        <?php
-                                                        foreach ($row1 as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                                <?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>)
-                                                            </option>
-                                                        <?php }
-                                                    } else { ?>
-                                                        <option value="">No <?= $field_label; ?> Available</option>
-                                                    <?php } ?>
-                                                    
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <?php
-                                            $field_name     = "package_material_qty";
-                                            $field_id       = "packagematerialqty_".$i;
-                                            $field_label    = "Package Material Qty";
-                                            ?>
-                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
-                                        </td>
+                                        </td> 
                                         <td>
                                             <?php
                                             $field_name     = "isimage_iswipped_istested";

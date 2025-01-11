@@ -82,37 +82,6 @@ if (isset($cmd2) && $cmd2 == 'edit') {
 	$button_val2 	= "Save";
 }
 
-if ($cmd == 'edit' && isset($id) && $id > 0) {
-	$sql_ee					= "SELECT a.* FROM purchase_orders a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee				= $db->query($conn, $sql_ee);
-	$row_ee					= $db->fetch($result_ee);
-	$vender_id				= $row_ee[0]['vender_id'];
-	$po_no					= $row_ee[0]['po_no'];
-	$po_desc				= $row_ee[0]['po_desc'];
-	$vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
-	$is_tested_po			= $row_ee[0]['is_tested_po'];
-	$is_wiped_po			= $row_ee[0]['is_wiped_po'];
-	$is_imaged_po			= $row_ee[0]['is_imaged_po'];
-	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
-	$estimated_receive_date	= str_replace("-", "/", convert_date_display($row_ee[0]['estimated_receive_date']));
-}
-if (isset($cmd2) &&  $cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
-	$sql_ee						= "SELECT a.* FROM purchase_order_detail a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
-	$result_ee					= $db->query($conn, $sql_ee);
-	$row_ee						= $db->fetch($result_ee);
-	$product_id					= $row_ee[0]['product_id'];
-	$order_qty					= $row_ee[0]['order_qty'];
-	$order_price				= $row_ee[0]['order_price'];
-	$product_po_desc			= $row_ee[0]['product_po_desc'];
-	$is_tested					= $row_ee[0]['is_tested'];
-	$is_wiped					= $row_ee[0]['is_wiped'];
-	$is_imaged					= $row_ee[0]['is_imaged'];
-	$product_condition			= $row_ee[0]['product_condition'];
-	$warranty_period_in_days	= $row_ee[0]['warranty_period_in_days'];
-	$package_id			= $row_ee[0]['package_id'];
-	$package_material_qty		= $row_ee[0]['package_material_qty'];
-}
-
 if (!isset($_SESSION['csrf_session'])) {
 	$_SESSION['csrf_session'] = session_id();
 }

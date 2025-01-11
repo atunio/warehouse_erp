@@ -84,44 +84,43 @@ $page_heading 	= "List Purchase Orders ";
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col m8 l8">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><a href="home">Home</a>
-							</li>
-							</li>
-							<li class="breadcrumb-item active">List</li>
-						</ol>
-					</div>
-					<div class="col m2 l2">
-						<?php if (access("add_perm") == 1) { ?>
-							<a class="btn waves-effect waves-light blue darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
-								Import
-							</a>
-						<?php } ?>
-					</div>
-					<div class="col m2 l2">
-						<?php if (access("add_perm") == 1) { ?>
-							<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&cmd2=add&active_tab=tab1") ?>">
-								Add New
-							</a>
-						<?php } ?>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="col s12">
 			<div class="container">
 				<div class="section section-data-tables">
+					<div class="row">
+						<div class="col s12">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top_bottom"> 
+									<div class="row">
+										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+											<h6 class="media-heading">
+												<?php echo $page_heading; ?>
+											</h6>
+										</div>
+										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+											<?php 
+											if (access("add_perm") == 1) { ?>
+												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
+													New
+												</a> 
+											<?php } ?>
+											<?php 
+											if (access("add_perm") == 1) { ?>
+												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+													Import
+												</a> 
+											<?php } ?>
+										</div>  
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -190,10 +189,8 @@ $page_heading 	= "List Purchase Orders ";
 																																} ?>">
 												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
 											</div>
-											<div class="input-field col m1 s12">
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
-											</div>
-											<div class="input-field col m1 s12">
+											<div class="input-field col m2 s12">
+												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
 												<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
 											</div>
 										</div>
@@ -205,8 +202,9 @@ $page_heading 	= "List Purchase Orders ";
 													<tr>
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>PO No</br>PO Date</th>
-																	<th>Expected Arrival Date</th>
+																	<th>PO#</th>
+																	<th>PO Date</th>
+																	<th>To Be</th>
  																	<th>Vendor / Invoice# / OfferID</th>
 																	<th>Category Wise Qty</th>
  																	<th>Tracking / Pro #</th>
@@ -237,7 +235,7 @@ $page_heading 	= "List Purchase Orders ";
 																		</a>
 																	<?php } else {
 																		echo $data['po_no'];
-																	} ?> &nbsp;
+																	} ?>
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
@@ -333,13 +331,11 @@ $page_heading 	= "List Purchase Orders ";
 																			//*/ 
 																			?>
 																		</span>
-																	</span>
-																	</br>
-																	<?php echo dateformat2($data['po_date']); ?>
-																</td>
+																	</span> 
+ 																</td>
+																<td> <?php echo dateformat2($data['po_date']); ?></td>
 																<td>
-																	<?php echo dateformat2($data['estimated_receive_date']);
-																	echo "<br>";
+																	<?php
 																	if ($data['is_tested_po'] == 'Yes') {
 																		echo "<b>Tested, </b>";
 																	}

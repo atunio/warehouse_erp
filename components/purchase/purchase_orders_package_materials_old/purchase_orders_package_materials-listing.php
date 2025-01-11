@@ -37,77 +37,76 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl			= " SELECT * FROM (
-						SELECT aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
-								aa2.*, 
-								aa.id AS po_id_master, aa.estimated_receive_date, aa.add_by_user_id as add_by_user_id_order, 
-								aa2.id AS po_detail_id,  
-								b.product_sku, b.package_name,
-								d.category_name, c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name,
-								f.status_name as po_status_name
-						FROM package_materials_orders aa
-						LEFT JOIN package_materials_order_detail aa2 ON aa.id = aa2.po_id 
-						LEFT JOIN packages b ON b.id = aa2.package_id
-						LEFT JOIN product_categories d ON d.id = b.product_category
-						LEFT JOIN venders c ON c.id = aa.vender_id
-						LEFT JOIN inventory_status e ON e.id = aa2.order_product_status
-						LEFT JOIN inventory_status f ON f.id = aa.order_status
-					) AS t1
+$sql_cl			= "	  
+					SELECT aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
+							aa2.*, 
+							aa.id AS po_id_master, aa.estimated_receive_date, aa.add_by_user_id as add_by_user_id_order, 
+							aa2.id AS po_detail_id,  
+							b.product_sku, b.package_name,
+							d.category_name, c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name,
+							f.status_name as po_status_name
+					FROM package_materials_orders aa
+					LEFT JOIN package_materials_order_detail aa2 ON aa.id = aa2.po_id 
+					LEFT JOIN packages b ON b.id = aa2.package_id
+					LEFT JOIN product_categories d ON d.id = b.product_category
+					LEFT JOIN venders c ON c.id = aa.vender_id
+					LEFT JOIN inventory_status e ON e.id = aa2.order_product_status
+					LEFT JOIN inventory_status f ON f.id = aa.order_status
 					WHERE 1=1 ";
 if (po_permisions("ALL PO in List") != '1') {
 	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
 }
-if (isset($flt_po_no) && $flt_po_no != "") {
-	$sql_cl 	.= " AND t1.po_no LIKE '%" . trim($flt_po_no) . "%' ";
-}
-if (isset($flt_vender_name) && $flt_vender_name != "") {
-	$sql_cl 	.= " AND t1.vender_name LIKE '%" . trim($flt_vender_name) . "%' ";
-}
-if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
-	$sql_cl 	.= " AND t1.vender_invoice_no LIKE '%" . trim($flt_vender_invoice_no) . "%' ";
-}
-$sql_cl	.= " GROUP BY t1.po_id_master	
-			 ORDER BY  t1.po_id_master DESC";
+$sql_cl	.= " ORDER BY aa.enabled DESC, aa.id DESC, aa2.enabled DESC, aa2.id";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
-$page_heading 	= "Purchase Orders (Package / Parts) ";
+$page_heading 	= "List Purchase Orders (Package / Parts)";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
+		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
+			<!-- Search for small screen-->
+			<div class="container">
+				<div class="row">
+					<div class="col m8 l8">
+						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
+						<ol class="breadcrumbs mb-0">
+							<li class="breadcrumb-item"><a href="home">Home</a>
+							</li>
+							</li>
+							<li class="breadcrumb-item active">List</li>
+						</ol>
+					</div>
+					<div class="col m2 l2">
+						<?php
+						/*
+						if (access("add_perm") == 1) { ?>
+							<a class="btn waves-effect waves-light blue darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+								Import
+							</a>
+						<?php }
+						*/ ?>
+					</div>
+					<div class="col m2 l2">
+						<?php if (access("add_perm") == 1) { ?>
+							<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
+								Add New
+							</a>
+						<?php } ?>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="col s12">
 			<div class="container">
-				<div class="section section-data-tables">  
-					<div class="row">
-						<div class="col s12">
-							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top_bottom"> 
-									<div class="row">
-										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-											<h6 class="media-heading">
-												<?php echo $page_heading; ?>
-											</h6>
-										</div>
-										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-											<?php 
-											if (access("add_perm") == 1) { ?>
-												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
-													New
-												</a> 
-											<?php } ?>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
+				<div class="section section-data-tables">
 					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top">
+							<div class="card">
+								<div class="card-content">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -135,65 +134,20 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 												</div>
 											</div>
 										</div>
-									<?php } ?>  
-									<form method="post" autocomplete="off" enctype="multipart/form-data">
-										<input type="hidden" name="is_Submit" value="Y" />
-										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
-										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-																							echo encrypt($_SESSION['csrf_session']);
-																						} ?>">
-										<div class="row">
-											<?php
-											$field_name = "flt_po_no";
-											$field_label = "PO#";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<?php
-											$field_name = "flt_vender_name";
-											$field_label = "Vendor Name";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<?php
-											$field_name = "flt_vender_invoice_no";
-											$field_label = "Vendor Invoice#";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<div class="input-field col m3 s12">
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
-												<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
-											</div>
-										</div>
-									</form>
+									<?php } ?>
+									<h4 class="card-title"><?php echo $page_heading; ?></h4>
 									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display pagelength50">
+											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>PO#</th>
-																	<th>PO Date</th>
-  																	<th>Vender</th>
-  																	<th>Vender Invoice#</th>
-																	<th>Category Wise Qty</th>
+																	<th>PO No</br>PO Date</th>
+  																	<th>Vender / Invoice#</th>
+																	<th>Product SKU / Category</th>
+																	<th>Quantity / Price</th> 
+																	<th>Expected Arrival Date</th>
  																	<th>Tracking / Pro #</th>
  																	<th>Action</th>';
 														echo $headings;
@@ -208,6 +162,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 														foreach ($row_cl as $data) {
 															$id 				= $data['po_id_master'];
 															$po_detail_id		= $data['po_detail_id'];
+
 
 															$sql2				= "	SELECT a.*, status_name
 																					FROM package_materials_order_detail_logistics a
@@ -226,6 +181,9 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																	<?php } else {
 																		echo $data['po_no'];
 																	} ?>
+																	</br>
+																	<?php echo dateformat2($data['po_date']); ?>
+																	<br>
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
@@ -261,32 +219,31 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																		</span>
 																	</span>
 																</td>
-																<td><?php echo dateformat2($data['po_date']); ?> </td>
-																<td><?php echo $data['vender_name']; ?></td>
-																<td><?php echo $data['vender_invoice_no']; ?></td>
+																<td>
+																	<?php echo $data['vender_name']; ?></br>
+																	<?php echo $data['vender_invoice_no']; ?>
+																</td>
+																<td>
+																	<?php echo $data['package_name']; ?>
+																	<?php
+																	if ($data['category_name'] != "") {
+																		echo  " (" . $data['category_name'] . ")";
+																	} ?>
+																</td>
 																<td>
 																	<?php
-																	$sql3		= " SELECT   d.category_name, sum(aa2.order_qty) as order_qty
-																					FROM  package_materials_order_detail aa2 
-																					INNER JOIN packages b ON b.id = aa2.package_id
-																					INNER JOIN product_categories d ON d.id = b.product_category
-																					WHERE 1=1 
-																					AND aa2.po_id = '" . $id . "'  
-																					GROUP BY b.product_category ";
-																	$result3	= $db->query($conn, $sql3);
-																	$count3		= $db->counter($result3);
-																	if ($count3 > 0) {
-																		$row3 = $db->fetch($result3);
-																		$k = 0;
-																		foreach ($row3 as $data3) { ?>
-																			<div class="row">
-																				<div class="col m6 s12" style="text-align: right;"><?php echo $data3['category_name']; ?>:</div>
-																				<div class="col m6 s12"><?php echo "" . $data3['order_qty']; ?></div>
-																			</div>
-																	<?php
-																			$k++;
-																		}
+																	if ($data['order_qty'] > 0) {
+																		echo  "<b>Qty:</b>: " . $data['order_qty'] . "</br>";
+																	}
+																	if ($data['order_qty'] > 0) {
+																		echo  "<b>Price:</b>: " . number_format($data['order_price'], 2) . "</br>";
+																	}
+																	if ($data['order_qty'] > 0) {
+																		echo  "<b>Cost:</b>: " . number_format($data['order_qty'], 2) . "</br>";
 																	} ?>
+																</td>
+																<td>
+																	<?php echo dateformat2($data['estimated_receive_date']); ?>
 																</td>
 																<td>
 																	<?php
@@ -321,7 +278,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																	<?php
 																	if ($data['order_product_status'] == 1 || $data['order_product_status'] == '') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&cmd2=add&id=" . $id) ?>">
 																				<i class="material-icons dp48">edit</i>
 																			</a> &nbsp;&nbsp;
 																		<?php }

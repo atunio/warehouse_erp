@@ -1,108 +1,32 @@
 
-$(document).ready(function() { 
-    // Initially hide the "Remove" buttons except for the last row
-    updateRemoveButtonVisibility();
-
-    // Handle "Add More" button click to show the next hidden row
-    $(document).on('click', '.add-more-btn', function(event) {
-        event.preventDefault(); // Prevent form submission or page reload
-
-        var id = $(this).attr('id');
-        var parts = id.split('^');
-        var rowno = parseInt(parts[1]);  
-        var next_row = rowno+1; 
-        $("#row_"+next_row).show();
-        updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
-
-        if(rowno == 0){
-            // $(this).hide();
-        }
-    });
-    $(document).on('click', '.add-more-btn2', function(event) {
-        $("#row_1").show();
-        $(this).hide();
-        updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
-    });
- 
-    $(document).on('click', '.remove-row', function(event) {
-        event.preventDefault(); // Prevent form submission
-        var id = $(this).attr('id');
-        var parts = id.split('^');
-        var rowno = parseInt(parts[1]); 
-        
-        $(".product_ids_"+rowno).val('').trigger('change'); 
-        $("#productcondition_"+rowno).val('').trigger('change'); 
-        $("#orderqty_"+rowno).val('').trigger('change'); 
-        $("#orderprice_"+rowno).val('').trigger('change'); 
-        $("#packageid_"+rowno).val('').trigger('change'); 
-        $("#packagematerialqty_"+rowno).val('').trigger('change'); 
-
-        $("#row_"+rowno).hide();
-        updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
-
-        if(rowno == 1){
-            $(".first_row").show();
-        }
-    });
-
-    // Function to show/hide the "Remove" button
-    function updateRemoveButtonVisibility() {
-        $('.add-more-btn').hide(); // Hide all "Remove" buttons
-        $('#page-length-option1 tbody tr:visible:last .add-more-btn').show(); // Show only the last "Remove" button
-    }
-
-    // Handle the select change event to open the modal when "Add New Product" is selected
-    $(document).on('change', '.product-select', function(event) {
- 
-        var selectedValue = $(this).val();
-        var id          = $(this).attr('id');
-        var parts       = id.split('_');
-        var rowno       = parseInt(parts[1]);  
-        var next_row    = rowno+1; 
-        
-        if (selectedValue === 'product_add_modal') {
-            // Open the modal
-            $('#product_add_modal').modal('open');
-            // Reset the select box to prevent accidental selection
-            $(this).val('');
-            event.stopImmediatePropagation(); // Stop further actions
-            return;
-        } else if (selectedValue > 0) { 
-            $("#row_"+next_row).show();
-            updateRemoveButtonVisibility();
-        }
-
-        $("#packagematerialqty_"+rowno).hide(); 
+$(document).ready(function() {
+    $('#product_id').on('change', function() {
+        $(".package_material_qty").hide(); 
         $('#product_id_for_package_material').val($(this).val());
         data = [];
         data[0] = product_id_for_package_material; // source field name
-        data[1] = 'packageid_'+rowno; // target field
+        data[1] = 'package_id'; // target field
         data[2] = null;
         data[3] = null;
         data[4] = null;
         generate_combo_new(data);
+    });  
 
-    });
-    // Initialize modal (if you're using Materialize)
-    $('.modal').modal();
-
-
-   
-    $('.package_id').on('change', function() {
-        var id      = $(this).attr('id');
-        var array   = id.split("_");
-        var inputno = parseInt(array[1]);
+    
+    $('#package_id').on('change', function() {
+       
         var package_id = $(this).val();
-        var order_qty = $("#orderqty_"+inputno).val();
-        if(package_id !="" && package_id != '0'){
-            $("#packagematerialqty_"+inputno).show(); 
-            $('#packagematerialqty_'+inputno).val(order_qty).focus(); // Set value and focus
+        var order_qty = $("#order_qty").val();
+         if(package_id !="" && package_id != '0'){
+            $(".package_material_qty").show(); 
+            $('#package_material_qty').val(order_qty).focus(); // Set value and focus
         }
         else{
-            $("#packagematerialqty_"+inputno).hide(); 
+            $(".package_material_qty").hide(); 
         }
     });
- 
+
+
     $('#status_id_rma').on('change', function() {
         
         $("#tracking_no_rma").val(''); 
@@ -439,6 +363,10 @@ $(document).ready(function() {
     });
     /////////////////////////////////////////////
 
+    
+
+    
+
     /////////////////////////////////////////////
     $(".show_receive_from_barcode_section_tab7").click(function() {
 
@@ -461,6 +389,8 @@ $(document).ready(function() {
         $(".show_receive_from_barcode_show_btn_tab7").show();
     });
     ///////////////////////////////////////////// 
+    
+   
 }); 
  
 
@@ -567,13 +497,4 @@ function generate_combo_new2(data) {
 
         }
     });
-} 
-
-
-        
-    
-    
-
-    
-   
-    
+}

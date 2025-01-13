@@ -38,7 +38,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $sql_cl			= " SELECT * FROM (
-						SELECT '' AS offer_no, aa.po_no, aa.estimated_receive_date, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
+						SELECT '' AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
 								aa.id AS po_id_master,   
 								c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
@@ -50,7 +50,7 @@ $sql_cl			= " SELECT * FROM (
 						
 						UNION ALL 
 						
-						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.estimated_receive_date, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
+						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
 								aa.id AS po_id_master, 
 								c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
@@ -90,7 +90,7 @@ $page_heading 	= "List Purchase Orders ";
 					<div class="row">
 						<div class="col s12">
 							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top_bottom"> 
+								<div class="card-content custom_padding_card_content_table_top_bottom">
 									<div class="row">
 										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 											<h6 class="media-heading">
@@ -98,19 +98,19 @@ $page_heading 	= "List Purchase Orders ";
 											</h6>
 										</div>
 										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-											<?php 
+											<?php
 											if (access("add_perm") == 1) { ?>
 												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
 													New
-												</a> 
+												</a>
 											<?php } ?>
-											<?php 
+											<?php
 											if (access("add_perm") == 1) { ?>
 												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 													Import
-												</a> 
+												</a>
 											<?php } ?>
-										</div>  
+										</div>
 									</div>
 								</div>
 							</div>
@@ -331,8 +331,8 @@ $page_heading 	= "List Purchase Orders ";
 																			//*/ 
 																			?>
 																		</span>
-																	</span> 
- 																</td>
+																	</span>
+																</td>
 																<td> <?php echo dateformat2($data['po_date']); ?></td>
 																<td>
 																	<?php

@@ -41,7 +41,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = "	SELECT b.so_no, b.customer_po_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,
+		$sql_cl = "	SELECT b.so_no, b.customer_invoice_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,
 						CONCAT(b2.packing_type, ' ' , a.box_no) AS box_no, IF(a.pallet_no IS NOT NULL AND a.pallet_no != '', CONCAT('Pallet ', a.pallet_no), '') AS pallet_no, 
 						COUNT(a.id) AS total_qty
 					FROM sales_order_detail_packing a

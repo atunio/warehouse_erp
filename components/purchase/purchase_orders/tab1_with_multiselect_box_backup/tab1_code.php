@@ -55,9 +55,11 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_condition 		= [];
 	$order_price 			= [];
 	$order_qty 				= [];
-	$expected_status		= [];
-	$product_ids			= []; 
-	
+	$product_ids			= [];
+	$is_tested 				= [];
+	$is_wiped 				= [];
+	$is_imaged 				= [];
+
 	$sql_ee1	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
 	$result_ee1	= $db->query($conn, $sql_ee1);
 	$count_ee1  = $db->counter($result_ee1);
@@ -69,7 +71,9 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$order_price[]			= $data2['order_price'];
 			$order_qty[]			= $data2['order_qty'];
 			$product_ids[]			= $data2['product_id'];
-			$expected_status[]		= $data2['expected_status'];
+			$is_tested[]			= $data2['is_tested'];
+			$is_wiped[]				= $data2['is_wiped'];
+			$is_imaged[]			= $data2['is_imaged'];
 		}
 	}
 } 
@@ -203,6 +207,28 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
 			foreach ($filtered_product_ids as $data_p) {
+				$is_tested_val = "No";
+				$is_imaged_val = "No";
+				$is_wiped_val = "No";
+				if (isset(${"isimage_iswipped_istested_".$r} ) && is_array(${"isimage_iswipped_istested_".$r})) {
+					// Initialize flags
+					foreach (${"isimage_iswipped_istested_".$r} as $datas) {
+						if ($datas == "Tested") {
+							$is_tested_val = "Yes";
+						} 
+						if ($datas == "Imaged") {
+							$is_imaged_val = "Yes";
+						} 
+						if ($datas == "Wipped") {
+							$is_wiped_val = "Yes";
+						}
+					}
+					// Set the arrays with the final values
+					$is_tested[$i] = $is_tested_val;
+					$is_imaged[$i] = $is_imaged_val;
+					$is_wiped[$i] = $is_wiped_val;
+				}
+				$r++;
 				
 				$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
 				$result_dup = $db->query($conn, $sql_dup);
@@ -210,8 +236,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 				if ($count_dup == 0) {
 					// Check if all required array elements exist
-					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-							 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '".$expected_status[$i]."','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, is_tested, is_wiped, is_imaged, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+							 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '". $is_tested_val ."' , '". $is_wiped_val ."' , '". $is_imaged_val ."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$k++; // Increment the counter only if the insertion is successful
@@ -222,7 +248,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$product_condition[$i] 		= "";
 					$order_price[$i] 			= "";
 					$order_qty[$i] 				= "";
-					$expected_status[$i] 		= "";
+					$is_tested[$i] 				= "";
+					$is_wiped[$i] 				= "";
+					$is_imaged[$i] 				= ""; 
 					$i++;
 				}
 			}

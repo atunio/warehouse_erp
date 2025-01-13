@@ -41,7 +41,7 @@ $sql_cl			= "
 					SELECT * FROM (
 						SELECT  aa.so_no, aa.estimated_ship_date, aa.order_status, 
 								aa.id AS sale_order_id_master, aa.customer_invoice_no, aa.order_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								c.customer_name, f.status_name AS po_status_name
+								c.id as customer_id, c.customer_name, f.status_name AS po_status_name
 						FROM sales_orders aa
 						LEFT JOIN customers c ON c.id = aa.customer_id
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
@@ -52,13 +52,16 @@ if (po_permisions("ALL SO in List") != '1') {
 	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
 }
 if (isset($flt_so_no) && $flt_so_no != "") {
-	$sql_cl 	.= " AND t1.so_no LIKE '%" . trim($flt_so_no) . "%' ";
+	$sql_cl 	.= " AND t1.so_no LIKE '" . trim($flt_so_no) . "' ";
 }
-if (isset($flt_customer_name) && $flt_customer_name != "") {
-	$sql_cl 	.= " AND t1.customer_name LIKE '%" . trim($flt_customer_name) . "%' ";
+if (isset($flt_customer_id) && $flt_customer_id != "") {
+	$sql_cl 	.= " AND t1.customer_id = '" . trim($flt_customer_id) . "' ";
 }
 if (isset($flt_customer_invoice_no) && $flt_customer_invoice_no != "") {
-	$sql_cl 	.= " AND t1.customer_invoice_no LIKE '%" . trim($flt_customer_invoice_no) . "%' ";
+	$sql_cl 	.= " AND t1.customer_invoice_no = '" . trim($flt_customer_invoice_no) . "' ";
+}
+if (isset($flt_so_status) && $flt_so_status != "") {
+	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_so_status) . "' ";
 }
 $sql_cl	.= " 	GROUP BY t1.sale_order_id_master	
 				ORDER BY  t1.sale_order_id_master DESC";
@@ -73,13 +76,11 @@ $page_heading 	= "List Sales Orders ";
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12">
 			<div class="container">
-				<div class="section section-data-tables"> 
-					
-				
+				<div class="section section-data-tables">
 					<div class="row">
 						<div class="col s12">
 							<div class="card custom_margin_card_table_top">
-								<div class="card-content custom_padding_card_content_table_top_bottom"> 
+								<div class="card-content custom_padding_card_content_table_top_bottom">
 									<div class="row">
 										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 											<h6 class="media-heading">
@@ -87,17 +88,17 @@ $page_heading 	= "List Sales Orders ";
 											</h6>
 										</div>
 										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-											<?php 
+											<?php
 											if (access("add_perm") == 1) { ?>
 												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
 													New
-												</a> 
-											<?php } 
+												</a>
+											<?php }
 											if (access("add_perm") == 1) { ?>
 												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 													Import
 												</a>
-											<?php }?>
+											<?php } ?>
 										</div>
 									</div>
 								</div>
@@ -136,51 +137,150 @@ $page_heading 	= "List Sales Orders ";
 												</div>
 											</div>
 										</div>
-									<?php } ?>  
-									<form method="post" autocomplete="off" enctype="multipart/form-data">
+									<?php } ?>
+
+									<form method="post" autocomplete="off">
 										<input type="hidden" name="is_Submit" value="Y" />
 										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
 										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																							echo encrypt($_SESSION['csrf_session']);
 																						} ?>">
 										<div class="row">
-											<?php
-											$field_name = "flt_so_no";
-											$field_label = "SO No";
-											?>
+											<br>
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_so_no";
+												$field_label	= "SO#";
+												$sql1			= "SELECT DISTINCT so_no FROM sales_orders WHERE 1=1 ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['so_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['so_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['so_no']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_customer_id";
+												$field_label	= "Vendor";
+												$sql1			= " SELECT DISTINCT b.id, b.customer_name
+																	FROM sales_orders a
+																	INNER JOIN customers b ON b.id = a.customer_id
+ 																	WHERE 1=1";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['customer_name']; ?> </option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
+												<?php
+												$field_name = "flt_customer_invoice_no";
+												$field_label = "Vendor Invoice#";
+												$sql1			= "SELECT DISTINCT customer_invoice_no FROM sales_orders WHERE 1=1 ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['customer_invoice_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['customer_invoice_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['customer_invoice_no']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_so_status";
+												$field_label	= "Status";
+												$sql1			= "SELECT *  FROM inventory_status WHERE 1=1 AND id IN(11, 28)  ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
 											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<?php
-											$field_name = "flt_customer_name";
-											$field_label = "Customer Name";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<?php
-											$field_name = "flt_customer_invoice_no";
-											$field_label = "Customer Invoice#";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-											</div>
-											<div class="input-field col m1 s12">
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
-											</div>
-											<div class="input-field col m1 s12">
+												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
 												<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
 											</div>
 										</div>
@@ -194,8 +294,7 @@ $page_heading 	= "List Sales Orders ";
 														$headings = '<th class="sno_width_60">S.No</th>
 																	<th>SO No</th>
 																	<th>Order Date</th>
-																	<th>Expected Ship Date</th>
- 																	<th>Customer</th>
+  																	<th>Customer</th>
  																	<th>Invoice#</th>
 																	<th>Category Wise Qty</th>
  																	<th>Action</th>';
@@ -210,7 +309,7 @@ $page_heading 	= "List Sales Orders ";
 														$row_cl = $db->fetch($result_cl);
 														foreach ($row_cl as $data) {
 															$id	= $data['sale_order_id_master'];
-															?>
+													?>
 															<tr>
 																<td style="text-align: center;"><?php echo $i + 1; ?></td>
 																<td>
@@ -229,12 +328,12 @@ $page_heading 	= "List Sales Orders ";
 																			///*
 																			/////////////////////// Total //////////////////////////////////
 																			$total_items_ordered = 0;
-																			$sql2       = " SELECT sum(a.order_qty) as order_qty
+																			$sql2       = " SELECT count(a.id) as order_qty
 																							FROM sales_order_detail a
 																							WHERE a.sales_order_id = '" . $id . "'
 																							AND a.enabled = 1 ";
-																			$result_r2    = $db->query($conn, $sql2);
-																			$count2     = $db->counter($result_r2);
+																			$result_r2	= $db->query($conn, $sql2);
+																			$count2		= $db->counter($result_r2);
 																			if ($count2 > 0) {
 																				$row_lg2                = $db->fetch($result_r2);
 																				$total_items_ordered    = $row_lg2[0]['order_qty'];
@@ -248,6 +347,7 @@ $page_heading 	= "List Sales Orders ";
 																									AND a.enabled = 1 ";
 																			$result3            = $db->query($conn, $sql3);
 																			$total_packed     = $db->counter($result3);
+																			
 																			if ($data['order_status'] == $packing_status_dynamic) {
 																				if ($total_items_ordered > 0 && $total_packed > 0) {
 																					$total_packed_percentage = ($total_packed / $total_items_ordered) * 100;
@@ -255,12 +355,12 @@ $page_heading 	= "List Sales Orders ";
 																						echo " (" . round(($total_packed_percentage)) . "%)";
 																					}
 																				}
-																			} 
+																			}
 																			/////////////////////// Packing //////////////////////////////////
 
 																			/////////////////////// Shipment ///////////////////////////////// 
-																			
-																			$sql3               = "SELECT a.id
+
+																			$sql3               = " SELECT a.id
 																									FROM sales_order_detail_packing a
 																									WHERE a.sale_order_id = '" . $id . "'
 																									AND a.enabled = 1 AND a.is_shipped =1 ";
@@ -280,8 +380,7 @@ $page_heading 	= "List Sales Orders ";
 																	</span>
 																</td>
 																<td><?php echo dateformat2($data['order_date']); ?></td>
-																<td><?php echo dateformat2($data['estimated_ship_date']); ?></td>
-																<td><?php echo $data['customer_name']; ?></td>
+ 																<td><?php echo $data['customer_name']; ?></td>
 																<td><?php echo $data['customer_invoice_no']; ?></td>
 																<td>
 																	<?php
@@ -314,7 +413,7 @@ $page_heading 	= "List Sales Orders ";
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_invoice.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																	<?php }
+																		<?php }
 																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">

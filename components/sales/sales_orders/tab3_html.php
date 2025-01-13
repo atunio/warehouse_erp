@@ -141,12 +141,13 @@
                             $field_label    = "Bar Code";
                             $sql1           = " SELECT c.*, c1.category_name,b.serial_no, b.id As product_stock_id
                                                 FROM product_stock b 
-                                                INNER JOIN sales_order_detail b1 ON b1.product_stock_id = b.id 
+                                                INNER JOIN sales_order_detail b1 ON b1.product_stock_id = b.id  
                                                 INNER JOIN products c ON c.id = b.product_id
                                                 LEFT JOIN product_categories c1 ON c1.id = c.product_category
                                                 WHERE b.enabled = 1 
                                                 AND b.p_total_stock > 0
                                                 AND b.is_packed = 0
+                                                AND b1.sales_order_id = '".$id."'
                                                 GROUP BY b.serial_no
                                                 ORDER BY b.serial_no ";
                             $result1        = $db->query($conn, $sql1);

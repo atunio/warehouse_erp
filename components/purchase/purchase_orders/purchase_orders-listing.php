@@ -38,9 +38,9 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $sql_cl			= " SELECT * FROM (
-						SELECT '' AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
+						SELECT '' AS offer_no, aa.po_no,aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
 								aa.id AS po_id_master,   
-								c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
+								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
 						FROM purchase_orders aa
 						LEFT JOIN venders c ON c.id = aa.vender_id
@@ -52,7 +52,7 @@ $sql_cl			= " SELECT * FROM (
 						
 						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
 								aa.id AS po_id_master, 
-								c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
+								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
 						FROM purchase_orders aa
 						INNER JOIN offers a ON a.id = aa.offer_id
@@ -68,11 +68,14 @@ if (po_permisions("ALL PO in List") != '1') {
 if (isset($flt_po_no) && $flt_po_no != "") {
 	$sql_cl 	.= " AND t1.po_no LIKE '%" . trim($flt_po_no) . "%' ";
 }
-if (isset($flt_vender_name) && $flt_vender_name != "") {
-	$sql_cl 	.= " AND t1.vender_name LIKE '%" . trim($flt_vender_name) . "%' ";
+if (isset($flt_vender_id) && $flt_vender_id != "") {
+	$sql_cl 	.= " AND t1.vender_id = '" . trim($flt_vender_id) . "' ";
 }
 if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
 	$sql_cl 	.= " AND t1.vender_invoice_no LIKE '%" . trim($flt_vender_invoice_no) . "%' ";
+}
+if (isset($flt_po_status) && $flt_po_status != "") {
+	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_po_status) . "' ";
 }
 $sql_cl	.= " 		ORDER BY  t1.po_id_master DESC";
 // echo $sql_cl;
@@ -149,45 +152,146 @@ $page_heading 	= "List Purchase Orders ";
 											</div>
 										</div>
 									<?php } ?>
-									<form method="post" autocomplete="off" enctype="multipart/form-data">
+									<form method="post" autocomplete="off">
 										<input type="hidden" name="is_Submit" value="Y" />
 										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
 										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																							echo encrypt($_SESSION['csrf_session']);
 																						} ?>">
 										<div class="row">
-											<?php
-											$field_name = "flt_po_no";
-											$field_label = "PO No";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+											<br>
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_po_no";
+												$field_label	= "PO#";
+												$sql1			= "SELECT DISTINCT po_no FROM purchase_orders WHERE 1=1 ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['po_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['po_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['po_no']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
 											</div>
-											<?php
-											$field_name = "flt_vender_name";
-											$field_label = "Vendor Name";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_vender_id";
+												$field_label	= "Vendor";
+												$sql1			= " SELECT DISTINCT b.id, b.vender_name, b.vender_no, c.type_name
+																	FROM purchase_orders a
+																	INNER JOIN venders b ON b.id = a.vender_id
+																	INNER JOIN vender_types c ON c.id = b.vender_type
+																	WHERE 1=1";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['vender_name']; ?> (<?php echo $data2['type_name']; ?>) </option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
 											</div>
-											<?php
-											$field_name = "flt_vender_invoice_no";
-											$field_label = "Vendor Invoice#";
-											?>
-											<div class="input-field col m2 s12">
-												<i class="material-icons prefix">description</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>">
-												<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
+												<?php
+												$field_name = "flt_vender_invoice_no";
+												$field_label = "Vendor Invoice#";
+												$sql1			= "SELECT DISTINCT vender_invoice_no FROM purchase_orders WHERE 1=1 ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['vender_invoice_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['vender_invoice_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['vender_invoice_no']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_po_status";
+												$field_label	= "Status";
+												$sql1			= "SELECT *  FROM inventory_status WHERE 1=1 AND id IN(1, 3, 4, 5)  ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
 											</div>
 											<div class="input-field col m2 s12">
 												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;

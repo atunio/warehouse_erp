@@ -319,32 +319,29 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col s10 m6 l6">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><?php echo $title_heading; ?>
-							</li>
-							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
-							</li>
-						</ol>
+		<div class="col s12 m12 l12">
+			<div class="section section-data-tables">   
+				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+						<div class="row">
+							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+								<h6 class="media-heading">
+									<?php echo $title_heading; ?>
+								</h6>
+							</div>
+							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
+									List
+								</a>  
+							</div>
+						</div>
 					</div>
-					<div class="col s2 m6 l6">
-						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-							List
-						</a>
-					</div>
-				</div>
+				</div> 
 			</div>
 		</div>
-	</div>
-	<div class="row">
 		<div class="col s12 m12 l12">
-			<div id="Form-advance" class="card card card-default scrollspy">
-				<div class="card-content">
+			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+				<div class="card-content custom_padding_card_content_table_top">
 					<h4 class="card-title">Detail</h4><br>
 					<div class="row">
 						<?php
@@ -436,8 +433,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 		<?php
 		if (isset($cmd) && $cmd == 'edit') { ?>
 			<div class="col s12 m12 l12">
-				<div id="Form-advance2" class="card card card-default scrollspy">
-					<div class="card-content">
+				<div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top">
 						<?php
 						if (isset($error2['msg'])) { ?>
 							<div class="card-alert card red lighten-5">
@@ -721,182 +718,182 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 			$result_cl	= $db->query($conn, $sql_cl);
 			$count_cl	= $db->counter($result_cl);
 			if ($count_cl > 0) { ?>
-				<div class="col s12">
-					<div class="container">
-						<form method="post">
-							<input type="hidden" name="is_Submit3" value="Y" />
-							<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-																				echo encrypt($_SESSION['csrf_session']);
-																			} ?>">
-							<div class="section section-data-tables">
-								<!-- Page Length Options -->
-								<h4 class="card-title">Processed Products</h4>
-								<div class="row">
-									<div class="col m6 s12">
+				<div class="col s12 m12 l12">
+					<div id="Form-advance3" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+						<div class="card-content custom_padding_card_content_table_top">
+							<form method="post">
+								<input type="hidden" name="is_Submit3" value="Y" />
+								<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																					echo encrypt($_SESSION['csrf_session']);
+																				} ?>">
+								<div class="section section-data-tables">
+									<!-- Page Length Options -->
+									<h4 class="card-title">Processed Products</h4>
+									<div class="row">
+										<div class="col m6 s12">
+										</div>
+										<div class="col m3 s12">
+											<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber col m12 s12">Export Processed Data in Excel</a>
+										</div>
 									</div>
-									<div class="col m3 s12">
-										<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber col m12 s12">Export Processed Data in Excel</a>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col s12">
-										<div class="card">
-											<div class="card-content">
-												<?php
-												if (isset($error3['msg'])) { ?>
-													<div class="card-alert card red lighten-5">
-														<div class="card-content red-text">
-															<p><?php echo $error3['msg']; ?></p>
+									<div class="row">
+										<div class="col s12">
+											<div class="card">
+												<div class="card-content">
+													<?php
+													if (isset($error3['msg'])) { ?>
+														<div class="card-alert card red lighten-5">
+															<div class="card-content red-text">
+																<p><?php echo $error3['msg']; ?></p>
+															</div>
+															<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+																<span aria-hidden="true">×</span>
+															</button>
 														</div>
-														<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-												<?php } else if (isset($msg3['msg_success'])) { ?>
-													<div class="card-alert card green lighten-5">
-														<div class="card-content green-text">
-															<p><?php echo $msg3['msg_success']; ?></p>
+													<?php } else if (isset($msg3['msg_success'])) { ?>
+														<div class="card-alert card green lighten-5">
+															<div class="card-content green-text">
+																<p><?php echo $msg3['msg_success']; ?></p>
+															</div>
+															<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+																<span aria-hidden="true">×</span>
+															</button>
 														</div>
-														<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-												<?php }  ?>
-												<div class="row">
-													<div class="col s12">
-														<table id="page-length-option" class="display pagelength50_2">
-															<thead>
-																<tr>
-																	<th class="sno_width_60">S.No
+													<?php }  ?>
+													<div class="row">
+														<div class="col s12">
+															<table id="page-length-option" class="display pagelength50_2">
+																<thead>
+																	<tr>
+																		<th class="sno_width_60">S.No
+																			<?php
+																			if (po_permisions("Move to Finale") == 1) { ?>
+																				<label>
+																					<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+																																												echo "checked";
+																																											} ?> />
+																					<span></span>
+																				</label>
+																			<?php } ?>
+																		</th>
 																		<?php
-																		if (po_permisions("Move to Finale") == 1) { ?>
-																			<label>
-																				<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
-																																											echo "checked";
-																																										} ?> />
-																				<span></span>
-																			</label>
-																		<?php } ?>
-																	</th>
+																		$headings = '	
+																						<th>Product ID</br>Product Detail</th> 
+																						<th>Serial#</th>
+																						<th>Finale ProductID /<br>Processed Date</th>
+																						<th>Finale Grade</th>
+																						<th>Parts / Package /<br> Materials</th>
+																						<th>Price</th>
+																						<th>Labor Cost</th>
+																						<th>Parts/Package /<br> Materials Cost</th>
+																						<th>Final Price</th>';
+																		echo $headings;
+																		?>
+																	</tr>
+																</thead>
+																<tbody>
 																	<?php
-																	$headings = '	
-																					<th>Product ID</br>Product Detail</th> 
-																					<th>Serial#</th>
-																					<th>Finale ProductID /<br>Processed Date</th>
-																					<th>Finale Grade</th>
-																					<th>Parts / Package /<br> Materials</th>
-																					<th>Price</th>
-																					<th>Labor Cost</th>
-																					<th>Parts/Package /<br> Materials Cost</th>
-																					<th>Final Price</th>';
-																	echo $headings;
-																	?>
-																</tr>
-															</thead>
-															<tbody>
-																<?php
-																$i = 0;
-																if ($count_cl > 0) {
-																	$row_cl = $db->fetch($result_cl);
-																	foreach ($row_cl as $data) {
-																		$detail_id2						= $data['id'];
-																		$price 							= $data['price'];
-																		$device_processing_labor		= $data['device_processing_labor'];
-																		$device_processing_parts_price	= $data['device_processing_parts_price'];
-																		$total_price					= $data['price_finale'];
-																		$is_processed					= $data['is_processed']; ?>
-																		<tr>
-																			<td>
-																				<?php echo $i + 1;
-																				if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
-																					<label style="margin-left: 25px;">
-																						<input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" <?php
-																																														if (isset($ids_for_stock) && in_array($detail_id2, $ids_for_stock)) {
-																																															echo "checked";
-																																														} ?> class="checkbox filled-in" />
-																						<span></span>
-																					</label>
-																				<?php } ?>
-																			</td>
-																			<td>
-																				<?php echo $data['product_uniqueid']; ?></br>
-																				<?php
-																				echo ucwords(strtolower($data['product_desc']));
-																				if ($data['category_name'] != "") {
-																					echo "(" . $data['category_name'] . ")";
-																				} ?>
-																			</td>
-																			<td><?php echo $data['serial_no']; ?></td>
-																			<td>
-																				<?php echo $data['finale_product_unique_id']; ?>
-																				<br>
-																				<?php echo dateformat1_with_time($data['processed_date']); ?>
-																			</td>
-																			<td>
-																				<?php echo $data['finale_condition']; ?> &nbsp;&nbsp;
-																				<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
-																					<i class="material-icons dp48">print</i>
-																				</a>
-																			</td>
-																			<td>
-																				<?php
-																				$m = 1;
-																				if ($data['package_name1'] != '') {
-																					echo $m . ": " . $data['package_name1'];
-																					$m++;
-																				}
-																				if ($data['package_name2'] != '') {
-																					echo "<br>" . $m . ": " . $data['package_name2'];
-																					$m++;
-																				}
-																				if ($data['package_name3'] != '') {
-																					echo "<br>" . $m . ": " . $data['package_name3'];
-																					$m++;
-																				} ?>
-																			</td>
-																			<td><?php echo number_format($price, 2); ?></td>
-																			<td><?php echo number_format($device_processing_labor, 2); ?></td>
-																			<td><?php echo number_format(($device_processing_parts_price), 2); ?></td>
-																			<td><?php echo number_format(($total_price), 2); ?></td>
-																		</tr>
-																<?php $i++;
-																	}
-																} ?>
-															<tfoot>
-																<tr>
-																	<th class="sno_width_60">S.No</th>
-																	<?php echo $headings; ?>
-																</tr>
-															</tfoot>
-														</table>
+																	$i = 0;
+																	if ($count_cl > 0) {
+																		$row_cl = $db->fetch($result_cl);
+																		foreach ($row_cl as $data) {
+																			$detail_id2						= $data['id'];
+																			$price 							= $data['price'];
+																			$device_processing_labor		= $data['device_processing_labor'];
+																			$device_processing_parts_price	= $data['device_processing_parts_price'];
+																			$total_price					= $data['price_finale'];
+																			$is_processed					= $data['is_processed']; ?>
+																			<tr>
+																				<td>
+																					<?php echo $i + 1;
+																					if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
+																						<label style="margin-left: 25px;">
+																							<input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" <?php
+																																															if (isset($ids_for_stock) && in_array($detail_id2, $ids_for_stock)) {
+																																																echo "checked";
+																																															} ?> class="checkbox filled-in" />
+																							<span></span>
+																						</label>
+																					<?php } ?>
+																				</td>
+																				<td>
+																					<?php echo $data['product_uniqueid']; ?></br>
+																					<?php
+																					echo ucwords(strtolower($data['product_desc']));
+																					if ($data['category_name'] != "") {
+																						echo "(" . $data['category_name'] . ")";
+																					} ?>
+																				</td>
+																				<td><?php echo $data['serial_no']; ?></td>
+																				<td>
+																					<?php echo $data['finale_product_unique_id']; ?>
+																					<br>
+																					<?php echo dateformat1_with_time($data['processed_date']); ?>
+																				</td>
+																				<td>
+																					<?php echo $data['finale_condition']; ?> &nbsp;&nbsp;
+																					<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
+																						<i class="material-icons dp48">print</i>
+																					</a>
+																				</td>
+																				<td>
+																					<?php
+																					$m = 1;
+																					if ($data['package_name1'] != '') {
+																						echo $m . ": " . $data['package_name1'];
+																						$m++;
+																					}
+																					if ($data['package_name2'] != '') {
+																						echo "<br>" . $m . ": " . $data['package_name2'];
+																						$m++;
+																					}
+																					if ($data['package_name3'] != '') {
+																						echo "<br>" . $m . ": " . $data['package_name3'];
+																						$m++;
+																					} ?>
+																				</td>
+																				<td><?php echo number_format($price, 2); ?></td>
+																				<td><?php echo number_format($device_processing_labor, 2); ?></td>
+																				<td><?php echo number_format(($device_processing_parts_price), 2); ?></td>
+																				<td><?php echo number_format(($total_price), 2); ?></td>
+																			</tr>
+																	<?php $i++;
+																		}
+																	} ?>
+																<tfoot>
+																	<tr>
+																		<th class="sno_width_60">S.No</th>
+																		<?php echo $headings; ?>
+																	</tr>
+																</tfoot>
+															</table>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-								<!-- Multi Select -->
-							</div><!-- START RIGHT SIDEBAR NAV -->
-							<?php
-							if (po_permisions("Move to Finale") == 1) { ?>
-								<div class="row">
-									<div class="input-field col m4 s12"></div>
-									<div class="input-field col m4 s12">
-										<?php if (isset($id) && $id > 0) { ?>
-											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Move PO to Finale</button>
-										<?php } ?>
+									<!-- Multi Select -->
+								</div><!-- START RIGHT SIDEBAR NAV -->
+								<?php
+								if (po_permisions("Move to Finale") == 1) { ?>
+									<div class="row">
+										<div class="input-field col m4 s12"></div>
+										<div class="input-field col m4 s12">
+											<?php if (isset($id) && $id > 0) { ?>
+												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Move PO to Finale</button>
+											<?php } ?>
+										</div>
+										<div class="input-field col m4 s12"></div>
 									</div>
-									<div class="input-field col m4 s12"></div>
-								</div>
-								<div class="row">
-									<div class="input-field col m12 s12"></div>
-								</div>
-							<?php } ?>
-						</form>
-						<?php include('sub_files/right_sidebar.php'); ?>
+									<div class="row">
+										<div class="input-field col m12 s12"></div>
+									</div>
+								<?php } ?>
+							</form>
+							<?php include('sub_files/right_sidebar.php'); ?>
+						</div>
 					</div>
-
-					<div class="content-overlay"></div>
 				</div>
 		<?php }
 		} ?>

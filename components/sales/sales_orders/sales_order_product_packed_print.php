@@ -124,16 +124,16 @@ $mpdf = new \Mpdf\Mpdf([
 ]);
 $sql_ee1 = "SELECT a.*, c.product_desc,b2.packing_type, d.category_name,b.order_status, 
 					c.product_uniqueid, b1.order_qty,b1.order_price,b1.product_so_desc,
-					b1.product_stock_id,b.so_no, b.customer_invoice_no, b.order_date
+					b1.product_stock_id,b.so_no, b.customer_invoice_no, b.order_date,c1.serial_no
 			FROM `sales_order_detail_packing` a  
 			INNER JOIN sales_orders b ON b.id = a.sale_order_id
 			INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = a.sale_order_id
-			INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND c1.serial_no = a.serial_no_barcode
+			INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND c1.id = a.product_stock_id
 			INNER JOIN products c ON c.id = c1.product_id
 			INNER JOIN packing_types b2 ON b2.id = a.packing_type
 			LEFT JOIN product_categories d ON d.id = c.product_category
 			WHERE b1.sales_order_id ='" . $id . "'
-			ORDER BY a.serial_no_barcode ";
+			ORDER BY c1.serial_no ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
@@ -169,7 +169,7 @@ if ($counter_ee11 > 0) {
 		$product_uniqueid	= $data['product_uniqueid'];
 		$product_desc		= ucwords(strtolower($data['product_desc']));
 		$category_name     	= $data['category_name'];
-		$serial_no     		= $data['serial_no_barcode'];
+		$serial_no     		= $data['serial_no'];
 		$packing_type 		= $data['packing_type'];
 		$box_no 			= $data['box_no'];
 		$pallet_no 			= $data['pallet_no'];

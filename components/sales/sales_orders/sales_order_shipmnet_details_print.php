@@ -125,18 +125,19 @@ $mpdf = new \Mpdf\Mpdf([
 $sql_ee1 = "SELECT a.serial_no_barcode, c.product_desc, d.category_name,
 				c.product_uniqueid, b1.order_price, b1.product_so_desc,
 				bb.shipment_no,bb.shipment_sent_date,bb.expected_delivery_date,bb.shipment_tracking_no,
-				cc.courier_name, b.so_no, b.customer_invoice_no, b.order_date
+				cc.courier_name, b.so_no, b.customer_invoice_no, b.order_date,c1.serial_no
 			FROM sales_order_shipment_detail bb2
 			INNER JOIN sales_order_shipments bb ON bb2.`shipment_id` = bb.id
 			INNER JOIN sales_order_detail_packing a ON a.id = bb2.`packed_id`
 			INNER JOIN sales_orders b ON b.id = a.sale_order_id
 			INNER JOIN `sales_order_detail` b1 ON b.id = b1.sales_order_id
-			INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND c1.serial_no = a.serial_no_barcode
+			INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id 
 			INNER JOIN products c ON c.id = c1.product_id
 			LEFT JOIN product_categories d ON d.id = c.product_category
 			LEFT JOIN couriers cc ON cc.id = bb.shipment_courier_id
 			WHERE b1.sales_order_id = '" . $id . "'
 			AND a.is_shipped = 1
+			GROUP BY bb.shipment_no, d.category_name, c.product_uniqueid, c1.serial_no
 			ORDER BY bb.shipment_no, d.category_name, c.product_uniqueid, c1.serial_no ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
@@ -177,7 +178,7 @@ if ($counter_ee11 > 0) {
 		$expected_delivery_date = dateformat2_2($data['expected_delivery_date']);
 		$shipment_tracking_no   = $data['shipment_tracking_no'];
 		$courier_name     		= $data['courier_name'];
-		$serial_no     			= $data['serial_no_barcode'];
+		$serial_no     			= $data['serial_no'];
 		$order_price     		= $data['order_price'];
 		if ($category_name != "") {
 			$product_desc .=  " (" . $category_name . ")";

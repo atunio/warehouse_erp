@@ -41,7 +41,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = "	SELECT b.so_no, b.customer_po_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,c1.product_uniqueid AS product_id, c1.product_desc, d.category_name,  COUNT(a.id) AS total_qty
+		$sql_cl = "	SELECT b.so_no, b.customer_invoice_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,c1.product_uniqueid AS product_id, c1.product_desc, d.category_name,  COUNT(a.id) AS total_qty
 					FROM sales_order_detail a  
 					INNER JOIN sales_orders b ON b.id = a.sales_order_id
 					INNER JOIN product_stock c ON c.id = a.product_stock_id

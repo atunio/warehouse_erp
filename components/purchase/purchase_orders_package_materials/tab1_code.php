@@ -83,9 +83,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$package_id 				= [];
 	$order_qty 					= [];
 	$order_price 				= [];
-	$product_po_desc 			= []; 
-	$product_condition			= [];
-	$warranty_period_in_days	= [];
+	$product_po_desc 			= [];   
 
 	$sql_ee1		= "SELECT a.* FROM package_materials_order_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
 	$result_ee1		= $db->query($conn, $sql_ee1);
@@ -96,9 +94,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$package_id[]				= $data2['package_id'];
 			$order_qty[]				= $data2['order_qty'];
 			$order_price[]				= $data2['order_price'];
-			$product_po_desc[]			= $data2['product_po_desc'];
-			$product_condition[]		= $data2['product_condition'];
-			$warranty_period_in_days[]	= $data2['warranty_period_in_days'];
+			$product_po_desc[]			= $data2['product_po_desc']; 
 		}
 	}
 }
@@ -113,20 +109,20 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 
 	$field_name = "vender_id";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
 	$field_name = "vender_invoice_no";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
 	$field_name = "po_date";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
-	if (empty($error2)) {
+	if (empty($error)) {
 		$po_date1 = NULL;
 		if (isset($po_date) && $po_date != "") {
 			$po_date1 = convert_date_mysql_slash($po_date);
@@ -201,6 +197,21 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
+	$field_name = "vender_id";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "vender_invoice_no";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "po_date";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
 	if (empty($error)) {
 		$po_date1 = NULL;
 		if (isset($po_date) && $po_date != "") {

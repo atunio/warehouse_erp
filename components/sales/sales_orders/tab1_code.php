@@ -8,8 +8,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$customer_id				= "1";
 	$source_id					= "1";
 	$origin_id					= "1";
-	$estimated_ship_date	 	= date('d/m/Y');
-	$customer_invoice_no				= date('YmdHis');
+ 	$customer_invoice_no		= date('YmdHis');
 	$fullfilment_id				= "1";
 	$terms_id					= "1";
 	$requested_shipment_id		= "1";
@@ -78,7 +77,6 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_date				= str_replace("-", "/", convert_date_display($row_ee[0]['order_date']));
 	$order_date_disp		= dateformat2($row_ee[0]['order_date']);
 	$origin_id				=  $row_ee[0]['origin_id'];
-	$estimated_ship_date	= str_replace("-", "/", convert_date_display($row_ee[0]['estimated_ship_date']));
 	$customer_invoice_no 	=  $row_ee[0]['customer_invoice_no'];
 	$fullfilment_id			=  $row_ee[0]['fullfilment_id'];
 	$terms_id				=  $row_ee[0]['terms_id'];
@@ -113,32 +111,24 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 
 	$field_name = "customer_invoice_no";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
 	$field_name = "customer_id";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
 	$field_name = "order_date";
 	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
+		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
-	$field_name = "estimated_ship_date";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
-	if (empty($error2)) {
+
+	if (empty($error)) {
 		$order_date1 = NULL;
 		if (isset($order_date) && $order_date != "") {
 			$order_date1 = convert_date_mysql_slash($order_date);
-		}
-		$estimated_ship_date1 = NULL;
-		if (isset($estimated_ship_date) && $estimated_ship_date != "") {
-			$estimated_ship_date1 = convert_date_mysql_slash($estimated_ship_date);
 		}
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
@@ -152,9 +142,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".sales_orders(subscriber_users_id, customer_id, source_id, order_date, origin_id,estimated_ship_date, 
+					$sql6 = "INSERT INTO " . $selected_db_name . ".sales_orders(subscriber_users_id, customer_id, source_id, order_date, origin_id, 
 											customer_invoice_no,fullfilment_id,terms_id,requested_shipment_id,batch_id,public_note,internal_note,add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-							 VALUES('" . $subscriber_users_id . "', '" . $customer_id . "',  '" . $source_id . "', '" . $order_date1  . "', '" . $origin_id  . "', '" . $estimated_ship_date1  . "',
+							 VALUES('" . $subscriber_users_id . "', '" . $customer_id . "',  '" . $source_id . "', '" . $order_date1  . "', '" . $origin_id  . "',
 									'" . $customer_invoice_no  . "','" . $fullfilment_id . "' , '" . $terms_id . "' , '" . $requested_shipment_id . "' , '" . $batch_id . "' , '" . $public_note . "' , '" . $internal_note . "',
 											'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
@@ -168,8 +158,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$db->query($conn, $sql6);
 						$msg['msg_success'] = "Sale Order has been created successfully.";
 						// echo redirect_to_page("?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id . "&msg_success=" . $msg['msg_success']));
-						$customer_id 	=  $estimated_ship_date = "";
-						$order_date 	= date("d/m/Y");
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -193,8 +181,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 															source_id				= '" . $source_id . "',
 															order_date				= '" . $order_date1 . "',
 															origin_id				= '" . $origin_id . "',
-															estimated_ship_date 	= '" . $estimated_ship_date1 . "',
-															customer_invoice_no 			= '" . $customer_invoice_no . "',
+															customer_invoice_no 	= '" . $customer_invoice_no . "',
 															fullfilment_id			= '" . $fullfilment_id . "',
 															terms_id				= '" . $terms_id . "',
 															requested_shipment_id	= '" . $requested_shipment_id . "',
@@ -222,29 +209,26 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 }
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
-	// $field_name = "order_price";
-	// if (isset(${$field_name}) && ${$field_name} == "") {
-	// 	$error[$field_name] 		= "Required";
-	// 	${$field_name . "_valid"} 	= "invalid";
-	// }
-	// $field_name = "order_qty";
-	// if (isset(${$field_name}) && ${$field_name} == "") {
-	// 	$error[$field_name] 		= "Required";
-	// 	${$field_name . "_valid"} 	= "invalid";
-	// }
-	// $field_name = "product_stock_id";
-	// if (isset(${$field_name}) && ${$field_name} == "") {
-	// 	$error[$field_name] 		= "Required";
-	// 	${$field_name . "_valid"} 	= "invalid";
-	// }
+	$field_name = "customer_invoice_no";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "customer_id";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "order_date";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+
 	if (empty($error)) {
 		$order_date1 = NULL;
 		if (isset($order_date) && $order_date != "") {
 			$order_date1 = convert_date_mysql_slash($order_date);
-		}
-		$estimated_ship_date1 = NULL;
-		if (isset($estimated_ship_date) && $estimated_ship_date != "") {
-			$estimated_ship_date1 = convert_date_mysql_slash($estimated_ship_date);
 		}
 		$sql_dup	= " SELECT a.* FROM sales_orders a 
 						WHERE a.customer_id	= '" . $customer_id . "'
@@ -258,7 +242,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 													source_id				= '" . $source_id . "',
 													order_date				= '" . $order_date1 . "',
 													origin_id				= '" . $origin_id . "',
-													estimated_ship_date 	= '" . $estimated_ship_date1 . "',
 													customer_invoice_no 			= '" . $customer_invoice_no . "',
 													fullfilment_id			= '" . $fullfilment_id . "',
 													terms_id				= '" . $terms_id . "',

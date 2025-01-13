@@ -263,8 +263,7 @@
                                         <th style="width: 120px;">Condition</th>
                                         <th style="width: 100px;">Qty</th>
                                         <th style="width: 100px;">Price</th>
-                                        <th style="width: 100px;">Value</th>
-                                        <th style="width: 200px;">Status</th>
+                                        <th style="width: 300px;">Imaged/Wipped/Tested</th>
                                         <th style="width: 150px;">Actions</th>
                                     </tr>
                                 </thead>
@@ -276,8 +275,9 @@
                                         unset($product_condition);
                                         unset($order_price);
                                         unset($order_qty);
-                                        unset($expected_status); 
-                                        
+                                        unset($is_tested);
+                                        unset($is_wiped);
+                                        unset($is_imaged);
 
                                         $sql_ee1    = "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
                                         $result_ee1    = $db->query($conn, $sql_ee1);
@@ -285,11 +285,13 @@
                                         if ($count_ee1 > 0) {
                                             $row_ee1 = $db->fetch($result_ee1);
                                             foreach ($row_ee1 as $data2) {
-                                                $product_ids[]          = $data2['product_id'];
+                                                $product_ids[]            = $data2['product_id'];
                                                 $product_condition[]    = $data2['product_condition'];
-                                                $order_price[]          = $data2['order_price'];
+                                                $order_price[]            = $data2['order_price'];
                                                 $order_qty[]            = $data2['order_qty'];
-                                                $expected_status[]		= $data2['expected_status'];
+                                                $is_tested[]            = $data2['is_tested'];
+                                                $is_wiped[]                = $data2['is_wiped'];
+                                                $is_imaged[]            = $data2['is_imaged'];
                                             }
                                         }
                                     }
@@ -370,7 +372,7 @@
                                                 <input <?php echo $disabled;
                                                         echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
                                                                                                                                                         echo ${$field_name}[$i - 1];
-                                                                                                                                                    } ?>" class="validate custom_input order_qty">
+                                                                                                                                                    } ?>" class="validate custom_input">
                                             </td>
                                             <td>
                                                 <?php
@@ -381,41 +383,20 @@
                                                 <input <?php echo $disabled;
                                                         echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
                                                                                                                                                         echo ${$field_name}[$i - 1];
-                                                                                                                                                    } ?>" class="validate custom_input order_price">
-                                            </td>
-                                            <td class="text_align_right">
-                                                <span  id="value_<?= $i; ?>">    
-                                                    <?php 
-                                                    $value = 0 ;
-                                                    if(isset($order_qty[$i - 1]) && isset($order_price[$i - 1])){
-                                                        $value =  ($order_price[$i - 1] * $order_qty[$i - 1] );
-                                                    }
-                                                    echo number_format($value,2);?>  
-                                                </span>                                                                                               
+                                                                                                                                                    } ?>" class="validate custom_input">
                                             </td>
                                             <td>
                                                 <?php
-                                                $field_name     = "expected_status";
-                                                $field_id       = "expectedstatus_" . $i;
-                                                $field_label     = "Status";
-                                                $sql_status = "SELECT id, status_name
-                                                                FROM  inventory_status b 
-                                                                WHERE enabled = 1
-                                                                AND id IN(5, 6, 13, 20, 27)";
-                                                $result_status = $db->query($conn, $sql_status);
-                                                $count_status  = $db->counter($result_status);
+                                                $field_name     = "isimage_iswipped_istested";
+                                                $field_id       = "isimage_iswipped_istested_" . $i;
+                                                $field_label     = "Imaged / Wipped / Tested";
                                                 ?>
-
                                                 <select <?php echo $disabled;
-                                                        echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
-                                                    <option value="">N/A</option>
-                                                    <?php
-                                                    if ($count_status > 0) {
-                                                        $row_status    = $db->fetch($result_status);
-                                                        foreach ($row_status as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                                    <?php }
-                                                    } ?>
+                                                        echo $readonly; ?> name="<?= $field_id; ?>[]" id="<?= $field_id ?>" multiple="multiple" class="select2 browser-default custom_condition_class select2-hidden-accessible">
+                                                    <option value="">Select</option>
+                                                    <option value="Tested" <?php if (isset($is_tested[$i - 1]) && $is_tested[$i - 1]    == 'Yes') { ?> selected="selected" <?php } ?>>Tested</option>
+                                                    <option value="Imaged" <?php if (isset($is_imaged[$i - 1]) && $is_imaged[$i - 1]    == 'Yes') { ?> selected="selected" <?php } ?>>Imaged</option>
+                                                    <option value="Wipped" <?php if (isset($is_wiped[$i - 1])  && $is_wiped[$i - 1]     == 'Yes') { ?> selected="selected" <?php } ?>>Wipped</option>
                                                 </select>
                                             </td>
                                             <td>
@@ -423,7 +404,7 @@
                                                     <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">cancel</i>
                                                     </a> &nbsp;
-                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
+                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?= $i ?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">add_circle</i>
                                                     </a>&nbsp;&nbsp;
                                                 <?php }
@@ -434,13 +415,6 @@
                                     $field_name     = "product_id_for_package_material";
                                     ?>
                                     <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
-                                    
-                                    <tr>
-                                        <td colspan="3"></td>
-                                        <td class="text_align_right"><b>Total: </b></td>
-                                        <td class="text_align_right"><b></b></td>
-                                        <td colspan="2"></td>
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>

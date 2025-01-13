@@ -41,12 +41,12 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = "	SELECT b.so_no, b.customer_po_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,
+		$sql_cl = "	SELECT b.so_no, b.customer_invoice_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date,
 						   CONCAT(b2.packing_type, ' ' , a.box_no) AS box_no,IF(a.pallet_no IS NOT NULL AND a.pallet_no != '', CONCAT('Pallet ', a.pallet_no), '') AS pallet_no, 
 						   c.product_uniqueid AS product_id, c.product_desc, d.category_name,  COUNT(a.id) AS total_qty
 					FROM sales_order_detail_packing a  
 					INNER JOIN sales_orders b ON b.id = a.sale_order_id
-					INNER JOIN product_stock c1 ON c1.serial_no = a.serial_no_barcode 
+					INNER JOIN product_stock c1 ON c1.id = a.product_stock_id
 					INNER JOIN products c ON c.id = c1.product_id
 					INNER JOIN packing_types b2 ON b2.id = a.packing_type
 					LEFT JOIN product_categories d ON d.id = c.product_category

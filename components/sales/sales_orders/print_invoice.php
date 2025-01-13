@@ -135,24 +135,24 @@ if ($counter_ee1 > 0) {
 	$company_logo			= $row_ee1[0]['company_logo'];
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
-}
+}	
 $sql_ee1 = "SELECT  c.so_no,c.order_date,d.customer_name,d.address_primary,d.phone_primary, a.*
 			FROM  sales_order_detail a
 			INNER JOIN sales_orders c ON c.id = a.sales_order_id
 			INNER JOIN customers d ON d.id = c.customer_id 
 			WHERE a.sales_order_id = '" . $id . "'
-			GROUP BY a.sales_order_id
-			";
+			GROUP BY a.sales_order_id "; 
 $result_ee11 	= $db->query($conn, $sql_ee1);
-$counter_ee11	= $db->counter($result_ee1);
-if ($counter_ee11 > 0) {
-	$row_ee11				= $db->fetch($result_ee11);
-	$so_no			= $row_ee11[0]['so_no'];
-	$order_date		= $row_ee11[0]['order_date'];
+$counter_ee11	= $db->counter($result_ee11);
+if ($counter_ee11 > 0) { 
+	$row_ee11			= $db->fetch($result_ee11);
+	$so_no				= $row_ee11[0]['so_no'];
+	$order_date			= $row_ee11[0]['order_date'];
 	$customer_name		= $row_ee11[0]['customer_name'];
 	$phone_primary		= $row_ee11[0]['phone_primary'];
 	$address_primary	= $row_ee11[0]['address_primary'];
 	$sales_order_id		= $row_ee11[0]['sales_order_id'];
+
 	$report_data = '<div class="">
 						<div class="header">
 							<h1>SALES ORDER (Pre)</h1><hr>
@@ -210,41 +210,28 @@ if ($counter_ee11 > 0) {
 							</thead>
 							<tbody>';
 
-					$sql_sub = "SELECT a.*, c.product_desc,b2.packing_type,a.box_no,a.pallet_no, d.category_name,b.order_status, 
-									c.product_uniqueid, b1.order_qty,b1.order_price,b1.order_qty,b1.product_so_desc,
+					$sql_sub = "SELECT c.product_desc, d.category_name, b.order_status, 
+									c.product_uniqueid, b1.order_price, b1.product_so_desc,
 									b1.product_stock_id, c1.serial_no
-								FROM `sales_order_detail_packing` a  
-								INNER JOIN product_stock c1 ON c1.id = a.product_stock_id 
-								INNER JOIN sales_orders b ON b.id = a.sale_order_id
-								INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = a.sale_order_id AND b1.product_stock_id = a.product_stock_id
+								FROM sales_orders b 
+								INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = b.id 
+								INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id 
 								INNER JOIN products c ON c.id = c1.product_id
-								INNER JOIN packing_types b2 ON b2.id = a.packing_type
 								LEFT JOIN product_categories d ON d.id = c.product_category
-								WHERE b1.sales_order_id = '". $sales_order_id ."'
-								ORDER BY b2.id";
+								WHERE b.id = '". $sales_order_id ."'
+								ORDER BY b1.id "; //echo $sql_sub;die;
 					$result_sub 	= $db->query($conn, $sql_sub);
 					$counter_sub	= $db->counter($result_sub);	
 					$sub_total = $grand_total = $total = 0;	
 						if($counter_sub > 0){
 							$row_sub				= $db->fetch($result_sub);
-							$packing = "";
 							foreach($row_sub as $data_sub){
 								$product_uniqueid		= $data_sub['product_uniqueid'];
 								$product_desc			= $data_sub['product_desc'];
 								$category_name			= $data_sub['category_name'];
 								$order_price			= $data_sub['order_price'];
-								$order_qty				= $data_sub['order_qty'];
-								$serial_no				= $data_sub['serial_no'];
-								$packing_type			= $data_sub['packing_type'];
-								$box_no					= $data_sub['box_no'];
-								if($box_no > 0){
-									$packing = $packing_type." ".$box_no;
-								}else{
-									$packing = $packing_type;
-								}
-								$pallet_no				= $data_sub['pallet_no'];
-								$sub_total 				= ($order_price * $order_qty);
-								$grand_total 			+= $sub_total;
+ 								$serial_no				= $data_sub['serial_no'];
+ 								$grand_total 			+= $order_price;
 								$report_data .= '
 								<tr>
 									<td>'.$product_uniqueid.'</td>
@@ -265,7 +252,6 @@ if ($counter_ee11 > 0) {
 						</table> 
 					</div>';
 	$report_data = $report_data . $css;
-	//echo $report_data;die;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
@@ -274,7 +260,7 @@ if ($counter_ee11 > 0) {
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
-	<div class="text_align_center main_font"> No record found </div>  ';  //echo $report_data;die;
+	<div class="text_align_center main_font"> No detail found </div>  ';  //echo $report_data;die;
 	$report_data = $report_data . $css;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);

@@ -41,7 +41,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = "	SELECT 	b.so_no, b.customer_po_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date, 
+		$sql_cl = "	SELECT 	b.so_no, b.customer_invoice_no, DATE_FORMAT(b.order_date, '%M %d %Y') as order_date, 
 							bb.shipment_no, bb.shipment_tracking_no AS tracking_no, DATE_FORMAT(bb.shipment_sent_date, '%M %d %Y') as shipment_sent_date, cc.courier_name, 
 							DATE_FORMAT(bb.expected_delivery_date, '%M %d %Y') as expected_delivery_date, c.product_uniqueid AS product_id, 
 							c.product_desc, d.category_name, a.serial_no_barcode as serial_no 
@@ -50,7 +50,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					INNER JOIN sales_order_detail_packing a ON a.id = bb2.`packed_id`
 					INNER JOIN sales_orders b ON b.id = a.sale_order_id
 					INNER JOIN `sales_order_detail` b1 ON b.id = b1.sales_order_id
-					INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND c1.serial_no = a.serial_no_barcode
+					INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id AND b1.product_stock_id = a.product_stock_id
 					INNER JOIN products c ON c.id = c1.product_id
 					LEFT JOIN product_categories d ON d.id = c.product_category
 					LEFT JOIN couriers cc ON cc.id = bb.shipment_courier_id

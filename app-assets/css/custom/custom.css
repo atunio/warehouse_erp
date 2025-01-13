@@ -28,6 +28,12 @@
 .text_align_center {
 	text-align: center !important;
 }
+.text_align_left {
+	text-align: left !important;
+}
+.text_align_right {
+	text-align: right !important;
+}
 
 .font_20 {
 	font-size: 20px !important;
@@ -91,8 +97,11 @@
 .custom_padding_card_content_table_top{
 	padding-top: 10px !important;
 }
-.custom_padding_card_content_table_bottom{
-	padding-bottom: 0px !important;
+.custom_padding_card_content_table_top{
+	padding-top: 10px !important;
+}
+.custom_margin_card_table_bottom{
+	margin-bottom: 5px !important;
 }
 .custom_padding_card_content_table_top_bottom{
 	padding-top: 5px !important;

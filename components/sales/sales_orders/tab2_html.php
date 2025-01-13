@@ -265,7 +265,7 @@ $count_cl    = $db->counter($result_cl);
                                                                                                                                                 } ?>">
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
-                                <span class="color-red">* <?php
+                                <span class="color-red"><?php
                                                             if (isset($error2[$field_name])) {
                                                                 echo $error2[$field_name];
                                                             } ?>

@@ -26,7 +26,7 @@
                 <span>Packing
                     <?php
                         $total_items_ordered = 0;
-                        $sql2       = " SELECT sum(a.order_qty) as order_qty
+                        $sql2       = " SELECT COUNT(a.id) as order_qty
                                         FROM sales_order_detail a
                                         WHERE a.sales_order_id = '" . $id . "'
                                         AND a.enabled = 1 ";

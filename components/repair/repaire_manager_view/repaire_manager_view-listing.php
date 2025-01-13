@@ -59,29 +59,28 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col m10 l10">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><a href="home">Home</a>
-							</li>
-							</li>
-							<li class="breadcrumb-item active">List</li>
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="col s12">
-			<div class="container">
+			<!-- <div class="container"> -->
 				<div class="section section-data-tables">
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top_bottom"> 
+									<div class="row">
+										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+											<h6 class="media-heading">
+												<?php echo $page_heading; ?>
+											</h6>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<h4 class="card-title">Categories Wise Detail</h4>
 									<form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page) ?>" enctype="multipart/form-data">
 										<input type="hidden" name="is_Submit2" value="Y" />
@@ -134,17 +133,10 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col s12">
-			<div class="container">
-				<div class="section section-data-tables">
-					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -367,23 +359,10 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 							</div>
 						</div>
 					</div>
-
-					<!-- Multi Select -->
-				</div><!-- START RIGHT SIDEBAR NAV -->
-
-				<?php include('sub_files/right_sidebar.php'); ?>
-			</div>
-
-			<div class="content-overlay"></div>
-		</div>
-		<div class="col s12">
-			<div class="container">
-				<div class="section section-data-tables">
-					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<input type="hidden" name="module_id" id="module_id" value="<?= $module_id; ?>">
 									<?php
 									if (isset($error2['msg'])) { ?>
@@ -484,13 +463,8 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 							</div>
 						</div>
 					</div>
-					<!-- Multi Select -->
-				</div><!-- START RIGHT SIDEBAR NAV -->
-
-				<?php include('sub_files/right_sidebar.php'); ?>
-			</div>
-
-			<div class="content-overlay"></div>
+				</div>
+			<!-- </div> -->
 		</div>
 	</div>
 </div>

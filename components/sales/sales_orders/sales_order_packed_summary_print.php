@@ -132,6 +132,7 @@ $sql_ee1 = "SELECT b.so_no, b.customer_invoice_no, DATE_FORMAT(b.order_date, '%M
 			ORDER BY b2.packing_type, a.box_no ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
+
 if ($counter_ee11 > 0) {
 	$row_cl 		= $db->fetch($result_ee11);
 	$so_no 			= $row_cl[0]["so_no"];

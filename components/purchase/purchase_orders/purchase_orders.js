@@ -34,9 +34,8 @@ $(document).ready(function() {
         $("#productcondition_"+rowno).val('').trigger('change'); 
         $("#orderqty_"+rowno).val('').trigger('change'); 
         $("#orderprice_"+rowno).val('').trigger('change'); 
-        $("#packageid_"+rowno).val('').trigger('change'); 
-        $("#packagematerialqty_"+rowno).val('').trigger('change'); 
-
+        $("#expectedstatus_"+rowno).val('').trigger('change'); 
+       
         $("#row_"+rowno).hide();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
 
@@ -48,7 +47,7 @@ $(document).ready(function() {
     // Function to show/hide the "Remove" button
     function updateRemoveButtonVisibility() {
         $('.add-more-btn').hide(); // Hide all "Remove" buttons
-        $('#page-length-option1 tbody tr:visible:last .add-more-btn').show(); // Show only the last "Remove" button
+        $('#page-length-option1 tbody .dynamic-row:visible:last .add-more-btn').show(); // Show only the last "Remove" button
     }
 
     // Handle the select change event to open the modal when "Add New Product" is selected
@@ -72,21 +71,38 @@ $(document).ready(function() {
             updateRemoveButtonVisibility();
         }
 
-        $("#packagematerialqty_"+rowno).hide(); 
-        $('#product_id_for_package_material').val($(this).val());
-        data = [];
-        data[0] = product_id_for_package_material; // source field name
-        data[1] = 'packageid_'+rowno; // target field
-        data[2] = null;
-        data[3] = null;
-        data[4] = null;
-        generate_combo_new(data);
-
     });
     // Initialize modal (if you're using Materialize)
     $('.modal').modal();
 
-
+    $(document).on('keyup', '.order_qty', function(event) {
+ 
+        var selectedValue = $(this).val();
+        var id          = $(this).attr('id');
+        var parts       = id.split('_');
+        var rowno       = parseInt(parts[1]);  
+        var value = 0;
+        var order_qty = parseInt($("#orderqty_"+rowno).val());
+        var order_price = parseFloat($("#orderprice_"+rowno).val());
+        if(!isNaN(order_price) || !isNaN(order_qty)){
+            value = (order_price * order_qty);
+        }
+         $("#value_"+rowno).text(formatNumber(value, 2));
+    });
+    $(document).on('keyup', '.order_price', function(event) {
+ 
+        var selectedValue = $(this).val();
+        var id          = $(this).attr('id');
+        var parts       = id.split('_');
+        var rowno       = parseInt(parts[1]);  
+        var value = 0;
+        var order_qty = parseInt($("#orderqty_"+rowno).val());
+        var order_price = parseFloat($("#orderprice_"+rowno).val());
+        if(!isNaN(order_price) || !isNaN(order_qty)){
+            value = (order_price * order_qty);
+        }
+        $("#value_"+rowno).text(formatNumber(value, 2));
+    });
    
     $('.package_id').on('change', function() {
         var id      = $(this).attr('id');
@@ -569,7 +585,19 @@ function generate_combo_new2(data) {
     });
 } 
 
-
+function formatNumber(value, decimals) {
+    // Ensure value is a number
+    value = parseFloat(value);
+    
+    // Fix to specified decimals
+    value = value.toFixed(decimals);
+    
+    // Add thousands separator
+    let parts = value.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    return parts.join('.');
+}
         
     
     

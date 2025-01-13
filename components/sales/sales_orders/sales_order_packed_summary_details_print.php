@@ -126,7 +126,7 @@ $sql_ee1 = "SELECT c.product_desc,b2.packing_type, d.category_name, c.product_un
 					b.so_no, b.customer_invoice_no, b.order_date
 			FROM sales_order_detail_packing a  
 			INNER JOIN sales_orders b ON b.id = a.sale_order_id
-			INNER JOIN product_stock c1 ON c1.serial_no = a.serial_no_barcode 
+			INNER JOIN product_stock c1 ON  c1.product_stock_id = a.product_stock_id
 			INNER JOIN products c ON c.id = c1.product_id
 			INNER JOIN packing_types b2 ON b2.id = a.packing_type
 			LEFT JOIN product_categories d ON d.id = c.product_category

@@ -265,32 +265,37 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col s10 m6 l6">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><?php echo $title_heading; ?>
-							</li>
-							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
-							</li>
-						</ol>
+		<div class="col s12 m12 l12">
+			<div class="section section-data-tables">   
+				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+						<div class="row">
+							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+								<h6 class="media-heading">
+									<?php echo $title_heading; ?>
+								</h6>
+							</div>
+							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
+									List
+								</a> 
+								<?php  
+								if (access("add_perm") == 1) { ?>
+									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+										Import
+									</a>
+								<?php }?>
+							</div>
+						</div>
 					</div>
-					<div class="col s2 m6 l6">
-						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>" data-target="dropdown1">
-							List
-						</a>
-					</div>
-				</div>
+				</div> 
 			</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col s12 m12 l12">
-			<div id="Form-advance" class="card card card-default scrollspy">
-				<div class="card-content">
+		<div class="col s12 m12 l12 ">
+			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+				<div class="card-content custom_padding_card_content_table_top">
 					<?php
 					if (isset($error['msg'])) { ?>
 						<div class="card-alert card red lighten-5">

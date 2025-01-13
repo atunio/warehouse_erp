@@ -356,18 +356,15 @@
                                     <th style="width: %;">
                                         Sale Product &nbsp;
                                         <?php
-                                        if(isset($order_status) && $order_status == 1){
-                                        ?>
-                                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
-                                            Import
-                                        </a> 
-                                        &nbsp;&nbsp;
-                                        <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                            <i class="material-icons  dp48 md-36">add_circle</i>
-                                        </a> 
-                                        <?php
-                                        }
-                                        ?>
+                                        if(isset($order_status) && $order_status == 1){?>
+                                            <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
+                                                Import
+                                            </a> 
+                                            &nbsp;&nbsp;
+                                            <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                                <i class="material-icons  dp48 md-36">add_circle</i>
+                                            </a> 
+                                        <?php }?>
                                     </th>
                                     <th style="width: 400px;">Product Description</th>
                                     <th style="width: 100px;">Sale Price</th>
@@ -474,15 +471,15 @@
                                             <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
                                         </td>
                                         <td>
-                                            <?php if(isset($order_status) && $order_status == 1){ ?>
-                                                    <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
-                                                        <i class="material-icons dp48">cancel</i>
-                                                    </a> &nbsp;
-                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
-                                                        <i class="material-icons dp48">add_circle</i>
-                                                    </a>&nbsp;&nbsp;
-                                            <?php }
-                                            ?>
+                                            <?php 
+                                            if(isset($order_status) && $order_status == 1){ ?>
+                                                <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
+                                                    <i class="material-icons dp48">cancel</i>
+                                                </a> &nbsp;
+                                                <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
+                                                    <i class="material-icons dp48">add_circle</i>
+                                                </a>&nbsp;&nbsp;
+                                            <?php }?>
                                         </td>
                                     </tr>
                                 <?php }  

@@ -128,10 +128,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
-						$id			= mysqli_insert_id($conn);
-						$po_no		= "PO" . $id;
+						$id				= mysqli_insert_id($conn);
+						$po_no			= "PO" . $id;
+						$order_status	= 1;
 
-						$sql6		= " UPDATE purchase_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
+						$sql6 = " UPDATE purchase_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 
 						$msg['msg_success'] = "Purchase Order has been created successfully.";

@@ -153,6 +153,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$so_no				= "SO" . $id;
 						$order_date_disp	= dateformat2($order_date1);
 						$cmd 				= 'edit';
+						$order_status		= 1;
 
 						$sql6 = " UPDATE sales_orders SET so_no = '" . $so_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);

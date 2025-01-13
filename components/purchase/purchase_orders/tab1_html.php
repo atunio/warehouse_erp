@@ -247,18 +247,14 @@
                                         <th style="width: %;">
                                             Product &nbsp;
                                             <?php
-                                            if (isset($order_status) && $order_status == 1) {
-                                            ?>
+                                            if (isset($order_status) && $order_status == 1) {?>
                                                 <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
                                                     Import
                                                 </a> &nbsp;&nbsp;
-
                                                 <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                     <i class="material-icons  dp48 md-36">add_circle</i>
                                                 </a>
-                                            <?php
-                                            }
-                                            ?>
+                                            <?php }?>
                                         </th>
                                         <th style="width: 120px;">Condition</th>
                                         <th style="width: 100px;">Qty</th>

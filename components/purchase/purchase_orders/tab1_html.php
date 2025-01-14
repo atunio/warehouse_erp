@@ -35,7 +35,7 @@
                                 <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
                                     Import Products
                                 </a>
-                            <?php }
+                    <?php }
                         }
                     }
                     include("tab_action_btns.php"); ?>
@@ -270,7 +270,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <input type="hidden" id="total_products_in_po" value="<?php if(!isset($product_ids) || (isset($product_ids) || sizeof($product_ids) == 0)){ echo "1";} else{  echo sizeof($product_ids); }?>">
                                     <?php
                                     if (isset($id) && $id > 0) {
 
@@ -294,6 +293,13 @@
                                             }
                                         }
                                     }
+                                    ?>
+                                    <input type="hidden" id="total_products_in_po" value="<?php if (!isset($product_ids) || (isset($product_ids) && sizeof($product_ids) == 0)) {
+                                                                                                echo "1";
+                                                                                            } else {
+                                                                                                echo sizeof($product_ids);
+                                                                                            } ?>">
+                                    <?php
                                     $disabled = $readonly = "";
                                     if (isset($order_status) && $order_status != 1) {
                                         $disabled = "disabled='disabled'";
@@ -391,8 +397,8 @@
                                                     if (isset($order_qty[$i - 1]) && isset($order_price[$i - 1])) {
                                                         $value =  ($order_price[$i - 1] * $order_qty[$i - 1]);
                                                     }
-                                                    echo number_format($value, 2); 
-                                                    $sum_value += $value;?>
+                                                    echo number_format($value, 2);
+                                                    $sum_value += $value; ?>
                                                 </span>
                                             </td>
                                             <td>
@@ -440,7 +446,7 @@
                                         <td colspan="3"></td>
                                         <td class="text_align_right"><b>Total: </b></td>
                                         <td class="text_align_right"><b>
-                                            <span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
+                                                <span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
                                         </td>
                                         <td colspan="2"></td>
                                     </tr>

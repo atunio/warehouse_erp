@@ -7,12 +7,12 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Arrival
+                    <?= $general_heading; ?> => Arrival
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -22,9 +22,9 @@
                 </div>
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
             </div>
-        <?php }  ?> 
+        <?php }  ?>
     </div>
     <?php
     if (!isset($id)) { ?>
@@ -98,7 +98,7 @@
                             <?php
                             if (isset($id) && $id > 0 && access("print_perm") == 1) { ?>
                                 <br>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Print Labels</button>
+                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Print Labels</button>
                             <?php } ?>
                         </div>
                         <div class="input-field col m4 s12"></div>
@@ -246,7 +246,7 @@
                 <div class="card-panel">
                     <br>
                     <div class="row">
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m3 s12">
                             <?php
                             $field_name     = "sub_location_id";
                             $field_label    = "Location";
@@ -290,7 +290,7 @@
                         }
                         $field_label     = "Arrival Date (d/m/Y)";
                         ?>
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m3 s12">
                             <i class="material-icons prefix">date_range</i>
                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
@@ -306,13 +306,11 @@
                                 </span>
                             </label>
                         </div>
-                    </div>
-                    <div class="row">
                         <?php
                         $field_name     = "bill_of_landing";
                         $field_label     = "Bill of Landing";
                         ?>
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m3 s12">
                             <div class="file-field input-field">
                                 <div class="btn">
                                     <span>Browse</span>
@@ -327,19 +325,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="input-field col m12 s12"></div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col m4 s12"></div>
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m2 s12"><br>
                             <?php if (isset($id) && $id > 0 && (($cmd3 == 'add' || $cmd3 == '') && access("add_perm") == 1)  || ($cmd3 == 'edit' && access("edit_perm") == 1) || ($cmd3 == 'delete' && access("delete_perm") == 1)) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                             <?php } ?>
                         </div>
-                        <div class="input-field col m4 s12"></div>
                     </div>
                     <div class="row">
                         <div class="input-field col m12 s12"></div>

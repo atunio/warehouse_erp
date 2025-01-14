@@ -512,12 +512,17 @@ $page_heading 	= "List Purchase Orders ";
 																</td>
 																<td class="text-align-center">
 																	<?php
+																	if ($data['order_enabled'] == 1 && access("print_perm") == 1) { ?>
+																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+																			<i class="material-icons dp48">print</i>
+																		</a>&nbsp;&nbsp;
+																	<?php }
+																	if (access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+																			<i class="material-icons dp48">edit</i>
+																		</a> &nbsp;&nbsp;
+																	<?php }
 																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
-																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-																				<i class="material-icons dp48">edit</i>
-																			</a> &nbsp;&nbsp;
-																		<?php }
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>

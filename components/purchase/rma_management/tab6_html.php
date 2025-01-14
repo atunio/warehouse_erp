@@ -259,7 +259,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -488,7 +488,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -679,7 +679,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -735,7 +735,7 @@
                                 <h5>Received Products</h5>
                             </div>
                             <div class="col m3 s12">
-                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-light-blue-cyan    col m12 s12">Export in Excel</a>
+                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Excel</a>
                             </div>
                         </div>
                         <?php
@@ -1159,7 +1159,7 @@
                                 <div class="input-field col m4 s12"></div>
                                 <div class="input-field col m4 s12">
                                     <?php if (isset($id) && $id > 0) { ?>
-                                        <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                        <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Update</button>
                                     <?php } ?>
                                 </div>
                                 <div class="input-field col m4 s12"></div>

@@ -40,10 +40,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("product_id", "order_qty", "order_price", "product_condition", "is_tested", "is_wiped", "is_imaged", "warranty_period_in_days", "product_po_desc");
-$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "is_tested", "is_wiped", "is_imaged", "warranty_period_in_days", "product_po_desc");
+$supported_column_titles	= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
+$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "product_status"); 
 $duplication_columns 		= array("product_id");
-$required_columns			= array("product_id", "order_qty", "order_price", "product_condition", "is_tested", "is_wiped", "is_imaged", "warranty_period_in_days");
+$required_columns			= array("product_id", "order_qty", "order_price");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -189,6 +189,24 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
  									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . $product_id2 . "'";
 								}
+								else if ($key == 'product_status') {
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
+										$result1	= $db->query($conn, $sql1);
+										$count1		= $db->counter($result1);
+										if ($count1 > 0) {
+											$row1 = $db->fetch($result1);
+											$columns 		.= ", expected_status";
+											$column_data 	.= ", '" . $row1[0]['id'] . "'"; 
+										}
+									}
+								}
+								else if ($key == 'product_condition') {
+									if(${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D'){
+										$columns 		.= ", " . $insert_db_field_id;
+										$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
+									}
+								}
 								else{
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
@@ -226,31 +244,32 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col s10 m6 l6">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $title_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><?php echo $title_heading; ?>
-							</li>
-							<li class="breadcrumb-item"><a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">List</a>
-							</li>
-						</ol>
-					</div>
-					<div class="col s2 m6 l6">
-						<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>" data-target="dropdown1">
-							PO Profile
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="col s12 m12 l12">
-			<div id="Form-advance" class="card card card-default scrollspy">
-
-				<div class="card-panel">
+			<div class="section section-data-tables">   
+				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+						<div class="row">
+							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+								<h6 class="media-heading">
+									<?php echo $title_heading; ?>
+								</h6>
+							</div>
+							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
+									PO List
+								</a> 
+								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+									PO Profile
+								</a> 
+							</div>
+						</div>
+					</div>
+				</div> 
+			</div>
+		</div>  
+		<div class="col s12 m12 l12">
+			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
+				<div class="card-panel custom_padding_card_content_table_top">
 					<div class="row">
 						<div class="col s10 m12 l8">
 							<h5 class="breadcrumbs mt-0 mb-0"><span>Master Info</span></h5>

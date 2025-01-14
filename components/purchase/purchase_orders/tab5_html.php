@@ -3,70 +3,70 @@
                                         } else {
                                             echo "none";
                                         } ?>;">
-    <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
-        <div class="row">
-            <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
-                <h6 class="media-heading">
-                    <?= $general_heading;?> => Receive
-                </h6>
-            </div>
-            <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
-        </div>
-        <?php
-        if (isset($id) && isset($po_no)) {  ?>
-            <div class="row">
-                <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
-                </div>
-                <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
-                
-                <div class="input-field col m4 s12">
-                    <?php
-                    $entry_type = "receive"; ?>
-                    <a class="btn gradient-45deg-light-blue-cyan timer_<?= $entry_type; ?>" title="Timer" href="javascript:void(0)" id="timer_<?= $entry_type; ?>_<?= $id ?>"
-                        <?php
-                        if (
-                            !isset($_SESSION['is_start']) ||
-                            !isset($_SESSION[$entry_type]) ||
-                            (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] != $entry_type)
-                        ) { ?> style="display: none;" <?php } ?>>00:00:00
-                    </a>
-                    <a class="btn gradient-45deg-green-teal startButton_<?= $entry_type; ?>" title="Start <?= $entry_type; ?>" href="javascript:void(0)" id="startButton_<?= $entry_type; ?>_<?= $id ?>" onclick="startTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
-                                                                                                                                                                                                                                                                    if ((
-                                                                                                                                                                                                                                                                        isset($_SESSION['is_start']) && $_SESSION['is_start'] == 1) && (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] == $entry_type)) {
-                                                                                                                                                                                                                                                                        echo "display: none;";
-                                                                                                                                                                                                                                                                    } ?>">
-                        Start
-                    </a> &nbsp;
-                    <a class="btn gradient-45deg-red-pink stopButton_<?= $entry_type; ?>" title="Stop <?= $entry_type; ?>" href="javascript:void(0)" id="stopButton_<?= $entry_type; ?>_<?= $id ?>" onclick="stopTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
-                                                                                                                                                                                                                                                                if (!isset($_SESSION['is_start']) || !isset($_SESSION[$entry_type])) {
-                                                                                                                                                                                                                                                                    echo "display: none; ";
-                                                                                                                                                                                                                                                                } else if (isset($_SESSION['is_start']) && $_SESSION['is_start'] != 1 && isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] !=  $entry_type || (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '1')) {
-                                                                                                                                                                                                                                                                    echo "display: none;";
-                                                                                                                                                                                                                                                                } ?> ">
-                        Stop
-                    </a>&nbsp;
-                    <a class="btn gradient-45deg-amber-amber pauseButton_<?= $entry_type; ?>" title="Pause Timer" href="javascript:void(0)" id="pauseButton_<?= $entry_type; ?>_<?= $id ?>" onclick="pauseTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
-                                                                                                                                                                                                                                                        if (!isset($_SESSION['is_start']) || !isset($_SESSION[$entry_type])) {
-                                                                                                                                                                                                                                                            echo "display: none; ";
-                                                                                                                                                                                                                                                        } else if (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] ==  $entry_type && (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '1')) {
-                                                                                                                                                                                                                                                            echo "display: none;";
-                                                                                                                                                                                                                                                        } ?> ">
-                        Pause
-                    </a>&nbsp;
-                    <a class="btn gradient-45deg-green-teal resumeButton_<?= $entry_type; ?>" title="Resume <?= $entry_type; ?>" href="javascript:void(0)" id="resumeButton_<?= $entry_type; ?>_<?= $id ?>" onclick="resumeTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
-                                                                                                                                                                                                                                                                        if (!isset($_SESSION['is_paused']) || (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '0') && (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] == $entry_type)) {
+     <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
+         <div class="row">
+             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+                 <h6 class="media-heading">
+                     <?= $general_heading; ?> => Receive
+                 </h6>
+             </div>
+             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                 <?php include("tab_action_btns.php"); ?>
+             </div>
+         </div>
+         <?php
+            if (isset($id) && isset($po_no)) {  ?>
+             <div class="row">
+                 <div class="input-field col m4 s12">
+                     <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
+                 </div>
+                 <div class="input-field col m4 s12">
+                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                 </div>
+
+                 <div class="input-field col m4 s12">
+                     <?php
+                        $entry_type = "receive"; ?>
+                     <a class="btn gradient-45deg-light-blue-cyan timer_<?= $entry_type; ?>" title="Timer" href="javascript:void(0)" id="timer_<?= $entry_type; ?>_<?= $id ?>"
+                         <?php
+                            if (
+                                !isset($_SESSION['is_start']) ||
+                                !isset($_SESSION[$entry_type]) ||
+                                (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] != $entry_type)
+                            ) { ?> style="display: none;" <?php } ?>>00:00:00
+                     </a>
+                     <a class="btn gradient-45deg-green-teal startButton_<?= $entry_type; ?>" title="Start <?= $entry_type; ?>" href="javascript:void(0)" id="startButton_<?= $entry_type; ?>_<?= $id ?>" onclick="startTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
+                                                                                                                                                                                                                                                                        if ((
+                                                                                                                                                                                                                                                                            isset($_SESSION['is_start']) && $_SESSION['is_start'] == 1) && (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] == $entry_type)) {
                                                                                                                                                                                                                                                                             echo "display: none;";
-                                                                                                                                                                                                                                                                        } ?> ">
-                        Resume
-                    </a>&nbsp;
-                    <input type="hidden" name="total_pause_duration" id="total_pause_duration" value="0">
-                </div>
-            </div>
+                                                                                                                                                                                                                                                                        } ?>">
+                         Start
+                     </a> &nbsp;
+                     <a class="btn gradient-45deg-red-pink stopButton_<?= $entry_type; ?>" title="Stop <?= $entry_type; ?>" href="javascript:void(0)" id="stopButton_<?= $entry_type; ?>_<?= $id ?>" onclick="stopTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
+                                                                                                                                                                                                                                                                    if (!isset($_SESSION['is_start']) || !isset($_SESSION[$entry_type])) {
+                                                                                                                                                                                                                                                                        echo "display: none; ";
+                                                                                                                                                                                                                                                                    } else if (isset($_SESSION['is_start']) && $_SESSION['is_start'] != 1 && isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] !=  $entry_type || (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '1')) {
+                                                                                                                                                                                                                                                                        echo "display: none;";
+                                                                                                                                                                                                                                                                    } ?> ">
+                         Stop
+                     </a>&nbsp;
+                     <a class="btn gradient-45deg-amber-amber pauseButton_<?= $entry_type; ?>" title="Pause Timer" href="javascript:void(0)" id="pauseButton_<?= $entry_type; ?>_<?= $id ?>" onclick="pauseTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
+                                                                                                                                                                                                                                                            if (!isset($_SESSION['is_start']) || !isset($_SESSION[$entry_type])) {
+                                                                                                                                                                                                                                                                echo "display: none; ";
+                                                                                                                                                                                                                                                            } else if (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] ==  $entry_type && (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '1')) {
+                                                                                                                                                                                                                                                                echo "display: none;";
+                                                                                                                                                                                                                                                            } ?> ">
+                         Pause
+                     </a>&nbsp;
+                     <a class="btn gradient-45deg-green-teal resumeButton_<?= $entry_type; ?>" title="Resume <?= $entry_type; ?>" href="javascript:void(0)" id="resumeButton_<?= $entry_type; ?>_<?= $id ?>" onclick="resumeTimer(<?= $id ?>, '<?= $entry_type ?>')" style="<?php
+                                                                                                                                                                                                                                                                            if (!isset($_SESSION['is_paused']) || (isset($_SESSION['is_paused']) && $_SESSION['is_paused'] == '0') && (isset($_SESSION[$entry_type]) && $_SESSION[$entry_type] == $entry_type)) {
+                                                                                                                                                                                                                                                                                echo "display: none;";
+                                                                                                                                                                                                                                                                            } ?> ">
+                         Resume
+                     </a>&nbsp;
+                     <input type="hidden" name="total_pause_duration" id="total_pause_duration" value="0">
+                 </div>
+             </div>
              <?php
                 if (isset($cmd5) &&  $cmd5 == "add" && isset($detail_id) && $detail_id != "") {  ?>
                  <div class="row">
@@ -75,8 +75,8 @@
                      </div>
                  </div>
          <?php }
-         }  ?> 
-    </div> 
+            }  ?>
+     </div>
      <?php
         if (!isset($id)) { ?>
          <div class="card-panel">
@@ -310,13 +310,11 @@
                              <div class="input-field col m12 s12"></div>
                          </div>
                          <div class="row">
-                             <div class="input-field col m4 s12"></div>
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m12 s12 text_align_center">
                                  <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                     <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Receive with BarCode</button>
+                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive with BarCode</button>
                                  <?php } ?>
                              </div>
-                             <div class="input-field col m4 s12"></div>
                          </div>
                          <div class="row">
                              <div class="input-field col m12 s12"></div>
@@ -540,13 +538,11 @@
                                  <div class="input-field col m12 s12"></div>
                              </div>
                              <div class="row">
-                                 <div class="input-field col m4 s12"></div>
-                                 <div class="input-field col m4 s12">
+                                 <div class="input-field col m12 s12 text_align_center">
                                      <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                         <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Receive as Category</button>
+                                         <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive as Category</button>
                                      <?php } ?>
                                  </div>
-                                 <div class="input-field col m4 s12"></div>
                              </div>
                              <div class="row">
                                  <div class="input-field col m12 s12"></div>
@@ -813,13 +809,11 @@
                              </div>
                          </div>
                          <div class="row">
-                             <div class="input-field col m4 s12"></div>
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m12 s12 text_align_center">
                                  <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                     <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Receive by Manual Serial Numbers</button>
+                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive by Manual Serial Numbers</button>
                                  <?php } ?>
                              </div>
-                             <div class="input-field col m4 s12"></div>
                          </div>
                          <div class="row">
                              <div class="input-field col m12 s12"></div>
@@ -1007,13 +1001,11 @@
                                  <div class="input-field col m12 s12"></div>
                              </div>
                              <div class="row">
-                                 <div class="input-field col m4 s12"></div>
-                                 <div class="input-field col m4 s12">
+                                 <div class="input-field col m12 s12 text_align_center">
                                      <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                         <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Receive Package Materials</button>
+                                         <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive Package Materials</button>
                                      <?php } ?>
                                  </div>
-                                 <div class="input-field col m4 s12"></div>
                              </div>
                              <div class="row">
                                  <div class="input-field col m12 s12"></div>
@@ -1107,13 +1099,11 @@
                              <div class="input-field col m12 s12"></div>
                          </div>
                          <div class="row">
-                             <div class="input-field col m4 s12"></div>
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m12 s12 text_align_center">
                                  <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                     <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deduct2">Update Deduct Serial Numbers</button>
+                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deduct2">Update Deduct Serial Numbers</button>
                                  <?php } ?>
                              </div>
-                             <div class="input-field col m4 s12"></div>
                          </div>
                          <div class="row">
                              <div class="input-field col m12 s12"></div>
@@ -1352,13 +1342,11 @@
                          </div>
 
                          <div class="row">
-                             <div class="input-field col m4 s12"></div>
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m12 s12 text_align_center">
                                  <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                     <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Delete</button>
+                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deletepserial">Delete</button>
                                  <?php } ?>
                              </div>
-                             <div class="input-field col m4 s12"></div>
                          </div>
                          <div class="row">
                              <div class="input-field col m12 s12"></div>

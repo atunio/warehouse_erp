@@ -7,12 +7,12 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> --> Logistics 
+                    <?= $general_heading; ?> --> Logistics
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -25,9 +25,9 @@
                 </div>
                 <div class=" col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
             </div>
-        <?php }  ?> 
+        <?php }  ?>
     </div>
     <?php
     if (!isset($id)) { ?>
@@ -47,14 +47,14 @@
             </div>
         </div>
     <?php
-    }?>
+    } ?>
     <?php
     if (isset($cmd2_1) && $cmd2_1 == 'edit') { ?>
         <div class="card-panel">
             <h5>Update Single Record</h5>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2_1=edit&detail_id=" . $detail_id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_1" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <div class="row">
@@ -193,14 +193,12 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col m5 s12"></div>
-                    <div class="input-field col m2 s12">
+                    <div class="input-field col m6 s12 text_align_right">
                         <?php if (access("add_perm") == 1) { ?>
-                            <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                            <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
                         <?php } ?>
                     </div>
-                    <div class="input-field col m5 s12">
-                        <br>
+                    <div class="input-field col m6 s12"><br>
                         <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>">Cancel</a>
                     </div>
                 </div>
@@ -223,9 +221,9 @@
         if ($count_log > 0) { ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>"> 
+                                                                } ?>">
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m12 s12">
@@ -313,8 +311,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col m2 s12"></div>
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m6 s12">
                             <?php
                             $field_name     = "logistics_status";
                             $field_label     = "Status";
@@ -346,9 +343,9 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="input-field col m2 s12">
+                        <div class="input-field col m6 s12">
                             <?php if (access("edit_perm")) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
                             <?php } ?>
                         </div>
                     </div>
@@ -359,9 +356,9 @@
     <form class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
         <div class="card-panel">
             <input type="hidden" name="is_Submit_tab2" value="Y" />
-             <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+            <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                 echo encrypt($_SESSION['csrf_session']);
-                                                            } ?>">  
+                                                            } ?>">
             <div class="row">
                 <div class="input-field col m4 s12">
                     <?php
@@ -497,11 +494,10 @@
                 </div>
             </div>
             <div class="row">
-                <div class="input-field col m5 s12"></div>
-                <div class="input-field col m2 s12">
+                <div class="input-field col m12 s12 text_align_center">
                     <?php
                     if (access("add_perm")) { ?>
-                        <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Create</button>
+                        <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Create</button>
                     <?php } ?>
                 </div>
                 <div class="input-field col m5 s12"></div>

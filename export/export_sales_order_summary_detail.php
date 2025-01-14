@@ -47,8 +47,6 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					INNER JOIN product_stock c ON c.id = a.product_stock_id
 					INNER JOIN products c1 ON c1.id = c.product_id
 					LEFT JOIN product_categories d ON d.id = c1.product_category
-					LEFT JOIN packages f ON f.id = a.package_id
-					LEFT JOIN product_categories g ON g.id = f.product_category
 					WHERE a.sales_order_id = '" . $id . "' 
 					AND a.enabled = 1
 					GROUP BY c.product_id

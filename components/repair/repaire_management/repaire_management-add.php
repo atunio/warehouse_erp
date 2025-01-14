@@ -320,9 +320,9 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -332,11 +332,11 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a>  
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">
@@ -733,7 +733,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 										<div class="col m6 s12">
 										</div>
 										<div class="col m3 s12">
-											<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber col m12 s12">Export Processed Data in Excel</a>
+											<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-amber-amber box-shadow-none border-round mr-1 mb-1">Export Processed Data in Excel</a>
 										</div>
 									</div>
 									<div class="row">
@@ -881,7 +881,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 										<div class="input-field col m4 s12"></div>
 										<div class="input-field col m4 s12">
 											<?php if (isset($id) && $id > 0) { ?>
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Move PO to Finale</button>
+												<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Move PO to Finale</button>
 											<?php } ?>
 										</div>
 										<div class="input-field col m4 s12"></div>

@@ -934,7 +934,7 @@ if ($cmd == 'add') {
 										<div class="row">
 											<div class="input-field col m4 s12"></div>
 											<div class="input-field col m4 s12">
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_val; ?></button>
+												<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_val; ?></button>
 											</div>
 											<div class="input-field col m4 s12"></div>
 										</div>
@@ -1069,9 +1069,8 @@ if ($cmd == 'add') {
 												</div>
 											</div>
 											<div class="row">
-												<div class="input-field col m4 s12"></div>
-												<div class="input-field col m4 s12">
-													<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_edu; ?></button>
+												<div class="input-field col m12 s12">
+													<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 												</div>
 												<div class="input-field col m4 s12"></div>
 											</div>
@@ -1250,7 +1249,7 @@ if ($cmd == 'add') {
 												<div class="row">
 													<div class="input-field col m4 s12"></div>
 													<div class="input-field col m4 s12">
-														<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_exp; ?></button>
+														<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_exp; ?></button>
 													</div>
 													<div class="input-field col m4 s12"></div>
 												</div>
@@ -1505,7 +1504,7 @@ if ($cmd == 'add') {
 												<div class="row">
 													<div class="input-field col m4 s12"></div>
 													<div class="input-field col m4 s12">
-														<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_edu; ?></button>
+														<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 													</div>
 													<div class="input-field col m4 s12"></div>
 												</div>
@@ -1658,7 +1657,7 @@ if ($cmd == 'add') {
 												<div class="row">
 													<div class="input-field col m4 s12"></div>
 													<div class="input-field col m4 s12">
-														<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_edu; ?></button>
+														<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 													</div>
 													<div class="input-field col m4 s12"></div>
 												</div>

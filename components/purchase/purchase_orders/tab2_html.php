@@ -7,12 +7,12 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Logistics
+                    <?= $general_heading; ?> => Logistics
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -22,9 +22,9 @@
                 </div>
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
             </div>
-        <?php }  ?> 
+        <?php }  ?>
     </div>
 
     <?php
@@ -192,15 +192,13 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col m4 s12"></div>
-                    <div class="input-field col m4 s12">
-                        <?php if (isset($id) && $id > 0 && access("edit_perm")) { ?>
-                            <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                    <div class="input-field col m6 s12 text_align_right">
+                        <?php if (access("add_perm") == 1) { ?>
+                            <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
                         <?php } ?>
                     </div>
-                    <div class="input-field col m4 s12">
-                        <br>
-                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=" . $cmd2 . "&active_tab=tab2") ?>">Cancel</a>
+                    <div class="input-field col m6 s12"><br>
+                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>">Cancel</a>
                     </div>
                 </div>
             </form>
@@ -314,8 +312,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col m2 s12"></div>
-                        <div class="input-field col m4 s12">
+                        <div class="input-field col m6 s12">
                             <?php
                             $field_name     = "logistics_status";
                             $field_label     = "Status";
@@ -347,9 +344,9 @@
                                 </label>
                             </div>
                         </div>
-                        <div class="input-field col m2 s12">
+                        <div class="input-field col m6 s12">
                             <?php if (isset($id) && $id > 0 && access("edit_perm") == 1) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
                             <?php } ?>
                         </div>
                     </div>
@@ -506,13 +503,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="input-field col m4 s12"></div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m12 s12 text_align_center">
                         <?php if (isset($id) && $id > 0 && access("edit_perm") == 1) { ?>
-                            <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Create</button>
+                            <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Create</button>
                         <?php } ?>
                     </div>
-                    <div class="input-field col m4 s12"></div>
                 </div>
             </div>
         </form>

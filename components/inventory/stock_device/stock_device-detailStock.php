@@ -381,7 +381,7 @@ $page_heading 	= "Stock Detail";
 								<button id="searchButton" class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action_searchButton" value="search">Search</button>
 							</div>
 							<div class="input-field col m2 s12">
-								<button id="exportButton" class="btn waves-effect waves-light border-round gradient-45deg-light-blue-cyan col m12 s12" type="submit" name="action_exportButton" value="export">Export in Excel</button>
+								<button id="exportButton" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1" type="submit" name="action_exportButton" value="export">Export in Excel</button>
 							</div>
 							<div class="input-field col m1 s12">
 								<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-red ">Reset Search</a>

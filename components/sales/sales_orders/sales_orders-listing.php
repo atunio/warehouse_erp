@@ -90,7 +90,7 @@ $page_heading 	= "List Sales Orders ";
 										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 											<?php
 											if (access("add_perm") == 1) { ?>
-												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
+												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
 													New
 												</a>
 											<?php }
@@ -281,7 +281,7 @@ $page_heading 	= "List Sales Orders ";
 											</div>
 											<div class="input-field col m2 s12">
 												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
-												<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
+												<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">All</a>
 											</div>
 										</div>
 									</form>
@@ -315,7 +315,7 @@ $page_heading 	= "List Sales Orders ";
 																<td>
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+																		<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 																			<?php echo $data['so_no']; ?>
 																		</a>
 																	<?php } else {
@@ -410,22 +410,22 @@ $page_heading 	= "List Sales Orders ";
 																<td class="text-align-center">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("print_perm") == 1) { ?>
-																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_invoice.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_invoice.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																		<?php }
+																	<?php }
 																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 																				<i class="material-icons dp48">edit</i>
 																			</a> &nbsp;&nbsp;
 																		<?php }
 																		if ($data['order_enabled'] == 0 && access("delete_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
+																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>
 																			</a> &nbsp;&nbsp;
 																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
+																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
 																				<i class="material-icons dp48">delete</i>
 																			</a> &nbsp;&nbsp;
 																	<?php }

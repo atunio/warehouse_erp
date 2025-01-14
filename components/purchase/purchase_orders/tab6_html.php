@@ -7,12 +7,12 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Diagnostic
+                    <?= $general_heading; ?> => Diagnostic
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -74,7 +74,7 @@
                 </div>
         <?php }
         }  ?>
-    </div>    
+    </div>
     <?php
     if (!isset($id)) { ?>
         <div class="card-panel">
@@ -275,13 +275,11 @@
                             <div class="input-field col m12 s12"></div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m4 s12"></div>
-                            <div class="input-field col m4 s12">
+                            <div class="input-field col m12 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
-                            <div class="input-field col m4 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
@@ -503,13 +501,11 @@
                             <?php } ?>
                         </div>
                         <div class="row">
-                            <div class="input-field col m4 s12"></div>
-                            <div class="input-field col m4 s12">
+                            <div class="input-field col m12 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
-                            <div class="input-field col m4 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
@@ -691,7 +687,7 @@
                     <div class="input-field col m4 s12"></div>
                     <div class="input-field col m4 s12">
                         <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                            <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                            <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                         <?php } ?>
                     </div>
                     <div class="input-field col m4 s12"></div>
@@ -723,8 +719,8 @@
             if ($count_log > 0) { ?>
                 <div class="card-panel">
                     <div class="row">
-                        <div class="col m4 s12">
-                            <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber    col m12 s12">Import & Map Diagnostic Data</a>
+                        <div class="col m12 s12">
+                            <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>" class="btn waves-effect waves-light gradient-45deg-amber-amber">Import & Map Diagnostic Data</a>
                         </div>
                     </div>
                 </div>
@@ -742,8 +738,8 @@
                             <div class="col m4 s12">
                                 <h5>Received Products</h5>
                             </div>
-                            <div class="col m3 s12">
-                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-light-blue-cyan    col m12 s12">Export in Excel</a>
+                            <div class="col m8 s12">
+                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export in Excel</a>
                             </div>
                         </div>
                         <?php
@@ -1266,13 +1262,11 @@
                         <?php
                         if (po_permisions("Move as Inventory") == 1) { ?>
                             <div class="row">
-                                <div class="input-field col m4 s12"></div>
-                                <div class="input-field col m4 s12">
+                                <div class="input-field col m12 s12">
                                     <?php if (isset($id) && $id > 0) { ?>
-                                        <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Process Diagnostic</button>
+                                        <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button>
                                     <?php } ?>
                                 </div>
-                                <div class="input-field col m4 s12"></div>
                             </div>
                             <div class="row">
                                 <div class="input-field col m12 s12"></div>

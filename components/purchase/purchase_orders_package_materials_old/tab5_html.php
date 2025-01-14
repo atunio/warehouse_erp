@@ -278,7 +278,7 @@
                                  <div class="input-field col m4 s12"></div>
                                  <div class="input-field col m4 s12">
                                      <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
-                                         <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Receive as Category</button>
+                                         <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Receive as Category</button>
                                      <?php } ?>
                                  </div>
                                  <div class="input-field col m4 s12"></div>
@@ -432,7 +432,7 @@
                              <div class="input-field col m4 s12"></div>
                              <div class="input-field col m4 s12">
                                  <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                     <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Delete</button>
+                                     <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="deletepserial">Delete</button>
                                  <?php } ?>
                              </div>
                              <div class="input-field col m4 s12"></div>

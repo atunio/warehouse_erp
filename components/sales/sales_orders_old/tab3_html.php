@@ -118,8 +118,8 @@
                             <input id="<?= $field_name; ?>" type="number" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                             echo ${$field_name};
                                                                                                                         } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                                                                                        } ?>">
+                                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                                } ?>">
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
                                 <span class="color-red"> * <?php
@@ -138,8 +138,8 @@
                             <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
                                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                                                echo ${$field_name . "_valid"};
-                                                                                                                                                                                            } ?>">
+                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                    } ?>">
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
                                 <span class="color-red"> <?php
@@ -198,7 +198,7 @@
                         <div class="input-field col m4 s12"></div>
                         <div class="input-field col m4 s12">
                             <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Add Packing</button>
+                                <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Add Packing</button>
                             <?php } ?>
                         </div>
                         <div class="input-field col m4 s12"></div>
@@ -386,7 +386,7 @@
                         <div class="input-field col m4 s12"></div>
                         <div class="input-field col m4 s12">
                             <?php if ((access("add_perm") == 1)  || (access("edit_perm") == 1)) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update Box Dimentions</button>
+                                <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Update Box Dimentions</button>
                             <?php } ?>
                         </div>
                         <div class="input-field col m4 s12"></div>
@@ -528,8 +528,8 @@
                                 <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                     echo ${$field_name};
                                                                                                                 } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                                                } ?>">
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
                                 <label for="<?= $field_name; ?>">
                                     <?= $field_label; ?>
                                     <span class="color-red"> * <?php
@@ -548,8 +548,8 @@
                                 <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                     echo ${$field_name};
                                                                                                                 } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                                                } ?>">
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
                                 <label for="<?= $field_name; ?>">
                                     <?= $field_label; ?>
                                     <span class="color-red"> <?php
@@ -564,7 +564,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Add Bulk Packing</button>
+                                    <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Add Bulk Packing</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -725,7 +725,7 @@
                         </div>
                         <div class="input-field col m4 s12">
                             <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="deletepserial">Unpack / Remove from Packing</button>
+                                <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="deletepserial">Unpack / Remove from Packing</button>
                             <?php } ?>
                         </div>
                         <div class="input-field col m4 s12"></div>

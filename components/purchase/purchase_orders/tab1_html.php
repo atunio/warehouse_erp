@@ -438,10 +438,7 @@
                                                 ?>
                                             </td>
                                         </tr>
-                                    <?php }
-                                    $field_name     = "product_id_for_package_material";
-                                    ?>
-                                    <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
+                                    <?php } ?>
                                     <tr>
                                         <td colspan="3"></td>
                                         <td class="text_align_right"><b>Total: </b></td>

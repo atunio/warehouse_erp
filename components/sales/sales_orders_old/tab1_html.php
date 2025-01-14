@@ -406,7 +406,7 @@
         <div class="card-panel">
             <div class="row">
                 <div class="col m4 s12">
-                    <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber col m12 s12">Import Sale Order Details</a>
+                    <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-amber-amber box-shadow-none border-round mr-1 mb-1">Import Sale Order Details</a>
                 </div>
             </div>
         </div>

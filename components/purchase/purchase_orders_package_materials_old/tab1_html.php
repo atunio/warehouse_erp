@@ -217,7 +217,7 @@
                 <div class="input-field col m2 s12">
                     <?php
                     if (isset($id) && $id > 0 && ($cmd == 'edit' && access("edit_perm") == 1) && po_permisions("Pkg_PO_Detail") == 1) { ?>
-                        <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                        <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="update_logistics">Update</button>
                     <?php } ?>
                 </div>
             </div>

@@ -7,12 +7,15 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => RMA
+                    <?= $general_heading; ?> => RMA
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_rma_data&id=" . $id) ?>">
+                    Import & RMA Data
+                </a>
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -22,7 +25,7 @@
                 </div>
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
             </div>
         <?php }  ?>
     </div>
@@ -140,9 +143,8 @@
                         <div class="col m4 s12">
                             <h5>Reconcile</h5>
                         </div>
-                        <div class="col m4 s12"></div>
-                        <div class="col m3 s12">
-                            <a href="export/export_po_data_for_reconcile.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-light-blue-cyan    col m12 s12">Export in Reconcile</a>
+                        <div class="col m12 s12 text_align_center">
+                            <a href="export/export_po_data_for_reconcile.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Reconcile</a>
                         </div>
                     </div>
                     <div class="row">
@@ -541,16 +543,11 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m12 s12"></div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m4 s12"></div>
-                            <div class="input-field col m4 s12">
+                            <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd7 == 'add' || $cmd7 == '') && access("add_perm") == 1)  || ($cmd7 == 'edit' && access("edit_perm") == 1) || ($cmd7 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Update</button>
+                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
-                            <div class="input-field col m4 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
@@ -558,13 +555,6 @@
                     </div>
                 </div>
             </form>
-            <div class="card-panel">
-                <div class="row">
-                    <div class="col m4 s12">
-                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_rma_data&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-amber-amber col m12 s12">Import & RMA Data</a>
-                    </div>
-                </div>
-            </div>
             <div class="card-panel">
                 <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab7") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab7_3" value="Y" />
@@ -576,9 +566,8 @@
                     <input type="hidden" name="active_tab" value="tab7" />
                     <div class="section section-data-tables">
                         <div class="row">
-                            <div class="col m4 s12"></div>
-                            <div class="col m3 s12">
-                                <a href="export/export_rma_data.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="btn waves-effect waves-light border-round gradient-45deg-light-blue-cyan    col m12 s12">Export in Excel</a>
+                            <div class="col m12 s12 text_align_center">
+                                <a href="export/export_rma_data.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Excel</a>
                             </div>
                             <br>
                         </div>
@@ -827,13 +816,11 @@
                     <?php
                     if (po_permisions("RMA Process") == 1) {  ?>
                         <div class="row">
-                            <div class="input-field col m4 s12"></div>
-                            <div class="input-field col m4 s12">
+                            <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0) { ?>
-                                    <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Process RMA</button>
+                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process RMA</button>
                                 <?php } ?>
                             </div>
-                            <div class="input-field col m4 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>

@@ -48,6 +48,21 @@ function updateRemoveButtonVisibility() {
     $('.add-more-btn').hide(); // Hide all "Remove" buttons
     $('#page-length-option1 tbody tr:visible:last .add-more-btn').show(); // Show only the last "Remove" button
 }
+
+
+// Handle the select change event to open the modal when "Add New Product" is selected
+$(document).on('change', '.product_stock', function(event) {
+    var selectedValue = $(this).val();
+    var id          = $(this).attr('id');
+    var parts       = id.split('_');
+    var rowno       = parseInt(parts[1]);  
+    var next_row    = rowno+1; 
+  
+    $("#row_"+next_row).show();
+    updateRemoveButtonVisibility();
+});
+// Initialize modal (if you're using Materialize)
+$('.modal').modal();
  
 function generate_combo_new(data) { 
     source_field = data[0];

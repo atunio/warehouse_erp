@@ -30,9 +30,15 @@
                             <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                                 Save changes
                             </button>
+                            <?php
+                            if (isset($order_status) && $order_status == 1) { ?>
+                                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
+                                    Import Products
+                                </a>
                     <?php }
-                    } ?>
-                    <?php include("tab_action_btns.php"); ?>
+                        }
+                    }
+                    include("tab_action_btns.php"); ?>
                 </div>
             </div>
         </div>
@@ -50,7 +56,7 @@
 
                                 <input type="hidden" name="is_Submit" value="Y" />
                             <?php } ?>
-                            <div class="row" style="margin-top: 10px;">
+                            <div class="row" style="margin-top: 20px;">
                                 <?php
                                 $field_name     = "po_date";
                                 $field_label     = "Order Date (d/m/Y)";
@@ -87,9 +93,9 @@
                                     <label for="<?= $field_name; ?>">
                                         <?= $field_label; ?>
                                         <span class="color-red"><?php
-                                                                    if (isset($error[$field_name])) {
-                                                                        echo $error[$field_name];
-                                                                    } ?>
+                                                                if (isset($error[$field_name])) {
+                                                                    echo $error[$field_name];
+                                                                } ?>
                                         </span>
                                     </label>
                                 </div>
@@ -243,18 +249,17 @@
                             <table id="page-length-option1" class="bordered addproducttable" cellpadding="0" cellspacing="0">
                                 <thead>
                                     <tr>
-
                                         <th style="width: %;">
                                             Product &nbsp;
                                             <?php
-                                            if (isset($order_status) && $order_status == 1) {?>
-                                                <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
+                                            if (isset($order_status) && $order_status == 1) { ?>
+                                                <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
                                                     Import
                                                 </a> &nbsp;&nbsp;
                                                 <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                     <i class="material-icons  dp48 md-36">add_circle</i>
                                                 </a>
-                                            <?php }?>
+                                            <?php } ?>
                                         </th>
                                         <th style="width: 120px;">Condition</th>
                                         <th style="width: 100px;">Qty</th>
@@ -272,11 +277,10 @@
                                         unset($product_condition);
                                         unset($order_price);
                                         unset($order_qty);
-                                        unset($expected_status); 
-                                        
+                                        unset($expected_status);
 
                                         $sql_ee1    = "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
-                                        $result_ee1    = $db->query($conn, $sql_ee1);
+                                        $result_ee1 = $db->query($conn, $sql_ee1);
                                         $count_ee1  = $db->counter($result_ee1);
                                         if ($count_ee1 > 0) {
                                             $row_ee1 = $db->fetch($result_ee1);
@@ -285,15 +289,23 @@
                                                 $product_condition[]    = $data2['product_condition'];
                                                 $order_price[]          = $data2['order_price'];
                                                 $order_qty[]            = $data2['order_qty'];
-                                                $expected_status[]		= $data2['expected_status'];
+                                                $expected_status[]      = $data2['expected_status'];
                                             }
                                         }
                                     }
+                                    ?>
+                                    <input type="hidden" id="total_products_in_po" value="<?php if (!isset($product_ids) || (isset($product_ids) && sizeof($product_ids) == 0)) {
+                                                                                                echo "1";
+                                                                                            } else {
+                                                                                                echo sizeof($product_ids);
+                                                                                            } ?>">
+                                    <?php
                                     $disabled = $readonly = "";
                                     if (isset($order_status) && $order_status != 1) {
                                         $disabled = "disabled='disabled'";
                                         $readonly = "readonly='readonly'";
                                     }
+                                    $sum_value = 0;
                                     for ($i = 1; $i <= 50; $i++) {
                                         $field_name     = "product_ids";
                                         $field_id       = "productids_" . $i;
@@ -324,8 +336,7 @@
                                                             WHERE a.enabled = 1 
                                                             ORDER BY a.product_desc";
                                         $result1         = $db->query($conn, $sql1);
-                                        $count1         = $db->counter($result1);
-                                    ?>
+                                        $count1         = $db->counter($result1); ?>
                                         <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                             <td>
                                                 <select <?php echo $disabled;
@@ -380,14 +391,15 @@
                                                                                                                                                     } ?>" class="validate custom_input order_price">
                                             </td>
                                             <td class="text_align_right">
-                                                <span  id="value_<?= $i; ?>">    
-                                                    <?php 
-                                                    $value = 0 ;
-                                                    if(isset($order_qty[$i - 1]) && isset($order_price[$i - 1])){
-                                                        $value =  ($order_price[$i - 1] * $order_qty[$i - 1] );
+                                                <span id="value_<?= $i; ?>">
+                                                    <?php
+                                                    $value = 0;
+                                                    if (isset($order_qty[$i - 1]) && isset($order_price[$i - 1])) {
+                                                        $value =  ($order_price[$i - 1] * $order_qty[$i - 1]);
                                                     }
-                                                    echo number_format($value,2);?>  
-                                                </span>                                                                                               
+                                                    echo number_format($value, 2);
+                                                    $sum_value += $value; ?>
+                                                </span>
                                             </td>
                                             <td>
                                                 <?php
@@ -430,11 +442,12 @@
                                     $field_name     = "product_id_for_package_material";
                                     ?>
                                     <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
-                                    
                                     <tr>
                                         <td colspan="3"></td>
                                         <td class="text_align_right"><b>Total: </b></td>
-                                        <td class="text_align_right"><b></b></td>
+                                        <td class="text_align_right"><b>
+                                                <span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
+                                        </td>
                                         <td colspan="2"></td>
                                     </tr>
                                 </tbody>

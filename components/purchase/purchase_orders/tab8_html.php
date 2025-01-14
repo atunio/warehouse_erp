@@ -7,12 +7,12 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Price Setup
+                    <?= $general_heading; ?> => Price Setup
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
             </div>
         <?php }  ?>
     </div>
@@ -339,13 +339,11 @@
                                 <?php
                                 if (po_permisions("PriceSetup") == 1) {  ?>
                                     <div class="row">
-                                        <div class="input-field col m4 s12"></div>
-                                        <div class="input-field col m4 s12">
+                                        <div class="input-field col m12 s12 text_align_center">
                                             <?php if (isset($id) && $id > 0) { ?>
-                                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Finalize Pricing</button>
+                                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Finalize Pricing</button>
                                             <?php } ?>
                                         </div>
-                                        <div class="input-field col m4 s12"></div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col m12 s12"></div>
@@ -356,8 +354,7 @@
                         </div>
                     </form>
                 <?php
-                } ?>
-            <?php
+                }
             } else { ?>
                 <div class="card-panel">
                     <div class="row">

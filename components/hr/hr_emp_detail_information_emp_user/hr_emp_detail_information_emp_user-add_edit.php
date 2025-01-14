@@ -416,8 +416,8 @@ if ($cmd == 'add') {
 														<input id="emp_code" type="text" name="emp_code" class="validate <?php if (isset($emp_code_valid)) {
 																																echo $emp_code_valid;
 																															} ?>" value="<?php if (isset($emp_code)) {
-																																																	echo $emp_code;
-																																																} ?>" readonly required>
+																																				echo $emp_code;
+																																			} ?>" readonly required>
 														<label for="emp_code">Employment Code</label>
 													</div>
 												</div>
@@ -427,10 +427,10 @@ if ($cmd == 'add') {
 													<div class="input-field">
 														<i class="material-icons prefix">person_outline</i>
 														<input id="username" type="text" name="username" <?php if ($cmd == 'edit') { ?> readonly <?php } ?> class="validate <?php if (isset($username_valid)) {
-																																											echo $username_valid;
-																																										} ?>" value="<?php if (isset($username)) {
-																																																												echo $username;
-																																																											} ?>" readonly required>
+																																												echo $username_valid;
+																																											} ?>" value="<?php if (isset($username)) {
+																																																echo $username;
+																																															} ?>" readonly required>
 														<label for="username">Login Username</label>
 													</div>
 												</div>
@@ -438,10 +438,10 @@ if ($cmd == 'add') {
 													<div class="input-field">
 														<i class="material-icons prefix">lock_outline</i>
 														<input id="u_password" type="password" name="u_password" <?php if ($cmd == 'edit') { ?> readonly <?php } ?> class="validate <?php if (isset($u_password_valid)) {
-																																													echo $u_password_valid;
-																																												} ?>" value="<?php if (isset($u_password)) {
-																																																															echo $u_password;
-																																																														} ?>" readonly required>
+																																														echo $u_password_valid;
+																																													} ?>" value="<?php if (isset($u_password)) {
+																																																		echo $u_password;
+																																																	} ?>" readonly required>
 														<label for="u_password">Login Password</label>
 													</div>
 												</div>
@@ -492,9 +492,8 @@ if ($cmd == 'add') {
 												</div>
 											</div>
 											<div class="row">
-												<div class="input-field col m4 s12"></div>
-												<div class="input-field col m4 s12">
-													<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_val; ?></button>
+												<div class="input-field col m12 s12">
+													<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_val; ?></button>
 												</div>
 												<div class="input-field col m4 s12"></div>
 											</div>
@@ -528,8 +527,8 @@ if ($cmd == 'add') {
 													<input id="e_school" type="text" name="e_institution_name" value="<?php if (isset($e_institution_name)) {
 																															echo $e_institution_name;
 																														} ?>" class="validate <?php if (isset($e_institution_name)) {
-																																																				echo $e_institution_name;
-																																																			} ?>" required>
+																																					echo $e_institution_name;
+																																				} ?>" required>
 													<label for="e_school">School</label>
 												</div>
 											</div>
@@ -561,8 +560,8 @@ if ($cmd == 'add') {
 													<input id="degree_name" type="text" name="degree_name" value="<?php if (isset($degree_name)) {
 																														echo $degree_name;
 																													} ?>" class="validate <?php if (isset($degree_name)) {
-																																																echo $degree_name;
-																																															} ?>" required>
+																																				echo $degree_name;
+																																			} ?>" required>
 													<label for="degree_name">Degree</label>
 												</div>
 											</div>
@@ -572,8 +571,8 @@ if ($cmd == 'add') {
 													<input id="study_area" type="text" name="study_area" value="<?php if (isset($study_area)) {
 																													echo $study_area;
 																												} ?>" class="validate <?php if (isset($study_area)) {
-																																															echo $study_area;
-																																														} ?>" required>
+																																			echo $study_area;
+																																		} ?>" required>
 													<label for="study_area">Area of Study</label>
 												</div>
 											</div>
@@ -581,7 +580,7 @@ if ($cmd == 'add') {
 										<div class="row">
 											<div class="input-field col m4 s12"></div>
 											<div class="input-field col m4 s12">
-												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_edu; ?></button>
+												<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 											</div>
 											<div class="input-field col m4 s12"></div>
 										</div>
@@ -678,8 +677,8 @@ if ($cmd == 'add') {
 														<input id="e_job_title" type="text" name="e_job_title" value="<?php if (isset($e_job_title)) {
 																															echo $e_job_title;
 																														} ?>" required="required" class="validate <?php if (isset($e_job_title)) {
-																																																						echo $e_job_title;
-																																																					} ?>">
+																																										echo $e_job_title;
+																																									} ?>">
 														<label for="e_job_title">Job Title</label>
 													</div>
 												</div>
@@ -689,8 +688,8 @@ if ($cmd == 'add') {
 														<input id="e_job_role" type="text" name="e_job_role" value="<?php if (isset($e_job_role)) {
 																														echo $e_job_role;
 																													} ?>" required="required" class="validate <?php if (isset($e_job_role)) {
-																																																					echo $e_job_role;
-																																																				} ?>">
+																																									echo $e_job_role;
+																																								} ?>">
 														<label for="e_job_role">Job Role</label>
 													</div>
 												</div>
@@ -722,8 +721,8 @@ if ($cmd == 'add') {
 														<input id="e_company" type="text" name="e_company" value="<?php if (isset($e_company)) {
 																														echo $e_company;
 																													} ?>" required="required" class="validate <?php if (isset($e_company)) {
-																																																				echo $e_company;
-																																																			} ?>">
+																																									echo $e_company;
+																																								} ?>">
 														<label for="e_company">Company</label>
 													</div>
 												</div>
@@ -733,16 +732,15 @@ if ($cmd == 'add') {
 														<input id="e_job_description" type="text" name="e_job_description" value="<?php if (isset($e_job_description)) {
 																																		echo $e_job_description;
 																																	} ?>" required="required" class="validate <?php if (isset($e_job_description)) {
-																																																												echo $e_job_description;
-																																																											} ?>">
+																																													echo $e_job_description;
+																																												} ?>">
 														<label for="e_job_description">Job Description</label>
 													</div>
 												</div>
 											</div>
 											<div class="row">
-												<div class="input-field col m4 s12"></div>
-												<div class="input-field col m4 s12">
-													<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add"><?php echo $button_exp; ?></button>
+												<div class="input-field col m12 s12">
+													<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_exp; ?></button>
 												</div>
 												<div class="input-field col m4 s12"></div>
 											</div>

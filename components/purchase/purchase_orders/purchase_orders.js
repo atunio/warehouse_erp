@@ -14,14 +14,21 @@ $(document).ready(function() {
         $("#row_"+next_row).show();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
 
+        var total_products_in_po = parseInt($("#total_products_in_po").val());
+        $("#total_products_in_po").val(total_products_in_po+1);
+
         if(rowno == 0){
             // $(this).hide();
         }
+
     });
     $(document).on('click', '.add-more-btn2', function(event) {
         $("#row_1").show();
         $(this).hide();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+        
+        var total_products_in_po = parseInt($("#total_products_in_po").val());
+        $("#total_products_in_po").val(total_products_in_po+1);
     });
  
     $(document).on('click', '.remove-row', function(event) {
@@ -35,9 +42,28 @@ $(document).ready(function() {
         $("#orderqty_"+rowno).val('').trigger('change'); 
         $("#orderprice_"+rowno).val('').trigger('change'); 
         $("#expectedstatus_"+rowno).val('').trigger('change'); 
+        $("#value_"+rowno).text('').trigger('change'); 
        
         $("#row_"+rowno).hide();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+        
+        var total_products_in_po = parseInt($("#total_products_in_po").val());
+        // $("#total_products_in_po").val(total_products_in_po);
+
+        if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+            total_products_in_po = 1;
+        }
+        var p_value = 0;
+        for(var k = 1; k<= total_products_in_po; k++){ 
+            var currentText = $("#value_"+k).text();
+            if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                p_value += parseFloat(currentText);
+            } 
+        }
+        if(p_value > 0){ 
+            $("#total_value").text(formatNumber(p_value, 2));
+        }
 
         if(rowno == 1){
             $(".first_row").show();
@@ -69,6 +95,8 @@ $(document).ready(function() {
         } else if (selectedValue > 0) { 
             $("#row_"+next_row).show();
             updateRemoveButtonVisibility();
+            var total_products_in_po = parseInt($("#total_products_in_po").val());
+            $("#total_products_in_po").val(total_products_in_po+1);
         }
 
     });
@@ -77,31 +105,67 @@ $(document).ready(function() {
 
     $(document).on('keyup', '.order_qty', function(event) {
  
-        var selectedValue = $(this).val();
+        var order_qty   = parseInt($(this).val());
         var id          = $(this).attr('id');
         var parts       = id.split('_');
         var rowno       = parseInt(parts[1]);  
-        var value = 0;
-        var order_qty = parseInt($("#orderqty_"+rowno).val());
+        var value       = 0;
         var order_price = parseFloat($("#orderprice_"+rowno).val());
-        if(!isNaN(order_price) || !isNaN(order_qty)){
+        if(!isNaN(order_price) && !isNaN(order_qty)){
             value = (order_price * order_qty);
+            $("#value_"+rowno).text(formatNumber(value, 2));
         }
-         $("#value_"+rowno).text(formatNumber(value, 2));
+        else{
+            $("#value_"+rowno).text('');
+        }
+
+        var total_products_in_po = $("#total_products_in_po").val();
+        if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+            total_products_in_po = 1;
+        }
+        var p_value = 0;
+        for(var k = 1; k<= total_products_in_po; k++){
+            var currentText = $("#value_"+k).text(); 
+            if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                p_value += parseFloat(currentText);
+            }
+        }
+        if(p_value > 0){ 
+            $("#total_value").text(formatNumber(p_value, 2));
+        } 
     });
     $(document).on('keyup', '.order_price', function(event) {
- 
-        var selectedValue = $(this).val();
-        var id          = $(this).attr('id');
-        var parts       = id.split('_');
-        var rowno       = parseInt(parts[1]);  
-        var value = 0;
-        var order_qty = parseInt($("#orderqty_"+rowno).val());
-        var order_price = parseFloat($("#orderprice_"+rowno).val());
-        if(!isNaN(order_price) || !isNaN(order_qty)){
+        var order_price     = parseInt($(this).val());
+        var id              = $(this).attr('id');
+        var parts           = id.split('_');
+        var rowno           = parseInt(parts[1]);  
+        var value           = 0;
+        var order_qty     = parseFloat($("#orderqty_"+rowno).val());
+        if(!isNaN(order_price) && !isNaN(order_qty)){
             value = (order_price * order_qty);
+            $("#value_"+rowno).text(formatNumber(value, 2));
         }
-        $("#value_"+rowno).text(formatNumber(value, 2));
+        else{
+            $("#value_"+rowno).text('');
+        }
+        var total_products_in_po = $("#total_products_in_po").val();
+        if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+            total_products_in_po = 1;
+        } 
+        
+        var p_value = 0;
+        for(var k = 1; k<= total_products_in_po; k++){
+            var currentText = $("#value_"+k).text(); 
+            if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                p_value += parseFloat(currentText);
+            }
+        }
+        if(p_value > 0){ 
+            $("#total_value").text(formatNumber(p_value, 2));
+        } 
+
     });
    
     $('.package_id').on('change', function() {

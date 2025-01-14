@@ -70,7 +70,7 @@ $css = "
 				margin: 0;
 			}
 			.header p {
-				font-size: 10px;
+				font-size: 14px;
 				margin: 5px 0;
 			}
 		
@@ -106,11 +106,17 @@ $css = "
 			.total {
 				text-align: right;
 				margin-top: 10px;
-				font-size: 16px;
+				font-size: 14px;
 				font-weight: bold;
 			}
 			hr{
 				color:#E0E0E0;
+			} 
+			.text_align_right{
+				text-align: right !important;
+			}
+			.text_align_left{
+				text-align: left !important;
 			}
 		</style>";
 require_once $directory_path . 'mpdf/vendor/autoload.php';
@@ -136,31 +142,31 @@ if ($counter_ee1 > 0) {
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
 }
-$sql_ee1 = "SELECT  a.*, c.so_no, c.order_date, c.customer_invoice_no, d.customer_name,d.address_primary,d.phone_primary
-			FROM  sales_order_detail a
-			INNER JOIN sales_orders c ON c.id = a.sales_order_id
-			INNER JOIN customers d ON d.id = c.customer_id 
-			WHERE a.sales_order_id = '" . $id . "'
-			GROUP BY a.sales_order_id ";
+$sql_ee1 = "SELECT  a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, d.address, d.phone_no
+			FROM  purchase_order_detail a
+			INNER JOIN purchase_orders c ON c.id = a.po_id
+			INNER JOIN venders d ON d.id = c.vender_id 
+			WHERE a.po_id = '" . $id . "'
+			GROUP BY a.po_id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
-	$row_ee11				= $db->fetch($result_ee11);
-	$so_no					= $row_ee11[0]['so_no'];
-	$order_date				= $row_ee11[0]['order_date'];
-	$customer_name			= $row_ee11[0]['customer_name'];
-	$phone_primary			= $row_ee11[0]['phone_primary'];
-	$address_primary		= $row_ee11[0]['address_primary'];
-	$sales_order_id			= $row_ee11[0]['sales_order_id'];
-	$customer_invoice_no	= $row_ee11[0]['customer_invoice_no'];
+	$row_ee11			= $db->fetch($result_ee11);
+	$po_no				= $row_ee11[0]['po_no'];
+	$po_date			= $row_ee11[0]['po_date'];
+	$vender_name		= $row_ee11[0]['vender_name'];
+	$phone_no			= $row_ee11[0]['phone_no'];
+	$address			= $row_ee11[0]['address'];
+	$po_id				= $row_ee11[0]['po_id'];
+	$vender_invoice_no	= $row_ee11[0]['vender_invoice_no'];
 
 	$report_data = '<div class="">
 						<div class="header">
-							<h1>SALES ORDER (Pre)</h1><hr>
+							<h1>PURCHASE ORDER DETAIL</h1><hr>
 						</div>
 						<table border="0"> 
 							<tbody>
-								<tr> 
+								<tr>
 									<td>
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
 									</td>
@@ -172,16 +178,16 @@ if ($counter_ee11 > 0) {
 										<table border="0"> 
 											<tbody>
 												<tr>
-													<td><strong>Sale Order#: </strong></td>
-													<td><p>' . $so_no . '</p></td>
+													<td><strong>PO#: </strong></td>
+													<td><p>' . $po_no . '</p></td>
 												</tr> 
 												<tr>
-													<td><strong>Order Date: </strong></td>
-													<td><p>' . dateformat2($order_date) . '</p></td>
+													<td><strong>PO Date: </strong></td>
+													<td><p>' . dateformat2($po_date) . '</p></td>
 												</tr> 
 												<tr>
-													<td><strong>Customer Invoice#: </strong></td>
-													<td><p>' . ($customer_invoice_no) . '</p></td>
+													<td><strong>Vendor Invoice#: </strong></td>
+													<td><p>' . ($vender_invoice_no) . '</p></td>
 												</tr> 
 											</tbody>
 										</table>
@@ -192,9 +198,8 @@ if ($counter_ee11 > 0) {
 						<table class="table"> 
 							<thead>
 								<tr>
-									<th>Ship From</th>
 									<th>Bill To</th>
-									<th>Ship To</th>
+									<th>Ship From</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -205,13 +210,10 @@ if ($counter_ee11 > 0) {
 									</td>
 									<td>
 										<h3></h3>
-										<p>Name : ' . $customer_name . '</p>
-										<p>Phone : ' . $phone_primary . '</p>
+										<p>Name : ' . $vender_name . '</p>
+										<p>Phone : ' . $phone_no . '</p>
+										<p>Address : ' . $address . '</p>
 									</td>
-									<td>
-										<h3></h3>
-										<p>Address : ' . $address_primary . '</p>
-									</td> 
 								</tr> 
 							</tbody>
 						</table>
@@ -220,25 +222,26 @@ if ($counter_ee11 > 0) {
 								<tr>
 									<th>Product ID</th>
 									<th>Description</th>
-									<th>Serial#</th>
-									<th>Sale Price</th>
+									<th>Status</th>
+									<th>Price</th>
+									<th>Qty</th>
+									<th>Value</th>
 								</tr>
 							</thead>
 							<tbody>';
 
-	$sql_sub = "SELECT c.product_desc, d.category_name, b.order_status, 
-									c.product_uniqueid, b1.order_price, b1.product_so_desc,
-									b1.product_stock_id, c1.serial_no
-								FROM sales_orders b 
-								INNER JOIN `sales_order_detail` b1 ON b1.sales_order_id = b.id 
-								INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id 
-								INNER JOIN products c ON c.id = c1.product_id
-								LEFT JOIN product_categories d ON d.id = c.product_category
-								WHERE b.id = '" . $sales_order_id . "'
-								ORDER BY b1.id "; //echo $sql_sub;die;
+	$sql_sub 		= "SELECT  b1.product_id, b1.order_price, b1.product_po_desc, b1.order_qty,
+								c.product_uniqueid, c.product_desc, b.order_status, d.category_name, e.status_name
+						FROM purchase_orders b 
+						INNER JOIN `purchase_order_detail` b1 ON b1.po_id = b.id 
+						INNER JOIN products c ON c.id = b1.product_id
+						LEFT JOIN product_categories d ON d.id = c.product_category
+						LEFT JOIN inventory_status e ON e.id = b1.expected_status
+						WHERE b.id = '" . $po_id . "'
+						ORDER BY b1.id"; //echo $sql_sub;die;
 	$result_sub 	= $db->query($conn, $sql_sub);
 	$counter_sub	= $db->counter($result_sub);
-	$sub_total = $grand_total = $total = 0;
+	$sub_total = $total = $sum_order_qty = $sum_value = 0;
 	if ($counter_sub > 0) {
 		$row_sub				= $db->fetch($result_sub);
 		foreach ($row_sub as $data_sub) {
@@ -246,22 +249,28 @@ if ($counter_ee11 > 0) {
 			$product_desc			= remove_special_character($data_sub['product_desc']);
 			$category_name			= $data_sub['category_name'];
 			$order_price			= $data_sub['order_price'];
-			$serial_no				= $data_sub['serial_no'];
-			$grand_total 			+= $order_price;
+			$order_qty				= $data_sub['order_qty'];
+			$status_name			= $data_sub['status_name'];
+			$serial_no				= "";
+			$sum_order_qty			+= $order_qty;
+			$value 					= $order_qty * $order_price;
+			$sum_value			   += $value;
 			$report_data .= '
 								<tr>
 									<td>' . $product_uniqueid . '</td>
 									<td>' . $product_desc . ' (' . $category_name . ') </td>
-									<td>' . $serial_no . ' </td>
+									<td>' . $status_name . ' </td>
 									<td>' . number_format($order_price, 2) . '</td>
+									<td>' . $order_qty . ' </td>
+									<td>' . number_format($value, 2) . '</td>
 								</tr>';
 		}
 	}
 	$report_data .= '
 									<tr> 
-										<td colspan="2"></td>
-										<td><b>Total Price</b></td>
-										<td><b>' . number_format($grand_total, 2) . '</b></td>
+										<td colspan="4"></td>
+										<td>' . $sum_order_qty . '</td>
+										<td><b>' . number_format($sum_value, 2) . '</b></td>
 									</tr>';
 
 	$report_data .= '	</tbody>
@@ -271,8 +280,8 @@ if ($counter_ee11 > 0) {
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
-	$mpdf->SetTitle('Sales Order Invoice Pre - ' . $so_no);
-	$file_name = "Sales_Order_Invoice_Pre_" . $so_no . "_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $po_no);
+	$file_name = "Purchase _Order_Invoice_Pre_" . $po_no . "_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
@@ -280,7 +289,7 @@ if ($counter_ee11 > 0) {
 	$report_data = $report_data . $css;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
-	$mpdf->SetTitle('Sales Order Invoice Pre - ' . $so_no);
-	$file_name = "Sales_Order_Invoice_Pre_" . $so_no . "_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $po_no);
+	$file_name = "Purchase _Order_Invoice_Pre_" . $po_no . "_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 }

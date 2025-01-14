@@ -192,7 +192,7 @@
                     <div class="input-field col m4 s12"></div>
                     <div class="input-field col m4 s12">
                         <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-                            <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                            <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="update_logistics">Update</button>
                         <?php } ?>
                     </div>
                     <div class="input-field col m4 s12">
@@ -346,7 +346,7 @@
                         </div>
                         <div class="input-field col m2 s12">
                             <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-                                <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="update_logistics">Update</button>
+                                <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="update_logistics">Update</button>
                             <?php } ?>
                         </div>
                     </div>
@@ -502,7 +502,7 @@
                 <div class="input-field col m4 s12"></div>
                 <div class="input-field col m4 s12">
                     <?php if (isset($id) && $id > 0 && ($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-                        <button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange col m12 s12" type="submit" name="add">Create</button>
+                        <button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Create</button>
                     <?php } ?>
                 </div>
                 <div class="input-field col m4 s12"></div>

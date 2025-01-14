@@ -135,23 +135,24 @@ if ($counter_ee1 > 0) {
 	$company_logo			= $row_ee1[0]['company_logo'];
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
-}	
-$sql_ee1 = "SELECT  c.so_no,c.order_date,d.customer_name,d.address_primary,d.phone_primary, a.*
+}
+$sql_ee1 = "SELECT  a.*, c.so_no, c.order_date, c.customer_invoice_no, d.customer_name,d.address_primary,d.phone_primary
 			FROM  sales_order_detail a
 			INNER JOIN sales_orders c ON c.id = a.sales_order_id
 			INNER JOIN customers d ON d.id = c.customer_id 
 			WHERE a.sales_order_id = '" . $id . "'
-			GROUP BY a.sales_order_id "; 
+			GROUP BY a.sales_order_id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
-if ($counter_ee11 > 0) { 
-	$row_ee11			= $db->fetch($result_ee11);
-	$so_no				= $row_ee11[0]['so_no'];
-	$order_date			= $row_ee11[0]['order_date'];
-	$customer_name		= $row_ee11[0]['customer_name'];
-	$phone_primary		= $row_ee11[0]['phone_primary'];
-	$address_primary	= $row_ee11[0]['address_primary'];
-	$sales_order_id		= $row_ee11[0]['sales_order_id'];
+if ($counter_ee11 > 0) {
+	$row_ee11				= $db->fetch($result_ee11);
+	$so_no					= $row_ee11[0]['so_no'];
+	$order_date				= $row_ee11[0]['order_date'];
+	$customer_name			= $row_ee11[0]['customer_name'];
+	$phone_primary			= $row_ee11[0]['phone_primary'];
+	$address_primary		= $row_ee11[0]['address_primary'];
+	$sales_order_id			= $row_ee11[0]['sales_order_id'];
+	$customer_invoice_no	= $row_ee11[0]['customer_invoice_no'];
 
 	$report_data = '<div class="">
 						<div class="header">
@@ -159,16 +160,31 @@ if ($counter_ee11 > 0) {
 						</div>
 						<table border="0"> 
 							<tbody>
-								<tr>
+								<tr> 
 									<td>
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
-										<p>' . $s_address . '</p>
-										<p>Phone: ' . $compnay_phone_no . '</p>
 									</td>
-									<td width="250"></td>
 									<td>
-										<p><strong>Sale Order#:</strong> ' . $so_no . '</p>
-										<p><strong>Order Date:</strong> ' . dateformat2($order_date) . '</p>
+										<p>' . $s_address . ', Phone: ' . $compnay_phone_no . '</p>
+									</td>
+									<td width="2%"></td>
+ 									<td width="40%">
+										<table border="0"> 
+											<tbody>
+												<tr>
+													<td><strong>Sale Order#: </strong></td>
+													<td><p>' . $so_no . '</p></td>
+												</tr> 
+												<tr>
+													<td><strong>Order Date: </strong></td>
+													<td><p>' . dateformat2($order_date) . '</p></td>
+												</tr> 
+												<tr>
+													<td><strong>Customer Invoice#: </strong></td>
+													<td><p>' . ($customer_invoice_no) . '</p></td>
+												</tr> 
+											</tbody>
+										</table>
 									</td> 
 								</tr> 
 							</tbody>
@@ -210,7 +226,7 @@ if ($counter_ee11 > 0) {
 							</thead>
 							<tbody>';
 
-					$sql_sub = "SELECT c.product_desc, d.category_name, b.order_status, 
+	$sql_sub = "SELECT c.product_desc, d.category_name, b.order_status, 
 									c.product_uniqueid, b1.order_price, b1.product_so_desc,
 									b1.product_stock_id, c1.serial_no
 								FROM sales_orders b 
@@ -218,37 +234,37 @@ if ($counter_ee11 > 0) {
 								INNER JOIN product_stock c1 ON c1.id = b1.product_stock_id 
 								INNER JOIN products c ON c.id = c1.product_id
 								LEFT JOIN product_categories d ON d.id = c.product_category
-								WHERE b.id = '". $sales_order_id ."'
+								WHERE b.id = '" . $sales_order_id . "'
 								ORDER BY b1.id "; //echo $sql_sub;die;
-					$result_sub 	= $db->query($conn, $sql_sub);
-					$counter_sub	= $db->counter($result_sub);	
-					$sub_total = $grand_total = $total = 0;	
-						if($counter_sub > 0){
-							$row_sub				= $db->fetch($result_sub);
-							foreach($row_sub as $data_sub){
-								$product_uniqueid		= $data_sub['product_uniqueid'];
-								$product_desc			= $data_sub['product_desc'];
-								$category_name			= $data_sub['category_name'];
-								$order_price			= $data_sub['order_price'];
- 								$serial_no				= $data_sub['serial_no'];
- 								$grand_total 			+= $order_price;
-								$report_data .= '
+	$result_sub 	= $db->query($conn, $sql_sub);
+	$counter_sub	= $db->counter($result_sub);
+	$sub_total = $grand_total = $total = 0;
+	if ($counter_sub > 0) {
+		$row_sub				= $db->fetch($result_sub);
+		foreach ($row_sub as $data_sub) {
+			$product_uniqueid		= $data_sub['product_uniqueid'];
+			$product_desc			= remove_special_character($data_sub['product_desc']);
+			$category_name			= $data_sub['category_name'];
+			$order_price			= $data_sub['order_price'];
+			$serial_no				= $data_sub['serial_no'];
+			$grand_total 			+= $order_price;
+			$report_data .= '
 								<tr>
-									<td>'.$product_uniqueid.'</td>
-									<td>'.$product_desc.'( '.$category_name.' ) </td>
-									<td>'.$serial_no.' </td>
-									<td>'.number_format($order_price,2).'</td>
+									<td>' . $product_uniqueid . '</td>
+									<td>' . $product_desc . ' (' . $category_name . ') </td>
+									<td>' . $serial_no . ' </td>
+									<td>' . number_format($order_price, 2) . '</td>
 								</tr>';
-							}
-						}
-					$report_data .= '
+		}
+	}
+	$report_data .= '
 									<tr> 
 										<td colspan="2"></td>
 										<td><b>Total Price</b></td>
-										<td><b>'.number_format($grand_total,2).'</b></td>
+										<td><b>' . number_format($grand_total, 2) . '</b></td>
 									</tr>';
 
-		$report_data .= '	</tbody>
+	$report_data .= '	</tbody>
 						</table> 
 					</div>';
 	$report_data = $report_data . $css;

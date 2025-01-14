@@ -141,16 +141,16 @@ if ($counter_ee1 > 0) {
 	$company_logo			= $row_ee1[0]['company_logo'];
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
-}	
+}
 $sql_ee1 = "SELECT   a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, d.address, d.phone_no
 			FROM  package_materials_order_detail a
 			INNER JOIN package_materials_orders c ON c.id = a.po_id
 			INNER JOIN venders d ON d.id = c.vender_id 
 			WHERE a.po_id = '" . $id . "'
-			GROUP BY a.po_id "; 
+			GROUP BY a.po_id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
-if ($counter_ee11 > 0) { 
+if ($counter_ee11 > 0) {
 	$row_ee11			= $db->fetch($result_ee11);
 	$po_no				= $row_ee11[0]['po_no'];
 	$po_date			= $row_ee11[0]['po_date'];
@@ -169,11 +169,12 @@ if ($counter_ee11 > 0) {
 								<tr>
 									<td>
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
-										<p>' . $s_address . '</p>
-										<p>Phone: ' . $compnay_phone_no . '</p>
 									</td>
-									<td width="150"></td>
 									<td>
+										<p>' . $s_address . ', Phone: ' . $compnay_phone_no . '</p>
+									</td>
+									<td width="2%"></td>
+ 									<td width="40%">
 										<table border="0"> 
 											<tbody>
 												<tr>
@@ -186,7 +187,7 @@ if ($counter_ee11 > 0) {
 												</tr> 
 												<tr>
 													<td><strong>Vendor Invoice#: </strong></td>
-													<td><p>' . dateformat2($vender_invoice_no) . '</p></td>
+													<td><p>' . $vender_invoice_no . '</p></td>
 												</tr> 
 											</tbody>
 										</table>
@@ -227,45 +228,45 @@ if ($counter_ee11 > 0) {
 							</thead>
 							<tbody>';
 
-					$sql_sub = "SELECT  b1.order_price, b1.product_po_desc, b1.order_qty,
+	$sql_sub = "SELECT  b1.order_price, b1.product_po_desc, b1.order_qty,
 										c.package_name, b.order_status, d.category_name
 								FROM package_materials_orders b 
 								INNER JOIN `package_materials_order_detail` b1 ON b1.po_id = b.id 
 								INNER JOIN packages c ON c.id = b1.package_id
 								LEFT JOIN product_categories d ON d.id = c.product_category
- 								WHERE b.id = '". $po_id ."'
+ 								WHERE b.id = '" . $po_id . "'
 								ORDER BY b1.id"; //echo $sql_sub;die;
-					$result_sub 	= $db->query($conn, $sql_sub);
-					$counter_sub	= $db->counter($result_sub);	
-					$sub_total = $total = $sum_order_qty = $sum_value = 0;	
-						if($counter_sub > 0){
-							$row_sub				= $db->fetch($result_sub);
-							foreach($row_sub as $data_sub){
- 								$package_name			= $data_sub['package_name'];
-								$category_name			= $data_sub['category_name'];
-								$order_price			= $data_sub['order_price'];
-								$order_qty				= $data_sub['order_qty'];
- 								$serial_no				= "";
- 								$sum_order_qty			+= $order_qty;
-								$value 					= $order_qty*$order_price;
-								$sum_value			   += $value;
-								$report_data .= '
+	$result_sub 	= $db->query($conn, $sql_sub);
+	$counter_sub	= $db->counter($result_sub);
+	$sub_total = $total = $sum_order_qty = $sum_value = 0;
+	if ($counter_sub > 0) {
+		$row_sub				= $db->fetch($result_sub);
+		foreach ($row_sub as $data_sub) {
+			$package_name			= remove_special_character($data_sub['package_name']);
+			$category_name			= $data_sub['category_name'];
+			$order_price			= $data_sub['order_price'];
+			$order_qty				= $data_sub['order_qty'];
+			$serial_no				= "";
+			$sum_order_qty			+= $order_qty;
+			$value 					= $order_qty * $order_price;
+			$sum_value			   += $value;
+			$report_data .= '
 								<tr>
- 									<td>'.$package_name.'( '.$category_name.' ) </td>
-									<td>'.number_format($order_price,2).'</td>
-									<td>'.$order_qty.' </td>
-									<td>'.number_format($value,2).'</td>
+ 									<td>' . $package_name . ' (' . $category_name . ') </td>
+									<td>' . number_format($order_price, 2) . '</td>
+									<td>' . $order_qty . ' </td>
+									<td>' . number_format($value, 2) . '</td>
 								</tr>';
-							}
-						}
-					$report_data .= '
+		}
+	}
+	$report_data .= '
 									<tr> 
 										<td colspan="2"></td>
-										<td>'.$sum_order_qty.'</td>
-										<td><b>'.number_format($sum_value,2).'</b></td>
+										<td>' . $sum_order_qty . '</td>
+										<td><b>' . number_format($sum_value, 2) . '</b></td>
 									</tr>';
 
-		$report_data .= '	</tbody>
+	$report_data .= '	</tbody>
 						</table> 
 					</div>';
 	$report_data = $report_data . $css;

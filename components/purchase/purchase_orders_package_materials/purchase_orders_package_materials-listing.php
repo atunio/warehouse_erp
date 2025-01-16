@@ -297,7 +297,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																	<th>PO#</th>
 																	<th>PO Date</th>
   																	<th>Vender</th>
-  																	<th>Vender Invoice#</th>
+  																	<th>Vendor Invoice#</th>
 																	<th>Category Wise Qty</th>
  																	<th>Tracking / Pro #</th>
  																	<th>Action</th>';

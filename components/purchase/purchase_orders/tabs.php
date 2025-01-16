@@ -17,11 +17,11 @@
             </a>
         </li>
         <?php
-        if (po_permisions("Vender Data") == 1) { ?>
+        if (po_permisions("Vendor Data") == 1) { ?>
             <li class="tab">
                 <a href="#tab4_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab4')) { echo "active"; } ?>">
                     <i class="material-icons">person_outline</i>
-                    <span>Vender Data</span>
+                    <span>Vendor Data</span>
                 </a>
             </li>
         <?php }

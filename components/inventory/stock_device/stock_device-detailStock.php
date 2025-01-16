@@ -28,7 +28,6 @@ if (isset($is_Submit) || isset($id)) {
 			$error['msg'] = "Please select or input at least one field above.";
 		}
 	}
-
 	if (empty($error)) {
 		$sql_cl = "	SELECT  a2.id, a2.product_id, a2.serial_no, a2.model_no, a2.battery_percentage, a2.ram_size, a2.storage_size, a2.price, a2.cosmetic_grade,
 							b.category_name, c.status_name, a.product_desc, a.product_uniqueid, d.sub_location_name, a2.p_inventory_status, a2.stock_grade, d6.type_name,
@@ -94,6 +93,9 @@ if (isset($is_Submit) || isset($id)) {
 			$redirect_to_export = "export/export_available_stock.php?string=." . encrypt("module_id=" . $module_id) . $import_params;
 			// echo "<br><br><br>" . $redirect_to_export;die;
 			echo '<script> window.open("' . $redirect_to_export . '"); </script>';
+		}
+		else{
+			$action_searchButton = "search";
 		}
 		if (!isset($action_exportButton) && $count_cl == 0) {
 			$error['msg'] = "Records not found.";
@@ -176,28 +178,71 @@ $page_heading 	= "Stock Detail";
 																			echo encrypt($_SESSION['csrf_session']);
 																		} ?>">
 						<div class="row">
-							<?php
-							$field_name = "flt_product_id";
-							$field_label = "ProductID";
-							?>
-							<div class="input-field col m3 s12">
-								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>">
-								<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+							
+							<div class="input-field col m3 s12 custom_margin_bottom_col">
+								<?php
+								$field_name     = "flt_product_id";
+								$field_label	= "ProductID";
+								$sql1			= "SELECT DISTINCT product_uniqueid FROM products WHERE 1=1 ";
+								$result1		= $db->query($conn, $sql1);
+								$count1         = $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">All</option>
+										<?php
+										if ($count1 > 0) {
+											$row1    = $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['product_uniqueid']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_uniqueid']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_uniqueid']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red"><?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+										</span>
+									</label>
+								</div>
 							</div>
-							<?php
-							$field_name = "flt_product_desc";
-							$field_label = "Product Description";
-							?>
-							<div class="input-field col m3 s12">
-								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>">
-								<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
-							</div>
+							<div class="input-field col m3 s12 custom_margin_bottom_col">
+								<?php
+								$field_name 	= "flt_product_desc";
+								$field_label 	= "Product Description";
+								$sql1			= "SELECT DISTINCT product_desc FROM products WHERE 1=1 ";
+								$result1		= $db->query($conn, $sql1);
+								$count1         = $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">All</option>
+										<?php
+										if ($count1 > 0) {
+											$row1    = $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['product_desc']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_desc']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red"><?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+										</span>
+									</label>
+								</div>
+							</div> 
 							<?php
 							$field_name = "flt_serial_no";
 							$field_label = "Serial#";

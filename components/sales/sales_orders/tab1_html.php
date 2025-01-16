@@ -366,7 +366,7 @@
                                             </a> 
                                         <?php }?>
                                     </th>
-                                    <th style="width: 400px;">Product Description</th>
+                                    <th style="width: 400px;">Description</th>
                                     <th style="width: 100px;">Sale Price</th>
                                     <th style="width: 150px;">Actions</th> 
                                 </tr>
@@ -374,9 +374,12 @@
                             <tbody>
                                 <?php 
                                 if(isset($id) && $id>0){
+
                                     unset($product_stock_ids);
                                     unset($order_price);
                                     unset($product_so_desc);
+
+                                    $sum_value      = 0;
                                     $sql_ee1		= "SELECT a.* FROM sales_order_detail a WHERE a.sales_order_id = '" . $id . "' ";  //echo $sql_ee1;
                                     $result_ee1		= $db->query($conn, $sql_ee1);
                                     $count_ee1  	= $db->counter($result_ee1);
@@ -386,9 +389,16 @@
                                             $product_stock_ids[]	= $data2['product_stock_id'];
                                             $order_price[]			= $data2['order_price'];
                                             $product_so_desc[]      = $data2['product_so_desc'];
+                                            $sum_value             += $data2['order_price'];
                                         }
                                     }
-                                }
+                                }?>
+                                <input type="hidden" id="total_products_in_po" value="<?php if (!isset($product_stock_ids) || (isset($product_stock_ids) && sizeof($product_stock_ids) == 0)) {
+                                                                                            echo "1";
+                                                                                        } else {
+                                                                                            echo sizeof($product_stock_ids);
+                                                                                        } ?>">
+                                <?php
                                 $disabled = $readonly = "";
                                 if((isset($order_status) && $order_status != 1 )){
                                     $disabled = "disabled='disabled'";
@@ -455,7 +465,6 @@
                                             $field_name     = "product_so_desc";
                                             $field_id       = "productsodesc_".$i;
                                             $field_label     = "Product Desc";
-                                            
                                             ?>
                                             <textarea <?php echo $disabled; echo $readonly; ?> id="<?= $field_name; ?>" name="<?= $field_name; ?>[]" class="materialize-textarea validate "><?php if (isset($product_so_desc[$i-1])) {
                                                                                                                                         echo $product_so_desc[$i-1];
@@ -468,7 +477,7 @@
                                             $field_id       = "orderprice_".$i;
                                             $field_label     = "Unit Price";
                                             ?>
-                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_price">
                                         </td>
                                         <td>
                                             <?php 
@@ -476,16 +485,21 @@
                                                 <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
                                                     <i class="material-icons dp48">cancel</i>
                                                 </a> &nbsp;
-                                                <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
+                                                <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?=$i?>" href="javascript:void(0)">
                                                     <i class="material-icons dp48">add_circle</i>
                                                 </a>&nbsp;&nbsp;
                                             <?php }?>
                                         </td>
                                     </tr>
-                                <?php }  
-                                $field_name     = "product_id_for_package_material"; 
-                                ?>
-                                <input name="<?= $field_name; ?>" type="hidden"  id="<?= $field_name; ?>" value="">
+                                <?php }  ?>
+                                <tr>
+                                    <td></td>
+                                    <td class="text_align_right"><b>Total: </b></td>
+                                    <td class="text_align_right">
+                                        <b></b><span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
+                                    </td>
+                                    <td></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

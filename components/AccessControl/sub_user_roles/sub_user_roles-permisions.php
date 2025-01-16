@@ -511,10 +511,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</div>
 							<div class="input-field col m1 s12">
 								<label>
-									<input type="checkbox" <?php if (isset($special_module_permisions_10) &&  in_array("Vender Data", $special_module_permisions_10)) {
+									<input type="checkbox" <?php if (isset($special_module_permisions_10) &&  in_array("Vendor Data", $special_module_permisions_10)) {
 																echo "checked=''";
-															} ?> value="Vender Data" name="special_module_permisions_10[]" id="special_module_permisions_10" class="checkbox <?php echo $parent_id_level_1; ?> <?php echo $parent_id_level_2; ?> <?php echo $parent_id_level_3; ?>" />
-									<span>Vender Data</span>
+															} ?> value="Vendor Data" name="special_module_permisions_10[]" id="special_module_permisions_10" class="checkbox <?php echo $parent_id_level_1; ?> <?php echo $parent_id_level_2; ?> <?php echo $parent_id_level_3; ?>" />
+									<span>Vendor Data</span>
 								</label>
 							</div>
 							<div class="input-field col m1 s12">

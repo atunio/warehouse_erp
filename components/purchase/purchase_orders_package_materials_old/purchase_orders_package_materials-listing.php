@@ -144,7 +144,7 @@ $page_heading 	= "List Purchase Orders (Package / Parts)";
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
 																	<th>PO No</br>PO Date</th>
-  																	<th>Vender / Invoice#</th>
+  																	<th>Vendor / Invoice#</th>
 																	<th>Product SKU / Category</th>
 																	<th>Quantity / Price</th> 
 																	<th>Expected Arrival Date</th>

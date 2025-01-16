@@ -16,7 +16,7 @@
                      <h6 class="media-heading"><span class=""><?php echo "<b>PO#: </b>" . $po_no; ?></span></h6>
                  </div>
                  <div class="input-field col m4 s12">
-                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                  </div>
              </div>
              <?php
@@ -89,13 +89,13 @@
                                                                                                     echo "display: none;";
                                                                                                 } else {;
                                                                                                 } ?>">
-                                 <a href="#" class="show_receive_as_category_section">Show Form</a>
+                                 <a href="javascript:void(0)" class="show_receive_as_category_section">Show Form</a>
                              </div>
                              <div class="col m6 s12 show_receive_as_category_hide_btn" style="<?php if (isset($is_Submit_tab5) && $is_Submit_tab5 == 'Y') {;
                                                                                                 } else {
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
-                                 <a href="#" class="hide_receive_as_category_section">Hide Form</a>
+                                 <a href="javascript:void(0)" class="hide_receive_as_category_section">Hide Form</a>
                              </div>
                          </div>
                          <div id="receive_as_category_section" style="<?php if (isset($is_Submit_tab5) && $is_Submit_tab5 == 'Y') {;

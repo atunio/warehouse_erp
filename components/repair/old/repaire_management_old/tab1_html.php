@@ -75,7 +75,7 @@
             </div>
             <?php
             $field_name     = "vender_invoice_no";
-            $field_label     = "Vender Invoice #";
+            $field_label     = "Vendor Invoice #";
             ?>
             <div class="input-field col m4 s12">
                 <i class="material-icons prefix">description</i>

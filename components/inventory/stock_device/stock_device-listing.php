@@ -348,22 +348,40 @@ $page_heading 	= "Stock Summary";
 								<div class="row">
 									<div class="col s4">&nbsp;</div>
 									<div class="col s2">
-										<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
-										<a href="javascript:void(0)" class="minus_icon collapse_all"><i class="material-icons dp48">arrow_drop_up</i>Collapse All</a>
+										<?php
+										if(isset($flt_bin_id) && $flt_bin_id > 0){
+										?>
+											<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
+										<?php
+										}else{
+											?>
+											<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
+											<a href="javascript:void(0)" class="minus_icon collapse_all"><i class="material-icons dp48">arrow_drop_up</i>Collapse All</a>
+										<?php
+										}
+										?>
+										
+										
 									</div>
 
 								</div>
 
 								<div class="row">
 									<div class="col s12">
-										<table id="page-length-option" class="display pagelength50_3">
+										<table id="data-table-simple" class="display dataTable dtr-inline simpledatatable_pagelength100">
 											<thead>
 												<tr>
 													<?php
-													$headings = '<th class="sno_width_60">S.No</th>
+													$headings = '<th class="sno_width_60">P#</th>
+																<th class="sno_width_30"></th>
 																<th>Product ID / Description</th>
 																<th>Status</th>
 																<th>Condition</th>
+																<th>Serial No</th>
+																<th>Model No</th>
+																<th>Battery</th>
+																<th>RAM</th>
+																<th>Storage</th>
 																<th>Location</th>
 																<th>Average Stock</th>
 																<th>Stock</th>';
@@ -404,11 +422,14 @@ $page_heading 	= "Stock Summary";
 															$status_names  		= $row_cl1[0]['status_names'];
 															$sub_location_names = $row_cl1[0]['sub_location_names'];
 														}
-														if ($data['r_type'] == 'Non Stock') { ?>
+														if ($data['r_type'] == 'Non Stock') {
+															//for($c = 0;$c<1000; $c++){?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
+																<td style="text-align: center;">
+																	<?php echo $i + 1; ?>
+																</td>
+																<td style="text-align: center;"></td>
 																<td>
-																	<a href="#."><i class="material-icons dp48">arrow_drop_up</i></a>
 																	<?php
 																	echo  $data['product_uniqueid'];
 																	?></br>
@@ -420,37 +441,17 @@ $page_heading 	= "Stock Summary";
 																</td>
 																<td><?php echo $data['status_name']; ?></td>
 																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
 																<td>In transit</td>
 																<td><span style="padding-left: 20px;"></td>
 																<td><span style="padding-left: 20px;"><?php echo $data['total_qty']; ?></span></td>
 															</tr>
-														<?php } else { ?>
-															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td>
-																	<a href="#." class="plus_icon <?= "plus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">arrow_drop_down</i></a>
-																	<a href="#." class="minus_icon <?= "minus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">arrow_drop_up</i></a>
-																	<?php
-																	if (access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=history&id=" . $id) ?>" title="Detail View">
-																			<?php echo $data['product_uniqueid']; ?>
-																		</a> &nbsp;&nbsp;
-																	<?php } else {
-																		echo  $data['product_uniqueid'];
-																	} ?></br>
-																	<?php
-																	echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . ""));
-																	if ($data['category_name'] != "") { ?>
-																		(<?php echo $data['category_name']; ?>)
-																	<?php } ?>
-																</td>
-																<td><?php echo $status_names; ?></td>
-																<td><?php echo $stock_grades; ?></td>
-																<td><?php echo $sub_location_names; ?></td>
-																<td><span style="padding-left: 20px;"><?php if (round($avg_price, 2) > 0) echo round($avg_price, 2); ?></span></td>
-																<td><span style="padding-left: 20px;"><?php echo $total_stock_p; ?></span></td>
-															</tr>
-															<?php
+														<?php //}
+													} else { 
 															$sql_cl2	= "	SELECT  a2.id, a2.product_id, a2.stock_product_uniqueid, a2.stock_grade, sum(a2.p_total_stock) as p_total_stock, sum(a2.price)/sum(a2.p_total_stock)  as avg_price,
 																					b.category_name, c.status_name, a.product_desc, a.product_uniqueid, a2.p_inventory_status,
 																					GROUP_CONCAT(DISTINCT CONCAT(' ', b1.sub_location_name)) AS sub_location_names
@@ -469,6 +470,45 @@ $page_heading 	= "Stock Summary";
 															// echo "<br><br>" . $sql_cl2;
 															$result_cl2	= $db->query($conn, $sql_cl2);
 															$count_cl2	= $db->counter($result_cl2);
+															?>
+															<tr>
+																<td style="text-align: center;">
+																	<?php echo $i + 1; ?>
+																</td>
+																<td style="text-align: center;">
+																	<?php
+																	if ($count_cl2 > 0) { ?>
+																		<a href="javascript:void(0)" class="plus_icon <?= "plus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
+																		<a href="javascript:void(0)" class="minus_icon <?= "minus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
+																	<?php } ?>
+																</td>
+																<td>
+																	<?php
+																	if (access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=history&id=" . $id) ?>" title="Detail View">
+																			<?php echo $data['product_uniqueid']; ?>
+																		</a> &nbsp;&nbsp;
+																	<?php } else {
+																		echo  $data['product_uniqueid'];
+																	} ?></br>
+																	<?php
+																	echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . ""));
+																	if ($data['category_name'] != "") { ?>
+																		(<?php echo $data['category_name']; ?>)
+																	<?php } ?>
+																</td>
+																<td><?php echo $status_names; ?></td>
+																<td><?php echo $stock_grades; ?></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td></td>
+																<td><?php echo $sub_location_names; ?></td>
+																<td><span style="padding-left: 20px;"><?php if (round($avg_price, 2) > 0) echo round($avg_price, 2); ?></span></td>
+																<td><span style="padding-left: 20px;"><?php echo $total_stock_p; ?></span></td>
+															</tr>
+															<?php
 															if ($count_cl2 > 0) {
 																$row_cl2 = $db->fetch($result_cl2);
 																foreach ($row_cl2 as $data2) {
@@ -479,14 +519,26 @@ $page_heading 	= "Stock Summary";
 																	$filter_2 				= $data2['stock_grade']; ?>
 																	<tr class="detail_tr <?= $id; ?>">
 																		<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="material-icons prefix">subdirectory_arrow_right</i></td>
+																		<td style="text-align: center;">
+																			<a href="javascript:void(0)" class="plus_icon_sub <?= "sub_plus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
+																			<a href="javascript:void(0)" class="minus_icon_sub <?= "sub_minus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
+																		</td>
+																		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																			
+																			<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
+																		</td>
 																		<td><?php echo $data2['status_name']; ?></td>
 																		<td><?php echo $data2['stock_grade']; ?></td>
+																		<td></td>
+																		<td></td>
+																		<td></td>
+																		<td></td>
+																		<td></td>
 																		<td><?php echo $data2['sub_location_names']; ?></td>
 																		<td>
 																			<?php
 																			if (access("edit_perm") == 1) { ?>
-																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2) ?>" title="Detail Stock View" style="padding: 20px;">
+																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																					<?php echo round($data2['avg_price'], 2); ?>
 																				</a> &nbsp;&nbsp;
 																			<?php } else {
@@ -496,7 +548,7 @@ $page_heading 	= "Stock Summary";
 																		<td>
 																			<?php
 																			if (access("edit_perm") == 1) { ?>
-																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2) ?>" title="Detail Stock View" style="padding: 20px;">
+																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																					<?php echo $data2['p_total_stock']; ?>
 																				</a> &nbsp;&nbsp;
 																			<?php } else {
@@ -504,7 +556,55 @@ $page_heading 	= "Stock Summary";
 																			} ?>
 																		</td>
 																	</tr>
-												<?php
+																	
+																	<?php
+																	$sql_cl3 = "SELECT a2.id, a2.product_id, a2.serial_no, a2.model_no, a2.battery_percentage, a2.ram_size, 
+																					   a2.storage_size, a2.price, a2.cosmetic_grade, b.category_name, c.status_name, a.product_desc, 
+																					   a.product_uniqueid, d.sub_location_name, a2.p_inventory_status, a2.stock_grade, d6.type_name, a2.is_packed,
+																					   a2.p_total_stock 
+																				FROM products a 
+																				INNER JOIN product_stock a2 ON a2.product_id = a.id 
+																				LEFT JOIN product_categories b ON b.id = a.product_category 
+																				LEFT JOIN inventory_status c ON c.id = a2.p_inventory_status 
+																				LEFT JOIN warehouse_sub_locations d ON d.id = a2.sub_location 
+																				LEFT JOIN purchase_order_detail d3 ON d3.product_id = a2.product_id
+																				LEFT JOIN purchase_orders d4 ON d4.id = d3.po_id 
+																				LEFT JOIN venders d5 ON d5.id = d4.vender_id 
+																				LEFT JOIN vender_types d6 ON d6.id = d5.vender_type 
+																				WHERE 1=1 
+																				AND a2.p_total_stock > 0 
+																				AND a2.is_final_pricing = 1 
+																				AND a.enabled = 1";
+																	$sql_cl3	.= " AND a2.product_id = '" . $product_id . "' ";
+																	$sql_cl3	.= " ORDER BY a2.serial_no,d.sub_location_name";
+																	
+																	$result_cl3	= $db->query($conn, $sql_cl3);
+																	$count_cl3	= $db->counter($result_cl3);
+																	if ($count_cl3 > 0) {
+																		$row_cl3 = $db->fetch($result_cl3);
+																		foreach ($row_cl3 as $data3) {
+																			$id3 					= $data3['id'];?>
+																			<tr class="detail_tr <?= $id2; ?>">
+																				<td style="text-align: center;"><?php echo $i + 1; ?></td>
+																				<td style="text-align: center;"></td>
+																				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																					
+																					<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
+																				</td>
+																				<td><?php echo $data3['status_name']; ?></td>
+																				<td><?php echo $data3['stock_grade']; ?></td>
+																				<td><?php echo $data3['serial_no']; ?></td>
+																				<td><?php echo $data3['model_no']; ?></td>
+																				<td><?php echo $data3['battery_percentage']; ?></td>
+																				<td><?php echo $data3['ram_size']; ?></td>
+																				<td><?php echo $data3['storage_size']; ?></td>
+																				<td><?php echo $data3['sub_location_name']; ?></td>
+																				<td><?php echo round($data3['price'], 2);?></td>
+																				<td><?php echo $data3['p_total_stock']; ?></td>
+																			</tr>
+																		<?php
+																		}
+																	}
 																}
 															}
 														}

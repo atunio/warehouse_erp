@@ -2,7 +2,7 @@
   <div class="footer-copyright">
 	<div class="container">
 		<span>&copy; <?php echo date('Y');?>
-			<a href="#."><?php echo $project_name?></a>
+			<a href="javascript:void(0)"><?php echo $project_name?></a>
 			All rights reserved.
 		</span>
 		<span class="right hide-on-small-only">Design and Developed by 

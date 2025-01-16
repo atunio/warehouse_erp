@@ -238,7 +238,7 @@ $general_heading = "PO Profile";?>
 		padding-bottom: 5px !important;
 	}
 
-	.add-more, .remove-row {
+	.add-more, .remove-row, .remove-row-part{
 		font-size: 20px !important;
 		/* display: inline-flex !important; */
 		align-items: center !important;
@@ -250,7 +250,7 @@ $general_heading = "PO Profile";?>
 		text-decoration: none !important;
 	}
 
-	.add-more i, .remove-row i {
+	.add-more i, .remove-row i, .remove-row-part i {
 		font-size: inherit !important;/* Inherit font size from parent anchor tag */
 		line-height: 0 !important; Ensure icons are vertically centered */
 	}
@@ -536,6 +536,7 @@ $general_heading = "PO Profile";?>
 	</div>
 	<?php include("sub_files/add_product_modal.php") ?>
 	<?php include("sub_files/add_vender_modal.php") ?>
+	<?php include("sub_files/add_package_modal.php") ?>
 </div>
 <br><br>
 <!-- END: Page Main-->
@@ -563,3 +564,4 @@ $general_heading = "PO Profile";?>
 </script>
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>
+<?php include("sub_files/add_package_js_code.php") ?>

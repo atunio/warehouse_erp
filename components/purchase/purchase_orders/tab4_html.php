@@ -7,13 +7,13 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Vender's Data 
+                    <?= $general_heading;?> => Vendor's Data 
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                 <?php if (access("add_perm") == 1) { ?>
                     <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&page=importvender_data") ?>">
-                        Import Vender Data
+                        Import Vendor Data
                     </a>
                 <?php } ?>
                 <?php include("tab_action_btns.php");?>
@@ -26,7 +26,7 @@
                     <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                 </div> 
             </div>
         <?php }  ?> 
@@ -63,7 +63,7 @@
             <div class="card-panel">
                 <div class="row">
                     <div class="col m4 s12">
-                        <h5>Vender's Imported Data</h5>
+                        <h5>Vendor's Imported Data</h5>
                     </div>
                     <?php
                     if (isset($cmd4) &&  $cmd4 == "add" && isset($detail_id) && $detail_id != "") {  ?>

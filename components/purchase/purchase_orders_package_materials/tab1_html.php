@@ -79,7 +79,7 @@
                         </div> 
                         <?php
                         $field_name 	= "vender_invoice_no";
-                        $field_label 	= "Vender Invoice #";
+                        $field_label 	= "Vendor Invoice #";
                         ?>
                         <div class="input-field col m2 s12 custom_margin_bottom_col">
                             <i class="material-icons prefix">question_answer</i>
@@ -175,6 +175,7 @@
                                     <th style="width: 250px;">Description</th>
                                     <th style="width: 100px;">Qty</th>
                                     <th style="width: 100px;">Price</th>
+                                    <th style="width: 100px;">Value</th>
                                     <th style="width: 150px;">Actions</th> 
                                 </tr>
                             </thead>
@@ -182,6 +183,7 @@
                                 <?php 
                                 if(isset($id) && $id>0){
                                     unset($package_ids);
+                                    unset($order_qty);
                                     unset($order_price);
                                     unset($product_po_desc);
                                     $sql_ee1		= "SELECT a.* FROM package_materials_order_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
@@ -196,13 +198,19 @@
                                             $product_po_desc[]      = $data2['product_po_desc'];
                                         }
                                     }
-                                }
-
+                                }?>
+                                <input type="hidden" id="total_products_in_po" value="<?php if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) {
+                                    echo "1";
+                                } else {
+                                    echo sizeof($package_ids);
+                                } ?>">
+                                <?php
                                 $disabled = $readonly = "";
                                 if((isset($order_status) && $order_status != 1 )){
                                     $disabled = "disabled='disabled'";
                                     $readonly = "readonly='readonly'";
                                 }
+                                $sum_value = $sum_qty =  $sum_price = 0 ;
                                 for($i = 1; $i <= 50; $i++) {
                                     $field_name     = "package_ids";
                                     $field_id       = "packageids_".$i;
@@ -238,7 +246,7 @@
                                     ?>
                                     <tr class="dynamic-row" id="row_<?=$i;?>" <?php echo $style; ?>>
                                         <td>
-                                            <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product_stock <?=$field_name?>_<?=$i?>">
+                                            <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?=$field_name?>_<?=$i?>">
                                                 <option value="">Select a product</option>
                                                 <?php
                                                 if ($count1 > 0) {
@@ -265,21 +273,34 @@
                                             $field_name     = "order_qty";
                                             $field_id       = "orderqty_".$i; 
                                             ?>
-                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_qty">
                                         </td>
                                         <td>
                                             <?php
                                             $field_name     = "order_price";
                                             $field_id       = "orderprice_".$i; 
                                             ?>
-                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input">
+                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_price">
+                                        </td>
+                                        <td class="text_align_right">
+                                            <span id="value_<?= $i; ?>">
+                                                <?php
+                                                $value = 0;
+                                                if (isset($order_qty[$i - 1]) && isset($order_price[$i - 1])) {
+                                                    $value =  ($order_price[$i - 1] * $order_qty[$i - 1]);
+                                                    $sum_price += $order_price[$i - 1];
+                                                    $sum_qty += $order_qty[$i - 1];
+                                                }
+                                                echo number_format($value, 2);
+                                                $sum_value += $value; ?>
+                                            </span>
                                         </td>
                                         <td>
                                             <?php if(isset($order_status) && $order_status == 1){ ?>
                                                     <a  class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?=$i?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">cancel</i>
                                                     </a> &nbsp;
-                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?=$i?>" href="javascript:void(0)">
+                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?=$i?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">add_circle</i>
                                                     </a>&nbsp;&nbsp;
                                             <?php }
@@ -290,6 +311,18 @@
                                 $field_name     = "product_id_for_package_material"; 
                                 ?>
                                 <input name="<?= $field_name; ?>" type="hidden"  id="<?= $field_name; ?>" value="">
+                                <tr>
+                                    <td colspan=""></td>
+                                    <td class="text_align_right"><b>Total: </b></td>
+                                    <td class="text_align_left">
+                                        <span id="total_qty"><?php echo ($sum_qty); ?></b></span>
+                                    </td>
+                                    <td class="text_align_left"></td>
+                                    <td class="text_align_right"><b>
+                                            <span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
+                                    </td>
+                                    <td colspan=""></td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>

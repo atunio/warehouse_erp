@@ -281,7 +281,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m3 s12">
 								<?php
 								$field_name     = "vender_invoice_no";
-								$field_label    = "Vender Invoice#";
+								$field_label    = "Vendor Invoice#";
 								?>
 								<i class="material-icons prefix">description</i>
 								<input id="<?= $field_name; ?>" type="text" disabled value="<?php if (isset(${$field_name})) {

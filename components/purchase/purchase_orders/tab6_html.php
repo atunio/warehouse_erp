@@ -21,7 +21,7 @@
                     <h6 class="media-heading"><span class=""><?php echo "<b>PO#: </b>" . $po_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                 </div>
 
                 <div class="input-field col m4 s12">
@@ -128,13 +128,13 @@
                                                                                                     echo "display: none;";
                                                                                                 } else {;
                                                                                                 } ?>">
-                            <a href="#" class="show_receive_from_barcode_section_tab6">Show Form</a>
+                            <a href="javascript:void(0)" class="show_receive_from_barcode_section_tab6">Show Form</a>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_2) && $is_Submit_tab6_2 == 'Y') {;
                                                                                                 } else {
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
-                            <a href="#" class="hide_receive_from_barcode_section_tab6">Hide Form</a>
+                            <a href="javascript:void(0)" class="hide_receive_from_barcode_section_tab6">Hide Form</a>
                         </div>
                     </div>
                     <div id="receive_from_barcode_section_tab6" style="<?php if (isset($is_Submit_tab6_2) && $is_Submit_tab6_2 == 'Y') {;
@@ -336,13 +336,13 @@
                                                                                                             echo "display: none;";
                                                                                                         } else {;
                                                                                                         } ?>">
-                            <a href="#" class="show_receive_as_manual_barcodes_section_tab6">Show Form</a>
+                            <a href="javascript:void(0)" class="show_receive_as_manual_barcodes_section_tab6">Show Form</a>
                         </div>
                         <div class="col m4 s12 show_receive_as_manual_barcodes_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_5) && $is_Submit_tab6_5 == 'Y') {;
                                                                                                         } else {
                                                                                                             echo "display: none;";
                                                                                                         } ?>">
-                            <a href="#" class="hide_receive_as_manual_barcodes_section_tab6">Hide Form</a>
+                            <a href="javascript:void(0)" class="hide_receive_as_manual_barcodes_section_tab6">Hide Form</a>
                         </div>
                     </div>
                     <div id="receive_as_manual_barcodes_section_tab6" style="<?php if (isset($is_Submit_tab6_5) && $is_Submit_tab6_5 == 'Y') {;
@@ -533,13 +533,13 @@
                                                                                                                         echo "display: none;";
                                                                                                                     } else {;
                                                                                                                     } ?>">
-                            <a href="#" class="show_update_tested_devices_serial_from_phonechecker_tab6">Show Form</a>
+                            <a href="javascript:void(0)" class="show_update_tested_devices_serial_from_phonechecker_tab6">Show Form</a>
                         </div>
                         <div class="col m6 s12 update_tested_devices_serial_from_phonechecker_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
                                                                                                                     } else {
                                                                                                                         echo "display: none;";
                                                                                                                     } ?>">
-                            <a href="#" class="hide_update_tested_devices_serial_from_phonechecker_tab6">Hide Form</a>
+                            <a href="javascript:void(0)" class="hide_update_tested_devices_serial_from_phonechecker_tab6">Hide Form</a>
                         </div>
                     </div>
                     <div id="update_tested_devices_serial_from_phonechecker_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
@@ -1204,7 +1204,7 @@
                                                                 } else { ?>
                                                                     <span class="chip orange lighten-5">
                                                                         <span class="orange-text">
-                                                                            Vender Grade: <?php echo $vender_grade; ?></span>
+                                                                            Vendor Grade: <?php echo $vender_grade; ?></span>
                                                                     </span><br>
                                                                 <?php
 
@@ -1238,7 +1238,7 @@
                                                                     $color  = "green";
                                                                 } else { ?>
                                                                     <span class="chip orange lighten-5">
-                                                                        <span class="orange-text">Vender Status: <?php echo $vender_status; ?></span>
+                                                                        <span class="orange-text">Vendor Status: <?php echo $vender_status; ?></span>
                                                                     </span><br>
                                                                 <?php
                                                                 }

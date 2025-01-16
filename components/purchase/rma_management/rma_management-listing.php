@@ -123,7 +123,7 @@ $page_heading 	= "List PO For RMA ";
 																		PO No</br>
 																		PO Date
 																	</th>
-  																	<th>Vender / Invoice#</th>
+  																	<th>Vendor / Invoice#</th>
 																	<th>Product ID</th>
 																	<th>SeriaL#</th>
 																	<th>RMA Grade</th> 

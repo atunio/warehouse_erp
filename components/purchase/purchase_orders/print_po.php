@@ -274,7 +274,61 @@ if ($counter_ee11 > 0) {
 									</tr>';
 
 	$report_data .= '	</tbody>
-						</table> 
+						</table> ';
+
+
+	
+
+	$sql_sub1 		= "	SELECT b.package_name , c.category_name , a.order_price,a.order_qty
+						FROM purchase_order_packages_detail a
+						LEFT JOIN packages b ON b.id = a.package_id
+						LEFT JOIN product_categories c ON c.id = b.product_category
+						WHERE a.enabled = 1 
+						AND a.po_id = '". $po_id ."'
+						ORDER BY b.package_name, c.category_name"; //echo $sql_sub1;die;
+	$result_sub1 	= $db->query($conn, $sql_sub1);
+	$counter_sub1	= $db->counter($result_sub1);
+	$sub_total = $total = $sum_order_qty = $sum_value = 0;
+	if ($counter_sub1 > 0) {
+		$report_data .= '<table class="table1">
+						<thead>
+							<tr>
+								<th>Package / Part</th>
+								<th>Price</th>
+								<th>Qty</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody>';
+		$row_sub1				= $db->fetch($result_sub1);
+		foreach ($row_sub1 as $data_sub1) {
+			$package_name			= $data_sub1['package_name'];
+			$category_name			= $data_sub1['category_name'];
+			$order_price			= $data_sub1['order_price'];
+			$order_qty				= $data_sub1['order_qty'];
+			$sum_order_qty			+= $order_qty;
+			$value 					= $order_qty * $order_price;
+			$sum_value			   += $value;
+			$report_data .= '
+								<tr>
+									<td>' . $package_name . ' (' . $category_name . ') </td>
+									<td>' . number_format($order_price, 2) . '</td>
+									<td>' . $order_qty . ' </td>
+									<td>' . number_format($value, 2) . '</td>
+								</tr>';
+		}
+		$report_data .= '
+									<tr> 
+										<td colspan="2"></td>
+										<td>' . $sum_order_qty . '</td>
+										<td><b>' . number_format($sum_value, 2) . '</b></td>
+									</tr>
+									</tbody>
+								</table>';
+	}
+	
+
+	$report_data .= '
 					</div>';
 	$report_data = $report_data . $css;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);

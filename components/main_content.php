@@ -320,7 +320,7 @@
 								<div class="col s12 border-bottom-1 pb-0 pt-1">
 									<div class="row">
 										<div class="col s2 pr-0 center">
-											<i class="material-icons vertical-text-middle"><a href="#" class="sidenav-close">clear</a></i>
+											<i class="material-icons vertical-text-middle"><a href="javascript:void(0)" class="sidenav-close">clear</a></i>
 										</div>
 										<div class="col s10 pl-0">
 											<ul class="tabs">

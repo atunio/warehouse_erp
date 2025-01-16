@@ -422,7 +422,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 							<?php
 							$field_name 	= "vender_invoice_no";
-							$field_label 	= "Vender Invoice #";
+							$field_label 	= "Vendor Invoice #";
 							?>
 							<div class="input-field col m2 s12">
 								<i class="material-icons prefix">question_answer</i>

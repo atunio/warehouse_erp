@@ -131,7 +131,7 @@ $page_heading 	= "List of Tasks";
 										<div class="ps__thumb-y" tabindex="0" style="top: 123px; height: 134px;"></div>
 									</div>
 								</div>
-								<a href="#" data-target="todo-sidenav" class="sidenav-trigger hide-on-large-only"><i class="material-icons">menu</i></a>
+								<a href="javascript:void(0)" data-target="todo-sidenav" class="sidenav-trigger hide-on-large-only"><i class="material-icons">menu</i></a>
 							</div>
 						</div>
 					</div>

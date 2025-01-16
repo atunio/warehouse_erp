@@ -2,7 +2,7 @@
 $(document).ready(function() { 
     // Initially hide the "Remove" buttons except for the last row
     updateRemoveButtonVisibility();
-
+    partsUpdateRemoveButtonVisibility();
     // Handle "Add More" button click to show the next hidden row
     $(document).on('click', '.add-more-btn', function(event) {
         event.preventDefault(); // Prevent form submission or page reload
@@ -11,6 +11,12 @@ $(document).ready(function() {
         var parts = id.split('^');
         var rowno = parseInt(parts[1]);  
         var next_row = rowno+1; 
+        $(".product_ids_"+next_row).val('').trigger('change'); 
+        $("#productcondition_"+next_row).val('').trigger('change'); 
+        $("#orderqty_"+next_row).val('').trigger('change'); 
+        $("#orderprice_"+next_row).val('').trigger('change'); 
+        $("#expectedstatus_"+next_row).val('').trigger('change'); 
+        $("#value_"+next_row).text('').trigger('change');
         $("#row_"+next_row).show();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
 
@@ -53,18 +59,24 @@ $(document).ready(function() {
         if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
             total_products_in_po = 1;
         }
-        var p_value = 0;
-        for(var k = 1; k<= total_products_in_po; k++){ 
-            var currentText = $("#value_"+k).text();
+        var p_value =  total_qty = total_price = 0;
+        for(var k = 1; k<= total_products_in_po; k++){
+            var currentText = $("#value_"+k).text(); 
+            var orderqty = $("#orderqty_"+k).val();
             if(currentText != '' && currentText != 0 && currentText != null){
                 currentText = currentText.replace(/,/g, '');
                 p_value += parseFloat(currentText);
-            } 
+            }
+            if(orderqty != '' && orderqty != null){
+                total_qty += parseFloat(orderqty);
+            }
         }
         if(p_value > 0){ 
             $("#total_value").text(formatNumber(p_value, 2));
-        }
-
+        } 
+        if(total_qty > 0){
+            $("#total_qty").text(total_qty);
+        } 
         if(rowno == 1){
             $(".first_row").show();
         }
@@ -123,16 +135,23 @@ $(document).ready(function() {
         if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
             total_products_in_po = 1;
         }
-        var p_value = 0;
+        var p_value =  total_qty = total_price = 0;
         for(var k = 1; k<= total_products_in_po; k++){
             var currentText = $("#value_"+k).text(); 
+            var orderqty    = $("#orderqty_"+k).val();
             if(currentText != '' && currentText != 0 && currentText != null){
                 currentText = currentText.replace(/,/g, '');
                 p_value += parseFloat(currentText);
             }
+            if(orderqty != '' && orderqty != null){
+                total_qty += parseFloat(orderqty);
+            }
         }
         if(p_value > 0){ 
             $("#total_value").text(formatNumber(p_value, 2));
+        } 
+        if(total_qty > 0){
+            $("#total_qty").text(total_qty);
         } 
     });
     $(document).on('keyup', '.order_price', function(event) {
@@ -154,20 +173,222 @@ $(document).ready(function() {
             total_products_in_po = 1;
         } 
         
-        var p_value = 0;
+        var p_value =  total_qty = total_price = 0;
         for(var k = 1; k<= total_products_in_po; k++){
             var currentText = $("#value_"+k).text(); 
-            if(currentText != '' && currentText != 0 && currentText != null){
+            var orderqty = $("#orderqty_"+k).val();
+             if(currentText != '' && currentText != 0 && currentText != null){
                 currentText = currentText.replace(/,/g, '');
                 p_value += parseFloat(currentText);
-            }
+             }
+             if(orderqty != '' && orderqty != null){
+                 total_qty += parseFloat(orderqty);
+             }
         }
         if(p_value > 0){ 
             $("#total_value").text(formatNumber(p_value, 2));
         } 
-
+        if(total_qty > 0){
+            $("#total_qty").text(total_qty);
+        } 
     });
-   
+
+    $(".package_material_parts").click(function() {
+        var icon = $(this).find('i.material-icons');
+        
+        if ($('#package_parts').is(':visible')) {
+            $("#package_parts").hide();
+            icon.text('visibility_off'); // Change icon to visibility_off
+        } else {
+            $("#package_parts").show();
+            icon.text('visibility'); // Change icon to visibility
+            partsUpdateRemoveButtonVisibility();
+        }
+    });
+
+    var icon = $(this).find('i.visibility_icon');
+    if ($('#package_parts').is(':visible')) {
+        icon.text('visibility');
+    } else {
+        icon.text('visibility_off'); // Change icon to visibility_off // Change icon to visibility
+    }
+    $(document).on('click', '.add-more-part-btn', function(event) {
+        event.preventDefault(); // Prevent form submission or page reload
+    
+        var id = $(this).attr('id');
+        var parts = id.split('_');
+        var rowno = parseInt(parts[1]);  
+        
+        var next_row = rowno+1; 
+        $("#packageids_"+next_row).val('').trigger('change'); 
+        $("#orderpartqty_"+next_row).val('').trigger('change'); 
+
+        $("#row_part_"+next_row).show();
+        partsUpdateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+    
+        var total_products_part_in_po = parseInt($("#total_products_part_in_po").val());
+        $("#total_products_part_in_po").val(total_products_part_in_po+1);
+    
+    
+        if(rowno == 0){
+            // $(this).hide();
+        }
+    });
+    $(document).on('click', '.add-part-more-btn2', function(event) {
+        $("#row_part_1").show();
+        $(this).hide();
+        partsUpdateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+    });
+    $(document).on('click', '.remove-row-part', function(event) {
+        event.preventDefault(); // Prevent form submission
+        var id = $(this).attr('id');
+        var parts = id.split('_');
+        var rowno = parseInt(parts[1]); 
+        
+        $("#packageids_"+rowno).val('').trigger('change'); 
+        $("#orderpartqty_"+rowno).val('').trigger('change');
+        $("#orderpartprice_"+rowno).val('').trigger('change'); 
+        var order_part_price = parseFloat($("#orderpartprice_"+rowno).val());
+        if(!isNaN(order_part_price) && !isNaN(order_part_qty)){
+            part_value = (order_part_price * order_part_qty);
+            $("#part_value_"+rowno).text(formatNumber(part_value, 2));
+        }
+        else{
+            $("#part_value_"+rowno).text('');
+        }
+        $("#row_part_"+rowno).hide();
+        partsUpdateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+        var total_products_part_in_po = $("#total_products_part_in_po").val();
+        if(total_products_part_in_po == '' || total_products_part_in_po == 0 || total_products_part_in_po == null){
+            total_products_part_in_po = 1;
+        }
+        var part_value =  total_part_qty = total_part_price = 0;
+        for(var k = 1; k<= total_products_part_in_po; k++){
+            var currentText = $("#part_value_"+k).text(); 
+            var orderpartqty = $("#orderpartqty_"+k).val();
+            if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                part_value += parseFloat(currentText); 
+            } 
+            if(orderpartqty != '' && orderpartqty != null){
+                total_part_qty += parseFloat(orderpartqty);
+            }
+        }
+        if(part_value > 0){ 
+            $("#total_part_value").text(formatNumber(part_value, 2));
+        } 
+        if(total_part_qty > 0){
+            $("#total_part_qty").text(total_part_qty);
+        } 
+        if(rowno == 1){
+            $(".first_row_part").show();
+        }
+    });
+    $(document).on('change', '.product_packages', function(event) {
+        var selectedValue = $(this).val();
+        var id          = $(this).attr('id');
+        var parts       = id.split('_');
+        var rowno       = parseInt(parts[1]);  
+        var next_row    = rowno+1; 
+        if (selectedValue === 'package_add_modal') {
+            // Open the modal
+            $('#package_add_modal').modal('open');
+            // Reset the select box to prevent accidental selection
+            $(this).val('');
+            event.stopImmediatePropagation(); // Stop further actions
+            return;
+        } else if (selectedValue > 0) { 
+            $("#row_part_"+next_row).show();
+            partsUpdateRemoveButtonVisibility();
+            var total_products_part_in_po = parseInt($("#total_products_part_in_po").val());
+            $("#total_products_part_in_po").val(total_products_part_in_po+1);
+        }
+    });
+    
+    function partsUpdateRemoveButtonVisibility() {
+        // Hide all "Add More" buttons
+        $('.add-more-part-btn').hide();
+        $('#page-length-option2 tbody .dynamic-row-part:visible').last().find('.add-more-part-btn').show();
+    }
+
+    $(document).on('keyup', '.order_part_qty', function(event) {
+ 
+        var order_part_qty   = parseInt($(this).val());
+        var id          = $(this).attr('id');
+        var parts       = id.split('_');
+        var rowno       = parseInt(parts[1]);  
+        var part_value       = 0;
+        var order_part_price = parseFloat($("#orderpartprice_"+rowno).val());
+        if(!isNaN(order_part_price) && !isNaN(order_part_qty)){
+            part_value = (order_part_price * order_part_qty);
+            $("#part_value_"+rowno).text(formatNumber(part_value, 2));
+        }
+        else{
+            $("#part_value_"+rowno).text('');
+        }
+    
+        var total_products_part_in_po = $("#total_products_part_in_po").val();
+        if(total_products_part_in_po == '' || total_products_part_in_po == 0 || total_products_part_in_po == null){
+            total_products_part_in_po = 1;
+        }
+        var part_value =  total_part_qty = total_part_price = 0;
+        for(var k = 1; k<= total_products_part_in_po; k++){
+            var currentText = $("#part_value_"+k).text(); 
+            var orderpartqty = $("#orderpartqty_"+k).val();
+            if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                part_value += parseFloat(currentText); 
+            } 
+            if(orderpartqty != '' && orderpartqty != null){
+                total_part_qty += parseFloat(orderpartqty);
+            }
+        }
+        if(part_value > 0){ 
+            $("#total_part_value").text(formatNumber(part_value, 2));
+        } 
+        if(total_part_qty > 0){
+            $("#total_part_qty").text(total_part_qty);
+        } 
+    });
+    $(document).on('keyup', '.order_part_price', function(event) {
+        var order_part_price = parseInt($(this).val());
+        var id               = $(this).attr('id');
+        var parts            = id.split('_');
+        var rowno            = parseInt(parts[1]);  
+        var part_value       = 0;
+        var order_part_qty   = parseFloat($("#orderpartqty_"+rowno).val());
+        if(!isNaN(order_part_price) && !isNaN(order_part_qty)){
+            part_value = (order_part_price * order_part_qty);
+            $("#part_value_"+rowno).text(formatNumber(part_value, 2));
+        }
+        else{
+            $("#part_value_"+rowno).text('');
+        }
+        var total_products_part_in_po = $("#total_products_part_in_po").val();
+        if(total_products_part_in_po == '' || total_products_part_in_po == 0 || total_products_part_in_po == null){
+            total_products_part_in_po = 1;
+        } 
+        
+        var part_value =  total_part_qty = total_part_price = 0;
+        for(var k = 1; k<= total_products_part_in_po; k++){
+            var currentText = $("#part_value_"+k).text(); 
+            var orderpartqty = $("#orderpartqty_"+k).val();
+             if(currentText != '' && currentText != 0 && currentText != null){
+                currentText = currentText.replace(/,/g, '');
+                part_value += parseFloat(currentText); 
+            }
+            if(orderpartqty != '' && orderpartqty != null){
+                total_part_qty += parseFloat(orderpartqty);
+            }
+        }
+        if(part_value > 0){ 
+            $("#total_part_value").text(formatNumber(part_value, 2));
+        } 
+        if(total_part_qty > 0){
+            $("#total_part_qty").text(total_part_qty);
+        } 
+    });
+    
     $('.package_id').on('change', function() {
         var id      = $(this).attr('id');
         var array   = id.split("_");

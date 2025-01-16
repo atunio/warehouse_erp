@@ -14,6 +14,9 @@ $(document).on('click', '.add-more-btn', function(event) {
     var next_row = rowno+1; 
     $("#row_"+next_row).show();
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+        
+    var total_products_in_po = parseInt($("#total_products_in_po").val());
+    $("#total_products_in_po").val(total_products_in_po+1);
 
     if(rowno == 0){
         // $(this).hide();
@@ -23,6 +26,9 @@ $(document).on('click', '.add-more-btn2', function(event) {
     $("#row_1").show();
     $(this).hide();
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
+        
+    var total_products_in_po = parseInt($("#total_products_in_po").val());
+    $("#total_products_in_po").val(total_products_in_po+1);
 });
 
 $(document).on('click', '.remove-row', function(event) {
@@ -33,11 +39,28 @@ $(document).on('click', '.remove-row', function(event) {
     
     $(".product_stock_ids_"+rowno).val('').trigger('change'); 
     $("#orderqty_"+rowno).val('').trigger('change'); 
-    $("#orderprice_"+rowno).val('').trigger('change'); 
+    $("#orderprice_"+rowno).val('').trigger('change');  
 
     $("#row_"+rowno).hide();
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
 
+    var total_products_in_po = parseInt($("#total_products_in_po").val());
+    // $("#total_products_in_po").val(total_products_in_po);
+
+    if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+        total_products_in_po = 1;
+    }
+    var p_value = 0;
+    for(var k = 1; k<= total_products_in_po; k++){ 
+        var currentText = $("#orderprice_"+k).val(); 
+        if(currentText != '' && currentText != 0 && currentText != null){
+            currentText = currentText.replace(/,/g, '');
+            p_value += parseFloat(currentText);
+        } 
+    }
+    if(p_value > 0){ 
+        $("#total_value").text(formatNumber(p_value, 2));
+    }
     if(rowno == 1){
         $(".first_row").show();
     }
@@ -46,9 +69,8 @@ $(document).on('click', '.remove-row', function(event) {
 // Function to show/hide the "Remove" button
 function updateRemoveButtonVisibility() {
     $('.add-more-btn').hide(); // Hide all "Remove" buttons
-    $('#page-length-option1 tbody tr:visible:last .add-more-btn').show(); // Show only the last "Remove" button
+    $('#page-length-option1 tbody .dynamic-row:visible:last .add-more-btn').show(); // Show only the last "Remove" button
 }
-
 
 // Handle the select change event to open the modal when "Add New Product" is selected
 $(document).on('change', '.product_stock', function(event) {
@@ -57,12 +79,49 @@ $(document).on('change', '.product_stock', function(event) {
     var parts       = id.split('_');
     var rowno       = parseInt(parts[1]);  
     var next_row    = rowno+1; 
-  
-    $("#row_"+next_row).show();
-    updateRemoveButtonVisibility();
+    
+    if (selectedValue === 'product_add_modal') {
+        // Open the modal
+        $('#product_add_modal').modal('open');
+        // Reset the select box to prevent accidental selection
+        $(this).val('');
+        event.stopImmediatePropagation(); // Stop further actions
+        return;
+    } else if (selectedValue > 0) { 
+        $("#row_"+next_row).show();
+        updateRemoveButtonVisibility();
+        var total_products_in_po = parseInt($("#total_products_in_po").val());
+        $("#total_products_in_po").val(total_products_in_po+1);
+    }
 });
 // Initialize modal (if you're using Materialize)
 $('.modal').modal();
+
+$(document).on('keyup', '.order_price', function(event) {
+    var order_price     = parseInt($(this).val());
+    var id              = $(this).attr('id');
+    var parts           = id.split('_');
+    var rowno           = parseInt(parts[1]);  
+    var value           = 0;
+   
+    var total_products_in_po = $("#total_products_in_po").val();
+    if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+        total_products_in_po = 1;
+    } 
+    
+    var p_value = 0;
+    for(var k = 1; k<= total_products_in_po; k++){
+        var currentText = $("#orderprice_"+k).val(); 
+        if(currentText != '' && currentText != 0 && currentText != null){
+            currentText = currentText.replace(/,/g, '');
+            p_value += parseFloat(currentText);
+        }
+    }
+    if(p_value > 0){ 
+        $("#total_value").text(formatNumber(p_value, 2));
+    } 
+
+});
  
 function generate_combo_new(data) { 
     source_field = data[0];
@@ -167,4 +226,18 @@ function generate_combo_new2(data) {
 
         }
     });
+}
+
+function formatNumber(value, decimals) {
+    // Ensure value is a number
+    value = parseFloat(value);
+    
+    // Fix to specified decimals
+    value = value.toFixed(decimals);
+    
+    // Add thousands separator
+    let parts = value.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    return parts.join('.');
 }

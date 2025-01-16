@@ -31,7 +31,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$category_name_valid 	= "invalid";
 	}
 	if (empty($error)) {
-		if (po_permisions("Vender Data") == 0) {
+		if (po_permisions("Vendor Data") == 0) {
 			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$excel_data = str_replace("'", "", str_replace(",", "", $excel_data));
@@ -127,7 +127,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$all_data = $modified_array;
 
 		if (empty($error)) {
-			if (po_permisions("Vender Data") == 0) {
+			if (po_permisions("Vendor Data") == 0) {
 				$error2['msg'] = "You do not have add permissions.";
 			} else {
 				$duplicate_data_array = array();

@@ -354,10 +354,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Name: </b>" . $vender_name; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Name: </b>" . $vender_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>

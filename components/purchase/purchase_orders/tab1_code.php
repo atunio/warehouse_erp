@@ -57,7 +57,6 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_qty 				= [];
 	$expected_status		= [];
 	$product_ids			= []; 
-	
 	$sql_ee1	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
 	$result_ee1	= $db->query($conn, $sql_ee1);
 	$count_ee1  = $db->counter($result_ee1);
@@ -70,6 +69,21 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$order_qty[]			= $data2['order_qty'];
 			$product_ids[]			= $data2['product_id'];
 			$expected_status[]		= $data2['expected_status'];
+		}
+	}
+
+	$package_id 				= [];
+	$order_part_qty 			= [];
+	$order_part_price			= [];
+	$sql_ee1		= "SELECT a.* FROM purchase_order_packages_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+	$result_ee1		= $db->query($conn, $sql_ee1);
+	$count_ee1  	= $db->counter($result_ee1);
+	if($count_ee1 > 0){
+		$row_ee1	= $db->fetch($result_ee1);
+		foreach($row_ee1 as $data2){ 
+			$package_id[]				= $data2['package_id'];
+			$order_part_qty[]			= $data2['order_qty'];
+			$order_part_price[]			= $data2['order_price'];
 		}
 	}
 } 
@@ -225,6 +239,37 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$order_qty[$i] 				= "";
 					$expected_status[$i] 		= "";
 					$i++;
+				}
+			}
+
+			$sql_dup = " DELETE FROM purchase_order_packages_detail WHERE po_id	= '" . $id . "'";
+			$db->query($conn, $sql_dup);
+
+			$filtered_id = (array_values(array_filter($package_ids)));
+
+			$ii = 0; // Initialize the counter before the loop
+			$rr = 1;
+			foreach ($filtered_id as $package_id) {
+				$sql_dup	= " SELECT a.* 
+								FROM purchase_order_packages_detail a 
+								WHERE a.po_id	= '" . $id . "'
+								AND a.package_id	= '" . $package_id . "' ";
+				$result_dup	= $db->query($conn, $sql_dup);
+				$count_dup	= $db->counter($result_dup);
+				if ($count_dup == 0) {
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_packages_detail(po_id, package_id,  order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "', '" . $package_id . "',  '" . $order_part_qty[$ii]  . "', '".$order_part_price[$ii]."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						$k++; // Increment the counter only if the insertion is successful
+					}
+					$ii++;
+				}
+				else{ 
+					$package_ids[$ii] 		= "";
+					$order_part_qty[$ii] 	= "";
+					$order_part_price[$ii] 	= "";
+					$ii++;
 				}
 			}
 		}

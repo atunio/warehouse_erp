@@ -88,13 +88,13 @@
                                                                                                                 //echo "display: none;";
                                                                                                             } else {;
                                                                                                             } ?>">
-                                <a href="#" class="show_receive_as_category_section">Show Form</a>
+                                <a href="javascript:void(0)" class="show_receive_as_category_section">Show Form</a>
                             </div>
                             <div class="col m6 s12 show_receive_as_category_hide_btn" style="display: none  <?php if (isset($is_Submit_tab3) && $is_Submit_tab3 == 'Y') {;
                                                                                                             } else {
                                                                                                                 //echo "display: none;";
                                                                                                             } ?>">
-                                <a href="#" class="hide_receive_as_category_section">Hide Form</a>
+                                <a href="javascript:void(0)" class="hide_receive_as_category_section">Hide Form</a>
                             </div>
                         </div>
                         <div id="receive_as_category_section" style="<?php if (isset($is_Submit_tab3) && $is_Submit_tab3 == 'Y') {;

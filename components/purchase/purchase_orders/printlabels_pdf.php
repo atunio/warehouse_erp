@@ -96,7 +96,7 @@ if ($counter_ee1 > 0) {
 		<br>
 		<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
 		<br><br>
-		Vender Name: ' . $vender_name . '
+		Vendor Name: ' . $vender_name . '
 		<br><br>
 		Box/Pallet # ' . $arrival_no . ' out ' . $total_boxes . '
 		<br><br>

@@ -21,7 +21,7 @@
                      <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
                  </div>
                  <div class="input-field col m4 s12">
-                     <h6 class="media-heading"><span class=""><?php echo "<b>Vender Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                  </div>
 
                  <div class="input-field col m4 s12">
@@ -127,13 +127,13 @@
                                                                                                 echo "display: none;";
                                                                                             } else {;
                                                                                             } ?>">
-                             <a href="#" class="show_receive_from_barcode_section">Show Form</a>
+                             <a href="javascript:void(0)" class="show_receive_from_barcode_section">Show Form</a>
                          </div>
                          <div class="col m6 s12 show_receive_from_barcode_hide_btn" style="<?php if (isset($is_Submit_tab5_2) && $is_Submit_tab5_2 == 'Y') {;
                                                                                             } else {
                                                                                                 echo "display: none;";
                                                                                             } ?>">
-                             <a href="#" class="hide_receive_from_barcode_section">Hide Form</a>
+                             <a href="javascript:void(0)" class="hide_receive_from_barcode_section">Hide Form</a>
                          </div>
                      </div>
                      <div id="receive_from_barcode_section" style="<?php if (isset($is_Submit_tab5_2) && $is_Submit_tab5_2 == 'Y') {;
@@ -351,13 +351,13 @@
                                                                                                     echo "display: none;";
                                                                                                 } else {;
                                                                                                 } ?>">
-                                 <a href="#" class="show_receive_as_category_section">Show Form</a>
+                                 <a href="javascript:void(0)" class="show_receive_as_category_section">Show Form</a>
                              </div>
                              <div class="col m6 s12 show_receive_as_category_hide_btn" style="<?php if (isset($is_Submit_tab5) && $is_Submit_tab5 == 'Y') {;
                                                                                                 } else {
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
-                                 <a href="#" class="hide_receive_as_category_section">Hide Form</a>
+                                 <a href="javascript:void(0)" class="hide_receive_as_category_section">Hide Form</a>
                              </div>
                          </div>
                          <div id="receive_as_category_section" style="<?php if (isset($is_Submit_tab5) && $is_Submit_tab5 == 'Y') {;
@@ -430,7 +430,7 @@
                                 if ($count_r1 > 0) { ?>
                                  <div class="row">
                                      <div class="col s12">
-                                         <table id="page-length-option1" class=" bordered">
+                                         <table id="page-length-option1" class=" bordered addproducttable">
                                              <thead>
                                                  <tr>
                                                      <?php
@@ -583,13 +583,13 @@
                                                                                                         echo "display: none;";
                                                                                                     } else {;
                                                                                                     } ?>">
-                             <a href="#" class="show_receive_as_manual_barcodes_section">Show Form</a>
+                             <a href="javascript:void(0)" class="show_receive_as_manual_barcodes_section">Show Form</a>
                          </div>
                          <div class="col m6 s12 show_receive_as_manual_barcodes_hide_btn" style="<?php if (isset($is_Submit_tab5_5) && $is_Submit_tab5_5 == 'Y') {;
                                                                                                     } else {
                                                                                                         echo "display: none;";
                                                                                                     } ?>">
-                             <a href="#" class="hide_receive_as_manual_barcodes_section">Hide Form</a>
+                             <a href="javascript:void(0)" class="hide_receive_as_manual_barcodes_section">Hide Form</a>
                          </div>
                      </div>
                      <div id="receive_as_manual_barcodes_section" style="<?php if (isset($is_Submit_tab5_5) && $is_Submit_tab5_5 == 'Y') {;
@@ -801,9 +801,9 @@
                                          </label>
                                      </div>
                                      <div style="<?= $style; ?>" class=" input-field col m1 s12 button_div_serial_no_manual" id="button_div_serial_no_manual_<?= $i2; ?>">
-                                         <a href="#." style="<?= $style2; ?> font-size: 30px;" class="add_<?= $field_name; ?> add_<?= $field_name; ?>_<?= $i2; ?>" id="add_<?= $field_name; ?>^<?= $i2; ?>">+</a>
+                                         <a href="javascript:void(0)" style="<?= $style2; ?> font-size: 30px;" class="add_<?= $field_name; ?> add_<?= $field_name; ?>_<?= $i2; ?>" id="add_<?= $field_name; ?>^<?= $i2; ?>">+</a>
                                          &nbsp;
-                                         <a href="#." style="<?= $style; ?> font-size: 30px;" class="minus_<?= $field_name; ?> minus_<?= $field_name; ?>_<?= $i2; ?>" id="minus_<?= $field_name; ?>^<?= $i2; ?>">-</a>
+                                         <a href="javascript:void(0)" style="<?= $style; ?> font-size: 30px;" class="minus_<?= $field_name; ?> minus_<?= $field_name; ?>_<?= $i2; ?>" id="minus_<?= $field_name; ?>^<?= $i2; ?>">-</a>
                                      </div>
                                  <?php } ?>
                              </div>
@@ -853,13 +853,13 @@
                                                                                                         echo "display: none;";
                                                                                                     } else {;
                                                                                                     } ?>">
-                                 <a href="#" class="show_receive_package_materials_section">Show Form</a>
+                                 <a href="javascript:void(0)" class="show_receive_package_materials_section">Show Form</a>
                              </div>
                              <div class="col m6 s12 show_receive_package_materials_hide_btn" style="<?php if (isset($is_Submit_tab5_6) && $is_Submit_tab5_6 == 'Y') {;
                                                                                                     } else {
                                                                                                         echo "display: none;";
                                                                                                     } ?>">
-                                 <a href="#" class="hide_receive_package_materials_section">Hide Form</a>
+                                 <a href="javascript:void(0)" class="hide_receive_package_materials_section">Hide Form</a>
                              </div>
                          </div>
                          <div id="receive_package_materials_section" style="<?php if (isset($is_Submit_tab5_6) && $is_Submit_tab5_6 == 'Y') {;
@@ -871,27 +871,28 @@
                                  <div class="input-field col m12 s12"> </div>
                              </div>
                              <?php
-                                $sql_r1     = "	SELECT a.id, d.product_uniqueid, d.product_desc, e.category_name,
-                                                        b.product_sku, c.category_name as package_material_category_name, a.package_material_qty
-                                                    FROM purchase_order_detail a
-                                                    INNER JOIN packages b ON b.id =a.package_id
-                                                    LEFT JOIN product_categories c ON c.id = b.product_category
-                                                    INNER JOIN products d ON d.id = a.product_id
-                                                    LEFT JOIN product_categories e ON e.id = d.product_category
-                                                    WHERE a.enabled = 1 
-                                                    AND a.po_id = '" . $id . "'  
-                                                    ORDER BY d.product_uniqueid, b.product_sku, c.category_name"; //echo $sql_cl;
+                                $sql_r1     = "	SELECT  aa.id, b.package_name,c.category_name AS package_material_category_name, aa.order_qty AS package_material_qty
+                                                FROM purchase_order_packages_detail aa
+                                                INNER JOIN purchase_order_detail a ON a.po_id = aa.po_id
+                                                INNER JOIN packages b ON b.id = aa.package_id
+                                                INNER JOIN product_categories c ON c.id = b.product_category
+                                                INNER JOIN products d ON d.id = a.product_id
+                                                INNER JOIN product_categories e ON e.id = d.product_category
+                                                WHERE a.enabled = 1 
+                                                AND a.po_id = '$id'
+                                                GROUP BY b.package_name, c.category_name , aa.order_qty
+                                                ORDER BY b.package_name, c.category_name , aa.order_qty"; //echo $sql_cl;
                                 $result_r1  = $db->query($conn, $sql_r1);
                                 $count_r1   = $db->counter($result_r1);
                                 if ($count_r1 > 0) { ?>
                                  <div class="row">
                                      <div class="col s12">
-                                         <table id="page-length-option1" class=" bordered">
+                                         <table id="page-length-option1" class="bordered addproducttable">
                                              <thead>
                                                  <tr>
                                                      <?php
-                                                        $headings = '<th>Product ID</br>Details</th>
-                                                                        <th>Package Materials Detail</th>
+                                                        $headings = '   <th>Package Materials</th>
+                                                                        <th>Category</th>
                                                                         <th>Qty</th>
                                                                         <th>Total Received Yet</th>
                                                                         <th>Receiving Qty</th> 
@@ -916,18 +917,12 @@
                                                             $total_received_qty = $db->counter($result_rc1);  ?>
                                                          <tr>
                                                              <td style="width: 400px;">
-                                                                 <?php echo $data_r1['product_uniqueid']; ?></br>
-                                                                 <?php
-                                                                    echo $data_r1['product_desc'];
-                                                                    if ($data_r1['category_name'] != '') {
-                                                                        echo " (" . $data_r1['category_name'] . ")";
-                                                                    } ?>
+                                                                 <?php echo $data_r1['package_name']; ?>
                                                              </td>
                                                              <td style="width: 400px;">
                                                                  <?php
-                                                                    echo $data_r1['product_sku'];
                                                                     if ($data_r1['package_material_category_name'] != '') {
-                                                                        echo " (" . $data_r1['package_material_category_name'] . ")";
+                                                                        echo " " . $data_r1['package_material_category_name'] . "";
                                                                     } ?>
                                                              </td>
                                                              <td style="width: 150px; text-align: center;"><?php echo $package_material_qty; ?></td>
@@ -936,7 +931,7 @@
                                                                  <?php
                                                                     $field_name             = "receiving_qties2";
                                                                     $field_label            = "Receiving Qty";
-                                                                    $receiving_qty_value    = "";
+                                                                    $receiving_qty_value    = $total_received_qty??"";
 
                                                                     if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                         $receiving_qty_value = ${$field_name}[$detail_id_r1];
@@ -949,8 +944,9 @@
                                                                  <?php
                                                                     } ?>
 
-                                                                 <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $receiving_qty_value; ?>" style=" text-align: center;" />
-                                                             </td>
+                                                                <input type="hidden" name="previous_<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $total_received_qty; ?>" style=" text-align: center;" />
+                                                                <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $total_received_qty; ?>" style=" text-align: center;" />
+                                                            </td>
 
                                                              <td style="width: 200px;">
                                                                  <?php

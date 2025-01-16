@@ -356,12 +356,12 @@ foreach ($_POST as $key => $value) {
 		</div>
 		<div class="row">
 			<div class="input-field col m6 s12">
-				<a href="#" name="add_product_btn" id="add_product_btn" class="btn modal-close cyan waves-effect waves-light right">
+				<a href="javascript:void(0)" name="add_product_btn" id="add_product_btn" class="btn modal-close cyan waves-effect waves-light right">
 					Add<i class="material-icons right">send</i>
 				</a>
 			</div>
 			<div class="input-field col m6 s12">
-				<a href="#" name="close_product_btn" class="btn modal-close waves-red" />Close</a>
+				<a href="javascript:void(0)" name="close_product_btn" class="btn modal-close waves-red" />Close</a>
 			</div>
 		</div>
 		<br><br>
@@ -376,7 +376,7 @@ foreach ($_POST as $key => $value) {
 			<div class="input-field col m12 s12">
 				<?php
 				$field_name 	= "vender_name";
-				$field_label 	= "Vender Name";
+				$field_label 	= "Vendor Name";
 				?>
 				<i class="material-icons prefix pt-2">person_outline</i>
 				<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -398,7 +398,7 @@ foreach ($_POST as $key => $value) {
 			<div class="input-field col m12 s12">
 				<?php
 				$field_name 	= "phone_no";
-				$field_label 	= "Vender Phone";
+				$field_label 	= "Vendor Phone";
 				?>
 				<i class="material-icons prefix pt-2">phone</i>
 				<input type="text" id="<?= $field_name; ?>" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -458,12 +458,12 @@ foreach ($_POST as $key => $value) {
 		</div>
 		<div class="row">
 			<div class="input-field col m6 s12">
-				<a href="#" name="add_vender_btn" id="add_vender_btn" class="btn modal-close cyan waves-effect waves-light right">
+				<a href="javascript:void(0)" name="add_vender_btn" id="add_vender_btn" class="btn modal-close cyan waves-effect waves-light right">
 					Add<i class="material-icons right">send</i>
 				</a>
 			</div>
 			<div class="input-field col m6 s12">
-				<a href="#" name="close_vender_btn" class="btn modal-close waves-red" />Close</a>
+				<a href="javascript:void(0)" name="close_vender_btn" class="btn modal-close waves-red" />Close</a>
 			</div>
 		</div>
 		<br><br>

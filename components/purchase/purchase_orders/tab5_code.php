@@ -99,19 +99,37 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 			if ($counter_ee1 == 0) {
 				foreach ($receiving_qties2 as $key => $receiving_qty) {
 					if ($receiving_qty > 0) {
+						
+						$sql_ee12 = " SELECT a.* FROM purchase_order_detail_receive_package_material a 
+									WHERE a.po_detail_id = '" . $key . "' ";
+						// echo $sql_ee1;
+						$result_ee12 	= $db->query($conn, $sql_ee12);
+						$counter_ee12	= $db->counter($result_ee12);
+						if ($counter_ee12 > 0) {
+							$sql_c_del = "DELETE FROM purchase_order_detail_receive_package_material WHERE po_detail_id = '" . $key . "' ";
+							$db->query($conn, $sql_c_del);
+	
+							$sql_c_up = "	UPDATE purchase_order_packages_detail a
+											INNER JOIN packages b ON b.id = a.package_id
+											SET b.stock_in_hand = (b.stock_in_hand-".$previous_receiving_qties2[$key]."),
+												b.avg_price = (b.stock_in_hand*b.avg_price - $previous_receiving_qties2[$key]*a.order_price)/(b.stock_in_hand-$previous_receiving_qties2[$key])
+											WHERE a.id = '" . $key . "' ";
+							$db->query($conn, $sql_c_up);
+						}
+
 						for ($m = 0; $m < $receiving_qty; $m++) {
 							$receiving_location_add = $receiving_location2[$key];
-
 							$sql6 = "INSERT INTO purchase_order_detail_receive_package_material(po_detail_id, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
 									VALUES('" . $key . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {
 								$k++;
-								$sql_c_up = "	UPDATE purchase_order_detail a
+
+								$sql_c_up = "	UPDATE purchase_order_packages_detail a
 												INNER JOIN packages b ON b.id = a.package_id
 
-												SET b.stock_in_hand = (b.stock_in_hand+1)
-												
+												SET b.stock_in_hand = (b.stock_in_hand+1),
+													b.avg_price = ((b.stock_in_hand*b.avg_price)+(a.order_price))/(b.stock_in_hand+1)
 												WHERE a.id = '" . $key . "' ";
 								$db->query($conn, $sql_c_up);
 							}

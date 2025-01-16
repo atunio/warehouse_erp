@@ -38,11 +38,13 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $sql_cl		= "	SELECT * FROM (
-					SELECT c.id, b.product_id, c.product_uniqueid, c.product_desc, '27' AS p_inventory_status, c.product_category, '' AS sub_location,  
-						d.category_name, SUM(b.order_qty) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type
+					SELECT c.id, b.product_id, c.product_uniqueid, c.product_desc, a2.p_inventory_status, c.product_category, '' AS sub_location,  
+						d.category_name, SUM(b.order_qty) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type,
+						a2.serial_no
 					FROM `purchase_orders` a 
 					INNER JOIN purchase_order_detail b ON b.`po_id` = a.id
 					INNER JOIN products c ON c.id = b.`product_id`
+					LEFT JOIN product_stock a2 ON a2.product_id = c.id AND a2.enabled = 1
 					LEFT JOIN product_categories d ON  d.id = c.`product_category`
 					WHERE order_status IN(1, 3, 4) AND a.`enabled` = 1
 					GROUP BY b.product_id 
@@ -51,7 +53,9 @@ $sql_cl		= "	SELECT * FROM (
 
 					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a2.p_inventory_status, a.product_category, 
 						GROUP_CONCAT(DISTINCT CONCAT('', a2.sub_location)) AS sub_location,
-						b.category_name, '' AS total_qty, c.status_name, a2.is_final_pricing, 'Stock' AS r_type
+						b.category_name, '' AS total_qty, c.status_name, a2.is_final_pricing, 'Stock' AS r_type, 
+						GROUP_CONCAT(DISTINCT CONCAT('', a2.serial_no)) AS serial_no
+						
 					FROM products a
 					LEFT JOIN product_stock a2 ON a2.product_id = a.id AND a2.enabled = 1 
 					LEFT JOIN product_categories b ON b.id = a.product_category
@@ -60,7 +64,7 @@ $sql_cl		= "	SELECT * FROM (
 					AND a.enabled 	= 1
 					GROUP BY a2.product_id 
 				) AS t1
-				WHERE 1=1 ";
+			WHERE 1=1 ";
 
 if (isset($flt_product_id) && $flt_product_id != "") {
 	$sql_cl 	.= " AND product_uniqueid LIKE '%" . trim($flt_product_id) . "%' ";
@@ -77,8 +81,12 @@ if (isset($flt_stock_status) && $flt_stock_status > 0) {
 if (isset($flt_bin_id) && $flt_bin_id > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) AND is_final_pricing = 1 ";
 }
+if (isset($flt_serial_no) && $flt_serial_no > 0) {
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) AND is_final_pricing = 1 ";
+}
+
 $sql_cl		   .= " ORDER BY id DESC  ";
-// echo $sql_cl;
+//echo "<br><br><br><br><br>" .$sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 $page_heading 	= "Stock Summary";
@@ -258,6 +266,38 @@ $page_heading 	= "Stock Summary";
 												</label>
 											</div>
 										</div>
+										<div class="input-field col m3 s12">
+											<?php
+											$field_name 	= "flt_serial_no";
+											$field_label 	= "Serial No";
+											$sql1 			= "SELECT * FROM product_stock WHERE enabled = 1";
+											$result1 		= $db->query($conn, $sql1);
+											$count1 		= $db->counter($result1);
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">ALL</option>
+													<?php
+													if ($count1 > 0) {
+														$row1	= $db->fetch($result1);
+														foreach ($row1 as $data2) { ?>
+															<option value="<?php echo $data2['serial_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['serial_no']) { ?> selected="selected" <?php } ?>><?php echo "".$data2['serial_no']; ?></option>
+													<?php }
+													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
 									</div>
 									<div class="row">
 										<div class="input-field col m3 s12">
@@ -348,20 +388,8 @@ $page_heading 	= "Stock Summary";
 								<div class="row">
 									<div class="col s4">&nbsp;</div>
 									<div class="col s2">
-										<?php
-										if(isset($flt_bin_id) && $flt_bin_id > 0){
-										?>
-											<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
-										<?php
-										}else{
-											?>
-											<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
-											<a href="javascript:void(0)" class="minus_icon collapse_all"><i class="material-icons dp48">arrow_drop_up</i>Collapse All</a>
-										<?php
-										}
-										?>
-										
-										
+										<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
+										<a href="javascript:void(0)" class="minus_icon collapse_all"><i class="material-icons dp48">arrow_drop_up</i>Collapse All</a>
 									</div>
 
 								</div>

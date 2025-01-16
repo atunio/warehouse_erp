@@ -53,5 +53,16 @@ $(document).ready(function() {
      $(document).on('click', '#exportButton', function(e) {
           $('#action').val('export');
     }); 
+    var flt_bin_id = $("#flt_bin_id").val();
+    var flt_serial_no = $("#flt_serial_no").val();
+    if(flt_bin_id != '' && flt_bin_id != '0' || flt_serial_no != '' && flt_serial_no != '0'){
+          $(".detail_tr").show();
+         $(this).hide();
+         $(".collapse_all").show();
+         $(".plus_icon").hide();
+         $(".minus_icon").show();
+         $(".plus_icon_sub").hide();
+         $(".minus_icon_sub").show();
+    }
     $(".minus_icon_sub").hide();
 });

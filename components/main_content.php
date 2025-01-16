@@ -3,6 +3,11 @@
 		<div class="col s12">
 			<div class="container">
 				<div class="section">
+					<div class="card-alert card green lighten-5">
+						<div class="card-content green-text">
+							<p>Access Code: <b><?= $user_access_token; ?></b></p>
+						</div>
+					</div>
 					<!--card stats start-->
 					<div id="card-stats" class="pt-0">
 						<div class="row">

@@ -455,7 +455,7 @@
                                                                                     FROM purchase_order_detail_receive a 
                                                                                     WHERE 1=1 
                                                                                     AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                                    AND a.enabled = 1 "; //echo $sql_cl;
+                                                                                    AND a.enabled = 1 "; //echo $sql_rc1;
                                                             $result_rc1         = $db->query($conn, $sql_rc1);
                                                             $total_received_qty = $db->counter($result_rc1);  ?>
                                                          <tr>
@@ -478,14 +478,9 @@
                                                                     if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                         $receiving_qty_value = ${$field_name}[$detail_id_r1];
                                                                     }
-
                                                                     if (isset($error5[$field_name])) { ?>
-                                                                     <span class="color-red"><?php
-                                                                                                echo $error5[$field_name]; ?>
-                                                                     </span>
-                                                                 <?php
-                                                                    } ?>
-
+                                                                        <span class="color-red"><?php echo $error5[$field_name]; ?></span>
+                                                                 <?php } ?>
                                                                  <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $receiving_qty_value; ?>" style=" text-align: center;" />
                                                              </td>
 

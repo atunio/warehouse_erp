@@ -8,6 +8,9 @@ $(document).ready(function() {
     $(document).on('click', '.minus_icon', function(e) {
         var id = $(this).attr("id");
          $("."+id).hide();
+         $(".datatr_"+id).hide();
+         $(".plus_icon_sub").show();
+         $(".minus_icon_sub").hide();
          $(".plus_"+id).show(); 
          $(".minus_"+id).hide();
     });
@@ -55,7 +58,8 @@ $(document).ready(function() {
     }); 
     var flt_bin_id = $("#flt_bin_id").val();
     var flt_serial_no = $("#flt_serial_no").val();
-    if(flt_bin_id != '' && flt_bin_id != '0' || flt_serial_no != '' && flt_serial_no != '0'){
+    //flt_bin_id != '' && flt_bin_id != '0' ||
+    if( flt_serial_no != '' && flt_serial_no != '0'){
           $(".detail_tr").show();
          $(this).hide();
          $(".collapse_all").show();

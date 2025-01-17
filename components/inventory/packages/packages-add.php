@@ -33,6 +33,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_category	= $row_ee[0]['product_category'];
 	$product_ids		= explode(",", $row_ee[0]['product_ids']);
 	$stock_in_hand		= $row_ee[0]['stock_in_hand'];
+	$case_pack			= $row_ee[0]['case_pack'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -53,6 +54,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
 	}
+	$field_name = "case_pack";
+	if (isset(${$field_name}) && ${$field_name} == ""  && $cmd != 'edit') {
+		$error[$field_name] 	= "Required";
+		${$field_name . "_valid"} = "invalid";
+	}
+	
 	$field_name = "product_category";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
@@ -78,8 +85,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) { //product_sku, case_pack,
-					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, package_name, product_category, stock_in_hand, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, package_name, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '".$case_pack."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -114,7 +121,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 					$sql_c_up = "UPDATE packages SET 	package_name		= '" . $package_name . "', 
 														product_category	= '" . $product_category . "',  
  														product_ids			= '" . $product_ids_str . "', 
- 														
+ 														case_pack			= '" . $case_pack . "', 
 														update_date			= '" . $add_date . "',
 														update_by			= '" . $_SESSION['username'] . "',
 														update_ip			= '" . $add_ip . "'
@@ -250,6 +257,28 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<?php
 							$field_name 	= "stock_in_hand";
 							$field_label 	= "Stock In Hand";
+							?>
+							<div class="input-field col m3 s12">
+								<i class="material-icons prefix">question_answer</i>
+								<input id="<?= $field_name; ?>" <?php if (isset($cmd) && $cmd == 'edit') {
+																	echo "disabled";
+																} ?> type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																															echo ${$field_name};
+																														} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																					echo ${$field_name . "_valid"};
+																																				} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							<?php
+							$field_name 	= "case_pack";
+							$field_label 	= "No of Case Pack";
 							?>
 							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>

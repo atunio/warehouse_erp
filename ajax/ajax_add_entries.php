@@ -51,7 +51,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-        break;
+    break;
     case 'add_customer':
         if ($customer_name != "" && $phone_primary != "") {
             $count  = 0;
@@ -82,7 +82,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-        break;
+    break;
     case 'add_product2':
         if ($product_uniqueid != "" && $product_desc != "" && $product_category != "") {
             $product_desc = ucwords(strtolower($product_desc));
@@ -120,7 +120,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-        break;
+    break;
     case 'add_vender':
         if ($vender_name != "" && $phone_no != "") {
             $vender_name = ucwords(strtolower($vender_name));
@@ -158,7 +158,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-        break;
+    break;
     case 'add_repair_type':
         if ($repair_type_name != "") {
             $repair_type_name = ucwords(strtolower($repair_type_name));
@@ -185,8 +185,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-        break;
-
+    break;
     case 'add_package':
 
         if ($package_name != "" && $product_category != "") {
@@ -201,35 +200,34 @@ switch ($type) {
             $sql    = " SELECT a.*, b.category_name
                         FROM packages a 
                         LEFT JOIN product_categories b ON b.id = a.product_category
-                        WHERE a.product_id	    = '" . $product_id . "'
-                        AND a.package_name	    = '" . $package_name . "'
+                        WHERE a.package_name    = '" . $package_name . "'
                         AND a.product_category	= '" . $product_category . "' ";
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_id,  package_name, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids,  package_name, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
                         VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
-                    $product_id         = mysqli_insert_id($conn);
-                    $package_no         = "PP" . $product_id;
-                    $sql6               = "UPDATE packages SET package_no = '" . $package_no . "' WHERE id = '" . $product_id . "' ";
+                    $package_id         = mysqli_insert_id($conn);
+                    $package_no         = "Pkg" . $package_id;
+                    $sql6               = "UPDATE packages SET package_no = '" . $package_no . "' WHERE id = '" . $package_id . "' ";
                     $db->query($conn, $sql6);
-                    echo '<option value="' . $product_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
+                    echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
                 } else {
                     echo "Fail";
                 }
             } else {
                 $row            = $db->fetch($result);
-                $product_id     = $row[0]['id'];
+                $package_id     = $row[0]['id'];
                 $package_name   = $row[0]['package_name'];
                 $category_name  = $row[0]['category_name'];
-                echo '<option value="' . $product_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
+                echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
             }
         } else {
             echo 'Select';
         }
-        break;
+    break;
     case 'assign_bin':
         if ($bin_id != "" && $bin_id != "0") {
             $order_by       = 1;
@@ -302,8 +300,7 @@ switch ($type) {
             }
             echo 'Select';
         }
-        break;
-
+    break;
     case 'update_order':
         $user_ids = explode(",", $user_ids);
         if (isset($user_ids)) {
@@ -316,9 +313,7 @@ switch ($type) {
                 echo "Success";
             }
         }
-        break;
-
-
+    break;
     case 'assign_bin_repair':
         if ($bin_id != "" && $bin_id != "0") {
             $order_by       = 1;
@@ -391,8 +386,7 @@ switch ($type) {
             }
             echo 'Select';
         }
-        break;
-
+    break;
     case 'update_order_repair':
         $user_ids = explode(",", $user_ids);
         if (isset($user_ids)) {
@@ -405,7 +399,7 @@ switch ($type) {
                 echo "Success";
             }
         }
-        break;
+    break;
     case 'vendor_get_warranty_period_days':
         if (isset($vender_id)) {
             $sql_v = "SELECT * FROM venders WHERE id = '".$vender_id."' ";
@@ -419,5 +413,107 @@ switch ($type) {
         }else{
             echo  "0";
         }
-        break;
+    break;
+    case 'assign_bin_diagnostic':
+        if ($bin_id != "" && $bin_id != "0") {
+            $order_by       = 1;
+            $sql_order      = " SELECT MAX(a.order_by) as max_order_by
+                                FROM users_bin_for_diagnostic a  
+                                WHERE  a.is_processing_done	= '0'  ";
+            $result_order = $db->query($conn, $sql_order);
+            $count_order  = $db->counter($result_order);
+            if ($count_order > 0) {
+                $row_order = $db->fetch($result_order);
+                $order_by = $row_order[0]['max_order_by'] + 1;
+            }
+            $sql     = "SELECT a.*
+                        FROM users_bin_for_diagnostic a 
+                        WHERE a.location_id	= '" . $bin_id . "' 
+                        AND a.is_processing_done	= '0'";
+            $result = $db->query($conn, $sql);
+            $count  = $db->counter($result);
+            if ($count == 0) {
+                $sql6 = "INSERT INTO " . $selected_db_name . ".users_bin_for_diagnostic(subscriber_users_id, bin_user_id, location_id,order_by, add_date, add_by, add_by_user_id, add_ip, added_from_module_id )
+                                VALUES('" . $subscriber_users_id . "', '" . $bin_user_id . "', '" . $bin_id . "',  '" . $order_by . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $module_id . "')";
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
+                } else {
+                    echo "Fail";
+                }
+            } else {
+                if ($bin_user_id == "" || $bin_user_id == "0") {
+                    $sql6 = "DELETE FROM " . $selected_db_name . ".users_bin_for_diagnostic 
+                             WHERE location_id = '$bin_id '
+                             AND is_processing_done = 0 ";
+                    $ok = $db->query($conn, $sql6);
+                    if ($ok) {
+                        echo '<span id="removedBin">Removed</span>';
+                        include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
+                    }
+                } else {
+                    $sql6 = "UPDATE " . $selected_db_name . ".users_bin_for_diagnostic SET  bin_user_id             = '" . $bin_user_id . "', 
+                                                                                            update_date             = '" . $add_date . "', 
+                                                                                            update_by               = '" . $_SESSION['username'] . "', 
+                                                                                            update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                                                            update_ip               = '" . $add_ip . "',
+                                                                                            update_from_module_id   = '" . $module_id . "'
+                            WHERE location_id = '$bin_id '
+                            AND is_processing_done = 0 ";
+                    $ok = $db->query($conn, $sql6);
+                    if ($ok) {
+                        include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
+                    } else {
+                        echo "Fail";
+                    }
+                }
+            }
+        } else {
+            if ($bin_id != "" && $bin_id != "0" && $bin_user_id == "0" && $bin_user_id == "") {
+                $sql6 = "UPDATE " . $selected_db_name . ".users_bin_for_processing SET  bin_user_id             = '" . $bin_user_id . "',
+                                                                                        bin_has_assigned        = '0', 
+                                                                                        update_date             = '" . $add_date . "', 
+                                                                                        update_by               = '" . $_SESSION['username'] . "', 
+                                                                                        update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                                                        update_ip               = '" . $add_ip . "',
+                                                                                        update_from_module_id   = '" . $module_id . "'
+                        WHERE location_id = '$bin_id '
+                        AND is_processing_done = 0 ";
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    echo "unassigned";
+                }
+            }
+            echo 'Select';
+        }
+    break;
+    case 'update_order_diagnostic':
+        $user_ids = explode(",", $user_ids);
+        if (isset($user_ids)) {
+            foreach ($user_ids as $order => $id) {
+                $order = ($order + 1);
+                $sql6 = "UPDATE users_bin_for_diagnostic SET order_by = $order WHERE id = '$id' AND is_processing_done = 0";
+                $ok = $db->query($conn, $sql6);
+            }
+            if ($ok) {
+                echo "Success";
+            }
+        }
+    break;
+    case 'get_case_pack':
+        if ($package_id != "" && $package_id != "0") {
+            $sql_order      = " SELECT case_pack
+                                FROM packages   
+                                WHERE  id	= '".$package_id."'  ";
+            $result_order = $db->query($conn, $sql_order);
+            $count_order  = $db->counter($result_order);
+            if ($count_order > 0) {
+                $row_order = $db->fetch($result_order);
+                echo $row_order[0]['case_pack'];
+            }
+        }else{
+            echo "";
+        }
+    break;
+
 }

@@ -15,45 +15,49 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$module_status = 19;
-$sql_cl = " SELECT DISTINCT a.sub_location, b.sub_location_name, b.sub_location_type 
-            FROM product_stock a 
-			INNER JOIN products a2 ON a2.id = a.product_id
+$module_status = 5;
+$sql_cl = " SELECT DISTINCT a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type 
+			FROM `purchase_order_detail_receive` a
+			INNER JOIN `purchase_order_detail` b ON b.id = a.po_detail_id
+			INNER JOIN `purchase_orders` c ON c.id = b.po_id
+			INNER JOIN products a2 ON a2.id = b.product_id
 			INNER JOIN product_categories a3 ON a3.id = a2.product_category
-             INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location
-            WHERE a.p_total_stock > 0
-            AND a.p_inventory_status =  '$module_status' ";
+			INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+			WHERE po_detail_id = 3
+			AND is_diagnost = 0 ";
 if (isset($flt_bin_id) && $flt_bin_id != "") {
-	$sql_cl .= " AND a.sub_location = '" . $flt_bin_id . "' ";
+	$sql_cl .= " AND a.sub_location_id = '" . $flt_bin_id . "' ";
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl .= "  AND FIND_IN_SET(  '" . $flt_product_category . "' , a2.product_category) > 0 ";
 }
 
-$sql_cl .= "GROUP BY a.sub_location
-			ORDER BY a.sub_location ";
+$sql_cl .= "GROUP BY a.sub_location_id
+			ORDER BY a.sub_location_id ";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 
-$sql_u 			= " SELECT id,CONCAT(first_name,' ',last_name) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Repair' , user_sections) > 0 "; //echo $sql_u;
+$sql_u 			= " SELECT id,CONCAT(first_name,' ',last_name) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Diagnostic' , user_sections) > 0 "; //echo $sql_u;
 $result_u		= $db->query($conn, $sql_u);
 $count_u		= $db->counter($result_u);
 
-$sql_cl2			= " SELECT DISTINCT a3.id, a3.category_name, 
-							COUNT(a.id) AS qty, IFNULL(devices_per_user_per_day, 0) AS devices_per_user_per_day,
-							IFNULL((COUNT(a.id) / (devices_per_user_per_day*" . $count_u . ")), 0) AS estimated_time_hours
-						FROM product_stock a 
-						INNER JOIN  products a2 ON a2.id = a.product_id
+$sql_cl2			= " SELECT  DISTINCT a3.id, a3.category_name, 
+							COUNT(a.id) AS qty, IFNULL(e.devices_per_user_per_day, 0) AS devices_per_user_per_day,
+							IFNULL((COUNT(a.id) / (e.devices_per_user_per_day*" . $count_u . ")), 0) AS estimated_time_hours 
+						FROM `purchase_order_detail_receive` a
+						INNER JOIN `purchase_order_detail` b ON b.id = a.po_detail_id
+						INNER JOIN `purchase_orders` c ON c.id = b.po_id
+						INNER JOIN products a2 ON a2.id = b.product_id
 						INNER JOIN product_categories a3 ON a3.id = a2.product_category
-						INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location
-						LEFT JOIN formula_category c ON c.product_category = a2.product_category AND c.formula_type = 'Repair' AND c.enabled = 1
-						WHERE a.p_total_stock > 0 
-						AND a.p_inventory_status =  '$module_status'
+						INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+						LEFT JOIN formula_category e ON e.product_category = a2.product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
+						WHERE 1=1
+						AND is_diagnost = 0 
 						GROUP BY a3.id ";
 $result_cl2		= $db->query($conn, $sql_cl2);
 $count_cl2		= $db->counter($result_cl2);
-$page_heading 	= "List of Bins For Repair ( Manager View)";
+$page_heading 	= "List of Bins For Processing ( Manager View)";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
@@ -100,8 +104,7 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 												${$field_name} 			= $qty;
 												$field_id 				= "category" . $i;
 												$field_label 			= $category_name;
-												$estimated_time[$id] 	= $estimated_time_hours;
-										?>
+												$estimated_time[$id] 	= $estimated_time_hours; ?>
 												<div class="row">
 													<div class="input-field col m3 s12">
 														<i class="material-icons prefix">apps</i>
@@ -285,14 +288,17 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 																	<?php
 																	$total_qty = 0;
 																	$sql_cl3 = "SELECT COUNT(*) AS qty, a3.category_name  
-																				FROM product_stock a 
-																				INNER JOIN products a2 ON a2.id = a.product_id
-																				INNER JOIN product_categories a3 ON a3.id = a2.product_category
-																				WHERE a.p_total_stock > 0
-																				AND a.p_inventory_status =  '$module_status' 
-																				AND a.sub_location = '" . $id . "' 
+																				FROM purchase_order_detail_receive a
+																				INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+																				INNER JOIN purchase_orders c ON c.id = b.po_id
+																				INNER JOIN products a2 ON a2.id = b.product_id
+																				INNER JOIN product_categories a3 ON a3.id = a2.product_category 
+																				INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+																				WHERE 1=1
+																				AND is_diagnost = 0 
+																				AND a.sub_location_id = '" . $id . "' 
 																				GROUP BY a3.category_name
-																				ORDER BY a3.category_name ";
+																				ORDER BY a3.category_name";
 																	$result_cl3		= $db->query($conn, $sql_cl3);
 																	$count_cl3		= $db->counter($result_cl3);
 																	if ($count_cl3 > 0) {
@@ -310,7 +316,7 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 																	<div class="input-field col m12 s12">
 																		<div class="select2div">
 																			<?php
-																			$sql_u13			= " SELECT * FROM users_bin_for_repair WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
+																			$sql_u13			= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
 																			$result_u13		= $db->query($conn, $sql_u13);
 																			$count_u13		= $db->counter($result_u13);
 																			if ($count_u13 > 0) {
@@ -322,7 +328,7 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 																			$field_id     	= "bin_user_id-" . $id;
 																			$field_label    = "Users";
 
-																			$sql_u1			= " SELECT id,CONCAT(first_name,' ',last_name) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Repair' , user_sections) > 0 "; //echo $sql_u;
+																			$sql_u1			= " SELECT id,CONCAT(first_name,' ',last_name) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
 																			$result_u1		= $db->query($conn, $sql_u1);
 																			$count_u1		= $db->counter($result_u1);
 																			?>
@@ -512,7 +518,7 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 					reorderedIds.push($(this).data('id'));
 				});
 				var module_id = $("#module_id").val();
-				let dataString = `module_id=${module_id}&type=update_order_repair&user_ids=${reorderedIds}`;
+				let dataString = `module_id=${module_id}&type=update_order_diagnostic&user_ids=${reorderedIds}`;
 				// AJAX to save the new order
 				$.ajax({
 					type: "POST",

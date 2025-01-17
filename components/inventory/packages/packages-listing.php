@@ -194,6 +194,7 @@ $page_heading 	= "List of Packages / Parts";
 																	<th>Category</th>
 																	<th>Stock In Hand</th>
 																	<th>Avg Price</th>
+																	<th>Case Pack</th>
  																	<th>Action</th>';
 														echo $headings;
 														?>
@@ -212,6 +213,7 @@ $page_heading 	= "List of Packages / Parts";
 																<td><?php echo $data['category_name']; ?></td>
 																<td><?php echo $data['stock_in_hand']; ?></td>
 																<td><?php echo $data['avg_price']; ?></td>
+																<td><?php echo $data['case_pack']; ?></td>
 																<?php //*/ 
 																?>
 																<td class="text-align-center">

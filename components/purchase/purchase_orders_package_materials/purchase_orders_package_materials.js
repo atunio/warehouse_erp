@@ -138,6 +138,7 @@ $(document).on('change', '.product_packages', function(event) {
         updateRemoveButtonVisibility();
         var total_products_in_po = parseInt($("#total_products_in_po").val());
         $("#total_products_in_po").val(total_products_in_po+1);
+        get_case_pack(selectedValue,rowno);
     }
 });
 // Initialize modal (if you're using Materialize)
@@ -174,6 +175,12 @@ $(document).on('keyup', '.order_qty', function(event) {
         if(orderqty != '' && orderqty != null){
             total_qty += parseFloat(orderqty);
         }
+        var case_pack = parseFloat($("#case_pack_" + rowno).text());
+        var total_case_pack = 0;
+        if(orderqty > 0 && case_pack > 0){
+            total_case_pack = (orderqty / case_pack);
+            $("#total_case_pack_" + rowno).text(total_case_pack);
+        }
     }
     if(p_value > 0){ 
         $("#total_value").text(formatNumber(p_value, 2));
@@ -181,6 +188,8 @@ $(document).on('keyup', '.order_qty', function(event) {
     if(total_qty > 0){
         $("#total_qty").text(total_qty);
     } 
+    
+    
 });
 $(document).on('keyup', '.order_price', function(event) {
     var order_price     = parseInt($(this).val());
@@ -340,5 +349,25 @@ function formatNumber(value, decimals) {
     return parts.join('.');
 }
        
+function get_case_pack(package_id, rowno) {
+    let dataString = `type=get_case_pack&package_id=${package_id}`;
+    // AJAX request using jQuery
+    $.ajax({
+        type: "POST",
+        url: "ajax/ajax_add_entries.php",
+        data: dataString,
+        success: function(response) {
+            response = $.trim(response);
+            if (response) {
+                $("#case_pack_" + rowno).text(response);
+            } else {
+                $("#case_pack_" + rowno).text('');
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred while fetching the case pack.');
+        }
+    });
+}
 
 

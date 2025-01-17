@@ -6,8 +6,8 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
 	$logistic_id_barcode 		= 1;
 	$sub_location_id_manual		= 1737;
 	$logistic_id 				= 1;
-	$receiving_qties[5] 		= 15;
-	$receiving_location[5] 		= 1737;
+	// $receiving_qties[5] 		= 15;
+	// $receiving_location[5]	= 1737;
 	$product_id_manual 			= 1;
 	$logistic_id_manual			= 1;
 	$serial_no_manual			= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");

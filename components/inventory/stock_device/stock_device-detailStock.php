@@ -22,6 +22,9 @@ if ((!isset($flt_stock_status) || (isset($flt_stock_status) && $flt_stock_status
 if ((!isset($flt_stock_grade) || (isset($flt_stock_grade) && $flt_stock_grade == '')) &&  isset($filter_2)) {
 	$flt_stock_grade = $filter_2;
 }
+if ((!isset($flt_serial_no) || (isset($flt_serial_no) && $flt_serial_no == '')) &&  isset($filter_3)) {
+	$flt_serial_no = $filter_3;
+}
 if (isset($is_Submit) || isset($id)) {
 	if (empty($flt_product_id) && empty($flt_stock_grade) && empty($flt_stock_status) && empty($flt_product_desc) && empty($flt_product_category) && empty($flt_serial_no) && empty($flt_bin_id)) {
 		if (isset($is_final_inventory) && $is_final_inventory != '0') {
@@ -44,6 +47,7 @@ if (isset($is_Submit) || isset($id)) {
 					LEFT JOIN vender_types d6 ON d6.id = d5.vender_type 
 					WHERE 1=1  
 					AND a2.p_total_stock >0
+					AND a2.is_final_pricing = 1
 					AND a.enabled = 1 "; //AND a2.is_final_pricing = 1
 		$import_params = "";
 		if (isset($detail_id) && $detail_id > 0) {
@@ -243,16 +247,37 @@ $page_heading 	= "Stock Detail";
 									</label>
 								</div>
 							</div> 
-							<?php
-							$field_name = "flt_serial_no";
-							$field_label = "Serial#";
-							?>
 							<div class="input-field col m3 s12">
+								<?php
+								$field_name 	= "flt_serial_no";
+								$field_label 	= "Serial#";
+								$sql1 			= "SELECT DISTINCT serial_no FROM product_stock WHERE enabled = 1 ORDER BY serial_no  ";
+								$result1 		= $db->query($conn, $sql1);
+								$count1 		= $db->counter($result1);
+								?>
 								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>">
-								<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">ALL</option>
+										<?php
+										if ($count1 > 0) {
+											$row1	= $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['serial_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['serial_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['serial_no']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red"> <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
 							</div>
 							<div class="input-field col m3 s12">
 								<?php
@@ -363,7 +388,7 @@ $page_heading 	= "Stock Detail";
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m2 s12">
+							<div class="input-field col m3 s12">
 								<?php
 								$field_name		= "flt_stock_grade";
 								$field_label	= "Condition/Grades";
@@ -395,7 +420,7 @@ $page_heading 	= "Stock Detail";
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m2 s12">
+							<div class="input-field col m3 s12">
 								<?php
 								$field_name 	= "is_final_inventory";
 								$field_label 	= "Type";

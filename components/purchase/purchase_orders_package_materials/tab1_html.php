@@ -176,6 +176,8 @@
                                     <th style="width: 100px;">Qty</th>
                                     <th style="width: 100px;">Price</th>
                                     <th style="width: 100px;">Value</th>
+                                    <th style="width: 100px;">Case Pack</th>
+                                    <th style="width: 150px;">Total Case Pack</th>
                                     <th style="width: 150px;">Actions</th> 
                                 </tr>
                             </thead>
@@ -293,6 +295,16 @@
                                                 }
                                                 echo number_format($value, 2);
                                                 $sum_value += $value; ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span id="case_pack_<?= $i; ?>">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span id="total_case_pack_<?= $i; ?>">
+                                                0
                                             </span>
                                         </td>
                                         <td>

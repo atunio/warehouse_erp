@@ -38,31 +38,37 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $sql_cl		= "	SELECT * FROM (
-					SELECT c.id, b.product_id, c.product_uniqueid, c.product_desc, a2.p_inventory_status, c.product_category, '' AS sub_location,  
+					SELECT  GROUP_CONCAT(b.po_id) AS po_id, 
+							GROUP_CONCAT(a.po_no) AS po_no, 
+							GROUP_CONCAT(e.status_name) AS po_status_name,
+							GROUP_CONCAT(b.order_qty) AS po_order_qty,
+							c.id, b.product_id, c.product_uniqueid, c.product_desc, c.product_category, '' AS sub_location,  
 						d.category_name, SUM(b.order_qty) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type,
-						a2.serial_no
+						'' AS serial_no, '' AS p_inventory_status
 					FROM `purchase_orders` a 
 					INNER JOIN purchase_order_detail b ON b.`po_id` = a.id
 					INNER JOIN products c ON c.id = b.`product_id`
-					LEFT JOIN product_stock a2 ON a2.product_id = c.id AND a2.enabled = 1
 					LEFT JOIN product_categories d ON  d.id = c.`product_category`
-					WHERE order_status IN(1, 3, 4) AND a.`enabled` = 1
+					INNER JOIN inventory_status e ON e.id = a.order_status
+					WHERE a.enabled = 1
+					AND order_status IN(1, 3, 4, 12, 5) 
+					AND a.is_pricing_done = 0
 					GROUP BY b.product_id 
 
 					UNION ALL
 
-					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a2.p_inventory_status, a.product_category, 
+					SELECT '' as po_id, '' as po_no, '' as po_status_name, '' as po_order_qty, a.id, a2.product_id, a.product_uniqueid, a.product_desc, a.product_category, 
 						GROUP_CONCAT(DISTINCT CONCAT('', a2.sub_location)) AS sub_location,
 						b.category_name, '' AS total_qty, c.status_name, a2.is_final_pricing, 'Stock' AS r_type, 
-						GROUP_CONCAT(DISTINCT CONCAT('', a2.serial_no)) AS serial_no
-						
+						GROUP_CONCAT(DISTINCT CONCAT('', a2.serial_no)) AS serial_no,
+						GROUP_CONCAT(DISTINCT CONCAT('', a2.p_inventory_status)) AS p_inventory_status
 					FROM products a
 					LEFT JOIN product_stock a2 ON a2.product_id = a.id AND a2.enabled = 1 
 					LEFT JOIN product_categories b ON b.id = a.product_category
 					LEFT JOIN inventory_status c ON c.id = a.inventory_status
 					WHERE 1=1 
 					AND a.enabled 	= 1
-					GROUP BY a2.product_id 
+					GROUP BY a.id 
 				) AS t1
 			WHERE 1=1 ";
 
@@ -74,9 +80,9 @@ if (isset($flt_product_desc) && $flt_product_desc != "") {
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND product_category = '" . trim($flt_product_category) . "%' ";
-}
+} 
 if (isset($flt_stock_status) && $flt_stock_status > 0) {
-	$sql_cl		.= " AND p_inventory_status = '" . $flt_stock_status . "' AND is_final_pricing = 1 ";
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) AND is_final_pricing = 1 ";
 }
 if (isset($flt_bin_id) && $flt_bin_id > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) AND is_final_pricing = 1 ";
@@ -85,7 +91,7 @@ if (isset($flt_serial_no) && $flt_serial_no > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) AND is_final_pricing = 1 ";
 }
 
-$sql_cl		   .= " ORDER BY id DESC  ";
+$sql_cl		   .= " ORDER BY r_type, product_uniqueid";
 //echo "<br><br><br><br><br>" .$sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
@@ -386,7 +392,6 @@ $page_heading 	= "Stock Summary";
 									</div>
 								</form>
 								<div class="row">
-									<div class="col s4">&nbsp;</div>
 									<div class="col s2">
 										<a href="javascript:void(0)" class="plus_icon expand_all"><i class="material-icons dp48">arrow_drop_down</i>Expand All</a>
 										<a href="javascript:void(0)" class="minus_icon collapse_all"><i class="material-icons dp48">arrow_drop_up</i>Collapse All</a>
@@ -396,12 +401,11 @@ $page_heading 	= "Stock Summary";
 
 								<div class="row">
 									<div class="col s12">
-										<table id="data-table-simple" class="display dataTable dtr-inline simpledatatable_pagelength100">
+										<table id="" class=" bordered striped">
 											<thead>
 												<tr>
 													<?php
-													$headings = '<th class="sno_width_60">P#</th>
-																<th class="sno_width_30"></th>
+													$headings = '<th class="sno_width_30"></th>
 																<th>Product ID / Description</th>
 																<th>Status</th>
 																<th>Condition</th>
@@ -423,12 +427,17 @@ $page_heading 	= "Stock Summary";
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$id = $data['id'];
+														$id 				= $data['id'];
+														$po_id 				= $data['po_id'];
+														$po_no 				= $data['po_no'];
+														$po_order_qty		= $data['po_order_qty'];
+														$po_status_name		= $data['po_status_name'];
+														$product_uniqueid	= $data['product_uniqueid'];
 														$total_stock_p = 0;
 														$avg_price = 0;
 														$sql_cl1	= "	SELECT  sum(a2.p_total_stock) as p_total_stock, sum(a2.price)/sum(a2.p_total_stock)  as avg_price,
 																				GROUP_CONCAT(DISTINCT CONCAT(' ', a2.stock_grade)) AS stock_grades,
-																				GROUP_CONCAT(DISTINCT CONCAT(' ', c.status_name)) AS status_names,
+																				GROUP_CONCAT(DISTINCT CONCAT('<br>', c.status_name)) AS status_names,
 																				GROUP_CONCAT(DISTINCT CONCAT(' ', b1.sub_location_name)) AS sub_location_names
 																		FROM products a 
 																		INNER JOIN product_stock a2 ON a2.product_id = a.id
@@ -438,8 +447,8 @@ $page_heading 	= "Stock Summary";
 																		AND a.enabled = 1 
 																		AND a2.enabled = 1 
 																		AND a2.is_final_pricing = 1
-																		AND a2.product_id = '" . $id . "' ";
-														// echo "<br><br>" . $sql_cl;
+																		AND a2.product_id = '" . $id . "' "; 
+														//echo "<br><br><br><br><br><br><br><br><br><br>" . $sql_cl1;
 														$result_cl1	= $db->query($conn, $sql_cl1);
 														$count_cl1	= $db->counter($result_cl1);
 														if ($count_cl1 > 0) {
@@ -453,9 +462,6 @@ $page_heading 	= "Stock Summary";
 														if ($data['r_type'] == 'Non Stock') {
 															//for($c = 0;$c<1000; $c++){?>
 															<tr>
-																<td style="text-align: center;">
-																	<?php echo $i + 1; ?>
-																</td>
 																<td style="text-align: center;"></td>
 																<td>
 																	<?php
@@ -474,7 +480,38 @@ $page_heading 	= "Stock Summary";
 																<td></td>
 																<td></td>
 																<td></td>
-																<td>In transit</td>
+																<td>
+																	In transit 
+ 																	<?php 
+																	$po_id_array 			= explode(",", $po_id);
+																	$po_no_array 			= explode(",", $po_no);
+																	$po_status_name_array 	= explode(",", $po_status_name);
+																	$po_order_qty_array 	= explode(",", $po_order_qty);
+																	$po_module_permision 	=  check_module_permission($db, $conn, 10, $_SESSION["user_id"], $_SESSION["user_type"]);
+																	if ($po_module_permision != "") {
+																		$m = 0;
+																		foreach($po_id_array as $data_po){?>
+																			<br>
+																			<a class="" href="?string=<?php echo encrypt("module_id=10&page=profile&cmd=edit&id=" . $data_po . "&active_tab=tab1") ?>">
+																				<?php echo $po_no_array[$m]; ?>
+																			</a>
+																		<?php 
+																			echo " ".$po_status_name_array[$m];  
+																			echo " (".$po_order_qty_array[$m].")"; 
+																			$m++;
+																		}
+																	}
+																	else{
+																		$m = 0;
+																		foreach($po_id_array as $data_po){
+																			echo "<br>";
+																			echo $po_no_array[$m];
+																			echo " ".$po_status_name_array[$m]; 
+																			echo " (".$po_order_qty_array[$m].")"; 
+																			$m++;
+																		}
+																	}?>
+																</td>
 																<td><span style="padding-left: 20px;"></td>
 																<td><span style="padding-left: 20px;"><?php echo $data['total_qty']; ?></span></td>
 															</tr>
@@ -493,16 +530,19 @@ $page_heading 	= "Stock Summary";
 																			AND a2.is_final_pricing = 1 
 																			AND a.enabled = 1 ";
 															$sql_cl2	.= "AND a2.product_id = '" . $id . "' ";
+															if (isset($flt_bin_id) && $flt_bin_id > 0) {
+																$sql_cl2		.= " AND b1.id = '" . $flt_bin_id . "'";
+															}
+															if (isset($flt_serial_no) && $flt_serial_no > 0) {
+																$sql_cl2		.= " AND a2.serial_no = '" . $flt_serial_no . "'";
+															}
 															$sql_cl2	.= " GROUP BY c.status_name, a2.stock_grade  
-																			ORDER BY c.status_name DESC, a2.stock_grade "; //a2.p_inventory_status
-															// echo "<br><br>" . $sql_cl2;
+																			 ORDER BY c.status_name DESC, a2.stock_grade "; //a2.p_inventory_status
+															// echo "<br><br><br><br><br><br><br><br><br><br>" . $sql_cl2;
 															$result_cl2	= $db->query($conn, $sql_cl2);
 															$count_cl2	= $db->counter($result_cl2);
 															?>
 															<tr>
-																<td style="text-align: center;">
-																	<?php echo $i + 1; ?>
-																</td>
 																<td style="text-align: center;">
 																	<?php
 																	if ($count_cl2 > 0) { ?>
@@ -514,10 +554,10 @@ $page_heading 	= "Stock Summary";
 																	<?php
 																	if (access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=history&id=" . $id) ?>" title="Detail View">
-																			<?php echo $data['product_uniqueid']; ?>
+																			<?php echo $product_uniqueid; ?>
 																		</a> &nbsp;&nbsp;
 																	<?php } else {
-																		echo  $data['product_uniqueid'];
+																		echo  $product_uniqueid;
 																	} ?></br>
 																	<?php
 																	echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . ""));
@@ -533,8 +573,27 @@ $page_heading 	= "Stock Summary";
 																<td></td>
 																<td></td>
 																<td><?php echo $sub_location_names; ?></td>
-																<td><span style="padding-left: 20px;"><?php if (round($avg_price, 2) > 0) echo round($avg_price, 2); ?></span></td>
-																<td><span style="padding-left: 20px;"><?php echo $total_stock_p; ?></span></td>
+																<td>
+																	<?php
+																	if (access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																			<?php echo round($avg_price, 2); ?>
+																		</a> &nbsp;&nbsp;
+																	<?php } else {
+																		echo round($avg_price, 2);
+																	} ?>
+																</td>
+																<td>
+																	<?php
+																	if (access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																			<?php echo $total_stock_p; ?>
+																		</a> &nbsp;&nbsp;
+																	<?php } else {
+																		echo $total_stock_p;
+																	} ?>
+																</td>
+																
 															</tr>
 															<?php
 															if ($count_cl2 > 0) {
@@ -542,20 +601,18 @@ $page_heading 	= "Stock Summary";
 																foreach ($row_cl2 as $data2) {
 																	$id2 					= $data2['id'];
 																	$product_id 			= $data2['product_id'];
-																	$product_uniqueid 		= $data2['product_uniqueid'];
 																	$filter_1 				= $data2['p_inventory_status'];
 																	$filter_2 				= $data2['stock_grade']; ?>
 																	<tr class="detail_tr <?= $id; ?>">
-																		<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																		<td style="text-align: center;">
+																		<td style="text-align: center;"></td>
+																		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+																		<td>
+																			
 																			<a href="javascript:void(0)" class="plus_icon_sub <?= "sub_plus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
 																			<a href="javascript:void(0)" class="minus_icon_sub <?= "sub_minus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
+																		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																			<?php echo $data2['status_name']; ?>
 																		</td>
-																		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-																			
-																			<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
-																		</td>
-																		<td><?php echo $data2['status_name']; ?></td>
 																		<td><?php echo $data2['stock_grade']; ?></td>
 																		<td></td>
 																		<td></td>
@@ -586,41 +643,38 @@ $page_heading 	= "Stock Summary";
 																	</tr>
 																	
 																	<?php
-																	$sql_cl3 = "SELECT a2.id, a2.product_id, a2.serial_no, a2.model_no, a2.battery_percentage, a2.ram_size, 
-																					   a2.storage_size, a2.price, a2.cosmetic_grade, b.category_name, c.status_name, a.product_desc, 
-																					   a.product_uniqueid, d.sub_location_name, a2.p_inventory_status, a2.stock_grade, d6.type_name, a2.is_packed,
-																					   a2.p_total_stock 
-																				FROM products a 
-																				INNER JOIN product_stock a2 ON a2.product_id = a.id 
-																				LEFT JOIN product_categories b ON b.id = a.product_category 
-																				LEFT JOIN inventory_status c ON c.id = a2.p_inventory_status 
-																				LEFT JOIN warehouse_sub_locations d ON d.id = a2.sub_location 
-																				LEFT JOIN purchase_order_detail d3 ON d3.product_id = a2.product_id
-																				LEFT JOIN purchase_orders d4 ON d4.id = d3.po_id 
-																				LEFT JOIN venders d5 ON d5.id = d4.vender_id 
-																				LEFT JOIN vender_types d6 ON d6.id = d5.vender_type 
-																				WHERE 1=1 
-																				AND a2.p_total_stock > 0 
-																				AND a2.is_final_pricing = 1 
-																				AND a.enabled = 1";
+																	$sql_cl3 = "SELECT a2.*, d.sub_location_name
+																				FROM product_stock a2 
+																				LEFT JOIN warehouse_sub_locations d ON d.id = a2.sub_location
+																				WHERE 1 = 1
+																				AND a2.p_total_stock > 0
+																				AND a2.is_final_pricing = 1
+																				AND a2.enabled = 1 ";
 																	$sql_cl3	.= " AND a2.product_id = '" . $product_id . "' ";
-																	$sql_cl3	.= " ORDER BY a2.serial_no,d.sub_location_name";
+																	$sql_cl3	.= " AND a2.p_inventory_status = '" . $filter_1 . "' "; 
+																	$sql_cl3	.= " AND a2.stock_grade = '" . $filter_2 . "' ";
 																	
+																	if (isset($flt_bin_id) && $flt_bin_id > 0) {
+																		$sql_cl3 .= " AND a2.sub_location = '" . $flt_bin_id . "'";
+																	}
+																	if (isset($flt_serial_no) && $flt_serial_no > 0) {
+																		$sql_cl3 .= " AND a2.serial_no = '" . $flt_serial_no . "'";
+																	}
+																	$sql_cl3	.= " ORDER BY a2.serial_no, d.sub_location_name";
 																	$result_cl3	= $db->query($conn, $sql_cl3);
 																	$count_cl3	= $db->counter($result_cl3);
 																	if ($count_cl3 > 0) {
 																		$row_cl3 = $db->fetch($result_cl3);
 																		foreach ($row_cl3 as $data3) {
-																			$id3 					= $data3['id'];?>
-																			<tr class="detail_tr <?= $id2; ?>">
-																				<td style="text-align: center;"><?php echo $i + 1; ?></td>
+																			$id3 = $data3['id'];?>
+																			<tr class="detail_tr <?= $id2; ?> datatr_<?= $id; ?>">
 																				<td style="text-align: center;"></td>
 																				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 																					
 																					<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
 																				</td>
-																				<td><?php echo $data3['status_name']; ?></td>
-																				<td><?php echo $data3['stock_grade']; ?></td>
+																				<td></td>
+																				<td></td>
 																				<td><?php echo $data3['serial_no']; ?></td>
 																				<td><?php echo $data3['model_no']; ?></td>
 																				<td><?php echo $data3['battery_percentage']; ?></td>
@@ -628,7 +682,17 @@ $page_heading 	= "Stock Summary";
 																				<td><?php echo $data3['storage_size']; ?></td>
 																				<td><?php echo $data3['sub_location_name']; ?></td>
 																				<td><?php echo round($data3['price'], 2);?></td>
-																				<td><?php echo $data3['p_total_stock']; ?></td>
+ 																				<td>
+																					<?php
+																					$filter_3 = $data3['serial_no'];
+																					if (access("edit_perm") == 1) { ?>
+																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&filter_3=" . $filter_3. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																							<?php echo $data3['p_total_stock']; ?>
+																						</a> &nbsp;&nbsp;
+																					<?php } else {
+																						echo $data3['p_total_stock'];
+																					} ?>
+																				</td>
 																			</tr>
 																		<?php
 																		}

@@ -122,7 +122,7 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 													<?php
 													$field_name		= "estimated_time[" . $id . "]";
 													$field_id 		= "estimated_time" . $i;
-													$field_label 	= "Estimated Time(Hours)";
+													$field_label 	= "Estimated Time";
 													?>
 													<div class="input-field col m3 s12">
 														<i class="material-icons prefix">access_time</i>

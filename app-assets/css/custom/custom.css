@@ -110,3 +110,9 @@
 .custom_margin_card_table_top{
 	margin-top: 0px !important;
 }
+.modal_95_perc{
+	width: 96% !important;
+	height: 100% !important;
+	max-height: 92% !important;
+	top: 30px !important;
+}

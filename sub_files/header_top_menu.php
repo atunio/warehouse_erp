@@ -7,44 +7,14 @@
 						<li class="dropdown-language"><a class="waves-effect waves-block waves-light translation-button" href="#" data-target="translation-dropdown"><span class="flag-icon flag-icon-gb"></span></a></li>
 					<?php */ ?>
 					<li class="hide-on-med-and-down"><a class="waves-effect waves-block waves-light toggle-fullscreen" href="javascript:void(0);"><i class="material-icons">settings_overscan</i></a></li>
-					<li class="hide-on-large-only search-input-wrapper"><a class="waves-effect waves-block waves-light search-button" href="javascript:void(0);"><i class="material-icons">search</i></a></li>
-					<!-- 
+ 					<!-- 
 					<li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);" data-target="notifications-dropdown"><i class="material-icons">notifications_none<small class="notification-badge">5</small></i></a></li> 
 					-->
 					<li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><span class="avatar-status avatar-online"><img src="<?php echo $directory_path; ?>app-assets/images/logo/<?php echo $user_profile_pic; ?>" title="<?php echo $user_full_name; ?>" alt="<?php echo $user_full_name; ?>"><i></i></span></a></li>
 					<?php /*?>
 					<li><a class="waves-effect waves-block waves-light sidenav-trigger" href="#" data-target="slide-out-right"><i class="material-icons">format_indent_increase</i></a></li>
 					<?php */ ?>
-				</ul>
-				<!-- translation-button-->
-				<ul class="dropdown-content" id="translation-dropdown">
-					<li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="en"><i class="flag-icon flag-icon-gb"></i> English</a></li>
-					<li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a></li>
-					<li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a></li>
-					<li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></li>
-				</ul>
-				<!-- notifications-dropdown-->
-				<ul class="dropdown-content" id="notifications-dropdown">
-					<li>
-						<h6>NOTIFICATIONS<span class="new badge">5</span></h6>
-					</li>
-					<li class="divider"></li>
-					<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle cyan small">add_shopping_cart</span> A new order has been placed!</a>
-						<time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
-					</li>
-					<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle red small">stars</span> Completed the task</a>
-						<time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
-					</li>
-					<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle teal small">settings</span> Settings updated</a>
-						<time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
-					</li>
-					<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle deep-orange small">today</span> Director meeting started</a>
-						<time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
-					</li>
-					<li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle amber small">trending_up</span> Generate monthly report</a>
-						<time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
-					</li>
-				</ul>
+				</ul> 
 				<!-- profile-dropdown-->
 				<ul class="dropdown-content" id="profile-dropdown">
 					<?php
@@ -281,7 +251,23 @@
                             <?php
                             }
                         }
-                    }?> 
+                    }
+                    if ($_SERVER['HTTP_HOST'] == 'localhost') { ?>
+                        <li data-menu="">
+                            <a href="sadmin">
+                                <i class="material-icons">home</i>
+                                <span>Super Admin</span>
+                            </a>
+                        </li>
+                    <?php }
+                    if ($_SERVER['HTTP_HOST'] == 'localhost' && isset($module) && isset($module_folder)) { ?>
+                        <div style="padding: 5px;"><a class=""></a></div>
+                        <li data-menu="">
+                            <a href="javascript:void(0)">
+                                <span><b><?php echo $module_folder; ?>/<?php echo $module; ?>/<?php echo $page; ?></b></span>
+                            </a>
+                        </li>
+                    <?php }?> 
                 </ul>
             </div>
             <!-- END: Horizontal nav start-->

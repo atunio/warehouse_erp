@@ -145,75 +145,27 @@
                             <div class="input-field col m12 s12"> </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m12 s12">
+                            <div class="input-field col m3 s12">
                                 <?php
-                                $field_name     = "product_id_barcode_diagnostic";
-                                $field_label    = "Product ID";
-                                $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
-                                                    FROM purchase_order_detail a 
-                                                    INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                    INNER JOIN products c ON c.id = a.product_id
-                                                    INNER JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE 1=1 
-                                                    AND a.po_id = '" . $id . "' 
-                                                    ORDER BY c.product_uniqueid, a.product_condition ";
-                                // echo $sql; 
-                                $result_log2    = $db->query($conn, $sql);
-                                $count_r2       = $db->counter($result_log2); ?>
-                                <i class="material-icons prefix pt-1">add_shopping_cart</i>
-                                <div class="select2div">
-                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                        <?php
-                                        if ($count_r2 > 1) { ?>
-                                            <option value="">Select</option>
-                                            <?php
-                                        }
-                                        if ($count_r2 > 0) {
-                                            $row_r2    = $db->fetch($result_log2);
-                                            foreach ($row_r2 as $data_r2) {
-
-                                                $detail_id_r1       = $data_r2['id'];
-                                                $order_qty          = $data_r2['order_qty'];
-
-                                                $sql_rc1            = "	SELECT a.* 
-                                                                        FROM purchase_order_detail_receive a 
-                                                                        WHERE 1=1 
-                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                        AND a.enabled = 1 "; //echo $sql_cl;
-                                                $result_rc1         = $db->query($conn, $sql_rc1);
-                                                $total_received_qty = $db->counter($result_rc1);  ?>
-
-                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php
-                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
-                                                    echo " -  Product: " . $data_r2['product_desc'];
-                                                    if ($data_r2['category_name'] != "") {
-                                                        echo " (" . $data_r2['category_name'] . ") ";
-                                                    }
-                                                    echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
-                                                </option>
-                                        <?php
-                                            }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
+                                $field_name     = "serial_no_barcode_diagnostic";
+                                $field_label    = "Bar Code";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>" onkeyup="autoSubmit2(event)" autofocus>
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red">* <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m4 s12"></div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m6 s12">
+                            <div class="input-field col m3 s12">
                                 <?php
                                 $field_name     = "sub_location_id_barcode_diagnostic";
                                 $field_label    = "Location";
@@ -252,30 +204,70 @@
                             </div>
                             <div class="input-field col m6 s12">
                                 <?php
-                                $field_name     = "serial_no_barcode_diagnostic";
-                                $field_label    = "Bar Code";
-                                ?>
-                                <i class="material-icons prefix">description</i>
-                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                    echo ${$field_name};
-                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                        } ?>" onkeyup="autoSubmit2(event)" autofocus>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red">* <?php
-                                                                if (isset($error6[$field_name])) {
-                                                                    echo $error6[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
+                                $field_name     = "product_id_barcode_diagnostic";
+                                $field_label    = "Product ID";
+                                $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                                    FROM purchase_order_detail a 
+                                                    INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                    INNER JOIN products c ON c.id = a.product_id
+                                                    INNER JOIN product_categories d ON d.id = c.product_category
+                                                    WHERE 1=1 
+                                                    AND a.po_id = '" . $id . "' 
+                                                    ORDER BY c.product_uniqueid, a.product_condition ";
+                                // echo $sql; 
+                                $result_log2    = $db->query($conn, $sql);
+                                $count_r2       = $db->counter($result_log2); ?>
+                                <i class="material-icons prefix pt-1">add_shopping_cart</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>"> 
+                                        <option value="">Select</option>
+                                        <?php 
+                                        if ($count_r2 > 0) {
+                                            $row_r2    = $db->fetch($result_log2);
+                                            foreach ($row_r2 as $data_r2) {
+
+                                                $detail_id_r1       = $data_r2['id'];
+                                                $order_qty          = $data_r2['order_qty'];
+
+                                                $sql_rc1            = "	SELECT a.* 
+                                                                        FROM purchase_order_detail_receive a 
+                                                                        WHERE 1=1 
+                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
+                                                                        AND a.enabled = 1 "; //echo $sql_cl;
+                                                $result_rc1         = $db->query($conn, $sql_rc1);
+                                                $total_received_qty = $db->counter($result_rc1);  ?>
+
+                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php
+                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
+                                                    echo " -  Product: " . $data_r2['product_desc'];
+                                                    if ($data_r2['category_name'] != "") {
+                                                        echo " (" . $data_r2['category_name'] . ") ";
+                                                    }
+                                                    echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
+                                                </option>
+                                        <?php
+                                            }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red"><?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
                             </div>
-                        </div>
+                        </div> 
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m12 s12">
+                            <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
@@ -353,7 +345,7 @@
                             <div class="input-field col m12 s12"> </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m9 s12">
+                            <div class="input-field col m8 s12">
                                 <?php
                                 $field_name     = "product_id_manual_diagnostic";
                                 $field_label    = "Product ID";
@@ -417,7 +409,7 @@
                                 </div>
                             </div>
 
-                            <div class="input-field col m3 s12">
+                            <div class="input-field col m4 s12">
                                 <?php
                                 $field_name     = "sub_location_id_manual_diagnostic";
                                 $field_label    = "Location";
@@ -501,7 +493,7 @@
                             <?php } ?>
                         </div>
                         <div class="row">
-                            <div class="input-field col m12 s12">
+                            <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
                                     <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
@@ -851,7 +843,7 @@
                                                             if ($serial_no_barcode != "") {
                                                                 ///*
                                                                 if ($is_import_diagnostic_data == '0' && ($data['phone_check_api_data'] == NULL || $data['phone_check_api_data'] == "[]" || $data['phone_check_api_data'] == "" || $data['phone_check_api_data'] == '(NULL)' || $data['phone_check_api_data'] == '{"msg":"Failed to get device info results"}')) {
-                                                                    $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = "";
+                                                                    $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
                                                                     $sql_pd01_4         = "	SELECT  a.*
                                                                                             FROM phone_check_api_data a 
                                                                                             WHERE a.enabled = 1 
@@ -864,6 +856,7 @@
                                                                         $row_pd01_4                     = $db->fetch($result_pd01_4);
                                                                         $jsonData2                      = $row_pd01_4[0]['phone_check_api_data'];
                                                                         $model_name                     = $row_pd01_4[0]['model_name'];
+                                                                        $sku_code                       = $row_pd01_4[0]['sku_code'];
                                                                         $model_no                       = $row_pd01_4[0]['model_no'];
                                                                         $make_name                      = $row_pd01_4[0]['make_name'];
                                                                         $carrier_name                   = $row_pd01_4[0]['carrier_name'];
@@ -890,153 +883,7 @@
                                                                         $device_detail_array    = getinfo_phonecheck_imie($serial_no_barcode);
                                                                         $jsonData2              = json_encode($device_detail_array);
                                                                         if ($jsonData2 != '[]') {
-                                                                            foreach ($device_detail_array as $key1 => $data_api) {
-                                                                                foreach ($data_api as $key2 => $data2) {
-                                                                                    if ($key2 == 'BatteryHealthPercentage') {
-                                                                                        $battery = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Model') {
-                                                                                        $model_name = str_replace('"', '', $data2);
-                                                                                    }
-                                                                                    if ($key2 == 'Model#') {
-                                                                                        $model_no = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Make') {
-                                                                                        $make_name = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Carrier') {
-                                                                                        $carrier_name = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Color') {
-                                                                                        $color_name = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Cosmetics') {
-                                                                                        $body_grade = $lcd_grade = $digitizer_grade = "";
-                                                                                        if ($data2 != "") {
-                                                                                            $pass_array         = explode(",", $data2);
-                                                                                            if (sizeof($pass_array) == 3) {
-                                                                                                $body_grade         = $pass_array[0];
-                                                                                                $lcd_grade          = $pass_array[1];
-                                                                                                $digitizer_grade    = $pass_array[2];
-                                                                                            }
-                                                                                        }
-                                                                                    }
-                                                                                    if ($key2 == 'Ram') {
-                                                                                        $ram = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Memory') {
-                                                                                        $memory = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'DefectsCode') {
-                                                                                        $defectsCode = $data2;
-                                                                                    }
-                                                                                    if ($key2 == 'Grade') {
-                                                                                        $overall_grade = $data2;
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            $inventory_status = '6';
-                                                                            $status_name = "Defective";
-                                                                            if ($defectsCode == '' || $defectsCode == NULL) {
-                                                                                if ($battery != "" && $battery >= '60') {
-                                                                                    $inventory_status = '5';
-                                                                                    $status_name = "Tested/Graded";
-                                                                                }
-                                                                            }
-
-                                                                            if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_grade == 'D')) {
-                                                                                $overall_grade = "D";
-                                                                            } else if ($battery != "" && $battery >= '70') {
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                                    $overall_grade = "A";
-                                                                                }
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'B') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                            } else if ($battery < '70' && $battery >= '60') {
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-                                                                                    $overall_grade = "B";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-
-                                                                                if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'B' && $digitizer_grade == 'C' && $body_grade == 'B') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                                if ($lcd_grade == 'C' && $digitizer_grade == 'C' && $body_grade == 'C') {
-                                                                                    $overall_grade = "C";
-                                                                                }
-                                                                            }
-
-                                                                            $sql = "INSERT INTO phone_check_api_data(imei_no, model_name, model_no, make_name, 
-                                                                                                                    carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, 
-                                                                                                                    `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip)
-                                                                                    VALUES	('" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', 
-                                                                                            '" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "', 
-                                                                                            '" . $ram . "', '" . $memory . "',  '" . $defectsCode . "',  '" . $overall_grade . "', '" . $jsonData2 . "', 
-                                                                                            '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "')";
-                                                                            // echo $sql;die;
-                                                                            $db->query($conn, $sql);
+                                                                            include("process_phonecheck_response.php");
                                                                             $is_diagnost    = 1;
 
                                                                             update_po_detail_status($db, $conn, $po_detail_id, $diagnost_status_dynamic);

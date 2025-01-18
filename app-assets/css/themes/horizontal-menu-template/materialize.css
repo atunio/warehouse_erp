@@ -7396,7 +7396,7 @@ body.keyboard-focused .dropdown-content li:focus
     width: 55%;
     max-height: 70%;
     margin: auto;
-    padding: 0;
+    padding: 20px;
 
     border-radius: 2px;
     background-color: #fafafa;

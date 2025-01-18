@@ -1,4 +1,4 @@
-<div name="customer_add_modal" id="customer_add_modal" role="dialog" aria-hidden="true" class="modal fade modal" data-focus="false" style=" max-height: 70%;  height: 100%; padding: 1px 30px;">
+<div name="customer_add_modal" id="customer_add_modal" role="dialog" aria-hidden="true" class="modal fade modal modal_95_perc" data-focus="false" style=" max-height: 70%;  height: 100%; padding: 1px 30px;">
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title">Add Customer</h4>

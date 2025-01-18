@@ -277,7 +277,11 @@
                                     unset($package_ids);
                                     unset($order_part_qty);
                                     unset($order_part_price);
-                                    $sql_ee1		= "SELECT a.* FROM purchase_order_packages_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+                                    unset($case_pack);
+                                    $sql_ee1		= " SELECT a.*, b.case_pack 
+                                                        FROM purchase_order_packages_detail a 
+                                                        INNER JOIN packages b ON b.id = a.package_id
+                                                        WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
                                     $result_ee1		= $db->query($conn, $sql_ee1);
                                     $count_ee1  	= $db->counter($result_ee1);
                                     if($count_ee1 > 0){
@@ -286,6 +290,7 @@
                                             $package_ids[]	        = $data2['package_id'];
                                             $order_part_qty[]		= $data2['order_qty'];
                                             $order_part_price[]		= $data2['order_price'];
+                                            $case_pack[]		    = $data2['case_pack'];
                                             
                                         }
                                     }
@@ -414,6 +419,7 @@
                                                     $sum_value += $value; ?>
                                                 </span>
                                             </td>
+                                           
                                             <td>
                                                 <?php
                                                 $field_name     = "product_condition";
@@ -487,7 +493,7 @@
                                 <table id="page-length-option2" class="bordered addproducttable" cellpadding="0" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th style="width: 51.3%;">
+                                            <th style="width: %;">
                                                 Package / Part &nbsp;&nbsp;
                                                 <a class="add-more add-part-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row_part" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                     <i class="material-icons  dp48 md-36">add_circle</i>
@@ -496,7 +502,9 @@
                                             <th style="width: 100px;">Qty</th>
                                             <th style="width: 100px;">Price</th>
                                             <th style="width: 100px;">Value</th>
-                                            <th colspan="3">Actions</th>
+                                            <th style="width: 120px;">Case Pack</th>
+                                            <th style="width: 200px;">Total Case Pack</th>
+                                            <th style="width: 150px;">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -589,6 +597,17 @@
                                                         }
                                                         echo number_format($part_value, 2);
                                                         $sum_part_value += $part_value; ?>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i-1])) { echo $case_pack[$i-1];} ?></span>
+                                                </td>
+                                                <td>
+                                                    <span id="total_case_pack_<?= $i; ?>">
+                                                        <?php 
+                                                        if (isset($case_pack[$i-1]) && isset($order_part_qty[$i-1])) {
+                                                            echo ceil($order_part_qty[$i-1] / $case_pack[$i-1]);
+                                                        } ?>
                                                     </span>
                                                 </td>
                                                 <td colspan="3">

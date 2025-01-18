@@ -282,9 +282,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							?>
 							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>
-								<input id="<?= $field_name; ?>" <?php if (isset($cmd) && $cmd == 'edit') {
-																	echo "disabled";
-																} ?> type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+								<input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																															echo ${$field_name};
 																														} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
 																																					echo ${$field_name . "_valid"};

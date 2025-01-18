@@ -1,4 +1,4 @@
-<div name="package_add_modal" id="package_add_modal" role="dialog" aria-hidden="true" class="modal fade modal" data-focus="false" style=" max-height: 70%;  height: 100%; padding: 1px 30px;">
+<div name="package_add_modal" id="package_add_modal" role="dialog" aria-hidden="true" class="modal fade modal modal_95_perc" data-focus="false" style="padding: 1px 30px;">
     <div class="modal-content">
         <div class="modal-header">
             <h4 class="modal-title">Add Package</h4>
@@ -34,19 +34,33 @@
             $result1        = $db->query($conn, $sql1);
             $count1         = $db->counter($result1);
             ?>
-            <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                echo ${$field_name . "_valid"};
-                                                                                            } ?>">
-                <option value="">Select</option>
-                <?php
-                if ($count1 > 0) {
-                    $row1    = $db->fetch($result1);
-                    foreach ($row1 as $data2) { ?>
-                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>> Category: <?php echo $data2['category_name']; ?></option>
-                <?php }
-                } ?>
-            </select2>
+            <i class="material-icons prefix">question_answer</i>
+            <div class="select2div">
+                <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                } ?>">
+                    <option value="">Select</option>
+                    <?php
+                    if ($count1 > 0) {
+                        $row1    = $db->fetch($result1);
+                        foreach ($row1 as $data2) { ?>
+                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>> <?php echo $data2['category_name']; ?></option>
+                    <?php }
+                    } ?>
+                </select2>
+                <label for="<?= $field_name; ?>">
+                    <?= $field_label; ?>
+                    <span class="color-red"> * <?php
+                                                if (isset($error[$field_name])) {
+                                                    echo $error[$field_name];
+                                                } ?>
+                    </span>
+                </label>
+            </div>
         </div>
+    </div>
+    <div class="row">
+        <div class="input-field col m6 s12"></div>
     </div>
     <div class="row">
         <div class="input-field col m6 s12">
@@ -61,18 +75,29 @@
             $result1        = $db->query($conn, $sql1);
             $count1         = $db->counter($result1);
             ?>
-            <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                echo ${$field_name . "_valid"};
-                                                                                            } ?>">
-                <option value="">Select</option>
-                <?php
-                if ($count1 > 0) {
-                    $row1    = $db->fetch($result1);
-                    foreach ($row1 as $data2) { ?>
-                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>> Product: <?php echo $data2['product_uniqueid']; ?></option>
-                <?php }
-                } ?>
-            </select2>
+            <i class="material-icons prefix">question_answer</i>
+            <div class="select2div">
+                <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                } ?>">
+                    <option value="">Select</option>
+                    <?php
+                    if ($count1 > 0) {
+                        $row1    = $db->fetch($result1);
+                        foreach ($row1 as $data2) { ?>
+                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>> <?php echo $data2['product_uniqueid']; ?></option>
+                    <?php }
+                    } ?>
+                </select2>
+                <label for="<?= $field_name; ?>">
+                    <?= $field_label; ?>
+                    <span class="color-red"> * <?php
+                                                if (isset($error[$field_name])) {
+                                                    echo $error[$field_name];
+                                                } ?>
+                    </span>
+                </label>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -85,5 +110,4 @@
             <a href="javascript:void(0)" name="close_package_btn" class="btn modal-close waves-red" />Close</a>
         </div>
     </div>
-    <br><br>
 </div>

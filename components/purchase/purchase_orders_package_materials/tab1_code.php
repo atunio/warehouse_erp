@@ -84,8 +84,11 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_qty 					= [];
 	$order_price 				= [];
 	$product_po_desc 			= [];   
-
-	$sql_ee1		= "SELECT a.* FROM package_materials_order_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+	$case_pack					= []; 
+	$sql_ee1		= "SELECT a.*,b.case_pack 
+						FROM package_materials_order_detail a
+						INNER JOIN packages b ON b.id = a.package_id
+						WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
 	$result_ee1		= $db->query($conn, $sql_ee1);
 	$count_ee1  	= $db->counter($result_ee1);
 	if($count_ee1 > 0){
@@ -95,6 +98,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$order_qty[]				= $data2['order_qty'];
 			$order_price[]				= $data2['order_price'];
 			$product_po_desc[]			= $data2['product_po_desc']; 
+			$case_pack[]				= $data2['case_pack']; 
 		}
 	}
 }

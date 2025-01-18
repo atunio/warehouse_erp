@@ -188,7 +188,11 @@
                                     unset($order_qty);
                                     unset($order_price);
                                     unset($product_po_desc);
-                                    $sql_ee1		= "SELECT a.* FROM package_materials_order_detail a WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+                                    unset($case_pack);
+                                    $sql_ee1		= " SELECT a.*,b.case_pack 
+                                                        FROM package_materials_order_detail a
+                                                        INNER JOIN packages b ON b.id = a.package_id 
+                                                        WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
                                     $result_ee1		= $db->query($conn, $sql_ee1);
                                     $count_ee1  	= $db->counter($result_ee1);
                                     if($count_ee1 > 0){
@@ -198,6 +202,7 @@
                                             $order_price[]			= $data2['order_price'];
                                             $order_qty[]			= $data2['order_qty'];
                                             $product_po_desc[]      = $data2['product_po_desc'];
+                                            $case_pack[]		    = $data2['case_pack'];
                                         }
                                     }
                                 }?>
@@ -296,15 +301,16 @@
                                                 echo number_format($value, 2);
                                                 $sum_value += $value; ?>
                                             </span>
-                                        </td>
+                                        </td> 
                                         <td>
-                                            <span id="case_pack_<?= $i; ?>">
-                                                0
-                                            </span>
+                                            <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i-1])) { echo $case_pack[$i-1];} ?></span>
                                         </td>
                                         <td>
                                             <span id="total_case_pack_<?= $i; ?>">
-                                                0
+                                                <?php 
+                                                if (isset($case_pack[$i-1]) && isset($order_qty[$i-1])) {
+                                                    echo ceil($order_qty[$i-1] / $case_pack[$i-1]);
+                                                } ?>
                                             </span>
                                         </td>
                                         <td>

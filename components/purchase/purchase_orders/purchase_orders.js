@@ -222,6 +222,8 @@ $(document).ready(function() {
         var next_row = rowno+1; 
         $("#packageids_"+next_row).val('').trigger('change'); 
         $("#orderpartqty_"+next_row).val('').trigger('change'); 
+        $("#case_pack_" + next_row).text('').trigger('change');
+        $("#total_case_pack_" + next_row).text('').trigger('change');
 
         $("#row_part_"+next_row).show();
         partsUpdateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
@@ -236,6 +238,8 @@ $(document).ready(function() {
     });
     $(document).on('click', '.add-part-more-btn2', function(event) {
         $("#row_part_1").show();
+        $("#case_pack_1").text('').trigger('change');
+        $("#total_case_pack_1").text('').trigger('change');
         $(this).hide();
         partsUpdateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
     });
@@ -248,6 +252,8 @@ $(document).ready(function() {
         $("#packageids_"+rowno).val('').trigger('change'); 
         $("#orderpartqty_"+rowno).val('').trigger('change');
         $("#orderpartprice_"+rowno).val('').trigger('change'); 
+        $("#case_pack_" + rowno).text('').trigger('change');
+        $("#total_case_pack_" + rowno).text('').trigger('change');
         var order_part_price = parseFloat($("#orderpartprice_"+rowno).val());
         if(!isNaN(order_part_price) && !isNaN(order_part_qty)){
             part_value = (order_part_price * order_part_qty);
@@ -284,26 +290,43 @@ $(document).ready(function() {
             $(".first_row_part").show();
         }
     });
+  
     $(document).on('change', '.product_packages', function(event) {
         var selectedValue = $(this).val();
-        var id          = $(this).attr('id');
-        var parts       = id.split('_');
-        var rowno       = parseInt(parts[1]);  
-        var next_row    = rowno+1; 
+        var id = $(this).attr('id');
+        var parts = id.split('_');
+        var rowno = parseInt(parts[1]);
+        var next_row = rowno + 1;
+    
         if (selectedValue === 'package_add_modal') {
-            // Open the modal
             $('#package_add_modal').modal('open');
-            // Reset the select box to prevent accidental selection
             $(this).val('');
-            event.stopImmediatePropagation(); // Stop further actions
+            event.stopImmediatePropagation();
             return;
-        } else if (selectedValue > 0) { 
-            $("#row_part_"+next_row).show();
+        } else if (selectedValue > 0) {
+            $("#row_part_" + next_row).show();
             partsUpdateRemoveButtonVisibility();
             var total_products_part_in_po = parseInt($("#total_products_part_in_po").val());
-            $("#total_products_part_in_po").val(total_products_part_in_po+1);
+            $("#total_products_part_in_po").val(total_products_part_in_po + 1);
+    
+            get_case_pack(selectedValue, rowno).then(function(case_pack) {
+                var orderpartqty = parseFloat($("#orderpartqty_" + rowno).val());
+                var total_case_pack = 0;
+    
+                if (case_pack > 0 && orderpartqty > 0) {
+                    total_case_pack = orderpartqty / case_pack;
+                    total_case_pack = Math.ceil(total_case_pack);
+                }
+    
+                if (case_pack > 0 && isFinite(total_case_pack) && total_case_pack > 0) {
+                    $("#total_case_pack_" + rowno).text(total_case_pack);
+                } else {
+                    $("#total_case_pack_" + rowno).text(''); // Clear the value if invalid
+                }
+            });
         }
     });
+    
     
     function partsUpdateRemoveButtonVisibility() {
         // Hide all "Add More" buttons
@@ -341,6 +364,17 @@ $(document).ready(function() {
             } 
             if(orderpartqty != '' && orderpartqty != null){
                 total_part_qty += parseFloat(orderpartqty);
+            }
+            var case_pack = parseFloat($("#case_pack_" + k).text());
+            var total_case_pack = 0;
+            if(orderpartqty > 0 && case_pack > 0){
+                total_case_pack = (orderpartqty / case_pack);
+                total_case_pack = Math.ceil(total_case_pack);
+            }
+            if(total_case_pack > 0 ){
+                $("#total_case_pack_" + k).text(total_case_pack);
+            }else{
+                $("#total_case_pack_" + k).text('');
             }
         }
         if(part_value > 0){ 
@@ -883,7 +917,34 @@ function formatNumber(value, decimals) {
     
     return parts.join('.');
 }
-        
+
+
+
+function get_case_pack(package_id, rowno) {
+    let deferred = $.Deferred();
+    let dataString = `type=get_case_pack&package_id=${package_id}`;
+    $.ajax({
+        type: "POST",
+        url: "ajax/ajax_add_entries.php",
+        data: dataString,
+        success: function(response) {
+            response = $.trim(response);
+            if (response) {
+                $("#case_pack_" + rowno).text(response);
+                deferred.resolve(parseFloat(response));
+            } else {
+                $("#case_pack_" + rowno).text('');
+                deferred.resolve(0);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred while fetching the case pack.');
+            deferred.reject(error);
+        }
+    });
+    return deferred.promise();
+}
+
     
     
 

@@ -651,16 +651,57 @@ if (isset($_POST['is_Submit_tab6_4']) && $_POST['is_Submit_tab6_4'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 	extract($_POST);
+	$phone_check_product_id = "";
 	if (!isset($sub_location_id_barcode_diagnostic) || (isset($sub_location_id_barcode_diagnostic)  && ($sub_location_id_barcode_diagnostic == "0" || $sub_location_id_barcode_diagnostic == ""))) {
 		$error6['sub_location_id_barcode_diagnostic'] = "Required";
 	}
 	if (!isset($serial_no_barcode_diagnostic) || (isset($serial_no_barcode_diagnostic)  && ($serial_no_barcode_diagnostic == "0" || $serial_no_barcode_diagnostic == ""))) {
 		$error6['serial_no_barcode_diagnostic'] = "Required";
 	}
+	else{
+		$sql_pd01_4		= "	SELECT  a.*
+							FROM phone_check_api_data a 
+							WHERE a.enabled = 1 
+							AND a.imei_no = '" . $serial_no_barcode_diagnostic . "'
+							ORDER BY a.id DESC LIMIT 1";
+		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+		$count_pd01_4	= $db->counter($result_pd01_4);
+		if ($count_pd01_4 > 0) {
+			$row_pd01_4					= $db->fetch($result_pd01_4);
+			$phone_check_product_id		= $row_pd01_4[0]['sku_code'];
+		}
+		else{ 
+			// DMPHTE3SDFHW
+			$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
+			$device_detail_array	= getinfo_phonecheck_imie($serial_no_barcode_diagnostic);
+			$jsonData2				= json_encode($device_detail_array);
+			if ($jsonData2 != '[]') {
+				include("process_phonecheck_response.php"); 
+			}
+		} 
+	}
+	// $phone_check_product_id = "iPad2WiFi64GBSpaceGray";
+	if($phone_check_product_id != ""){
+		$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
+							FROM purchase_order_detail a 
+							INNER JOIN purchase_orders b ON b.id = a.po_id
+							INNER JOIN products c ON c.id = a.product_id
+							WHERE 1=1 
+							AND a.po_id = '" . $id . "' 
+							AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+		$result_pd01	= $db->query($conn, $sql_pd01);
+		$count_pd01		= $db->counter($result_pd01);
+		if ($count_pd01 > 0) {
+			$row_pd01						= $db->fetch($result_pd01);
+			$product_id_barcode_diagnostic 	= $row_pd01[0]['id'];
+		}
+	}
 	if (!isset($product_id_barcode_diagnostic) || (isset($product_id_barcode_diagnostic)  && ($product_id_barcode_diagnostic == "0" || $product_id_barcode_diagnostic == ""))) {
 		$error6['product_id_barcode_diagnostic'] = "Required";
 	}
+	
 	if (empty($error6)) {
+		///*
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
@@ -697,7 +738,7 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 						update_po_detail_status($db, $conn, $product_id_barcode_diagnostic, $diagnost_status_dynamic);
 						update_po_status($db, $conn, $id, $diagnost_status_dynamic);
 
-						$serial_no_barcode_diagnostic = "";
+						$serial_no_barcode_diagnostic = $product_id_barcode_diagnostic = "";
 						$msg6['msg_success']	= "Serial No has been updated successfully.";
 					} else {
 						$error6['msg'] = "There is error, Please check it.";
@@ -707,6 +748,7 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 				$error5['msg'] = "The record is already exist";
 			}
 		}
+		//*/
 	} else {
 		$error6['msg'] = "Please check Error in form.";
 	}

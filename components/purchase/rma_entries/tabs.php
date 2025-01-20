@@ -15,7 +15,7 @@
                                             echo "active";
                                         } ?>">
                 <i class="material-icons">receipt</i>
-                <span>Sale Order</span>
+                <span>RMA Order</span>
             </a>
         </li>
         <li class="tab">

@@ -279,6 +279,401 @@
                     </div>
                 </div>
             </form>
+            <form id="serialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                <input type="hidden" name="is_Submit_tab6_2_1" id="is_Submit_tab6_2_1" value="Y" />
+                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                    echo encrypt($_SESSION['csrf_session']);
+                                                                } ?>">
+                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+                <input type="hidden" name="active_tab" value="tab6" />
+
+                <div class="card-panel">
+                    <div class="row">
+                        <div class="col m8 s12">
+                            <h5>Broken device data</h5>
+                        </div>
+                        <div class="col m4 s12 show_broken_device_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_1) && $is_Submit_tab6_2_1 == 'Y') {
+                                                                                                    echo "display: none;";
+                                                                                                } else {;
+                                                                                                } ?>">
+                            <a href="javascript:void(0)" class="show_broken_device_section_tab6">Show Form</a>
+                        </div>
+                        <div class="col m4 s12 show_broken_device_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_1) && $is_Submit_tab6_2_1 == 'Y') {;
+                                                                                                } else {
+                                                                                                    echo "display: none;";
+                                                                                                } ?>">
+                            <a href="javascript:void(0)" class="hide_broken_device_section_tab6">Hide Form</a>
+                        </div>
+                    </div>
+                    <div id="broken_device_section_tab6" style="<?php if (isset($is_Submit_tab6_2_1) && $is_Submit_tab6_2_1 == 'Y') {;
+                                                                        } else {
+                                                                            echo "display: none;";
+                                                                        } ?>">
+                        <div class="row">
+                            <div class="input-field col m12 s12"> </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col m6 s12">
+                                <?php
+                                $field_name     = "product_id_boken_device";
+                                $field_label    = "Product ID";
+                                $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                                    FROM purchase_order_detail a 
+                                                    INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                    INNER JOIN products c ON c.id = a.product_id
+                                                    INNER JOIN product_categories d ON d.id = c.product_category
+                                                    WHERE 1=1 
+                                                    AND a.po_id = '" . $id . "' 
+                                                    ORDER BY c.product_uniqueid, a.product_condition ";
+                                // echo $sql; 
+                                $result_log2    = $db->query($conn, $sql);
+                                $count_r2       = $db->counter($result_log2); ?>
+                                <i class="material-icons prefix pt-1">add_shopping_cart</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>"> 
+                                        <option value="">Select</option>
+                                        <?php 
+                                        if ($count_r2 > 0) {
+                                            $row_r2    = $db->fetch($result_log2);
+                                            foreach ($row_r2 as $data_r2) {
+
+                                                $detail_id_r1       = $data_r2['id'];
+                                                $order_qty          = $data_r2['order_qty'];
+
+                                                $sql_rc1            = "	SELECT a.* 
+                                                                        FROM purchase_order_detail_receive a 
+                                                                        WHERE 1=1 
+                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
+                                                                        AND a.enabled = 1 "; //echo $sql_cl;
+                                                $result_rc1         = $db->query($conn, $sql_rc1);
+                                                $total_received_qty = $db->counter($result_rc1);  ?>
+
+                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php
+                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
+                                                    echo " -  Product: " . $data_r2['product_desc'];
+                                                    if ($data_r2['category_name'] != "") {
+                                                        echo " (" . $data_r2['category_name'] . ") ";
+                                                    }
+                                                    echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
+                                                </option>
+                                        <?php
+                                            }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m3 s12">
+                                <?php
+                                $field_name     = "serial_no_boken_device";
+                                $field_label    = "Serial No";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>"  >
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red">* <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m3 s12">
+                                <?php
+                                $field_name     = "sub_location_id_boken_device";
+                                $field_label    = "Location";
+                                $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
+                                $result1        = $db->query($conn, $sql1);
+                                $count1         = $db->counter($result1);
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count1 > 0) {
+                                            $row1    = $db->fetch($result1);
+                                            foreach ($row1 as $data2) { ?>
+                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php echo $data2['sub_location_name'];
+                                                    if ($data2['sub_location_type'] != "") {
+                                                        echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                    } ?>
+                                                </option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">* <?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div> <br>
+                        <div class="row">
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "battery_boken_device";
+                                $field_label    = "Battery";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red">* <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "body_grade_boken_device";
+                                $field_label    = "Body Grade";
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <option value="A" <?php if (isset(${$field_name}) && ${$field_name} == "A") { ?> selected="selected" <?php } ?>>A</option>
+                                        <option value="B" <?php if (isset(${$field_name}) && ${$field_name} == "B") { ?> selected="selected" <?php } ?>>B</option>
+                                        <option value="C" <?php if (isset(${$field_name}) && ${$field_name} == "C") { ?> selected="selected" <?php } ?>>C</option>
+                                        <option value="D" <?php if (isset(${$field_name}) && ${$field_name} == "D") { ?> selected="selected" <?php } ?>>D</option>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "lcd_grade_boken_device";
+                                $field_label    = "LCD Grade";
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <option value="A" <?php if (isset(${$field_name}) && ${$field_name} == "A") { ?> selected="selected" <?php } ?>>A</option>
+                                        <option value="B" <?php if (isset(${$field_name}) && ${$field_name} == "B") { ?> selected="selected" <?php } ?>>B</option>
+                                        <option value="C" <?php if (isset(${$field_name}) && ${$field_name} == "C") { ?> selected="selected" <?php } ?>>C</option>
+                                        <option value="D" <?php if (isset(${$field_name}) && ${$field_name} == "D") { ?> selected="selected" <?php } ?>>D</option>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "digitizer_grade_boken_device";
+                                $field_label    = "Gigitizer Grade";
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <option value="A" <?php if (isset(${$field_name}) && ${$field_name} == "A") { ?> selected="selected" <?php } ?>>A</option>
+                                        <option value="B" <?php if (isset(${$field_name}) && ${$field_name} == "B") { ?> selected="selected" <?php } ?>>B</option>
+                                        <option value="C" <?php if (isset(${$field_name}) && ${$field_name} == "C") { ?> selected="selected" <?php } ?>>C</option>
+                                        <option value="D" <?php if (isset(${$field_name}) && ${$field_name} == "D") { ?> selected="selected" <?php } ?>>D</option>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "overall_grade_boken_device";
+                                $field_label    = "Over All Grade";
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <option value="A" <?php if (isset(${$field_name}) && ${$field_name} == "A") { ?> selected="selected" <?php } ?>>A</option>
+                                        <option value="B" <?php if (isset(${$field_name}) && ${$field_name} == "B") { ?> selected="selected" <?php } ?>>B</option>
+                                        <option value="C" <?php if (isset(${$field_name}) && ${$field_name} == "C") { ?> selected="selected" <?php } ?>>C</option>
+                                        <option value="D" <?php if (isset(${$field_name}) && ${$field_name} == "D") { ?> selected="selected" <?php } ?>>D</option>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "ram_boken_device";
+                                $field_label    = "RAM";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red"> <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "storage_boken_device";
+                                $field_label    = "Storage";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red"> <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "processor_boken_device";
+                                $field_label    = "Processor";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red"> <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "defects_or_notes_boken_device";
+                                $field_label    = "Defect Or Notes";
+                                ?>
+                                <i class="material-icons prefix">description</i>
+                                <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red"> <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php
+                                $field_name     = "inventory_status_boken_device";
+                                $field_label    = "Inventory Status";
+                                $sql_status     = "SELECT id, status_name
+                                                    FROM  inventory_status  
+                                                    WHERE enabled = 1
+                                                    AND id IN (5,6)
+                                                    Order BY id";
+                                $result_status  = $db->query($conn, $sql_status);
+                                $count_status   = $db->counter($result_status);
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count_status > 0) {
+                                            $row_status    = $db->fetch($result_status);
+                                            foreach ($row_status as $data2) { ?>
+                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="input-field col m12 s12 text_align_center">
+                                <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
             <?php //*/ 
             ?>
 
@@ -505,7 +900,8 @@
                     </div>
                 </div>
             </form>
-            <?php //*/ 
+            <?php 
+            //*/ 
             /*?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab6_6" value="Y" />
@@ -705,7 +1101,7 @@
                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                 WHERE a.enabled = 1 
                                 AND b.po_id = '" . $id . "'
-                                ORDER BY a.base_product_id, a.serial_no_barcode DESC, g.sub_location_name, a.id DESC ";
+                                ORDER BY a.is_diagnost DESC, a.edit_lock,  a.base_product_id, a.serial_no_barcode DESC";
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
             if ($count_log > 0) { ?>
@@ -882,7 +1278,7 @@
                                                                     } else {
                                                                         $device_detail_array    = getinfo_phonecheck_imie($serial_no_barcode);
                                                                         $jsonData2              = json_encode($device_detail_array);
-                                                                        if ($jsonData2 != '[]') {
+                                                                        if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null) {
                                                                             include("process_phonecheck_response.php");
                                                                             $is_diagnost    = 1;
 

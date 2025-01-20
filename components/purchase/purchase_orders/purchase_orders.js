@@ -587,6 +587,8 @@ $(document).ready(function() {
     });
     /////////////////////////////////////////////
 
+
+    
     $(".show_receive_as_category_section").click(function() {  
         $("#receive_as_category_section").show();
         $(".show_receive_as_category_show_btn").hide();
@@ -727,6 +729,31 @@ $(document).ready(function() {
         $(".show_receive_from_barcode_hide_btn_tab6").hide();
         $(".show_receive_from_barcode_show_btn_tab6").show();
     });
+    ///////////////////////////////////////////// 
+
+
+      /////////////////////////////////////////////
+      $(".show_broken_device_section_tab6").click(function() {
+
+        $("#broken_device_section_tab6").show();
+        $(".show_broken_device_show_btn_tab6").hide();
+        $(".show_broken_device_hide_btn_tab6").show();
+
+        //  $("#receive_as_manual_barcodes_section_tab6").hide();
+        //  $(".show_receive_as_manual_barcodes_hide_btn_tab6").hide();
+        //  $(".show_receive_as_manual_barcodes_show_btn_tab6").show();
+
+        //  $("#update_tested_devices_serial_from_phonechecker_tab6").hide();
+        //  $(".update_tested_devices_serial_from_phonechecker_hide_btn_tab6").hide();
+        //  $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
+
+    });
+    $(".hide_broken_device_section_tab6").click(function() {  
+        $("#broken_device_section_tab6").hide();
+        $(".show_broken_device_hide_btn_tab6").hide();
+        $(".show_broken_device_show_btn_tab6").show();
+    });
+    
     ///////////////////////////////////////////// 
 
     $(".show_receive_as_manual_barcodes_section_tab6").click(function() {  

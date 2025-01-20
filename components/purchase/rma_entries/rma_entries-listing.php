@@ -39,36 +39,35 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 }
 $sql_cl			= "	 
 					SELECT * FROM (
-						SELECT  aa.so_no, aa.estimated_ship_date, aa.order_status, 
-								aa.id AS sale_order_id_master, aa.customer_invoice_no, aa.order_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								c.id as customer_id, c.customer_name, f.status_name AS po_status_name
-						FROM sales_orders aa
-						LEFT JOIN customers c ON c.id = aa.customer_id
+						SELECT  aa.rma_no, aa.rma_date, aa.order_status, 
+								aa.id AS rma_id_master, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
+								f.status_name AS rma_status_name
+						FROM rma_orders aa
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
 						WHERE 1=1  
 					) AS t1
 					WHERE 1=1 ";
-if (po_permisions("ALL SO in List") != '1') {
-	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
-}
-if (isset($flt_so_no) && $flt_so_no != "") {
-	$sql_cl 	.= " AND t1.so_no LIKE '" . trim($flt_so_no) . "' ";
-}
-if (isset($flt_customer_id) && $flt_customer_id != "") {
-	$sql_cl 	.= " AND t1.customer_id = '" . trim($flt_customer_id) . "' ";
-}
-if (isset($flt_customer_invoice_no) && $flt_customer_invoice_no != "") {
-	$sql_cl 	.= " AND t1.customer_invoice_no = '" . trim($flt_customer_invoice_no) . "' ";
-}
-if (isset($flt_so_status) && $flt_so_status != "") {
-	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_so_status) . "' ";
-}
-$sql_cl	.= " 	GROUP BY t1.sale_order_id_master	
-				ORDER BY  t1.sale_order_id_master DESC";
+// if (po_permisions("ALL SO in List") != '1') {
+// 	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
+// }
+// if (isset($flt_so_no) && $flt_so_no != "") {
+// 	$sql_cl 	.= " AND t1.so_no LIKE '" . trim($flt_so_no) . "' ";
+// }
+// if (isset($flt_customer_id) && $flt_customer_id != "") {
+// 	$sql_cl 	.= " AND t1.customer_id = '" . trim($flt_customer_id) . "' ";
+// }
+// if (isset($flt_customer_invoice_no) && $flt_customer_invoice_no != "") {
+// 	$sql_cl 	.= " AND t1.customer_invoice_no = '" . trim($flt_customer_invoice_no) . "' ";
+// }
+// if (isset($flt_so_status) && $flt_so_status != "") {
+// 	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_so_status) . "' ";
+// }
+// $sql_cl	.= " 	GROUP BY t1.sale_order_id_master	
+// 				ORDER BY  t1.sale_order_id_master DESC";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
-$page_heading 	= "List Sales Orders ";
+$page_heading 	= "List RMA Orders ";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
@@ -292,10 +291,8 @@ $page_heading 	= "List Sales Orders ";
 													<tr>
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>SO No</th>
-																	<th>Order Date</th>
-  																	<th>Customer</th>
- 																	<th>Invoice#</th>
+																	<th>RMA No</th>
+																	<th>RMA Order Date</th>
 																	<th>Category Wise Qty</th>
  																	<th>Action</th>';
 														echo $headings;
@@ -308,7 +305,7 @@ $page_heading 	= "List Sales Orders ";
 													if ($count_cl > 0) {
 														$row_cl = $db->fetch($result_cl);
 														foreach ($row_cl as $data) {
-															$id	= $data['sale_order_id_master'];
+															$id	= $data['rma_id_master'];
 													?>
 															<tr>
 																<td style="text-align: center;"><?php echo $i + 1; ?></td>
@@ -316,15 +313,15 @@ $page_heading 	= "List Sales Orders ";
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-																			<?php echo $data['so_no']; ?>
+																			<?php echo $data['rma_no']; ?>
 																		</a>
 																	<?php } else {
-																		echo $data['so_no'];
+																		echo $data['rma_no'];
 																	} ?>
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
-																			echo $data['po_status_name'];
+																			echo $data['rma_status_name'];
 																			///*
 																			/////////////////////// Total //////////////////////////////////
 																			$total_items_ordered = 0;
@@ -379,9 +376,7 @@ $page_heading 	= "List Sales Orders ";
 																		</span>
 																	</span>
 																</td>
-																<td><?php echo dateformat2($data['order_date']); ?></td>
- 																<td><?php echo $data['customer_name']; ?></td>
-																<td><?php echo $data['customer_invoice_no']; ?></td>
+																<td><?php echo dateformat2($data['rma_date']); ?></td>
 																<td>
 																	<?php
 																	$sql3		= " SELECT d.category_name, sum(aa2.order_qty) as order_qty

@@ -753,3 +753,101 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 		$error6['msg'] = "Please check Error in form.";
 	}
 }
+
+
+if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') {
+	extract($_POST);
+	if (!isset($product_id_boken_device) || (isset($product_id_boken_device)  && ($product_id_boken_device == "0" || $product_id_boken_device == ""))) {
+		$error6['product_id_boken_device'] = "Required";
+	}
+	if (!isset($serial_no_boken_device) || (isset($serial_no_boken_device)  && ($serial_no_boken_device == "0" || $serial_no_boken_device == ""))) {
+		$error6['serial_no_boken_device'] = "Required";
+	}
+	if (!isset($sub_location_id_boken_device) || (isset($sub_location_id_boken_device)  && ($sub_location_id_boken_device == "0" || $sub_location_id_boken_device == ""))) {
+		$error6['sub_location_id_boken_device'] = "Required";
+	}
+	if (!isset($battery_boken_device) || (isset($battery_boken_device)  && ($battery_boken_device == "0" || $battery_boken_device == ""))) {
+		$error6['battery_boken_device'] = "Required";
+	}
+	if (!isset($body_grade_boken_device) || (isset($body_grade_boken_device)  && ($body_grade_boken_device == "0" || $body_grade_boken_device == ""))) {
+		$error6['body_grade_boken_device'] = "Required";
+	}
+	if (!isset($lcd_grade_boken_device) || (isset($lcd_grade_boken_device)  && ($lcd_grade_boken_device == "0" || $lcd_grade_boken_device == ""))) {
+		$error6['lcd_grade_boken_device'] = "Required";
+	}
+	if (!isset($digitizer_grade_boken_device) || (isset($digitizer_grade_boken_device)  && ($digitizer_grade_boken_device == "0" || $digitizer_grade_boken_device == ""))) {
+		$error6['digitizer_grade_boken_device'] = "Required";
+	}
+	if (!isset($overall_grade_boken_device) || (isset($overall_grade_boken_device)  && ($overall_grade_boken_device == "0" || $overall_grade_boken_device == ""))) {
+		$error6['overall_grade_boken_device'] = "Required";
+	}   
+	if (!isset($inventory_status_boken_device) || (isset($inventory_status_boken_device)  && ($inventory_status_boken_device == "0" || $inventory_status_boken_device == ""))) {
+		$error6['inventory_status_boken_device'] = "Required";
+	}
+	
+	if (empty($error6)) {
+		///*
+		if (po_permisions("Diagnostic") == 0) {
+			$error6['msg'] = "You do not have add permissions.";
+		} else {
+			$sql_pd01 		= "	SELECT a.* 
+								FROM purchase_order_detail_receive a 
+								WHERE a.enabled = 1  
+								AND a.serial_no_barcode	= '" . $serial_no_boken_device . "' ";
+			$result_pd01	= $db->query($conn, $sql_pd01);
+			$count_pd01		= $db->counter($result_pd01);
+			if ($count_pd01 == 0) {
+				$sql_pd01 		= "	SELECT a.* 
+									FROM purchase_order_detail_receive a 
+									WHERE a.enabled = 1 
+									AND a.po_detail_id = '" . $product_id_boken_device . "' 
+									AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+									LIMIT 1";
+				$result_pd01	= $db->query($conn, $sql_pd01);
+				$count_pd01		= $db->counter($result_pd01); 
+				$row_pd01		= $db->fetch($result_pd01);
+				$receive_id_2 	= $row_pd01[0]['id'];
+				$update_rec = " id='" . $receive_id_2 . "'";
+			}
+			else{
+				$update_rec = " serial_no_barcode='" . $serial_no_boken_device . "'";
+			}
+			$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $serial_no_boken_device . "',
+																		sub_location_id_after_diagnostic	= '" . $sub_location_id_boken_device . "',
+																		battery								= '" . $battery_boken_device . "',
+																		body_grade							= '" . $body_grade_boken_device . "',
+																		lcd_grade							= '" . $lcd_grade_boken_device . "',
+																		digitizer_grade						= '" . $digitizer_grade_boken_device . "',
+																		overall_grade						= '" . $overall_grade_boken_device . "',
+																		ram									= '" . $ram_boken_device . "',
+																		storage								= '" . $storage_boken_device . "',
+																		processor							= '" . $processor_boken_device . "',
+																		inventory_status					= '" . $inventory_status_boken_device . "',
+																		defects_or_notes					= '" . $defects_or_notes_boken_device . "',
+
+																		is_diagnost							= '1',
+																		is_import_diagnostic_data			= '1',
+
+																		diagnose_by_user					= '" . $_SESSION['username'] . "',
+																		diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
+																		diagnose_timezone					= '" . $timezone . "',
+																		diagnose_date						= '" . $add_date . "',
+																		diagnose_ip							= '" . $add_ip . "'
+					WHERE " . $update_rec . "  ";
+			$ok = $db->query($conn, $sql_c_up);
+			if ($ok) {
+
+				update_po_detail_status($db, $conn, $product_id_boken_device, $diagnost_status_dynamic);
+				update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+
+				$serial_no_boken_device =  $sub_location_id_boken_device = $battery_boken_device = $body_grade_boken_device = $inventory_status_boken_device = $processor_boken_device = $storage_boken_device = $overall_grade_boken_device = $ram_boken_device = $lcd_grade_boken_device = $digitizer_grade_boken_device = "";
+				$msg6['msg_success']	= "Serial No has been updated successfully.";
+			} else {
+				$error6['msg'] = "There is error, Please check it.";
+			} 
+		}
+		//*/
+	} else {
+		$error6['msg'] = "Please check Error in form.";
+	}
+}

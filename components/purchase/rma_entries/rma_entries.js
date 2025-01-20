@@ -73,13 +73,13 @@ function updateRemoveButtonVisibility() {
 }
 
 // Handle the select change event to open the modal when "Add New Product" is selected
-$(document).on('change', '.product_stock', function(event) {
+$(document).on('change', '.products', function(event) {
     var selectedValue = $(this).val();
     var id          = $(this).attr('id');
     var parts       = id.split('_');
     var rowno       = parseInt(parts[1]);  
     var next_row    = rowno+1; 
-    
+    console.log(selectedValue);
     if (selectedValue === 'product_add_modal') {
         // Open the modal
         $('#product_add_modal').modal('open');

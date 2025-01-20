@@ -25,7 +25,7 @@
                     </a>  &nbsp;&nbsp;
                 <?php */ ?> 
                 <?php 
-                if (isset($so_no) && isset($id)) { 
+                if (isset($rma_no) && isset($id)) { 
                     if (access("edit_perm") == 1) { ?>
                         <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                             Save changes
@@ -42,7 +42,7 @@
                 <div class="card-content custom_padding_section ">
                     <?php            
                     if (isset($so_no) && isset($id)) { ?>
-                        <h5 class="media-heading"><span class=""><?php echo "<b>Sale Order No: </b>" . $so_no; ?></span></h5>
+                        <h5 class="media-heading"><span class=""><?php echo "<b>RMA Order No: </b>" . $so_no; ?></span></h5>
                     <?php } ?><br>
                     <?php  
                     if(isset($cmd) && $cmd == 'add'){?>
@@ -56,46 +56,57 @@
                     <div class="row">
                         <div class="input-field col m4 s12 custom_margin_bottom_col">
                             <?php
-                            $field_name     = "customer_id";
-                            $field_label     = "Customer";
-                            $sql1             = "SELECT * FROM customers WHERE enabled = 1 ORDER BY customer_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
+                            $field_name     = "po_id";
+                            $field_label    = "Purchase Order No";
+                            $sql            = " SELECT a.id,a.po_no 
+                                                FROM purchase_orders a 
+                                                WHERE a.enabled = 1 
+                                                GROUP BY a.po_no 
+                                                ORDER BY a.po_no DESC";
+                            // echo $sql; 
+                            $result_log2    = $db->query($conn, $sql);
+                            $count_r2       = $db->counter($result_log2); ?>
                             <i class="material-icons prefix">question_answer</i>
                             <div class="select2div">
                                 <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                                                                     echo ${$field_name . "_valid"};
                                                                                                                                                                 } ?>">
-                                    <option value="">Select</option>
                                     <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['customer_name']; ?> - Phone: <?php echo $data2['phone_primary']; ?></option>
-                                    <?php }
+                                    if ($count_r2 > 1) { ?>
+                                        <option value="">Select</option>
+                                        <?php
+                                    }
+                                    if ($count_r2 > 0) {
+                                        $row_r2    = $db->fetch($result_log2);
+                                        foreach ($row_r2 as $data_r2) {
+
+                                            $detail_id_r1       = $data_r2['id'];
+                                            $product_uniqueid_r1  = $data_r2['product_uniqueid'];  ?>
+
+                                            <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                <?php
+                                                echo $data_r2['po_no'];
+                                                ?>
+                                            </option>
+                                    <?php
+                                        }
                                     } ?>
                                 </select>
                                 <label for="<?= $field_name; ?>">
                                     <?= $field_label; ?>
                                     <span class="color-red">* <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
+                                                                if (isset($error7[$field_name])) {
+                                                                    echo $error7[$field_name];
                                                                 } ?>
                                     </span>
                                 </label>
                             </div>
                         </div>
-                        <div class="input-field col m2 s12 custom_margin_bottom_col">
-                            <br>
-                            <a class="waves-effect waves-light btn modal-trigger custom_btn_size" href="#customer_add_modal">Add New Customer</a>
-                        </div>
-                        
                         <?php
-                        $field_name     = "order_date";
-                        $field_label     = "Order Date (d/m/Y)";
+                        $field_name     = "rma_date";
+                        $field_label     = "RMA Order Date (d/m/Y)";
                         ?>
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
+                        <div class="input-field col m4 s12 custom_margin_bottom_col">
                             <i class="material-icons prefix">date_range</i>
                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
@@ -111,224 +122,7 @@
                                 </span>
                             </label>
                         </div>
-                        <?php
-                        $field_name     = "customer_invoice_no";
-                        $field_label     = "Customer Invoice #";
-                        ?>
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <i class="material-icons prefix">question_answer</i>
-                            <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                echo ${$field_name};
-                                                                                                            } ?>" class="custom_input_heigh validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                    } ?>">
-                            <label for="<?= $field_name; ?>">
-                                <?= $field_label; ?>
-                                <span class="color-red">* <?php
-                                                            if (isset($error[$field_name])) {
-                                                                echo $error[$field_name];
-                                                            } ?>
-                                </span>
-                            </label>
-                        </div>
                     </div><br>
-                    <div class="row">
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "source_id";
-                            $field_label     = "Sources";
-                            $sql1             = "SELECT * FROM sources WHERE enabled = 1 ORDER BY source_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) {
-                                            echo "$field_name == " . $data2['id']; ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['source_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "origin_id";
-                            $field_label     = "Origins";
-                            $sql1             = "SELECT * FROM origins WHERE enabled = 1 ORDER BY origin_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['origin_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div> 
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "fullfilment_id";
-                            $field_label     = "Fullfilments";
-                            $sql1             = "SELECT * FROM fullfilments WHERE enabled = 1 ORDER BY fullfilments_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['fullfilments_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "terms_id";
-                            $field_label     = "Terms";
-                            $sql1             = "SELECT * FROM terms WHERE enabled = 1 ORDER BY term_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['term_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div><br>
-                    <div class="row">
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "requested_shipment_id";
-                            $field_label     = "Requested Shipments";
-                            $sql1             = "SELECT * FROM requested_shipments WHERE enabled = 1 ORDER BY requested_shipment_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['requested_shipment_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-field col m3 s12 custom_margin_bottom_col">
-                            <?php
-                            $field_name     = "batch_id";
-                            $field_label     = "Batchs";
-                            $sql1             = "SELECT * FROM batchs WHERE enabled = 1 ORDER BY batch_name ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['batch_name']; ?></option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red"> <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     
                     <?php if (($cmd == 'add' && access("add_perm") == 1)) { ?>
                         <div class="row">
@@ -354,7 +148,7 @@
                                 <tr>
                                     
                                     <th style="width: %;">
-                                        Sale Product &nbsp;
+                                        RMA Product &nbsp;
                                         <?php
                                         if(isset($order_status) && $order_status == 1){?>
                                             <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
@@ -366,8 +160,7 @@
                                             </a> 
                                         <?php }?>
                                     </th>
-                                    <th style="width: 400px;">Description</th>
-                                    <th style="width: 100px;">Sale Price</th>
+                                    <th style="width: 200px;">Status</th>
                                     <th style="width: 150px;">Actions</th> 
                                 </tr>
                             </thead>
@@ -375,28 +168,26 @@
                                 <?php 
                                 if(isset($id) && $id>0){
 
-                                    unset($product_stock_ids);
-                                    unset($order_price);
-                                    unset($product_so_desc);
-
+                                    unset($received_ids);
+                                    unset($rma_status);
+                                    
                                     $sum_value      = 0;
-                                    $sql_ee1		= "SELECT a.* FROM sales_order_detail a WHERE a.sales_order_id = '" . $id . "' ";  //echo $sql_ee1;
+                                    $sql_ee1		= "SELECT a.* FROM rma_order_detail a WHERE a.rma_id = '" . $id . "' ";  //echo $sql_ee1;
                                     $result_ee1		= $db->query($conn, $sql_ee1);
                                     $count_ee1  	= $db->counter($result_ee1);
                                     if($count_ee1 > 0){
                                         $row_ee1	= $db->fetch($result_ee1);
                                         foreach($row_ee1 as $data2){
-                                            $product_stock_ids[]	= $data2['product_stock_id'];
-                                            $order_price[]			= $data2['order_price'];
-                                            $product_so_desc[]      = $data2['product_so_desc'];
-                                            $sum_value             += $data2['order_price'];
+                                            $received_ids[]	= $data2['received_id'];
+                                            $rma_status[]	= $data2['rma_status'];
+                                            
                                         }
                                     }
                                 }?>
-                                <input type="hidden" id="total_products_in_po" value="<?php if (!isset($product_stock_ids) || (isset($product_stock_ids) && sizeof($product_stock_ids) == 0)) {
+                                <input type="hidden" id="total_products_in_po" value="<?php if (!isset($received_ids) || (isset($received_ids) && sizeof($received_ids) == 0)) {
                                                                                             echo "1";
                                                                                         } else {
-                                                                                            echo sizeof($product_stock_ids);
+                                                                                            echo sizeof($received_ids);
                                                                                         } ?>">
                                 <?php
                                 $disabled = $readonly = "";
@@ -405,15 +196,15 @@
                                     $readonly = "readonly='readonly'";
                                 }
                                 for($i = 1; $i <= 50; $i++) {
-                                    $field_name     = "product_stock_ids";
-                                    $field_id       = "productstockids_".$i;
+                                    $field_name     = "received_ids";
+                                    $field_id       = "productids_".$i;
                                     $field_label    = "Product";
                                     $style_btn = '';
                                     $style = ""; 
                                    
                                     if(!isset(${$field_name}[$i-1]) || (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "" || ${$field_name}[$i-1] == 0)){  
                                         if($i > 1){
-                                            if(isset($product_stock_ids) && sizeof($product_stock_ids) >0){
+                                            if(isset($received_ids) && sizeof($received_ids) >0){
                                                 $style = 'style="display:none;"'; 
                                             }else{  
                                                 $style = $i === 1 ? '' : 'style="display:none;"';
@@ -421,9 +212,9 @@
                                         } 
                                     }
                                     else{
-                                        if(isset($product_stock_ids) && is_array($product_stock_ids) && sizeof($product_stock_ids)>1){ 
-                                            $style = $i <= sizeof($product_stock_ids) ? '' : 'style="display:none;"';
-                                            $style_btn = $i <= sizeof($product_stock_ids) ? 'style="display:none;"' : '';
+                                        if(isset($received_ids) && is_array($received_ids) && sizeof($received_ids)>1){ 
+                                            $style = $i <= sizeof($received_ids) ? '' : 'style="display:none;"';
+                                            $style_btn = $i <= sizeof($received_ids) ? 'style="display:none;"' : '';
                                         }
                                         else{
                                             $style = $i === 1 ? '' : 'style="display:none;"';
@@ -431,53 +222,59 @@
                                         }
                                     }
                                 
-                                    $sql1       = " SELECT c.*, c1.category_name,b.serial_no, b.id As product_stock_id, b.price
-                                                    FROM product_stock b 
-                                                    INNER JOIN products c ON c.id = b.product_id
-                                                    LEFT JOIN product_categories c1 ON c1.id = c.product_category
-                                                    LEFT JOIN sales_order_detail d ON d.product_stock_id = b.id AND d.sales_order_id = '".$id."' 
-                                                    WHERE b.enabled = 1 
-                                                    AND (
-                                                            (d.id IS NULL AND b.p_total_stock > 0 AND b.is_packed = 0)
-                                                            OR (d.id > 0)
-                                                        )
-                                                    GROUP BY b.serial_no
-                                                    ORDER BY b.serial_no ";
+                                    $sql1       = " SELECT * FROM(
+                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, a.base_product_id ,j.id as product_stock_id, 
+                                                                a.sub_product_id, c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                        FROM purchase_order_detail_receive a
+                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                                        INNER JOIN products c ON c.id = b.product_id
+                                                        LEFT JOIN product_categories d ON d.id =c.product_category
+                                                        LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                                        LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                                        INNER JOIN product_stock j ON j.receive_id = a.id
+                                                        WHERE a.enabled = 1 
+                                                        AND b.po_id = '" . $po_id . "'
+                                                        AND a.inventory_status != '" . $tested_or_graded_status . "'  
+                                                    ) AS t1
+                                                    ORDER BY  is_rma_processed, base_product_id, serial_no_barcode DESC ";
                                     $result1    = $db->query($conn, $sql1);
                                     $count1     = $db->counter($result1);
                                     
                                     ?>
                                     <tr class="dynamic-row" id="row_<?=$i;?>" <?php echo $style; ?>>
                                         <td>
-                                            <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product_stock <?=$field_name?>_<?=$i?>">
+                                            <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible products <?=$field_name?>_<?=$i?>">
                                                 <option value="">Select a product</option>
                                                 <?php
                                                 if ($count1 > 0) {
                                                     $row1    = $db->fetch($result1);
                                                     foreach ($row1 as $data2) { ?>
-                                                        <option value="<?php echo $data2['product_stock_id']; ?>" <?php if (isset($product_stock_ids[$i-1]) && $product_stock_ids[$i-1] == $data2['product_stock_id']) { echo 'selected="selected"'; } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?>, Serial#: - <?php echo $data2['serial_no']; ?>, Purchase Price: - <?php echo $data2['price']; ?> </option>
+                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset($received_ids[$i-1]) && $received_ids[$i-1] == $data2['id']) { echo 'selected="selected"'; } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?>, Serial#: - <?php echo $data2['serial_no_barcode']; ?>, Purchase Price: - <?php echo $data2['price']; ?> </option>
                                                 <?php }
                                                 } ?>
                                             </select>
                                         </td>
                                         <td>
                                             <?php
-                                            $field_name     = "product_so_desc";
-                                            $field_id       = "productsodesc_".$i;
-                                            $field_label     = "Product Desc";
+                                            $field_name     = "rma_status";
+                                            $field_id       = "rmastatus_" . $i;
+                                            $field_label    = "Status";
+                                            $sql_status     = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(" . $rma_process_status . ") ORDER BY status_name ";
+                                            $result_status  = $db->query($conn, $sql_status);
+                                            $count_status   = $db->counter($result_status);
                                             ?>
-                                            <textarea <?php echo $disabled; echo $readonly; ?> id="<?= $field_name; ?>" name="<?= $field_name; ?>[]" class="materialize-textarea validate "><?php if (isset($product_so_desc[$i-1])) {
-                                                                                                                                        echo $product_so_desc[$i-1];
-                                                                                                                                    } ?></textarea>
-                                            
-                                        </td>
-                                        <td>
-                                            <?php
-                                            $field_name     = "order_price";
-                                            $field_id       = "orderprice_".$i;
-                                            $field_label     = "Unit Price";
-                                            ?>
-                                            <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_price">
+
+                                            <select <?php echo $disabled;
+                                                    echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
+                                                <option value="">N/A</option>
+                                                <?php
+                                                if ($count_status > 0) {
+                                                    $row_status    = $db->fetch($result_status);
+                                                    foreach ($row_status as $data2) { ?>
+                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                                <?php }
+                                                } ?>
+                                            </select>
                                         </td>
                                         <td>
                                             <?php 
@@ -492,14 +289,15 @@
                                         </td>
                                     </tr>
                                 <?php }  ?>
-                                <tr>
+                                <!-- <tr>
                                     <td></td>
                                     <td class="text_align_right"><b>Total: </b></td>
                                     <td class="text_align_right">
-                                        <b></b><span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
+                                        <b></b><span id="total_value"><?php //echo number_format($sum_value, 2); ?></b></span>
                                     </td>
                                     <td></td>
-                                </tr>
+                                </tr> -->
+                               
                             </tbody>
                         </table>
                     </div>
@@ -511,7 +309,7 @@
                         <div class="row">
                             <div class="input-field col m6 s12">
                                 <?php
-                                $field_name     = "internal_note";
+                                $field_name     = "rma_desc";
                                 $field_label     = "Private Note";
                                 ?>
                                 <i class="material-icons prefix">description</i>
@@ -529,7 +327,7 @@
                             </div>
                             <div class="input-field col m6 s12">
                                 <?php
-                                $field_name     = "public_note";
+                                $field_name     = "rma_desc_public";
                                 $field_label     = "Public Note";
                                 ?>
                                 <i class="material-icons prefix">description</i>

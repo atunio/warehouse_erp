@@ -1,2 +1,0 @@
-<?php
-$directory_path = "../../../";

@@ -294,25 +294,25 @@
                         <div class="col m4 s12 show_receive_from_barcode_show_btn_tab7" style="<?php if (isset($is_Submit_tab7_2) && $is_Submit_tab7_2 == 'Y') {
                                                                                                     echo "display: none;";
                                                                                                 } else {;
-                                                                                                } ?>">
+                                                                                                } ?> display: none; ">
                             <a href="javascript:void(0)" class="show_receive_from_barcode_section_tab7">Show Form</a>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_hide_btn_tab7" style="<?php if (isset($is_Submit_tab7_2) && $is_Submit_tab7_2 == 'Y') {;
                                                                                                 } else {
-                                                                                                    echo "display: none;";
+                                                                                                    // echo "display: none;";
                                                                                                 } ?>">
                             <a href="javascript:void(0)" class="hide_receive_from_barcode_section_tab7">Hide Form</a>
                         </div>
                     </div>
                     <div id="receive_from_barcode_section_tab7" style="<?php if (isset($is_Submit_tab7_2) && $is_Submit_tab7_2 == 'Y') {;
                                                                         } else {
-                                                                            echo "display: none;";
+                                                                            // echo "display: none;";
                                                                         } ?>">
                         <div class="row">
                             <div class="input-field col m12 s12"> </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m12 s12">
+                            <div class="input-field col m9 s12">
                                 <?php
                                 $field_name     = "receive_id_barcode_rma";
                                 $field_label    = "Product";
@@ -381,7 +381,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m4 s12"></div>
+                            <div class="input-field col m12 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m3 s12">
@@ -460,7 +460,7 @@
                                     </span>
                                 </label>
                             </div>
-                            <div class="input-field col m4 s12 sub_location_id_barcode_rma" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '19' && $status_id_rma != '18' && $status_id_rma != '22' && $status_id_rma != '23' && $status_id_rma != '24') || $status_id_rma == '') {
+                            <div class="input-field col m3 s12 sub_location_id_barcode_rma" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '19' && $status_id_rma != '18' && $status_id_rma != '22' && $status_id_rma != '23' && $status_id_rma != '24') || $status_id_rma == '') {
                                                                                                         echo "display: none;";
                                                                                                     } ?>">
                                 <?php

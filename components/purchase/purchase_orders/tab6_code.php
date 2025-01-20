@@ -152,7 +152,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 		}
 	}
 }
-/*
+
 if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 	extract($_POST);
 	if (isset($phone_check_username)  && ($phone_check_username == "")) {
@@ -160,11 +160,9 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 	}
 	if (isset($diagnostic_date)  && ($diagnostic_date == "")) {
 		$error6['diagnostic_date'] = "Required";
-	}
-	// if (isset($diagnostic_invoice_no)  && ($diagnostic_invoice_no == "")) {
-	// 	$error6['diagnostic_invoice_no'] = "Required";
-	// }
+	} 
 	if (empty($error6)) {
+		/*
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
@@ -174,8 +172,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 									INNER JOIN purchase_orders a ON a.id = b.po_id
 									WHERE a.enabled = 1 
 									AND a.id = '" . $id . "'  ";
-			// AND b.id 		= '" . $diagnostic_invoice_no . "' 
-			$result_pd02		= $db->query($conn, $sql_pd02);
+ 			$result_pd02		= $db->query($conn, $sql_pd02);
 			$row_pd02			= $db->fetch($result_pd02);
 			$invoiceNo 			= $row_pd02[0]['po_no'];
 
@@ -208,6 +205,46 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 				$m = 1;
 				foreach ($all_devices_info['imei'] as $data) {
 					if ($data != "" && $data != null) {
+						 
+						$sku_code_array = array();
+
+						$sql_pd01_4 		= "	SELECT  a.*
+												FROM phone_check_api_data a 
+												WHERE a.enabled = 1 
+												AND a.imei_no = '" . $data . "'
+												ORDER BY a.id DESC LIMIT 1";
+						$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+						$count_pd01_4	= $db->counter($result_pd01_4);
+						if ($count_pd01_4 > 0) {
+							$row_pd01_4					= $db->fetch($result_pd01_4);
+							$jsonData2					= $row_pd01_4[0]['phone_check_api_data']; 
+							$phone_check_product_id		= $row_pd01_4[0]['sku_code'];  
+
+						} else { 
+							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+							$device_detail_array1 	= getinfo_phonecheck_imie($data);
+							$jsonData2				= json_encode($device_detail_array1);
+							if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null) {
+								include("process_phonecheck_response.php");
+							} 
+						}
+
+						if($phone_check_product_id != ""){
+							$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
+												FROM purchase_order_detail a 
+												INNER JOIN purchase_orders b ON b.id = a.po_id
+												INNER JOIN products c ON c.id = a.product_id
+												WHERE 1=1 
+												AND a.po_id = '" . $id . "' 
+												AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+							$result_pd01	= $db->query($conn, $sql_pd01);
+							$count_pd01		= $db->counter($result_pd01);
+							if ($count_pd01 > 0) {
+								$row_pd01						= $db->fetch($result_pd01);
+								$diagnostic_fetch_product_id 	= $row_pd01[0]['id'];
+							}
+						} 
+						
 						$sql_pd01 		= "	SELECT a.* 
 											FROM purchase_order_detail_receive a 
 											WHERE a.enabled = 1  
@@ -215,251 +252,37 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
 						if ($count_pd01 == 0) {
-							$sku_code_array 		= array();
-
-							$sql_pd01_4 		= "	SELECT  a.*
-													FROM phone_check_api_data a 
-													WHERE a.enabled = 1 
-													AND a.imei_no = '" . $data . "'
-													ORDER BY a.id DESC LIMIT 1";
-							$result_pd01_4	= $db->query($conn, $sql_pd01_4);
-							$count_pd01_4	= $db->counter($result_pd01_4);
-							if ($count_pd01_4 > 0) {
-								$row_pd01_4					= $db->fetch($result_pd01_4);
-								$jsonData2					= $row_pd01_4[0]['phone_check_api_data'];
-								$model_name					= $row_pd01_4[0]['model_name'];
-								$model_no					= $row_pd01_4[0]['model_no'];
-								$make_name					= $row_pd01_4[0]['make_name'];
-								$carrier_name				= $row_pd01_4[0]['carrier_name'];
-								$color_name					= $row_pd01_4[0]['color_name'];
-								$battery					= $row_pd01_4[0]['battery'];
-								$body_grade					= $row_pd01_4[0]['body_grade'];
-								$lcd_grade					= $row_pd01_4[0]['lcd_grade'];
-								$digitizer_grade			= $row_pd01_4[0]['digitizer_grade'];
-								$ram						= $row_pd01_4[0]['ram'];
-								$memory						= $row_pd01_4[0]['memory'];
-								$defectsCode				= $row_pd01_4[0]['defectsCode'];
-							} else {
-								$device_detail_array1 	= getinfo_phonecheck_imie($data);
-								$jsonData2				= json_encode($device_detail_array1);
-								$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = "";
-								foreach ($device_detail_array1 as $key1 => $data1) {
-									foreach ($data1 as $key2 => $data2) {
-										if ($key2 == 'BatteryHealthPercentage') {
-											$battery = $data2;
-										}
-										if ($key2 == 'Model') {
-											$model_name = str_replace('"', '', $data2);
-										}
-										if ($key2 == 'Model#') {
-											$model_no = $data2;
-										}
-										if ($key2 == 'Make') {
-											$make_name = $data2;
-										}
-										if ($key2 == 'Carrier') {
-											$carrier_name = $data2;
-										}
-										if ($key2 == 'Color') {
-											$color_name = $data2;
-										}
-										if ($key2 == 'Cosmetics') {
-											$body_grade = $lcd_grade = $digitizer_grade = "";
-											if ($data2 != "") {
-												$pass_array         = explode(",", $data2);
-												if (sizeof($pass_array) == 3) {
-													$body_grade         = $pass_array[0];
-													$lcd_grade          = $pass_array[1];
-													$digitizer_grade    = $pass_array[2];
-												}
-											}
-										}
-										if ($key2 == 'Ram') {
-											$ram = $data2;
-										}
-										if ($key2 == 'Memory') {
-											$memory = $data2;
-										}
-										if ($key2 == 'DefectsCode') {
-											$defectsCode = $data2;
-										}
-									}
-								}
-
-								$sql = "INSERT INTO phone_check_api_data(imei_no, model_name, model_no, make_name, 
-																		carrier_name, color_name, battery, body_grade, lcd_grade,digitizer_grade, 
-																		`ram`, `memory`, defectsCode, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip)
-										VALUES	('" . $data . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', 
-												'" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "', 
-												'" . $ram . "', '" . $memory . "',  '" . $defectsCode . "', '" . $jsonData2 . "', 
-												'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "')";
-								// echo $sql;die;
-								$db->query($conn, $sql);
-							}
-
-							/////////////////////// For Testing //////////////////////
-							/////////////////////////////////////////////////////////
-							if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
-								$model_no 		= "A1395";
-								$carrier_name 	= "WiFi";
-								$memory 		= "32GB";
-								$color_name		= "SpaceGray";
-							}
-							////////////////////////////////////////////////////////
-
-							$sku_code	 		 = get_sku($db, $conn, 'Model#', $model_no);
-							$sku_code			.= get_sku($db, $conn, 'Carrier', $carrier_name);
-							$sku_code			.= get_sku($db, $conn, 'Capacity', $memory);
-							$sku_code			.= get_sku($db, $conn, 'Color', $color_name);
-							$sku_code		 	 = str_replace(" ", '', $sku_code);
-
-						
-							$sql_pd01 		= "	SELECT c.product_uniqueid, a.*
+							$sql_pd01 		= "	SELECT a.* 
 												FROM purchase_order_detail_receive a 
-												INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-												INNER JOIN products c ON c.id = b.product_id
 												WHERE a.enabled = 1 
-												AND b.po_id 	= '" . $id . "'
-												AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')  ";
-
-							$sql_pd01_2		=  $sql_pd01 . " LIMIT 1 ";
-
-							$sql_pd01 		.= " AND a.base_product_id = '" . $sku_code . "'
-												LIMIT 1 "; // AND a.po_detail_id = '" . $diagnostic_invoice_no . "' 
+												AND a.po_detail_id = '" . $diagnostic_fetch_product_id . "' 
+												AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+												LIMIT 1";
 							$result_pd01	= $db->query($conn, $sql_pd01);
 							$count_pd01		= $db->counter($result_pd01);
 							if ($count_pd01 > 0) {
-								$row_pd01				= $db->fetch($result_pd01);
-								$receive_id_2 			= $row_pd01[0]['id'];
-
-								$inventory_status = '6';
-								if ($defectsCode == '' || $defectsCode == NULL) {
-									if ($battery >= '60') {
-										$inventory_status = '5';
-									}
-								}
-								if ($battery < '60') {
-									$defectsCode .= ' - Battery Health is less then 60%';
-								}
-								if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D')) {
-									$overall_grade = "D";
-								} else if ($battery >= '70') {
-									if ($lcd_grade == 'A' && $digitizer_grade == 'A') {
-										$overall_grade = "A";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'A') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'A') {
-										$overall_grade = "C";
-									}
-
-									if ($lcd_grade == 'A' && $digitizer_grade == 'B') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'B') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'B') {
-										$overall_grade = "C";
-									}
-
-									if ($lcd_grade == 'A' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-								} else if ($battery < '70' && $battery >= '60') {
-									if ($lcd_grade == 'A' && $digitizer_grade == 'A') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'A') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'A') {
-										$overall_grade = "C";
-									}
-
-									if ($lcd_grade == 'A' && $digitizer_grade == 'B') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'B') {
-										$overall_grade = "B";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'B') {
-										$overall_grade = "C";
-									}
-
-									if ($lcd_grade == 'A' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-									if ($lcd_grade == 'B' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-									if ($lcd_grade == 'C' && $digitizer_grade == 'C') {
-										$overall_grade = "C";
-									}
-								}
-
-								if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
-									$overall_grade = "A";
-								}
-
-								if ($overall_grade != "") {
-									$sub_product_id = $sku_code . "-" . $overall_grade;
-								} else {
-									$sub_product_id = $sku_code;
-								}
-
-								$sql_c_up	= "UPDATE  purchase_order_detail_receive SET	phone_check_api_data	= '" . $jsonData2 . "',
-																							make_name				= '" . $make_name . "',
-																							model_name				= '" . $model_name . "',
-																							model_no				= '" . $model_no . "',
-																							carrier_name			= '" . $carrier_name . "',
-																							color_name				= '" . $color_name . "',
-																							battery					= '" . $battery . "',
-																							lcd_grade				= '" . $lcd_grade . "',
-																							digitizer_grade	= '" . $digitizer_grade . "',
-																							overall_grade			= '" . $overall_grade . "',
-																							ram						= '" . $ram . "',
-																							storage					= '" . $memory . "',
-																							defects_or_notes		= '" . $defectsCode . "',
-																							inventory_status		= '" . $inventory_status . "', 
-																							sku_code				= '" . $sku_code . "',
-																							sub_product_id			= '" . $sub_product_id . "',
-
-																							serial_no_barcode		= '" . $data . "',
-
-																							update_timezone		    = '" . $timezone . "',
-																							update_date			    = '" . $add_date . "',
-																							update_by_user_id	    = '" . $_SESSION['user_id'] . "',
-																							update_by			    = '" . $_SESSION['username'] . "',
-																							update_ip			    = '" . $add_ip . "'
-											WHERE id = '" . $receive_id_2 . "' ";
-								// echo "<br><br>" . $sql_c_up;
+								$row_pd01		= $db->fetch($result_pd01);
+								$receive_id_2 	= $row_pd01[0]['id'];
+								$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $data . "', 
+																							is_diagnost							= '1',
+																							is_import_diagnostic_data			= '1',
+																							diagnose_by_user					= '" . $_SESSION['username'] . "',
+																							diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
+																							diagnose_timezone					= '" . $timezone . "',
+																							diagnose_date						= '" . $add_date . "',
+																							diagnose_ip							= '" . $add_ip . "'
+										WHERE id = '" . $receive_id_2 . "' ";
 								$ok = $db->query($conn, $sql_c_up);
 								if ($ok) {
-									$k++;
-								}
-							} else {
-								$result_pd01_2	= $db->query($conn, $sql_pd01_2);
-								$count_pd01_2	= $db->counter($result_pd01_2);
-								if ($count_pd01_2 > 0) {
-									$n++;
-									$sku_code_array[] = $sku_code;
+			
+									update_po_detail_status($db, $conn, $diagnostic_fetch_product_id, $diagnost_status_dynamic);
+									update_po_status($db, $conn, $id, $diagnost_status_dynamic);
 								}
 							}
-							 
-						} else {
-							$n++;
-							$imei_already .= $data . "<br>";
-						}
+							$m++;
+						} 
+						 
 					}
-					$m++;
 				}
 			}
 			if (!isset($all_devices_info['imei']) || (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) == 0)) {
@@ -494,11 +317,12 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 				}
 			}
 		}
+		*/
 	} else {
 		$error6['msg'] = "There is error, Please check it.";
 	}
 }
-*/
+
 if (isset($_POST['is_Submit_tab6_5']) && $_POST['is_Submit_tab6_5'] == 'Y') {
 	extract($_POST);
 
@@ -753,8 +577,6 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 		$error6['msg'] = "Please check Error in form.";
 	}
 }
-
-
 if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') {
 	extract($_POST);
 	if (!isset($product_id_boken_device) || (isset($product_id_boken_device)  && ($product_id_boken_device == "0" || $product_id_boken_device == ""))) {
@@ -845,6 +667,75 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 			} else {
 				$error6['msg'] = "There is error, Please check it.";
 			} 
+		}
+		//*/
+	} else {
+		$error6['msg'] = "Please check Error in form.";
+	}
+}
+if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') {
+	extract($_POST);
+	if (!isset($sub_location_id_fake) || (isset($sub_location_id_fake)  && ($sub_location_id_fake == "0" || $sub_location_id_fake == ""))) {
+		$error6['sub_location_id_fake'] = "Required";
+	}
+	if (!isset($overall_grade_fake) || (isset($overall_grade_fake)  && ($overall_grade_fake == "0" || $overall_grade_fake == ""))) {
+		$error6['overall_grade_fake'] = "Required";
+	}   
+	if (!isset($inventory_status_fake) || (isset($inventory_status_fake)  && ($inventory_status_fake == "0" || $inventory_status_fake == ""))) {
+		$error6['inventory_status_fake'] = "Required";
+	}
+	if (empty($error6)) {
+		///*
+		if (po_permisions("Diagnostic") == 0) {
+			$error6['msg'] = "You do not have add permissions.";
+		} else {
+				$sql_pd01 		= "	SELECT a.* 
+									FROM purchase_order_detail_receive a 
+									WHERE a.enabled = 1  
+									AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+									";
+				$result_pd01	= $db->query($conn, $sql_pd01);
+				$count_pd01		= $db->counter($result_pd01); 
+				if($count_pd01 > 0){
+					$row_pd01 = $db->fetch($result_pd01);
+					foreach($row_pd01 as $data_pd01){
+						$receive_id_2 	= $data_pd01['id'];
+						$serial_no_fake = "GEN".$receive_id_2;
+						$sql_c_up 		= "UPDATE  purchase_order_detail_receive SET 	serial_no_barcode					= '" . $serial_no_fake . "',
+																						sub_location_id_after_diagnostic	= '" . $sub_location_id_fake . "',
+																						overall_grade						= '" . $overall_grade_fake . "',
+																						inventory_status					= '" . $inventory_status_fake . "',
+																						is_diagnost							= '1',
+																						is_import_diagnostic_data			= '1',
+
+																						diagnose_by_user					= '" . $_SESSION['username'] . "',
+																						diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
+																						diagnose_timezone					= '" . $timezone . "',
+																						diagnose_date						= '" . $add_date . "',
+																						diagnose_ip							= '" . $add_ip . "'
+											WHERE id = '" . $receive_id_2 . "'  ";
+						$ok = $db->query($conn, $sql_c_up);
+						if ($ok) {
+							update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+ 							$sql_c_up = "UPDATE  purchase_order_detail SET 	order_product_status	= '" . $diagnost_status_dynamic . "',
+																			update_timezone			= '" . $timezone . "',
+																			update_date				= '" . $add_date . "',
+																			update_by				= '" . $_SESSION['username'] . "',
+																			update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																			update_ip				= '" . $add_ip . "'
+										WHERE po_id = '" . $id . "' ";
+							$db->query($conn, $sql_c_up);
+							$msg6['msg_success']	= "Serial No has been updated successfully.";
+						} else {
+							$error6['msg'] = "There is error, Please check it.";
+						} 
+					}
+					
+				}else{
+					$error6['msg'] = "There are no available serial numbers to generate a new one.";
+				}
+				
+			
 		}
 		//*/
 	} else {

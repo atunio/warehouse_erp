@@ -222,8 +222,9 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 
 						} else { 
 							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
-							$device_detail_array1 	= getinfo_phonecheck_imie($data);
-							$jsonData2				= json_encode($device_detail_array1);
+							$device_detail_array 	= getinfo_phonecheck_imie($data);
+							$serial_no_barcode 		= $data;
+							$jsonData2				= json_encode($device_detail_array);
 							if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null) {
 								include("process_phonecheck_response.php");
 							} 

@@ -53,461 +53,233 @@ if ($is_test == 1) {
 }
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
-	$field_name = "stock_id";
+	$field_name = "phone_check_username";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
-
-	$field_name = "sub_location";
-	$field_name2 = "p_inventory_status";
-	if (isset(${$field_name}) && ${$field_name} == "" && isset(${$field_name2}) && ${$field_name2} == "") {
+	$field_name = "diagnostic_date";
+	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
-
-		$error[$field_name2] 		= "Required";
-		${$field_name2 . "_valid"} 	= "invalid";
 	}
 	if (empty($error)) {
+		
 		if (access("add_perm") == 0) {
 			$error['msg'] = "You do not have add permissions.";
 		} else {
-			$sql  		= " UPDATE " . $selected_db_name . ".product_stock SET 			 
-																		sub_location            = '" . $sub_location . "' ,
-																		p_inventory_status      = '" . $p_inventory_status . "' ,
-																		is_update_in_process    = '1' ,
-																		update_date         	= '" . $add_date . "' ,
-																		update_by 	        	= '" . $_SESSION['username'] . "' ,
-																		update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
-																		update_ip 	        	= '" . $add_ip . "',
-																		update_from_module_id	= '" . $module_id . "'
-							WHERE id = '" . $stock_id . "' 
-							AND subscriber_users_id = '" . $subscriber_users_id . "' ";
-			$ok = $db->query($conn, $sql);
-			if ($ok) {
-				$msg['msg_success'] = "Record Updated Successfully.";
-			} else {
-				$error['msg'] = "Error Record updateding.";
+
+			$diagnostic_date1 = null;
+			if(isset($diagnostic_date) && $diagnostic_date != ''){
+				$diagnostic_date1 	= convert_date_mysql_slash($diagnostic_date);
 			}
-		}
-	}
-}
+			$diagnostic_date1 	= convert_date_mysql_slash($diagnostic_date);
 
-if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
+			$sql_pd02 			= "	SELECT DISTINCT f.po_no, e.po_id
+									FROM purchase_order_detail_receive a
+									INNER JOIN purchase_order_detail e ON e.id = a.po_detail_id
+									INNER JOIN purchase_orders f ON f.id = e.po_id
+									WHERE a.sub_location_id = '". $id ."' ";
+ 			$result_pd02		= $db->query($conn, $sql_pd02);
+			$count_pd02			= $db->counter($result_pd02);
+			if($count_pd02 > 0){
+				$row_pd02 = $db->fetch($result_pd02);
+				foreach($row_pd02 as $data_pd02){
+					$invoiceNo 	= $data_pd02['po_no'];
+					$po_id 		= $data_pd02['po_id'];
+					$limit		= 500;  // Optional, max 500 records
+					$offset		= 1;  // Optional
+					
+					if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+						$invoiceNo 			= "19200";  // Optional
+						$diagnostic_date1	= "2024-10-04";  // Filter by Date (optional)
+					}
 
-	$field_name = "finale_condition";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
-	$field_name = "stock_id";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error2[$field_name] 		= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
-	if (empty($error2)) {
-		if (access("add_perm") == 0) {
-			$error2['msg'] = "You do not have add permissions.";
-		} else {
-			for ($k = 1; $k <= $total_parts; $k++) {
-				if (${"package_id" . $k} == "") {
-					${"package_id" . $k} = 0;
-				}
-			}
-			$sql = "SELECT a.* 
-					FROM " . $selected_db_name . ".time_clock_detail a
-					WHERE a.enabled                 = 1
-					AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
-					AND a.user_id    				= '" . $_SESSION['user_id'] . "'
-					AND a.location_or_bin_id    	= '" . $id . "'
-					AND a.entryDate                 = '" . date('Y-m-d') . "'
-					AND a.entry_type                = 'process'
-					AND (a.stopTime = NULL OR a.stopTime IS NULL) 
-					ORDER BY a.id DESC LIMIT 1";
-			// echo $sql;die;
-			$result_cl     = $db->query($conn, $sql);
-			$count_cl     = $db->counter($result_cl);
-			if ($count_cl > 0) {
-				$row_cl1     = $db->fetch($result_cl);
-				$update_id  = $row_cl1[0]['id'];
-				$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET 	entryDate           	= '" . date('Y-m-d') . "',
-																						stopTime            	= '" . $add_date . "' ,
-																						stock_id            	= '" . $stock_id . "' ,
-
-																						update_date         	= '" . $add_date . "' ,
-																						update_by 	        	= '" . $_SESSION['username'] . "' ,
-																						update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
-																						update_ip 	        	= '" . $add_ip . "',
-																						update_from_module_id	= '" . $module_id . "'
-								WHERE id = '" . $update_id . "' 
-								AND subscriber_users_id = '" . $subscriber_users_id . "' ";
-				$ok = $db->query($conn, $sql);
-				if ($ok) {
-					unset($_SESSION['startTime_Process']);
-					unset($_SESSION['location_or_bin_id']);
-					unset($_SESSION['process']);
-					unset($_SESSION['is_start']);
-				}
-			} else {
-				$sql = "SELECT a.* 
-						FROM " . $selected_db_name . ".time_clock_detail a
-						WHERE a.enabled                 = 1
-						AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
-						AND a.user_id    				= '" . $_SESSION['user_id'] . "'
-						AND a.location_or_bin_id    	= '" . $id . "'
-						AND a.entryDate                 = '" . date('Y-m-d') . "'
-						AND a.entry_type                = 'process'
-						AND (a.stock_id = 0 || a.stock_id = null)
-						AND a.id = (SELECT MAX(id) FROM time_clock_detail)
-						ORDER BY a.id DESC LIMIT 1";
-				// echo $sql;die;
-				$result_cl     = $db->query($conn, $sql);
-				$count_cl     = $db->counter($result_cl);
-				if ($count_cl > 0) {
-					$row_cl1     = $db->fetch($result_cl);
-					$update_id  = $row_cl1[0]['id'];
-					$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET  stock_id            	= '" . $stock_id . "' ,
-
-																							update_date         	= '" . $add_date . "' ,
-																							update_by 	        	= '" . $_SESSION['username'] . "' ,
-																							update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
-																							update_ip 	        	= '" . $add_ip . "',
-																							update_from_module_id	= '" . $module_id . "'
-								WHERE id = '" . $update_id . "' 
-								AND subscriber_users_id = '" . $subscriber_users_id . "' ";
-					$db->query($conn, $sql);
-				}
-			}
-
-			$parts_ids_array = array();
-			for ($k = 1; $k <= $total_parts; $k++) {
-				if (isset(${"package_id" . $k}) && ${"package_id" . $k} > 0) {
-					$parts_ids_array[] = ${"package_id" . $k};
-				}
-			}
-			$device_processing_parts_price 	= device_parts_price($db, $conn, $parts_ids_array);
-			$device_processing_labor 		= device_processing_labor($db, $conn, $stock_id);
-
-			$sql_ee						= " SELECT a.*, b.product_uniqueid, b.product_desc, b.detail_desc, c.sub_location_name, f.po_no, f.po_date
-											FROM product_stock a
-											INNER JOIN products b ON b.id = a.product_id 
-											LEFT JOIN warehouse_sub_locations c ON c.id = a.sub_location 
-											INNER JOIN purchase_order_detail_receive d ON d.id = a.receive_id
-											INNER JOIN purchase_order_detail e ON e.id = d.po_detail_id
-											INNER JOIN purchase_orders f ON f.id = e.po_id
-											WHERE a.id = '" . $stock_id . "' ";
-			// echo $sql_ee;die;
-			$result_ee					= $db->query($conn, $sql_ee);
-			$count_ee     				= $db->counter($result_ee);
-			if ($count_ee > 0) {
-				$row_ee						= $db->fetch($result_ee);
-				$serial_no					= $row_ee[0]['serial_no'];
-				$stock_price				= $row_ee[0]['price'];
-				$finale_product_unique_id	= $row_ee[0]['product_uniqueid'] . "-" . $finale_condition;
-				$product_desc				= $row_ee[0]['product_desc'];
-				$detail_desc				= $row_ee[0]['detail_desc'];
-				$sub_location_name			= $row_ee[0]['sub_location_name'];
-				$total_price				= $device_processing_parts_price + $device_processing_labor + $stock_price;
-
-				if ($is_test == 1) {
-					// // $po_no = "Da20241205121343";
-					// $finale_product_unique_id = "pppp" . date('YmdHis');
-					// // $finale_product_unique_id = "pppp20241205111224";
-					// $serial_no = "S" . date("YmdHis");
-					// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa  finale_product_unique_id: " . $finale_product_unique_id;
-					// echo "<br><br>";
-				}
-
-				if (isset($custom_product_id) && $custom_product_id != "") {
-					$finale_product_unique_id	= $custom_product_id;
-				}
-
-				begin_transaction($conn);
-				$sql_c_up	= "	UPDATE product_stock a
-														SET	a.finale_product_unique_id 		= '" . $finale_product_unique_id . "',
-															a.is_move_finale				= '1', 
-															a.price_finale					= '" . $total_price . "',
-															a.finale_condition				= '" . $finale_condition . "',
-															a.device_processing_labor		= '" . $device_processing_labor . "',
-															a.device_processing_parts_price	= '" . $device_processing_parts_price . "',
-															a.package_id1					= '" . $package_id1 . "',
-															a.package_id2					= '" . $package_id2 . "',
-															a.package_id3					= '" . $package_id3 . "',
-															a.update_date					= '" . $add_date . "',
-															a.update_by						= '" . $_SESSION['username'] . "',
-															a.update_by_user_id				= '" . $_SESSION['user_id'] . "',
-															a.update_ip						= '" . $add_ip . "',
-															a.update_from_module_id			= '" . $module_id . "',
-															a.bin_user_id					= '" . $bin_user_id . "'
-								WHERE a.id = '" . $stock_id . "' 
-								AND a.is_move_finale = 0 ";
-				$ok = $db->query($conn, $sql_c_up);
-				if ($ok) {
-
-					$sql_c_up	= "	UPDATE users_bin_for_diagnostic a
-														SET	a.is_processing_start 			= '1',
-															a.update_date					= '" . $add_date . "',
-															a.update_by						= '" . $_SESSION['username'] . "',
-															a.update_by_user_id				= '" . $_SESSION['user_id'] . "',
-															a.update_ip						= '" . $add_ip . "',
-															a.update_from_module_id			= '" . $module_id . "'
-								WHERE a.location_id = '" . $id . "' 
-								AND a.is_processing_done = 0 ";
-					$db->query($conn, $sql_c_up);
-
-					///////////////////////////////////// Add Location In Finale START /////////////////////////////////
 					$data = [
-						"facilityName" 		=> $sub_location_name,
-						"parentFacilityUrl" => "/cti/api/facility/10037"
+						'Apikey' 		=> $phoneCheck_apiKey,
+						'Username' 		=> $phone_check_username,
+						'Invoiceno' 	=> $invoiceNo,
+						'Date' 			=> $diagnostic_date1,
+						'limit' 		=> $limit,
+						'offset' 		=> $offset
 					];
-					$finale_location_id = addSetupInFinale("/cti/api/facility/", $sub_location_name, "facilityName", "facilityId", $data);
-					// echo "<br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " . $finale_location_id;// die;
-					///////////////////////////////////// Add Location In Finale END /////////////////////////////////
-
-					///////////////////////////////////// Add Product In Finale START /////////////////////////////////
-					$data = [
-						"productId"         => $finale_product_unique_id,
-						"internalName"      => $product_desc,
-						"longDescription"   => $detail_desc
-					];
-					$productUrl = addSetupInFinale("/cti/api/product/", $finale_product_unique_id, "productId", "productUrl", $data);
-					// echo "<br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " . $productUrl;die;
-					$prefix = "/cti/api/product";
-					if (strpos($productUrl, $prefix) === 0) {
-					} else {
-						$error2['msg'] = "Issue in Getting Product URL.";
-					}
-					///////////////////////////////////// Add Product In Finale END /////////////////////////////////
-					if (empty($error2)) {
-						$sql_c_up = " UPDATE product_stock SET finale_location_id = '" . $finale_location_id . "', productUrl = '" . $productUrl . "'  WHERE  id = '" . $stock_id . "' "; // 
-						$db->query($conn, $sql_c_up);
-
-						///////////////////////////////////// Add Product lOOKUP In Finale START /////////////////////////////////
-						$apiUrl = "https://app.finaleinventory.com/cti/api/scanlookup";
-						$data1 = [
-							"scanKey"       => $serial_no,
-							"productUrl"    => $productUrl,
-							"lotId"         => $serial_no,
-							"scanTypeId"    => "UNSPECIFIED_TEXT"
-						];
-						$response = sendPostRequestFinale($data1, $apiUrl);
-						if (isset($response['scanKey']) && $response['scanKey'] != "") {
-						} else {
-							$error2['msg'] = "Issue Addding Product Lookup.";
-						}
-						///////////////////////////////////// Add Product lOOKUP In Finale END /////////////////////////////////
-					}
-					///////////////////////////////////// Create Order In Finale END ///////////////////////////////// 
-				} else {
-					$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
-				}
-				if (empty($error2)) {
-					commit($conn);
-					$msg2['msg_success'] = "Record Updated Successfully.";
-				} else {
-					rollback($conn);
-				}
-			} else {
-				$error2['msg'] = "Error in Stock.";
-			}
-		}
-	}
-}
-if (isset($is_Submit3) && $is_Submit3 == 'Y') {
-	if (!isset($ids_for_stock) || (isset($ids_for_stock) && sizeof($ids_for_stock) == 0)) {
-		$error['msg'] = "Select atleast one record";
-	}
-	if (empty($error)) {
-		if (po_permisions("Move to Finale") == 0) {
-			$error['msg'] = "You do not have add permissions.";
-		} else {
-			$all_stock_ids = implode(",", $ids_for_stock);
-			$sql 	= "		SELECT DISTINCT a.id, a.po_no, a.po_date
-							FROM purchase_orders a
-							INNER JOIN purchase_order_detail b ON b.po_id = a.id
-							INNER JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
-							INNER JOIN product_stock d ON d.receive_id = c.id
-							WHERE 1=1 ";
-			$sql   .= " 	AND d.id IN(" . $all_stock_ids . ") 
-							AND d.enabled = 1  AND b.enabled = 1 AND c.enabled = 1"; // echo $sql;
-			$result_po3	= $db->query($conn, $sql);
-			$count_po3	= $db->counter($result_po3);
-			if ($count_po3 > 0) {
-				$row_ee3 = $db->fetch($result_po3);
-
-				///////////////////////////////// Supplier START /////////////////////////////////
-				$setup_name = $user_full_name;
-				$data = [
-					"groupName"         => $setup_name,
-					"roleTypeIdList"    => ["SUPPLIER"],
-					"statusId"          => "PARTY_ENABLED"
-				];
-				$finale_supplier_id = addSetupInFinale("/cti/api/partygroup/", $setup_name, "groupName", "partyId", $data);
-				///////////////////////////////////// Add Supplier In Finale END /////////////////////////////////
-
-				foreach ($row_ee3 as $data_p3) {
-					$po_no 		= $data_p3['po_no'];
-					$po_date 	= $data_p3['po_date'];
-
-					if ($is_test == 1) {
-						$po_no = "Da" . date('YmdHis');
-						// $po_no = "Da20241205121343";
-					}
-					///////////////////////////////////// Create Order in Finale START /////////////////////////////////
-					$apiUrl = "https://app.finaleinventory.com/cti/api/order/";
-					$data = [
-						"orderId"                   => $po_no,
-						"orderDate"                 => $po_date . 'T07:00:00.000Z',
-						"orderTypeId"               => "PURCHASE_ORDER",
-						"statusId"                  => "ORDER_CREATED",
-						"orderUrl"                  => "/cti/api/order/" . $po_no,
-						"shipmentList"  => [
-							["shipmentTypeId" => "PURCHASE_SHIPMENT"]
-						],
-						"orderRoleList"  => [
-							["roleTypeId" => "SUPPLIER", "partyId" => $finale_supplier_id]
-						]
-					];
-					$response = sendPostRequestFinale($data, $apiUrl);
-					if (isset($response['msg']) && $response['msg'] == 'existing order with orderIdUser=' . $po_no) {
-						if (isset($is_test) && $is_test == 1) {
-							echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: already po: " . $po_no;
-						}
-					} else if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
-						if (isset($is_test) && $is_test == 1) {
-							echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: created po: " . $po_no;
-						}
-					} else {
-						$error2['msg'] = "Issue in creating Order.";
-					}
-					///////////////////////////////////// Create Order In Finale END ///////////////////////////////// 
-
-					if (empty($error2)) {
-						$sql = "SELECT d.id, d.finale_product_unique_id, d.price_finale, d.serial_no, d.finale_location_id, d.productUrl
-								FROM purchase_orders a
-								INNER JOIN purchase_order_detail b ON b.po_id = a.id
-								INNER JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
-								INNER JOIN product_stock d ON d.receive_id = c.id
-								WHERE 1=1 ";
-						if (isset($is_test) && $is_test == 1) {
-							$sql .= " AND a.po_no = 'PO3'";
-						} else {
-							$sql .= " AND a.po_no = '" . $po_no . "'";
-						}
-						$sql .= " 	AND a.subscriber_users_id = '" . $subscriber_users_id . "'
- 									AND d.is_move_finale = 1
-									AND d.enabled = 1 
-									AND b.enabled = 1
-									AND c.enabled = 1 
-									AND d.id IN(" . $all_stock_ids . ")  ";
-						// echo $sql;
-						$result_po     = $db->query($conn, $sql);
-						$count_po     = $db->counter($result_po);
-						$m = 0;
-						if ($count_po > 0) {
-							$row_po = $db->fetch($result_po);
-							foreach ($row_po as $data_po) {
-								$finale_product_unique_id2  = $data_po['finale_product_unique_id'];
-								$price_finale2  			= $data_po['price_finale'];
-								$finale_location_id			= $data_po['finale_location_id'];
-								$serial_no					= $data_po['serial_no'];
-								$productUrl2				= $data_po['productUrl'];
-
-								if ($is_test == 1) {
-									$serial_no = "SL" . date('YmdHis');
+					$imei_already = $phone_check_sku_codes = "";
+					$k = $n = 0;
+					$all_devices_info = v2_devices_call_phonecheck($data);
+					// echo "<br><br><pre>";   print_r($all_devices_info['imei']); die;
+					if (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) > 0) {
+						$m = 1;
+						foreach ($all_devices_info['imei'] as $data) {
+							// $data = "DMPDQNJ0Q1GC";
+							if ($data != "" && $data != null) {
+								$sql_pd01_4		= "	SELECT  a.*
+													FROM phone_check_api_data a 
+													WHERE a.enabled = 1 
+													AND a.imei_no = '" . $data . "'
+													ORDER BY a.id DESC LIMIT 1";
+								$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+								$count_pd01_4	= $db->counter($result_pd01_4);
+								if ($count_pd01_4 == 0) {
+									$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+									$device_detail_array 	= getinfo_phonecheck_imie($data);
+									// echo "<br><br><pre>";   print_r($device_detail_array);
+									$jsonData2				= json_encode($device_detail_array);
+									if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null) {
+										$insert_bin_and_po_id_fields 	= "bin_id, po_id, ";
+										$insert_bin_and_po_id_values 	= "'".$id."', '".$po_id."', ";
+										$serial_no_barcode_diagnostic 	= $data;
+										include("components/purchase/purchase_orders/process_phonecheck_response.php");
+									} 
 								}
-								$orderItemList[$m] = [
-									"productId" => $finale_product_unique_id2,
-									"quantity" => 1,
-									"productUrl"    => $productUrl2,
-									"unitPrice" => (float)$price_finale2
-								];
-								$shipmentItemList[$m] = [
-									"productUrl"    => $productUrl2,
-									"facilityUrl" => "/cti/api/facility/" . $finale_location_id,
-									"quantity" => 1,
-									"lotId" => "L_" . $serial_no
-								];
+								/*
+								if($phone_check_product_id != ""){
+									$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
+														FROM purchase_order_detail a 
+														INNER JOIN purchase_orders b ON b.id = a.po_id
+														INNER JOIN products c ON c.id = a.product_id
+														WHERE 1=1 
+														AND a.po_id = '" . $po_id . "' 
+														AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+									$result_pd01	= $db->query($conn, $sql_pd01);
+									$count_pd01		= $db->counter($result_pd01);
+									if ($count_pd01 > 0) {
+										$row_pd01						= $db->fetch($result_pd01);
+										$diagnostic_fetch_product_id 	= $row_pd01[0]['id'];
+
+										$sql_pd01 		= "	SELECT a.* 
+															FROM purchase_order_detail_receive a 
+															WHERE a.enabled = 1  
+															AND a.serial_no_barcode	= '" . $data . "' ";
+										$result_pd01	= $db->query($conn, $sql_pd01);
+										$count_pd01		= $db->counter($result_pd01);
+										if ($count_pd01 == 0) {
+											$sql_pd01 		= "	SELECT a.* 
+																FROM purchase_order_detail_receive a 
+																WHERE a.enabled = 1 
+																AND a.po_detail_id = '" . $diagnostic_fetch_product_id . "' 
+																AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+																LIMIT 1";
+											$result_pd01	= $db->query($conn, $sql_pd01);
+											$count_pd01		= $db->counter($result_pd01);
+											if ($count_pd01 > 0) {
+												$row_pd01		= $db->fetch($result_pd01);
+												$receive_id_2 	= $row_pd01[0]['id'];
+
+												$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $data . "', 
+																											is_diagnost							= '1',
+																											is_import_diagnostic_data			= '1',
+																											diagnose_by_user					= '" . $_SESSION['username'] . "',
+																											diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
+																											diagnose_timezone					= '" . $timezone . "',
+																											diagnose_date						= '" . $add_date . "',
+																											diagnose_ip							= '" . $add_ip . "'
+															WHERE id = '" . $receive_id_2 . "' ";
+												$ok = $db->query($conn, $sql_c_up);
+												if ($ok) {
+							
+													update_po_detail_status($db, $conn, $diagnostic_fetch_product_id, $diagnost_status_dynamic);
+													update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+												}
+											}
+											$m++;
+										} 
+									}
+								} 
+								*/
+							}
+						}
+					}
+					if (!isset($all_devices_info['imei']) || (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) == 0)) {
+						$error['msg'] = "No Serial# is avaible again this invoice# in the date.";
+					}
+					if ($k > 0) {
+						$msg['msg_success'] = "Total " . $k . " Serial# have been updated successfully.";
+						// $serial_no_manual	= $sub_location_id_barcode = "";
+					} 
+				}
+			}
+		}
+	}
+}
+
+if(isset($is_Submit2_preview) && $is_Submit2_preview == 'Y'){
+	if (empty($error)) {
+		if (access("add_perm") == 0) {
+			$error['msg'] = "You do not have add permissions.";
+		} else {
+			$i = 0;
+			foreach($bulkserialNo as $data){
+
+				$sql_pd01_4 		= "	SELECT  a.*
+										FROM phone_check_api_data a 
+										WHERE a.enabled = 1 
+										AND a.imei_no = '" . $data . "'
+										ORDER BY a.id DESC LIMIT 1";
+				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+				$count_pd01_4	= $db->counter($result_pd01_4);
+				if ($count_pd01_4 > 0) {
+					$row_pd01_4					= $db->fetch($result_pd01_4);
+ 					$phone_check_product_id		= $product_ids[$i]; 
+ 					$po_id						= $row_pd01_4[0]['po_id']; 
+ 					$phone_check_api_data_id	= $row_pd01_4[0]['id'];     
+
+					if($phone_check_product_id != ""){
+						$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
+											FROM purchase_order_detail a 
+											INNER JOIN purchase_orders b ON b.id = a.po_id
+											INNER JOIN products c ON c.id = a.product_id
+											WHERE 1=1 
+											AND a.po_id = '" . $po_id . "' 
+											AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+						$result_pd01	= $db->query($conn, $sql_pd01);
+						$count_pd01		= $db->counter($result_pd01);
+						if ($count_pd01 > 0) {
+							$row_pd01						= $db->fetch($result_pd01);
+							$diagnostic_fetch_product_id 	= $row_pd01[0]['id'];
+							
+							$sql_pd01 		= "	SELECT a.* 
+												FROM purchase_order_detail_receive a 
+												WHERE a.enabled = 1  
+												AND a.serial_no_barcode	= '" . $data . "' ";
+							$result_pd01	= $db->query($conn, $sql_pd01);
+							$count_pd01		= $db->counter($result_pd01);
+							if ($count_pd01 == 0) {
+								$sql_pd01 		= "	SELECT a.* 
+													FROM purchase_order_detail_receive a 
+													WHERE a.enabled = 1 
+													AND a.po_detail_id = '" . $diagnostic_fetch_product_id . "' 
+													AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+													LIMIT 1";
+								$result_pd01	= $db->query($conn, $sql_pd01);
+								$count_pd01		= $db->counter($result_pd01);
+								if ($count_pd01 > 0) {
+									$row_pd01		= $db->fetch($result_pd01);
+									$receive_id_2 	= $row_pd01[0]['id'];
+									$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $data . "', 
+																								is_diagnost							= '1',
+																								is_import_diagnostic_data			= '1',
+																								diagnose_by_user					= '" . $_SESSION['username'] . "',
+																								diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
+																								diagnose_timezone					= '" . $timezone . "',
+																								diagnose_date						= '" . $add_date . "',
+																								diagnose_ip							= '" . $add_ip . "'
+											WHERE id = '" . $receive_id_2 . "' ";
+									$ok = $db->query($conn, $sql_c_up);
+									if ($ok) {
+										update_po_detail_status($db, $conn, $diagnostic_fetch_product_id, $diagnost_status_dynamic);
+										update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+									}
+								}
 								$m++;
-							}
+							} 
 						}
-						$apiUrl = "https://app.finaleinventory.com/cti/api/order/" . $po_no;
-						$data = [
-							"orderId"				=> $po_no,
-							"orderUrl"				=> "/cti/api/order/" . $po_no,
-							"orderHistoryListUrl"	=> "/cti/api/order/" . $po_no . "/history/",
-							"orderItemList"			=> $orderItemList
-						];
-						$response = sendPostRequestFinale($data, $apiUrl);
-						if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
-							$shipmentUrl = $response['shipmentUrlList'][0];
-							/// Add Shipment
-							$apiUrl = "https://app.finaleinventory.com" . $shipmentUrl;
-							$data = [
-								"primaryOrderUrl"   => "/cti/api/order/" . $po_no,
-								"shipmentUrl"   	=> $shipmentUrl,
-								"shipmentIdUser"    => $po_no . "-1",
-								"shipmentItemList"	=> $shipmentItemList,
-								"shipmentTypeId" 	=> "PURCHASE_SHIPMENT",
-								"statusId" 			=> "SHIPMENT_INPUT"
-							];
-							$response = sendPostRequestFinale($data, $apiUrl);
-							if (isset($response['shipmentUrl']) && $response['shipmentUrl'] != "") {
-								$sql = "SELECT d.id, d.finale_product_unique_id, d.price_finale, d.serial_no, d.finale_location_id, d.productUrl
-										FROM purchase_orders a
-										INNER JOIN purchase_order_detail b ON b.po_id = a.id
-										INNER JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
-										INNER JOIN product_stock d ON d.receive_id = c.id
-										WHERE 1=1 ";
-								if (isset($is_test) && $is_test == 1) {
-									$sql .= " AND a.po_no = 'PO3'";
-								} else {
-									$sql .= " AND a.po_no = '" . $po_no . "'";
-								}
-								$sql .= " 	AND a.subscriber_users_id 	= '" . $subscriber_users_id . "'
-											AND d.is_move_finale 		= 0
-											AND d.enabled 				= 1 
-											AND b.enabled 				= 1
-											AND c.enabled 				= 1 ";
-								$result_po2     = $db->query($conn, $sql);
-								$count_po2     	= $db->counter($result_po2);
-								if (isset($is_test) && $is_test == 1) {
-									// echo "<br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: remaining items: " . $count_po2;
-								}
-								if ($count_po2 == 0) {
-									$apiUrl = $apiUrl . "/receive";
-									$data = [
-										"receiveDate" => date('Y-m-d') . "T07:00:00.000"
-									];
-									sendPostRequestFinale($data, $apiUrl);
-									$apiUrl = "https://app.finaleinventory.com/cti/api/order/" . $po_no . "/lock";
-									$data = [];
-									sendPostRequestFinale($data, $apiUrl);
-								}
-								$sql_c_up	= "	UPDATE product_stock a
-													SET	a.is_processed					= '1', 
-														a.p_total_stock					= '0',
-														a.processed_date				= '" . $add_date . "',
-														a.processed_by					= '" . $_SESSION['username'] . "',
-														a.processed_by_user_id			= '" . $_SESSION['user_id'] . "',
-														a.processed_ip					= '" . $add_ip . "',
-														a.update_from_module_id			= '" . $module_id . "'
-												WHERE  a.id IN(" . $all_stock_ids . ")  ";
-								$db->query($conn, $sql_c_up);
-								$msg2['msg_success'] = "Records has been processed to Finale.";
-							} else {
-								$error2['msg'] = "Issue in adding products in Shipment.";
-							}
-						} else {
-							$error2['msg'] = "Issue in adding products in Order.";
-						}
-					}
-					///////////////////////////////////////////////////////////////////////////////////////////////////////////
+					} 
 				}
-			}
+				$i++;
+			} 
 		}
 	}
-} ?>
+}?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
@@ -648,271 +420,69 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								</button>
 							</div>
 						<?php } ?>
-						<h4 class="card-title">Update Info</h4><br>
+						<h4 class="card-title">Fetch Data From PhoneCheck</h4><br>
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2" value="Y" />
 							<div class="row">
-								<div class="input-field col m8 s12">
-									<?php
-									$field_name 	= "stock_id";
-									$field_label 	= "Product";
-									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name
-														FROM product_stock a1
-														INNER JOIN products a ON a.id = a1.product_id
-														INNER JOIN product_categories b ON b.id = a.product_category
- 														WHERE a.enabled = 1 
-														AND a1.p_total_stock > 0
-														AND a1.p_inventory_status = 5
-														AND a1.sub_location = '" . $id . "' 
-														AND a1.is_move_finale = 0
-														ORDER BY b.category_name, a.product_uniqueid  "; //echo $sql1;
-									// AND a1.is_processed = 0
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									?>
-									<i class="material-icons prefix">question_answer</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>_2" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																												echo ${$field_name . "_valid"};
-																																											} ?>">
-											<option value="">Select</option>
-											<?php
-											if ($count1 > 0) {
-												$row1	= $db->fetch($result1);
-												foreach ($row1 as $data2) { ?>
-													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
-														<?php
-														if ($data2['category_name'] != "") {
-															echo " (" . $data2['category_name'] . ") ";
-														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?></option>
-											<?php }
-											} ?>
-										</select>
-										<label for="<?= $field_name; ?>_2">
-											<?= $field_label; ?>
-											<span class="color-red">* <?php
-																		if (isset($error[$field_name])) {
-																			echo $error[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-									<?php
-									$field_name = "stock_id_for_package_material"; ?>
-									<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
-								</div>
-								<div class="input-field col m2 s12">
-									<?php
-									$field_name     = "sub_location";
-									$field_label    = "Location";
-									$sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-									$result1        = $db->query($conn, $sql1);
-									$count1         = $db->counter($result1);
-									?>
-									<i class="material-icons prefix">question_answer</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																											echo ${$field_name . "_valid"};
-																																										} ?>">
-											<option value="">Select</option>
-											<?php
-											if ($count1 > 0) {
-												$row1    = $db->fetch($result1);
-												foreach ($row1 as $data2) { ?>
-													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-														<?php echo $data2['sub_location_name'];
-														if ($data2['sub_location_type'] != "") {
-															echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-														} ?>
-													</option>
-											<?php }
-											} ?>
-										</select>
-										<label for="<?= $field_name; ?>">
-											<?= $field_label; ?>
-											<span class="color-red">* <?php
-																		if (isset($error[$field_name])) {
-																			echo $error[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-								</div>
-								<div class="input-field col m2 s12">
-									<?php
-									$field_name     = "p_inventory_status";
-									$field_label    = "Status";
-									$sql1           = "SELECT a.id,a.status_name FROM inventory_status a WHERE a.enabled = 1 AND a.id IN(" . $status_for_update_info . ") ORDER BY a.id ";
-									$result1        = $db->query($conn, $sql1);
-									$count1         = $db->counter($result1);
-									?>
-									<i class="material-icons prefix">question_answer</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																											echo ${$field_name . "_valid"};
-																																										} ?>">
-											<option value="">Select</option>
-											<?php
-											if ($count1 > 0) {
-												$row1    = $db->fetch($result1);
-												foreach ($row1 as $data2) { ?>
-													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-														<?php echo $data2['status_name'];
-														?>
-													</option>
-											<?php }
-											} ?>
-										</select>
-										<label for="<?= $field_name; ?>">
-											<?= $field_label; ?>
-											<span class="color-red">* <?php
-																		if (isset($error[$field_name])) {
-																			echo $error[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="input-field col m4 s12"></div>
-							</div>
-							<div class="row">
-								<div class="input-field col m3 s12"></div>
 								<div class="input-field col m4 s12">
-									<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-										<button class="btn purple waves-effect waves-light right" type="submit" name="action" value="update_info">Update Info
-											<i class="material-icons right">send</i>
-										</button>
-									<?php } ?>
-								</div>
-							</div>
-						</form>
-					</div>
-					<?php //include('sub_files/right_sidebar.php'); 
-					?>
-				</div>
-			</div>
-			<div class="col s12 m12 l12">
-				<div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top">
-						<?php
-						if (isset($error2['msg'])) { ?>
-							<div class="card-alert card red lighten-5">
-								<div class="card-content red-text">
-									<p><?php echo $error2['msg']; ?></p>
-								</div>
-								<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-						<?php } else if (isset($msg2['msg_success'])) { ?>
-							<div class="card-alert card green lighten-5">
-								<div class="card-content green-text">
-									<p><?php echo $msg2['msg_success']; ?></p>
-								</div>
-								<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
-									<span aria-hidden="true">×</span>
-								</button>
-							</div>
-						<?php } ?>
-						<h4 class="card-title"><?php echo $title_heading2; ?></h4><br>
-						<form method="post" autocomplete="off" action="">
-							<input type="hidden" name="is_Submit2_2" value="Y" />
-							<div class="row">
-								<div class="input-field col m8 s12">
 									<?php
-									$field_name 	= "stock_id";
-									$field_label 	= "Product";
-									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name
-														FROM product_stock a1
-														INNER JOIN products a ON a.id = a1.product_id
-														INNER JOIN product_categories b ON b.id = a.product_category
- 														WHERE a.enabled = 1 
-														AND a1.p_total_stock > 0
-														AND a1.sub_location = '" . $id . "' 
-														AND a1.is_move_finale = 0
-														ORDER BY b.category_name, a.product_uniqueid  "; //echo $sql1;
-									// AND a1.is_processed = 0
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									?>
-									<i class="material-icons prefix">question_answer</i>
+									$field_name     = "phone_check_username";
+									$field_label    = "PhoneCheck User";
+									$sql            = " SELECT a.*
+														FROM phone_check_users a 
+														WHERE 1=1 
+														AND a.enabled = '1' 
+														ORDER BY a.username"; // echo $sql; 
+									$result_log2    = $db->query($conn, $sql);
+									$count_r2       = $db->counter($result_log2); ?>
+									<i class="material-icons prefix pt-1">description</i>
 									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible  validate <?php if (isset(${$field_name . "_valid"})) {
 																																											echo ${$field_name . "_valid"};
 																																										} ?>">
-											<option value="">Select</option>
 											<?php
-											if ($count1 > 0) {
-												$row1	= $db->fetch($result1);
-												foreach ($row1 as $data2) { ?>
-													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
-														<?php
-														if ($data2['category_name'] != "") {
-															echo " (" . $data2['category_name'] . ") ";
-														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?></option>
-											<?php }
+											if ($count_r2 > 1) { ?>
+												<option value="">Select</option>
+												<?php
+											}
+											if ($count_r2 > 0) {
+												$row_r2    = $db->fetch($result_log2);
+												foreach ($row_r2 as $data_r2) { ?>
+													<option value="<?php echo $data_r2['username']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['username']) { ?> selected="selected" <?php } ?>>
+														<?php echo $data_r2['username'];  ?><?php  if($data_r2['full_name'] !=""){ echo " (".$data_r2['full_name'].")"; }  ?>
+													</option>
+											<?php 
+												}
 											} ?>
 										</select>
 										<label for="<?= $field_name; ?>">
 											<?= $field_label; ?>
 											<span class="color-red">* <?php
-																		if (isset($error2[$field_name])) {
-																			echo $error2[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-									<?php
-									$field_name = "stock_id_for_package_material"; ?>
-									<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
-								</div>
-								<div class="input-field col m2 s12">
-									<?php
-									$field_name 	= "finale_condition";
-									$field_label	= "Finale Condition";
-									?>
-									<i class="material-icons prefix">subtitles</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
-																																											echo ${$field_name . "_valid"};
-																																										} ?>">
-											<option value="">Select</option>
-											<option value="54" <?php if (isset(${$field_name}) && ${$field_name} == '54') { ?> selected="selected" <?php } ?>>
-												54
-											</option>
-											<option value="27" <?php if (isset(${$field_name}) && ${$field_name} == '27') { ?> selected="selected" <?php } ?>>
-												27
-											</option>
-										</select>
-										<label for="<?= $field_name; ?>">
-											<?= $field_label; ?>
-											<span class="color-red"> * <?php
-																		if (isset($error2[$field_name])) {
-																			echo $error2[$field_name];
+																		if (isset($error[$field_name])) {
+																			echo $error[$field_name];
 																		} ?>
 											</span>
 										</label>
 									</div>
 								</div>
-								<div class="input-field col m2 s12">
+								<div class="input-field col m4 s12">
 									<?php
-									$field_name  = "custom_product_id";
-									$field_label = "Custom Product ID";
+									$field_name     = "diagnostic_date";
+									$field_id       = $field_name;
+									$field_label    = "PhoneCheck Diagnostic Date ";
 									?>
-									<i class="material-icons prefix">description</i>
-									<input id="<?= $field_name; ?>" name="<?= $field_name; ?>" type="text" value="<?php if (isset(${$field_name})) {
-																														echo ${$field_name};
-																													} ?>" class="  validate <?php if (isset(${$field_name . "_valid"})) {
-																																				echo ${$field_name . "_valid"};
-																																			} ?>">
-									<label for="<?= $field_name; ?>">
+									<i class="material-icons prefix">date_range</i>
+									<input id="<?= $field_id; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} else {
+																													echo date('m/d/Y');
+																												} ?>" class="datepicker validate ">
+									<label for="<?= $field_id; ?>">
 										<?= $field_label; ?>
-										<span class="color-red"><?php
-																if (isset($error2[$field_name])) {
-																	echo $error2[$field_name];
-																} ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
 										</span>
 									</label>
 								</div>
@@ -921,77 +491,10 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								<div class="input-field col m4 s12"></div>
 							</div>
 							<div class="row">
-								<?php
-								for ($k = 1; $k <= 3; $k++) { ?>
-									<div class="input-field col m4 s12">
-										<?php
-										$field_name 	= "package_id" . $k;
-										$field_label	= "Packaging Material / Part "  . $k;
-										?>
-										<i class="material-icons prefix">subtitles</i>
-										<div class="select2div">
-											<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
-																																												echo ${$field_name . "_valid"};
-																																											} ?>">
-												<?php
-												if (isset($stock_id) && $stock_id > 0) {
-													$sql1 			= " SELECT d.*, e.category_name, a.is_mandatory
-																		FROM product_packages a 
-																		INNER JOIN products b ON b.id = a.product_id
-																		INNER JOIN product_stock c ON b.id = c.product_id
-																		INNER JOIN packages d ON d.id = a.package_id
-																		INNER JOIN product_categories e ON e.id = d.product_category
-																		WHERE c.id = '" . $stock_id . "'
-																		AND d.stock_in_hand >0
-																		ORDER BY a.is_mandatory DESC, d.package_name ";
-													$result1 		= $db->query($conn, $sql1);
-													$count1 		= $db->counter($result1);
-													if ($count1 > 0) {
-														$row1	= $db->fetch($result1); ?>
-														<option value="">Select</option>
-														<?php
-														foreach ($row1 as $data2) {
-															$mandatory_optional = "";
-															if ($data2['is_mandatory'] == "Yes") {
-																$mandatory_optional = " - Mandatory -";
-															}
-															if ($data2['is_mandatory'] == "No") {
-																$mandatory_optional = " - Optional -";
-															} ?>
-															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-																<?php echo $data2['package_name']; ?> (<?php echo $data2['category_name'] . ")," . $mandatory_optional . " Total Stock Available: " . $data2['stock_in_hand']; ?>
-															</option>
-														<?php }
-													} else { ?>
-														<option value="">No <?= $field_label; ?> Available</option>
-													<?php }
-												} else { ?>
-													<option value="">Select</option>
-												<?php } ?>
-											</select>
-											<label for="<?= $field_name; ?>">
-												<?= $field_label; ?>
-												<span class="color-red"> <?php
-																			if (isset($error[$field_name])) {
-																				echo $error[$field_name];
-																			} ?>
-												</span>
-											</label>
-										</div>
-										<?php
-										$field_name = "product_id_for_package_material"; ?>
-										<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
-									</div>
-								<?php } ?>
-							</div>
-							<div class="row">
-								<div class="input-field col m4 s12"></div>
-							</div>
-							<div class="row">
 								<div class="input-field col m3 s12"></div>
 								<div class="input-field col m4 s12">
 									<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-										<button class="btn cyan waves-effect waves-light right" type="submit" value="move_finale" name="action">Process to Finale
+										<button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Update Info
 											<i class="material-icons right">send</i>
 										</button>
 									<?php } ?>
@@ -1003,206 +506,136 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 					?>
 				</div>
 			</div>
-			<?php
-			$sql_cl		= "	SELECT a.product_uniqueid, a.product_desc, b.category_name, 
-									a1.id, a1.serial_no, a1.price, a1.device_processing_parts_price, a1.processed_date, a1.finale_condition, 
-									a1.finale_product_unique_id, a1.price_finale, a1.is_move_finale, a1.is_processed,
-									c.package_name as package_name1, d.package_name as package_name2, e.package_name as package_name3, a1.device_processing_labor
-							FROM product_stock a1
- 							INNER JOIN products a ON a.id = a1.product_id
-							INNER JOIN product_categories b ON b.id = a.product_category
-							LEFT JOIN packages c ON c.id = package_id1
-							LEFT JOIN packages d ON d.id = package_id2
-							LEFT JOIN packages e ON e.id = package_id3
-							WHERE a.enabled 				= 1 
-							AND a1.is_move_finale 			= 1 
-							AND a1.is_update_in_process		= 0 
-							AND a1.sub_location 			= '" . $id . "' 
-							AND a1.bin_user_id				= '" . $bin_user_id . "' 
-							ORDER BY b.category_name, a.product_uniqueid, a1.finale_product_unique_id ";
-			// echo $sql_cl;
-			$result_cl	= $db->query($conn, $sql_cl);
-			$count_cl	= $db->counter($result_cl);
-			if ($count_cl > 0) { ?>
-				<div class="col s12">
-					<div class="container">
-						<form method="post">
-							<input type="hidden" name="is_Submit3" value="Y" />
-							<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-																				echo encrypt($_SESSION['csrf_session']);
-																			} ?>">
-							<div class="section section-data-tables">
-								<!-- Page Length Options -->
-								<h4 class="card-title">Processed Products</h4>
+			<?php   
+			$sql_preview = "SELECT a.*, f.po_no
+							FROM phone_check_api_data a
+							INNER JOIN purchase_orders f ON f.id = a.po_id
+ 							WHERE a.bin_id = '".$id."' ";
+			$result_preview	= $db->query($conn, $sql_preview);
+			$count_preview		= $db->counter($result_preview);
+			if($count_preview > 0){
+				$row_preview = $db->fetch($result_preview); ?>
+				<div class="col s12 m12 l12">
+					<div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+						<div class="card-content custom_padding_card_content_table_top">
+						<h4 class="card-title">Preview Fetched Data</h4><br>
+							<form method="post" autocomplete="off" action="">
+								<input type="hidden" name="is_Submit2_preview" value="Y" />
 								<div class="row">
-									<div class="col m6 s12">
-									</div>
-									<div class="col m3 s12">
-										<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-amber-amber box-shadow-none border-round mr-1 mb-1">Export Processed Data in Excel</a>
-									</div>
-								</div>
+									<table id="page-length-option1" class="display bordered striped addproducttable">
+										<thead>
+											<tr>
+												<th style="text-align: center;">
+                                                    <label>
+                                                        <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+                                                                                                                                                    echo "checked";
+                                                                                                                                                } ?> />
+                                                        <span>Serial#</span>
+                                                    </label>
+                                                </th>
+												<th>Product ID</th>
+												<th>PO#</th>
+											</tr>
+										</thead>
+										<tbody>
+										<?php 
+										foreach ($row_preview as $data) { 
+											$phone_check_product_id = $data['sku_code'];
+											$po_id 					= $data['po_id'];
+											$bulkserialNo[] 		= $data['imei_no'];?>
+											
+											<tr> 
+												<td style="width:150px;">
+													<?php
+													if (access("delete_perm") == 1) { ?>
+														<label style="margin-left: 25px;">
+															<input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($data['imei_no']) && in_array($data['imei_no'], $bulkserialNo)) {
+																																						echo "checked";
+																																					} ?> class="checkbox filled-in" />
+															<span><?php echo $data['imei_no'];?></span>
+														</label>
+													<?php } ?>
+												</td>
+												<td>
+													<?php 
+													$sql_pd01 		= "	SELECT a.id 
+																		FROM purchase_order_detail a 
+																		INNER JOIN purchase_orders b ON b.id = a.po_id
+																		INNER JOIN products c ON c.id = a.product_id
+																		WHERE 1=1 
+																		AND a.po_id = '" . $po_id . "' 
+																		AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+													$result_pd01	= $db->query($conn, $sql_pd01);
+													$count_pd01		= $db->counter($result_pd01);
+													if ($count_pd01 > 0) {?>
+															<input type="text" readonly class="green-text" name="product_ids[]" id="product_ids" value="<?php echo $phone_check_product_id;?>">
+												<?php }
+													else{
+														?>
+														<input type="text" class="red-text" name="product_ids[]" id="product_ids" value="<?php echo $phone_check_product_id;?>">
+														<?php
+													}
+													?>
+												</td>
+												<td><?php echo $data['po_no'];?></td>
+											</tr>
+										<?php } ?>
+										</tbody>
+									</table>
+								</div><br><br>
 								<div class="row">
-									<div class="col s12">
-										<div class="card">
-											<div class="card-content">
+									<div class="input-field col m3 s12">
+										<i class="material-icons prefix">question_answer</i>
+										<div class="select2div">
+											<?php
+											$field_name     = "process_bin_id";
+											$field_label    = "Bin/Location";
+
+											$sql1           = " SELECT b.id,b.sub_location_name, b.sub_location_type
+																FROM  warehouse_sub_locations b";
+											$result1        = $db->query($conn, $sql1);
+											$count1         = $db->counter($result1);
+											?>
+											<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																												echo ${$field_name . "_valid"};
+																																											} ?>">
+												<option value="">Select</option>
 												<?php
-												if (isset($error3['msg'])) { ?>
-													<div class="card-alert card red lighten-5">
-														<div class="card-content red-text">
-															<p><?php echo $error3['msg']; ?></p>
-														</div>
-														<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-												<?php } else if (isset($msg3['msg_success'])) { ?>
-													<div class="card-alert card green lighten-5">
-														<div class="card-content green-text">
-															<p><?php echo $msg3['msg_success']; ?></p>
-														</div>
-														<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
-															<span aria-hidden="true">×</span>
-														</button>
-													</div>
-												<?php }  ?>
-												<div class="row">
-													<div class="col s12">
-														<table id="page-length-option" class="display pagelength50_2">
-															<thead>
-																<tr>
-																	<th class="sno_width_60">S.No
-																		<?php
-																		if (po_permisions("Move to Finale") == 1) { ?>
-																			<label>
-																				<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
-																																											echo "checked";
-																																										} ?> />
-																				<span></span>
-																			</label>
-																		<?php } ?>
-																	</th>
-																	<?php
-																	$headings = '	
-																					<th>Product ID</br>Product Detail</th> 
-																					<th>Serial#</th>
-																					<th>Finale ProductID /<br>Processed Date</th>
-																					<th>Finale Grade</th>
-																					<th>Parts / Package /<br> Materials</th>
-																					<th>Price</th>
-																					<th>Labor Cost</th>
-																					<th>Parts/Package /<br> Materials Cost</th>
-																					<th>Final Price</th>';
-																	echo $headings;
-																	?>
-																</tr>
-															</thead>
-															<tbody>
-																<?php
-																$i = 0;
-																if ($count_cl > 0) {
-																	$row_cl = $db->fetch($result_cl);
-																	foreach ($row_cl as $data) {
-																		$detail_id2						= $data['id'];
-																		$price 							= $data['price'];
-																		$device_processing_labor		= $data['device_processing_labor'];
-																		$device_processing_parts_price	= $data['device_processing_parts_price'];
-																		$total_price					= $data['price_finale'];
-																		$is_processed					= $data['is_processed']; ?>
-																		<tr>
-																			<td>
-																				<?php echo $i + 1;
-																				if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
-																					<label style="margin-left: 25px;">
-																						<input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" <?php
-																																														if (isset($ids_for_stock) && in_array($detail_id2, $ids_for_stock)) {
-																																															echo "checked";
-																																														} ?> class="checkbox filled-in" />
-																						<span></span>
-																					</label>
-																				<?php } ?>
-																			</td>
-																			<td>
-																				<?php echo $data['product_uniqueid']; ?></br>
-																				<?php
-																				echo ucwords(strtolower($data['product_desc']));
-																				if ($data['category_name'] != "") {
-																					echo "(" . $data['category_name'] . ")";
-																				} ?>
-																			</td>
-																			<td><?php echo $data['serial_no']; ?></td>
-																			<td>
-																				<?php echo $data['finale_product_unique_id']; ?>
-																				<br>
-																				<?php echo dateformat1_with_time($data['processed_date']); ?>
-																			</td>
-																			<td>
-																				<?php echo $data['finale_condition']; ?> &nbsp;&nbsp;
-																				<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
-																					<i class="material-icons dp48">print</i>
-																				</a>
-																			</td>
-																			<td>
-																				<?php
-																				$m = 1;
-																				if ($data['package_name1'] != '') {
-																					echo $m . ": " . $data['package_name1'];
-																					$m++;
-																				}
-																				if ($data['package_name2'] != '') {
-																					echo "<br>" . $m . ": " . $data['package_name2'];
-																					$m++;
-																				}
-																				if ($data['package_name3'] != '') {
-																					echo "<br>" . $m . ": " . $data['package_name3'];
-																					$m++;
-																				} ?>
-																			</td>
-																			<td><?php echo number_format($price, 2); ?></td>
-																			<td><?php echo number_format($device_processing_labor, 2); ?></td>
-																			<td><?php echo number_format(($device_processing_parts_price), 2); ?></td>
-																			<td><?php echo number_format(($total_price), 2); ?></td>
-																		</tr>
-																<?php $i++;
-																	}
-																} ?>
-															<tfoot>
-																<tr>
-																	<th class="sno_width_60">S.No</th>
-																	<?php echo $headings; ?>
-																</tr>
-															</tfoot>
-														</table>
-													</div>
-												</div>
-											</div>
+												if ($count1 > 0) {
+													$row1    = $db->fetch($result1);
+													foreach ($row1 as $data2) { ?>
+														<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php
+																																																			echo $data2['sub_location_name'];
+																																																			if ($data2['sub_location_type'] != "") {
+																																																				echo "(" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+																																																			} ?></option>
+												<?php }
+												} ?>
+											</select>
+											<label for="<?= $field_name; ?>">
+												<?= $field_label; ?>
+												<span class="color-red">*<?php
+																		if (isset($error[$field_name])) {
+																			echo $error[$field_name];
+																		} ?>
+												</span>
+											</label>
 										</div>
 									</div>
-								</div>
-								<!-- Multi Select -->
-							</div><!-- START RIGHT SIDEBAR NAV -->
-							<?php
-							if (po_permisions("Move to Finale") == 1) { ?>
-								<div class="row">
-									<div class="input-field col m4 s12"></div>
-									<div class="input-field col m4 s12">
-										<?php if (isset($id) && $id > 0) { ?>
-											<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Move PO to Finale</button>
+									<div class="input-field col m2 s12">
+										<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
+											<button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process Diagnostic
+												<i class="material-icons right">send</i>
+											</button>
 										<?php } ?>
 									</div>
-									<div class="input-field col m4 s12"></div>
 								</div>
-								<div class="row">
-									<div class="input-field col m12 s12"></div>
-								</div>
-							<?php } ?>
-						</form>
-						<?php include('sub_files/right_sidebar.php'); ?>
+							</form>
+						</div>
 					</div>
-
-					<div class="content-overlay"></div>
 				</div>
-		<?php }
-		} ?>
+			<?php } 
+		}?>
 	</div>
 	<?php include("sub_files/add_product_modal.php") ?>
 	<?php include("sub_files/add_vender_modal.php") ?>

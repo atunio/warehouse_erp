@@ -233,7 +233,7 @@
                                                         LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                                         INNER JOIN product_stock j ON j.receive_id = a.id
                                                         WHERE a.enabled = 1 
-                                                        AND b.po_id = '" . $po_id . "'
+                                                        -- AND b.po_id = '" . $po_id . "'
                                                         AND a.inventory_status != '" . $tested_or_graded_status . "'  
                                                     ) AS t1
                                                     ORDER BY  is_rma_processed, base_product_id, serial_no_barcode DESC ";

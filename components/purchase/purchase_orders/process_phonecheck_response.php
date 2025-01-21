@@ -144,13 +144,17 @@ if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_gr
 if(isset($serial_no_barcode_diagnostic) && $serial_no_barcode_diagnostic != ""){
     $serial_no_barcode = $serial_no_barcode_diagnostic;
 }
-$sql = "INSERT INTO phone_check_api_data(imei_no, model_name, model_no, make_name, sku_code,
-                                        carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, 
-                                        `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, added_timezone, added_from_module_id)
-        VALUES	('" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', '" . $sku_code . "', 
+if(!isset($insert_bin_and_po_id_fields)){
+    $insert_bin_and_po_id_fields="";
+    $insert_bin_and_po_id_values="";
+}
+if($serial_no_barcode !="" && $serial_no_barcode != NULL){
+    $sql = "INSERT INTO phone_check_api_data(".$insert_bin_and_po_id_fields." imei_no, model_name, model_no, make_name, sku_code,
+                carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, 
+                `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, added_timezone, added_from_module_id)
+            VALUES	(".$insert_bin_and_po_id_values." '" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', '" . $sku_code . "', 
                 '" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "', 
                 '" . $ram . "', '" . $memory . "',  '" . $defectsCode . "',  '" . $overall_grade . "', '" . $jsonData2 . "', 
                 '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
-// echo $sql;die;
-$db->query($conn, $sql);
-?>
+    $db->query($conn, $sql);
+}?>

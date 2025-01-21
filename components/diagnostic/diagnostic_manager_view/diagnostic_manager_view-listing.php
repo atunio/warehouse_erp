@@ -23,7 +23,7 @@ $sql_cl = " SELECT DISTINCT a.sub_location_id AS sub_location, d.sub_location_na
 			INNER JOIN products a2 ON a2.id = b.product_id
 			INNER JOIN product_categories a3 ON a3.id = a2.product_category
 			INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
-			WHERE po_detail_id = 3
+			WHERE 1= 1 -- po_detail_id = 
 			AND is_diagnost = 0 ";
 if (isset($flt_bin_id) && $flt_bin_id != "") {
 	$sql_cl .= " AND a.sub_location_id = '" . $flt_bin_id . "' ";
@@ -57,7 +57,7 @@ $sql_cl2			= " SELECT  DISTINCT a3.id, a3.category_name,
 						GROUP BY a3.id ";
 $result_cl2		= $db->query($conn, $sql_cl2);
 $count_cl2		= $db->counter($result_cl2);
-$page_heading 	= "List of Bins For Processing ( Manager View)";
+$page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">

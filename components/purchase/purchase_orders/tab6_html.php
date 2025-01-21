@@ -11,6 +11,9 @@
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>">
+                    Import Diagnostic Data
+                </a>
                 <?php include("tab_action_btns.php"); ?>
             </div>
         </div>
@@ -77,7 +80,7 @@
     </div>
     <?php
     if (!isset($id)) { ?>
-        <div class="card-panel">
+        <div class="card-panel custom_padding_card_content_table_top_bottom" >
             <div class="row">
                 <!-- Search for small screen-->
                 <div class="container">
@@ -119,7 +122,7 @@
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                 <input type="hidden" name="active_tab" value="tab6" />
 
-                <div class="card-panel">
+                <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
                             <h5>Update Serial No from BarCode</h5>
@@ -269,12 +272,9 @@
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"></div>
                         </div>
                     </div>
                 </div>
@@ -288,7 +288,7 @@
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                 <input type="hidden" name="active_tab" value="tab6" />
 
-                <div class="card-panel">
+                <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
                             <h5>Broken device data</h5>
@@ -667,156 +667,14 @@
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-            <form id="fakeserialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
-                <input type="hidden" name="is_Submit_tab6_2_2" id="is_Submit_tab6_2_2" value="Y" />
-                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-                                                                    echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>">
-                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                <input type="hidden" name="active_tab" value="tab6" />
-
-                <div class="card-panel">
-                    <div class="row">
-                        <div class="col m8 s12">
-                            <h5>Generate Serial# </h5>
-                        </div>
-                        <div class="col m4 s12 show_fake_serial_no_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {
-                                                                                                    echo "display: none;";
-                                                                                                } else {;
-                                                                                                } ?>">
-                            <a href="javascript:void(0)" class="show_fake_serial_no_section_tab6">Show Form</a>
-                        </div>
-                        <div class="col m4 s12 show_fake_serial_no_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
-                                                                                                } else {
-                                                                                                    echo "display: none;";
-                                                                                                } ?>">
-                            <a href="javascript:void(0)" class="hide_fake_serial_no_section_tab6">Hide Form</a>
-                        </div>
-                    </div>
-                    <div id="fake_serial_no_section_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
-                                                                        } else {
-                                                                            echo "display: none;";
-                                                                        } ?>">
-                        <div class="row">
-                            <div class="input-field col m12 s12"> </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m3 s12">
-                                <?php
-                                $field_name     = "sub_location_id_fake";
-                                $field_label    = "Location";
-                                $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-                                $result1        = $db->query($conn, $sql1);
-                                $count1         = $db->counter($result1);
-                                ?>
-                                <i class="material-icons prefix">question_answer</i>
-                                <div class="select2div">
-                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                        <option value="">Select</option>
-                                        <?php
-                                        if ($count1 > 0) {
-                                            $row1    = $db->fetch($result1);
-                                            foreach ($row1 as $data2) { ?>
-                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php echo $data2['sub_location_name'];
-                                                    if ($data2['sub_location_type'] != "") {
-                                                        echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                    } ?>
-                                                </option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="input-field col m3 s12">
-                                <?php
-                                $field_name     = "inventory_status_fake";
-                                $field_label    = "Inventory Status";
-                                $sql_status     = "SELECT id, status_name
-                                                    FROM  inventory_status  
-                                                    WHERE enabled = 1
-                                                    AND id IN (5,6)
-                                                    Order BY id";
-                                $result_status  = $db->query($conn, $sql_status);
-                                $count_status   = $db->counter($result_status);
-                                ?>
-                                <i class="material-icons prefix">question_answer</i>
-                                <div class="select2div">
-                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
-                                        <option value="">Select</option>
-                                        <?php
-                                        if ($count_status > 0) {
-                                            $row_status    = $db->fetch($result_status);
-                                            foreach ($row_status as $data2) { ?>
-                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">*<?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="input-field col m3 s12">
-                                <?php
-                                $field_name     = "overall_grade_fake";
-                                $field_label    = "Over All Grade";
-                                ?>
-                                <i class="material-icons prefix">question_answer</i>
-                                <div class="select2div">
-                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
-                                        <option value="">Select</option>
-                                        <option value="A" <?php if (isset(${$field_name}) && ${$field_name} == "A") { ?> selected="selected" <?php } ?>>A</option>
-                                        <option value="B" <?php if (isset(${$field_name}) && ${$field_name} == "B") { ?> selected="selected" <?php } ?>>B</option>
-                                        <option value="C" <?php if (isset(${$field_name}) && ${$field_name} == "C") { ?> selected="selected" <?php } ?>>C</option>
-                                        <option value="D" <?php if (isset(${$field_name}) && ${$field_name} == "D") { ?> selected="selected" <?php } ?>>D</option>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">*<?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                           
-                        <br>
-                        <div class="row">
-                            <div class="input-field col m12 s12 text_align_center">
-                                <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Generate</button>
-                                <?php } ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+           
             <?php //*/ 
             ?>
 
@@ -834,7 +692,7 @@
             if ($count_log > 0) { ?>
             <?php
             } else { ?>
-                <div class="card-panel">
+                <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col 24 s12"><br>
                             <div class="card-alert card red lighten-5">
@@ -848,201 +706,7 @@
             <?php } ?>
             <?php ///*
             ?>
-            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
-                <input type="hidden" name="is_Submit_tab6_5" value="Y" />
-                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-                                                                    echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>">
-                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                <input type="hidden" name="active_tab" value="tab6" />
-
-                <div class="card-panel">
-                    <div class="row">
-                        <div class="col m8 s12">
-                            <h5>Update Serial Numbers Manually</h5>
-                        </div>
-                        <div class="col m4 s12 show_receive_as_manual_barcodes_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_5) && $is_Submit_tab6_5 == 'Y') {
-                                                                                                            echo "display: none;";
-                                                                                                        } else {;
-                                                                                                        } ?>">
-                            <a href="javascript:void(0)" class="show_receive_as_manual_barcodes_section_tab6">Show Form</a>
-                        </div>
-                        <div class="col m4 s12 show_receive_as_manual_barcodes_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_5) && $is_Submit_tab6_5 == 'Y') {;
-                                                                                                        } else {
-                                                                                                            echo "display: none;";
-                                                                                                        } ?>">
-                            <a href="javascript:void(0)" class="hide_receive_as_manual_barcodes_section_tab6">Hide Form</a>
-                        </div>
-                    </div>
-                    <div id="receive_as_manual_barcodes_section_tab6" style="<?php if (isset($is_Submit_tab6_5) && $is_Submit_tab6_5 == 'Y') {;
-                                                                                } else {
-                                                                                    echo "display: none;";
-                                                                                } ?>">
-                        <div class="row">
-                            <div class="input-field col m12 s12"> </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m8 s12">
-                                <?php
-                                $field_name     = "product_id_manual_diagnostic";
-                                $field_label    = "Product ID";
-                                $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
-                                                    FROM purchase_order_detail a 
-                                                    INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                    INNER JOIN products c ON c.id = a.product_id
-                                                    INNER JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE 1=1 
-                                                    AND a.po_id = '" . $id . "' 
-                                                    ORDER BY c.product_uniqueid, a.product_condition "; // echo $sql; 
-                                $result_log2    = $db->query($conn, $sql);
-                                $count_r2       = $db->counter($result_log2); ?>
-
-                                <i class="material-icons prefix pt-1">add_shopping_cart</i>
-                                <div class="select2div">
-                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                        <?php
-                                        if ($count_r2 > 1) { ?>
-                                            <option value="">Select</option>
-                                            <?php
-                                        }
-                                        if ($count_r2 > 0) {
-                                            $row_r2    = $db->fetch($result_log2);
-                                            foreach ($row_r2 as $data_r2) {
-
-                                                $detail_id_r1       = $data_r2['id'];
-                                                $order_qty          = $data_r2['order_qty'];
-
-                                                $sql_rc1            = "	SELECT a.* 
-                                                                        FROM purchase_order_detail_receive a 
-                                                                        WHERE 1=1 
-                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                        AND a.enabled = 1 "; //echo $sql_cl;
-                                                $result_rc1         = $db->query($conn, $sql_rc1);
-                                                $total_received_qty = $db->counter($result_rc1);  ?>
-
-                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php
-                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
-                                                    echo " -  Product: " . $data_r2['product_desc'];
-                                                    if ($data_r2['category_name'] != "") {
-                                                        echo " (" . $data_r2['category_name'] . ") ";
-                                                    }
-                                                    echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
-                                                </option>
-                                        <?php
-                                            }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-
-                            <div class="input-field col m4 s12">
-                                <?php
-                                $field_name     = "sub_location_id_manual_diagnostic";
-                                $field_label    = "Location";
-                                $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-                                $result1        = $db->query($conn, $sql1);
-                                $count1         = $db->counter($result1);
-                                ?>
-                                <i class="material-icons prefix">question_answer</i>
-                                <div class="select2div">
-                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                        <option value="">Select</option>
-                                        <?php
-                                        if ($count1 > 0) {
-                                            $row1    = $db->fetch($result1);
-                                            foreach ($row1 as $data2) { ?>
-                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php echo $data2['sub_location_name'];
-                                                    if ($data2['sub_location_type'] != "") {
-                                                        echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                    } ?>
-                                                </option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12">&nbsp;</div>
-                        </div>
-                        <div class="row">
-                            <?php
-                            $max = 2;
-                            if (isset($serial_no_manual_diagnostic)) {
-                                $serial_no_manual_diagnostic = array_filter($serial_no_manual_diagnostic);
-                                $max = sizeof($serial_no_manual_diagnostic) - 1;
-                            }
-                            for ($i = 0; $i < 100; $i++) {
-                                $style = $style2 = "";
-                                if ($i > $max) {
-                                    $style = "display: none;";
-                                }
-                                if ($i > $max || $i < $max) {
-                                    $style2 = "display: none;";
-                                }
-                                $i2 = $i + 1; ?>
-                                <div class="input-field col m3 s12 serial_no_manual_diagnostic_input_<?= $i2; ?>" style="<?= $style; ?>">
-                                    <?php
-                                    $field_name     = "serial_no_manual_diagnostic";
-                                    $field_id       = $field_name . "_" . $i2;
-                                    $field_label    = "Serial No";
-                                    ?>
-                                    <i class="material-icons prefix">description</i>
-                                    <input id="<?= $field_id; ?>" type="text" name="<?= $field_name; ?>[]" value="<?php if (isset($serial_no_manual_diagnostic[$i])) {
-                                                                                                                        echo $serial_no_manual_diagnostic[$i];
-                                                                                                                    } ?>" class="validate ">
-                                    <label for="<?= $field_id; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error6["field_name_" . $i2])) {
-                                                                        echo $error6["field_name_" . $i2];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                                <div style="<?= $style; ?>" class=" input-field col m1 s12 button_div_serial_no_manual_diagnostic" id="button_div_serial_no_manual_diagnostic_<?= $i2; ?>">
-                                    <a href="#." style="<?= $style2; ?> font-size: 30px;" class="add_<?= $field_name; ?> add_<?= $field_name; ?>_<?= $i2; ?>" id="add_<?= $field_name; ?>^<?= $i2; ?>">+</a>
-                                    &nbsp;
-                                    <a href="#." style="<?= $style; ?> font-size: 30px;" class="minus_<?= $field_name; ?> minus_<?= $field_name; ?>_<?= $i2; ?>" id="minus_<?= $field_name; ?>^<?= $i2; ?>">-</a>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12 text_align_center">
-                                <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
-                                <?php } ?>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"></div>
-                        </div>
-                    </div>
-                </div>
-            </form>
+           
             <?php 
             //*/ 
             ///*?>
@@ -1055,7 +719,7 @@
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                 <input type="hidden" name="active_tab" value="tab6" />
 
-                <div class="card-panel">
+                <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
                             <h5>Fetch Data from PhoneCheck</h5>
@@ -1076,13 +740,8 @@
                     <div id="update_tested_devices_serial_from_phonechecker_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
                                                                                             } else {
                                                                                                 echo "display: none;";
-                                                                                            } ?>">
-                        <div class="row">
-                            <div class="input-field col m12 s12"> </div>
-                        </div> 
-                        <div class="row">
-                            <div class="input-field col m12 s12">&nbsp;</div>
-                        </div>  
+                                                                                            } ?>"> 
+                        <br>  
                         <div class="row">
                             <div class="input-field col m4 s12">
                                 <?php
@@ -1151,7 +810,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -1182,15 +841,8 @@
                                 ORDER BY a.is_diagnost DESC, a.edit_lock,  a.base_product_id, a.serial_no_barcode DESC";
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
-            if ($count_log > 0) { ?>
-                <div class="card-panel">
-                    <div class="row">
-                        <div class="col m12 s12">
-                            <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>" class="btn waves-effect waves-light gradient-45deg-amber-amber">Import & Map Diagnostic Data</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-panel">
+            if ($count_log > 0) { ?> 
+                <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_7" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
@@ -1597,7 +1249,7 @@
                 </div>
             <?php }
         } else { ?>
-            <div class="card-panel">
+            <div class="card-panel custom_padding_card_content_table_top_bottom" >
                 <div class="row">
                     <div class="col 24 s12"><br>
                         <div class="card-alert card red lighten-5">

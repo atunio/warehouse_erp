@@ -444,7 +444,7 @@
                                                 $sql_status     = "SELECT id, status_name
                                                                     FROM  inventory_status b 
                                                                     WHERE enabled = 1
-                                                                    AND id IN(5, 6, 13, 20, 27)";
+                                                                    AND id IN(5, 13, 27)";
                                                 $result_status  = $db->query($conn, $sql_status);
                                                 $count_status   = $db->counter($result_status);
                                                 ?>

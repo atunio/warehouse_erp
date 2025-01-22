@@ -31,7 +31,7 @@ if (!isset($cmd8)) {
 if (!isset($cmd9)) {
 	$cmd9 = "";
 }
- 
+
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
@@ -159,9 +159,9 @@ if (isset($cmd) && $cmd == 'add' && !(isset($cmd3))) {
 }
 if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') || (isset($cmd3) && $cmd3 == 'edit') || (isset($cmd4) && $cmd4 == 'edit') || (isset($cmd5) && $cmd5 == 'edit') || (isset($cmd6) && $cmd6 == 'edit')) {
 	$button_val = "Save";
-} 
-$general_heading = "PO Profile";?>
-<style> 
+}
+$general_heading = "PO Profile"; ?>
+<style>
 	table.addproducttable td {
 		padding-top: 2px !important;
 		padding-bottom: 2px !important;
@@ -170,28 +170,35 @@ $general_heading = "PO Profile";?>
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 		font-size: 12px !important;
 	}
-	table.addproducttable th{
+
+	table.addproducttable th {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 		padding-left: 10px !important;
 		padding-right: 10px !important;
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 	}
-	table.addproducttable td input{
+
+	table.addproducttable td input {
 		font-size: 12px !important;
 	}
+
 	table.addproducttable tr {
-		line-height: 1.5 !important; /* or you can use other values like 1.2, 2, etc. */
+		line-height: 1.5 !important;
+		/* or you can use other values like 1.2, 2, etc. */
 	}
-	.custom_padding_section{
+
+	.custom_padding_section {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 	}
-	.custom_margin_section{
+
+	.custom_margin_section {
 		margin-top: 2px !important;
 		margin-bottom: 2px !important;
 	}
-	.custom_input{
+
+	.custom_input {
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 		border-radius: 5px !important;
 		margin-top: 6px !important;
@@ -201,44 +208,64 @@ $general_heading = "PO Profile";?>
 		width: 85% !important;
 		line-height: 1;
 	}
+
 	select.custom_condition_class {
 		display: block;
-		width: 100%; /* Full width to fit the table cell */
-		height: 28px; /* Set the height to match the design */
-		padding: 0 30px 0 5px; /* Increase padding to create space for the arrow */
-		border: 1px solid #bdbdbd; /* Light border color */
-		border-radius: 4px; /* Slightly rounded corners */
-		background-color: #fff; /* White background */
-		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSIxMiAxNiA3IDExIDE3IDExIDEyIDE2IiBzdHlsZT0iZmlsbDpyZ2IoMTMyLCAxMjcsIDEyNyk7Ii8+PC9zdmc+'); /* Base64-encoded SVG for larger down arrow with specified color */
+		width: 100%;
+		/* Full width to fit the table cell */
+		height: 28px;
+		/* Set the height to match the design */
+		padding: 0 30px 0 5px;
+		/* Increase padding to create space for the arrow */
+		border: 1px solid #bdbdbd;
+		/* Light border color */
+		border-radius: 4px;
+		/* Slightly rounded corners */
+		background-color: #fff;
+		/* White background */
+		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSIxMiAxNiA3IDExIDE3IDExIDEyIDE2IiBzdHlsZT0iZmlsbDpyZ2IoMTMyLCAxMjcsIDEyNyk7Ii8+PC9zdmc+');
+		/* Base64-encoded SVG for larger down arrow with specified color */
 		background-repeat: no-repeat;
 		background-position: right 10px center;
-		background-size: 18px; /* Increase size of the arrow */
-		appearance: none; /* Remove default browser arrow */
+		background-size: 18px;
+		/* Increase size of the arrow */
+		appearance: none;
+		/* Remove default browser arrow */
 		outline: #bdbdbd;
-		font-size: 12px !important /* Adjust font size */
-		line-height: 1; /* Set line height */
-		color: #333; /* Text color */
+		font-size: 12px !important
+			/* Adjust font size */
+			line-height: 1;
+		/* Set line height */
+		color: #333;
+		/* Text color */
 	}
 
 	/* Hover and focus states for better interaction feedback */
 	select.custom_condition_class:hover {
-		border-color: #bdbdbd; /* Darker border on hover */
+		border-color: #bdbdbd;
+		/* Darker border on hover */
 	}
 
 	select.custom_condition_class:focus {
-		border-color: #2196f3; /* Blue border on focus */
-		box-shadow: 0 0 5px rgba(33, 150, 243, 0.5); /* Blue glow */
+		border-color: #2196f3;
+		/* Blue border on focus */
+		box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+		/* Blue glow */
 	}
-	.padding_custom_msg{
+
+	.padding_custom_msg {
 		padding-top: 0px !important;
 		padding-bottom: 0px !important;
 	}
-	.padding_custom_msg2{
+
+	.padding_custom_msg2 {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 	}
 
-	.add-more, .remove-row, .remove-row-part{
+	.add-more,
+	.remove-row,
+	.remove-row-part {
 		font-size: 20px !important;
 		/* display: inline-flex !important; */
 		align-items: center !important;
@@ -250,26 +277,33 @@ $general_heading = "PO Profile";?>
 		text-decoration: none !important;
 	}
 
-	.add-more i, .remove-row i, .remove-row-part i {
-		font-size: inherit !important;/* Inherit font size from parent anchor tag */
-		line-height: 0 !important; Ensure icons are vertically centered */
+	.add-more i,
+	.remove-row i,
+	.remove-row-part i {
+		font-size: inherit !important;
+		/* Inherit font size from parent anchor tag */
+		line-height: 0 !important;
+		Ensure icons are vertically centered */
 	}
-	.custom_btn_size{
+
+	.custom_btn_size {
 		height: 30px !important;
 		line-height: 28px !important;
 		padding: 0 1rem !important;
 	}
-	.custom_margin_bottom_col{
+
+	.custom_margin_bottom_col {
 		margin-bottom: 0px !important;
 	}
-	.custom_input_heigh{
+
+	.custom_input_heigh {
 		height: 35px !important;
 	}
 </style>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
-		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div> 
+		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col m12 s12">
 			<div class="container">
 				<!-- Account settings -->

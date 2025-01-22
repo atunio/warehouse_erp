@@ -120,8 +120,7 @@
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                <input type="hidden" name="active_tab" value="tab6" />
-
+ 
                 <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
@@ -286,8 +285,7 @@
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                <input type="hidden" name="active_tab" value="tab6" />
-
+ 
                 <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
@@ -717,8 +715,7 @@
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                <input type="hidden" name="active_tab" value="tab6" />
-
+ 
                 <div class="card-panel custom_padding_card_content_table_top_bottom" >
                     <div class="row">
                         <div class="col m8 s12">
@@ -768,7 +765,8 @@
                                             $row_r2    = $db->fetch($result_log2);
                                             foreach ($row_r2 as $data_r2) { ?>
                                                 <option value="<?php echo $data_r2['username']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['username']) { ?> selected="selected" <?php } ?>>
-                                                    <?php echo $data_r2['username'];  ?>
+                                                   
+                                                    <?php echo $data_r2['username'];  ?><?php  if($data_r2['full_name'] !=""){ echo " (".$data_r2['full_name'].")"; }  ?>
                                                 </option>
                                         <?php
                                             }
@@ -810,7 +808,7 @@
                             <div class="input-field col m4 s12"></div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Fetch Data</button>
                                 <?php } ?>
                             </div>
                             <div class="input-field col m4 s12"></div>
@@ -821,7 +819,163 @@
                     </div> 
                 </div>
             </form>
-            <?php //*/
+                                    
+            <?php   
+			$sql_preview = "SELECT a.*
+							FROM phone_check_api_data a
+ 							WHERE a.po_id = '".$id."' ";
+			$result_preview	= $db->query($conn, $sql_preview);
+			$count_preview		= $db->counter($result_preview);
+			if($count_preview > 0){
+				$row_preview = $db->fetch($result_preview); ?>
+                <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                    <input type="hidden" name="is_Submit2_preview" value="Y" />
+                    <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+                        <div class="card-content custom_padding_card_content_table_top">
+                            <h4 class="card-title">Preview Fetched Data</h4><br>
+                            
+                                <div class="row">
+                                    <table id="page-length-option1" class="display bordered striped addproducttable">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">
+                                                    <label>
+                                                        <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+                                                                                                                                                    echo "checked";
+                                                                                                                                                } ?> />
+                                                        <span>Serial#</span>
+                                                    </label>
+                                                </th>
+                                                <th>PO Product ID</th>
+                                                <th>PhoneCheck Product ID</th>
+                                                <th>Price</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <?php 
+                                        $i = 0;
+                                        foreach ($row_preview as $data) { 
+                                            $phone_check_product_id = $data['sku_code'];
+                                            $po_id 					= $data['po_id'];
+                                            $bulkserialNo[] 		= $data['imei_no'];
+                                            $phone_check_api_data   = $data['phone_check_api_data'];
+                                            if(isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != ''){
+                                            ?>
+                                            <tr> 
+                                                <td style="width:150px;">
+                                                    <?php
+                                                    if (access("delete_perm") == 1) { ?>
+                                                        <label style="margin-left: 25px;">
+                                                            <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($data['imei_no']) && in_array($data['imei_no'], $bulkserialNo)) {
+                                                                                                                                                        echo "checked";
+                                                                                                                                                    } ?> class="checkbox filled-in" />
+                                                            <span><?php echo $data['imei_no'];?></span>
+                                                        </label>
+                                                    <?php } ?>
+                                                </td>
+                                                <td>
+                                                    <?php 
+                                                    $product_item_price = "";
+                                                    $sql_pd02 		= "	SELECT a.id, a.order_price 
+                                                                        FROM purchase_order_detail a 
+                                                                        INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                                        INNER JOIN products c ON c.id = a.product_id
+                                                                        WHERE 1=1 
+                                                                        AND a.po_id = '" . $po_id . "' 
+                                                                        AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+                                                    $result_pd02	= $db->query($conn, $sql_pd02);
+                                                    $count_pd02		= $db->counter($result_pd02);
+                                                    if ($count_pd02 > 0) {
+                                                        $row_pd02 = $db->fetch($result_pd02);
+                                                        $product_item_price = $row_pd02[0]['order_price'];?>
+                                                        <input type="text" readonly class="green-text" name="product_ids[]" id="fetched_productids_<?php echo $i;?>" value="<?php echo $phone_check_product_id;?>">
+                                                <?php }
+                                                    else{?>
+                                                   
+                                                    <select name="product_ids[]" id="fetched_productids_<?php echo $i;?>" class="select2 browser-default select2-hidden-accessible ">
+                                                        <option value="">Select</option>
+                                                        <?php
+                                                        $sql_pd03 		= "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid
+                                                                            FROM purchase_order_detail a 
+                                                                            INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                                            INNER JOIN products c ON c.id = a.product_id
+                                                                            WHERE 1=1 
+                                                                            AND a.po_id = '" . $po_id . "'   ";
+                                                    $result_pd03	= $db->query($conn, $sql_pd03);
+                                                    $count_pd03		= $db->counter($result_pd03);
+                                                    if ($count_pd03 > 0) {
+                                                        $row_pd03 = $db->fetch($result_pd03);
+                                                        foreach($row_pd03 as $data_pd03){ ?>
+                                                            <option value="<?php echo $data_pd03['product_uniqueid'];?>"><?php echo $data_pd03['product_uniqueid']; ?></option>
+                                                       <?php }
+                                                    }?>
+                                                    </select>
+                                                <?php }
+                                                $i++; 
+                                                ?>
+                                                </td>
+                                                <td><?php echo $phone_check_product_id;?></td>
+                                                <td><?php if($product_item_price != "") echo number_format($product_item_price, 2);?></td>
+                                            </tr>
+                                        <?php }
+                                        } ?>
+                                        </tbody>
+                                    </table>
+                                </div><br><br>
+                                <div class="row">
+                                    <div class="input-field col m3 s12">
+                                        <i class="material-icons prefix">question_answer</i>
+                                        <div class="select2div">
+                                            <?php
+                                            $field_name     = "process_bin_id";
+                                            $field_label    = "Bin/Location";
+
+                                            $sql1           = " SELECT b.id,b.sub_location_name, b.sub_location_type
+                                                                FROM  warehouse_sub_locations b";
+                                            $result1        = $db->query($conn, $sql1);
+                                            $count1         = $db->counter($result1);
+                                            ?>
+                                            <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                                echo ${$field_name . "_valid"};
+                                                                                                                                                                            } ?>">
+                                                <option value="">Select</option>
+                                                <?php
+                                                if ($count1 > 0) {
+                                                    $row1    = $db->fetch($result1);
+                                                    foreach ($row1 as $data2) { ?>
+                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php
+                                                                                                                                                                                                            echo $data2['sub_location_name'];
+                                                                                                                                                                                                            if ($data2['sub_location_type'] != "") {
+                                                                                                                                                                                                                echo "(" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                                                                                                                                                                            } ?></option>
+                                                <?php }
+                                                } ?>
+                                            </select>
+                                            <label for="<?= $field_name; ?>">
+                                                <?= $field_label; ?>
+                                                <span class="color-red">*<?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="input-field col m2 s12">
+                                        <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                            <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process Diagnostic
+                                                <i class="material-icons right">send</i>
+                                            </button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+                </form>
+			<?php }
+
+            
             $td_padding = "padding:5px 10px !important;";
             $sql            = " SELECT a.*, c.product_desc, a.base_product_id, d.category_name, 
                                         e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name, 
@@ -850,8 +1004,7 @@
                                                                             echo encrypt($_SESSION['csrf_session']);
                                                                         } ?>">
                         <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-                        <input type="hidden" name="active_tab" value="tab6" />
-
+ 
                         <div class="row">
                             <div class="col m4 s12">
                                 <h5>Received Products</h5>
@@ -893,7 +1046,7 @@
                                         </thead>
                                         <tbody>
                                             <?php
-                                            $i = 0;
+                                            $i = $checkbox_del = 0;
                                             if ($count_log > 0) {
                                                 $row_cl1 = $db->fetch($result_log);
                                                 foreach ($row_cl1 as $data) {
@@ -921,7 +1074,8 @@
                                                     <tr>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php echo $i + 1;
-                                                            if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") { ?>
+                                                            if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") { 
+                                                                $checkbox_del++;?>
                                                                 <label style="margin-left: 25px;">
                                                                     <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" class="checkbox7 filled-in" />
                                                                     <span></span>
@@ -979,36 +1133,13 @@
                                                                     $result_pd01_4    = $db->query($conn, $sql_pd01_4);
                                                                     $count_pd01_4    = $db->counter($result_pd01_4);
                                                                     if ($count_pd01_4 > 0) {
-                                                                        $row_pd01_4                     = $db->fetch($result_pd01_4);
-                                                                        $jsonData2                      = $row_pd01_4[0]['phone_check_api_data'];
-                                                                        $model_name                     = $row_pd01_4[0]['model_name'];
-                                                                        $sku_code                       = $row_pd01_4[0]['sku_code'];
-                                                                        $model_no                       = $row_pd01_4[0]['model_no'];
-                                                                        $make_name                      = $row_pd01_4[0]['make_name'];
-                                                                        $carrier_name                   = $row_pd01_4[0]['carrier_name'];
-                                                                        $color_name                     = $row_pd01_4[0]['color_name'];
-                                                                        $battery                        = $row_pd01_4[0]['battery'];
-                                                                        $body_grade                     = $row_pd01_4[0]['body_grade'];
-                                                                        $lcd_grade                      = $row_pd01_4[0]['lcd_grade'];
-                                                                        $digitizer_grade                = $row_pd01_4[0]['digitizer_grade'];
-                                                                        $ram                            = $row_pd01_4[0]['ram'];
-                                                                        $memory                         = $row_pd01_4[0]['memory'];
-                                                                        $defectsCode                    = $row_pd01_4[0]['defectsCode'];
-                                                                        $overall_grade                  = $row_pd01_4[0]['overall_grade'];
-                                                                        $is_diagnost                    = 1;
-
-                                                                        $inventory_status = '6';
-                                                                        $status_name = "Defective";
-                                                                        if ($defectsCode == '' || $defectsCode == NULL) {
-                                                                            if ($battery != "" && $battery >= '60') {
-                                                                                $inventory_status = '5';
-                                                                                $status_name = "Tested/Graded";
-                                                                            }
-                                                                        }
+                                                                        $row_pd01_4 = $db->fetch($result_pd01_4);
+                                                                        $jsonData2  = $row_pd01_4[0]['phone_check_api_data'];
+						                                                include("db_phone_check_api_data.php");
                                                                     } else {
                                                                         $device_detail_array    = getinfo_phonecheck_imie($serial_no_barcode);
                                                                         $jsonData2              = json_encode($device_detail_array);
-                                                                        if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null) {
+			                                                            if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 !='' && $jsonData2 !='{"msg":"token expired"}') {
                                                                             include("process_phonecheck_response.php");
                                                                             $is_diagnost    = 1;
 
@@ -1020,98 +1151,7 @@
                                                                         }
                                                                     }
 
-                                                                    if ($battery != "" && $battery < '60') {
-                                                                        $defectsCode .= ' - Battery Health is less then 60%';
-                                                                    }
-                                                                    if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_grade == 'D')) {
-                                                                        $overall_grade = "D";
-                                                                    } else if ($battery != "" && $battery >= '70') {
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                            $overall_grade = "A";
-                                                                        }
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'B') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                    } else if ($battery < '70' && $battery >= '60') {
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-                                                                            $overall_grade = "B";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-
-                                                                        if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'B' && $digitizer_grade == 'C' && $body_grade == 'B') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                        if ($lcd_grade == 'C' && $digitizer_grade == 'C' && $body_grade == 'C') {
-                                                                            $overall_grade = "C";
-                                                                        }
-                                                                    }
-
-                                                                    if ($jsonData2 != '[]' && $overall_grade != "") {
-                                                                        $sub_product_id_r = $product_uniqueid_main . "-" . $overall_grade;
-                                                                    } else {
-                                                                        $sub_product_id_r = $product_uniqueid_main;
-                                                                    }
+						                                            include("overall_grade_calculation.php"); 
 
                                                                     $sql_c_up    = "UPDATE  purchase_order_detail_receive SET	phone_check_api_data	= '" . $jsonData2 . "',
                                                                                                                                 model_name				= '" . $model_name . "',
@@ -1233,9 +1273,9 @@
                             </div>
                         </div>
                         <?php
-                        if (po_permisions("Move as Inventory") == 1) { ?>
+                        if (po_permisions("Move as Inventory") == 1 && $checkbox_del >0) { ?>
                             <div class="row">
-                                <div class="input-field col m12 s12">
+                                <div class="input-field col m12 s12 text_align_center">
                                     <?php if (isset($id) && $id > 0) { ?>
                                         <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button>
                                     <?php } ?>

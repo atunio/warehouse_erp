@@ -67,11 +67,14 @@ $sql_cl		= "	SELECT * FROM (
 					LEFT JOIN product_categories b ON b.id = a.product_category
 					LEFT JOIN inventory_status c ON c.id = a.inventory_status
 					WHERE 1=1 
-					AND a.enabled 	= 1
-					GROUP BY a.id 
+					AND a.enabled 	= 1 
+					AND is_final_pricing = 1 ";
+					if ((isset($flt_bin_id) && $flt_bin_id > 0) || (isset($flt_stock_status) && $flt_stock_status > 0) || (isset($flt_serial_no) && $flt_serial_no > 0)) {
+						// $sql_cl		.= "  AND is_final_pricing = 1";
+					} 
+$sql_cl		.= "	GROUP BY a.id 
 				) AS t1
 			WHERE 1=1 ";
-
 if (isset($flt_product_id) && $flt_product_id != "") {
 	$sql_cl 	.= " AND product_uniqueid LIKE '%" . trim($flt_product_id) . "%' ";
 }
@@ -82,17 +85,17 @@ if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND product_category = '" . trim($flt_product_category) . "%' ";
 } 
 if (isset($flt_stock_status) && $flt_stock_status > 0) {
-	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) AND is_final_pricing = 1 ";
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) ";
 }
 if (isset($flt_bin_id) && $flt_bin_id > 0) {
-	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) AND is_final_pricing = 1 ";
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) ";
 }
 if (isset($flt_serial_no) && $flt_serial_no > 0) {
-	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) AND is_final_pricing = 1 ";
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) ";
 }
 
 $sql_cl		   .= " ORDER BY r_type, product_uniqueid";
-//echo "<br><br><br><br><br>" .$sql_cl;
+// echo "<br><br><br><br><br>" .$sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 $page_heading 	= "Stock Summary";
@@ -180,7 +183,7 @@ $page_heading 	= "Stock Summary";
 											<?php
 											$field_name     = "flt_product_id";
 											$field_label	= "ProductID";
-											$sql1			= "SELECT DISTINCT product_uniqueid FROM products WHERE 1=1 ";
+											$sql1			= "SELECT DISTINCT product_uniqueid FROM products WHERE 1=1 AND product_uniqueid != '' ";
 											$result1		= $db->query($conn, $sql1);
 											$count1         = $db->counter($result1);
 											?>
@@ -212,7 +215,7 @@ $page_heading 	= "Stock Summary";
 											<?php
 											$field_name 	= "flt_product_desc";
 											$field_label 	= "Product Description";
-											$sql1			= "SELECT DISTINCT product_desc FROM products WHERE 1=1 ";
+											$sql1			= "SELECT DISTINCT product_desc FROM products WHERE 1=1 AND product_desc != '' ";
 											$result1		= $db->query($conn, $sql1);
 											$count1         = $db->counter($result1);
 											?>
@@ -276,7 +279,7 @@ $page_heading 	= "Stock Summary";
 											<?php
 											$field_name 	= "flt_serial_no";
 											$field_label 	= "Serial No";
-											$sql1 			= "SELECT * FROM product_stock WHERE enabled = 1";
+											$sql1 			= "SELECT DISTINCT serial_no  FROM product_stock WHERE enabled = 1 AND serial_no IS NOT NULL AND serial_no != '' ";
 											$result1 		= $db->query($conn, $sql1);
 											$count1 		= $db->counter($result1);
 											?>
@@ -345,15 +348,15 @@ $page_heading 	= "Stock Summary";
 												$field_name     = "flt_bin_id";
 												$field_label    = "Bin/Location";
 
-												$sql1           = " SELECT b.id,b.sub_location_name, b.sub_location_type
-																	FROM product_stock a 
-																	INNER JOIN  products a2 ON a2.id = a.product_id
-																	INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location 
-																	WHERE a.p_total_stock > 0
-																	
-																	GROUP BY b.id ";
-												$result1        = $db->query($conn, $sql1);
-												$count1         = $db->counter($result1);
+												$sql1		= " SELECT DISTINCT b.id,b.sub_location_name, b.sub_location_type
+																FROM product_stock a 
+																INNER JOIN  products a2 ON a2.id = a.product_id
+																INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location 
+																WHERE a.p_total_stock > 0
+																AND a.sub_location > 0
+																GROUP BY b.id ";
+												$result1	= $db->query($conn, $sql1);
+												$count1		= $db->counter($result1);
 												?>
 												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
 																																													echo ${$field_name . "_valid"};
@@ -530,12 +533,7 @@ $page_heading 	= "Stock Summary";
 																			AND a2.is_final_pricing = 1 
 																			AND a.enabled = 1 ";
 															$sql_cl2	.= "AND a2.product_id = '" . $id . "' ";
-															if (isset($flt_bin_id) && $flt_bin_id > 0) {
-																$sql_cl2		.= " AND b1.id = '" . $flt_bin_id . "'";
-															}
-															if (isset($flt_serial_no) && $flt_serial_no > 0) {
-																$sql_cl2		.= " AND a2.serial_no = '" . $flt_serial_no . "'";
-															}
+															
 															$sql_cl2	.= " GROUP BY c.status_name, a2.stock_grade  
 																			 ORDER BY c.status_name DESC, a2.stock_grade "; //a2.p_inventory_status
 															// echo "<br><br><br><br><br><br><br><br><br><br>" . $sql_cl2;
@@ -681,10 +679,19 @@ $page_heading 	= "Stock Summary";
 																				<td><?php echo $data3['ram_size']; ?></td>
 																				<td><?php echo $data3['storage_size']; ?></td>
 																				<td><?php echo $data3['sub_location_name']; ?></td>
-																				<td><?php echo round($data3['price'], 2);?></td>
- 																				<td>
+																				<td>
 																					<?php
 																					$filter_3 = $data3['serial_no'];
+																					if (access("edit_perm") == 1) { ?>
+																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&filter_3=" . $filter_3. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																							<?php echo round($data3['price'], 2); ?>
+																						</a> &nbsp;&nbsp;
+																					<?php } else {
+																						echo round($data3['price'], 2);
+																					} ?>
+																				</td>
+ 																				<td>
+																					<?php
 																					if (access("edit_perm") == 1) { ?>
 																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&filter_3=" . $filter_3. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																							<?php echo $data3['p_total_stock']; ?>

@@ -131,61 +131,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										include("components/purchase/purchase_orders/process_phonecheck_response.php");
 									} 
 								}
-								/*
-								if($phone_check_product_id != ""){
-									$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
-														FROM purchase_order_detail a 
-														INNER JOIN purchase_orders b ON b.id = a.po_id
-														INNER JOIN products c ON c.id = a.product_id
-														WHERE 1=1 
-														AND a.po_id = '" . $po_id . "' 
-														AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
-									$result_pd01	= $db->query($conn, $sql_pd01);
-									$count_pd01		= $db->counter($result_pd01);
-									if ($count_pd01 > 0) {
-										$row_pd01						= $db->fetch($result_pd01);
-										$diagnostic_fetch_product_id 	= $row_pd01[0]['id'];
-
-										$sql_pd01 		= "	SELECT a.* 
-															FROM purchase_order_detail_receive a 
-															WHERE a.enabled = 1  
-															AND a.serial_no_barcode	= '" . $data . "' ";
-										$result_pd01	= $db->query($conn, $sql_pd01);
-										$count_pd01		= $db->counter($result_pd01);
-										if ($count_pd01 == 0) {
-											$sql_pd01 		= "	SELECT a.* 
-																FROM purchase_order_detail_receive a 
-																WHERE a.enabled = 1 
-																AND a.po_detail_id = '" . $diagnostic_fetch_product_id . "' 
-																AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
-																LIMIT 1";
-											$result_pd01	= $db->query($conn, $sql_pd01);
-											$count_pd01		= $db->counter($result_pd01);
-											if ($count_pd01 > 0) {
-												$row_pd01		= $db->fetch($result_pd01);
-												$receive_id_2 	= $row_pd01[0]['id'];
-
-												$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $data . "', 
-																											is_diagnost							= '1',
-																											is_import_diagnostic_data			= '1',
-																											diagnose_by_user					= '" . $_SESSION['username'] . "',
-																											diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
-																											diagnose_timezone					= '" . $timezone . "',
-																											diagnose_date						= '" . $add_date . "',
-																											diagnose_ip							= '" . $add_ip . "'
-															WHERE id = '" . $receive_id_2 . "' ";
-												$ok = $db->query($conn, $sql_c_up);
-												if ($ok) {
-							
-													update_po_detail_status($db, $conn, $diagnostic_fetch_product_id, $diagnost_status_dynamic);
-													update_po_status($db, $conn, $id, $diagnost_status_dynamic);
-												}
-											}
-											$m++;
-										} 
-									}
-								} 
-								*/
 							}
 						}
 					}
@@ -279,7 +224,8 @@ if(isset($is_Submit2_preview) && $is_Submit2_preview == 'Y'){
 			} 
 		}
 	}
-}?>
+}
+?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">

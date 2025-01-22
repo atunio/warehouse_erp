@@ -603,7 +603,7 @@
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $i = $total_pending_rma = 0;
+                                        $i = $total_pending_rma = $checkbox_del = 0;
                                         if ($count_log > 0) {
                                             $row_cl1 = $db->fetch($result_log);
                                             foreach ($row_cl1 as $data) {
@@ -631,7 +631,8 @@
                                                     <td style="<?= $td_padding; ?>">
                                                         <?php echo $i + 1;
                                                         if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6 && $is_rma_processed == 0 && $is_rma_added == 1) {
-                                                            $total_pending_rma++; ?>
+                                                            $total_pending_rma++;
+                                                            $checkbox_del++; ?>
                                                             <label style="margin-left: 25px;" id="checkbox_no_<?= $detail_id2; ?>">
                                                                 <input type="checkbox" name="ids_for_rma[]" id="ids_for_rma[]" <?php if (isset($ids_for_rma) && in_array($detail_id2, $ids_for_rma)) {
                                                                                                                                     echo "checked";
@@ -814,7 +815,7 @@
                         </div>
                     </div>
                     <?php
-                    if (po_permisions("RMA Process") == 1) {  ?>
+                    if (po_permisions("RMA Process") == 1 && $checkbox_del >0) {  ?>
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0) { ?>

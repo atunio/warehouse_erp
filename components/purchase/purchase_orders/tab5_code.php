@@ -32,7 +32,7 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 		} else {
 			$k = 0;
 			foreach ($receviedProductIds as $receviedProductId) {
-				$sql_c_up = "DELETE FROM  purchase_order_detail_receive  WHERE is_diagnost = 0 AND id = '" . $receviedProductId . "' ";
+				$sql_c_up = "DELETE FROM  purchase_order_detail_receive  WHERE is_diagnost = 0 OR is_diagnostic_bypass = 1 AND id = '" . $receviedProductId . "' ";
 				// echo "<br><br>" . $sql_c_up;
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {
@@ -206,108 +206,55 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 						if ($counter_ee1 == 0) {
 
 							$product_uniqueid_main1 = "";
-							$package_id1 = $package_material_qty1 = $package_material_qty_received1 = 0;
-							$sql_pd3 		= "	SELECT a.*, b.product_uniqueid 
+							$sql_pd3		= "	SELECT a.product_id, a.product_condition, c.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,a.expected_status
 												FROM purchase_order_detail a 
-												INNER JOIN products b ON b.id = a.product_id
-												WHERE 1 	= 1
-												AND a.id 	= '" . $product_id_manual . "' ";
+												INNER JOIN products c ON c.id = a.product_id
+												INNER JOIN purchase_orders a2 ON a2.id = a.po_id
+												WHERE 1 = 1
+												AND a.id 	= '" . $product_id_manual . "'";
 							$result_pd3		= $db->query($conn, $sql_pd3);
 							$count_pd3		= $db->counter($result_pd3);
 							if ($count_pd3 > 0) {
-								$row_pd3						= $db->fetch($result_pd3);
+								$row_pd3 						= $db->fetch($result_pd3);
 								$order_price					= $row_pd3[0]['order_price'];
-								$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
-								$package_id1					= $row_pd3[0]['package_id'];
-								$package_material_qty1			= $row_pd3[0]['package_material_qty'];
-								$package_material_qty_received1	= $row_pd3[0]['package_material_qty_received'];
-							}
-							$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-									VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-							$ok = $db->query($conn, $sql6);
-							if ($ok) {
-								$receive_id = mysqli_insert_id($conn);
-								/*
-								// Receive Package materials along with device if any
-								if ($package_id1 > 0) {
-									$package_material_qty_remaining = $package_material_qty1 - $package_material_qty_received1;
-									if ($package_material_qty_remaining > 0) {
-										$sql_c_up 	= "UPDATE packages SET 
-																		stock_in_hand			= (stock_in_hand+1),
-																		
-																		update_by				= '" . $_SESSION['username'] . "',
-																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																		update_timezone			= '" . $timezone . "',
-																		update_date				= '" . $add_date . "',
-																		update_ip				= '" . $add_ip . "',
-																		added_from_module_id	= '" . $module_id . "'
-													WHERE id = '" . $package_id1 . "' ";
-										$db->query($conn, $sql_c_up);
-
-										$sql_c_up 	= "UPDATE purchase_order_detail SET 
-																		package_material_qty_received	= (package_material_qty_received+1),
-																		update_by						= '" . $_SESSION['username'] . "',
-																		update_by_user_id				= '" . $_SESSION['user_id'] . "',
-																		update_timezone					= '" . $timezone . "',
-																		update_date						= '" . $add_date . "',
-																		update_ip						= '" . $add_ip . "',
-																		added_from_module_id			= '" . $module_id . "'
-													WHERE id = '" . $product_id_manual . "' ";
-										$db->query($conn, $sql_c_up);
-									}
-								}
-								*/
-
-								update_po_detail_status($db, $conn, $product_id_manual, $receive_status_dynamic);
-
-								/////////////////////////// Create Stock  START /////////////////////////////
-								$sql_pd1 		= "	SELECT a.*, c.product_uniqueid
-													FROM purchase_order_detail a 
-													INNER JOIN products c ON c.id = a.product_id
-													WHERE 1 	= 1
-													AND a.id 	= '" . $product_id_manual . "' ";
-								$result_pd1	= $db->query($conn, $sql_pd1);
-								$count_pd1	= $db->counter($result_pd1);
-								if ($count_pd1 > 0) {
-									$row_pd1 = $db->fetch($result_pd1);
-									$c_product_uniqueid 	= $row_pd1[0]['product_uniqueid'];
-									$c_product_id 			= $row_pd1[0]['product_id'];
-									$c_product_condition 	= $row_pd1[0]['product_condition'];
-
-									$storage 	= $battery = $memory = $processor = $defects_or_notes = "";
-
-									$sql_pd2	= "	SELECT a.* 
-													FROM vender_po_data a  
-													WHERE 1 = 1 
-													AND a.po_id	= '" . $id . "' 
-													AND a.product_uniqueid	= '" . $c_product_uniqueid . "' ";
-									$result_pd2	= $db->query($conn, $sql_pd2);
-									$count_pd2	= $db->counter($result_pd2);
-									if ($count_pd2 > 0) {
-										$row_pd2			= $db->fetch($result_pd2);
-										$storage			= $row_pd2[0]['storage'];
-										$battery			= $row_pd2[0]['battery'];
-										$memory				= $row_pd2[0]['memory'];
-										$processor			= $row_pd2[0]['processor'];
-										$defects_or_notes	= $row_pd2[0]['defects_or_notes'];
-									}
-
-									if ($c_product_condition == 'A Grade' || $c_product_condition == 'A' || $c_product_condition == 'AGrade') {
-										$new_stock_product_uniqueid = $c_product_uniqueid . "-AXA";
-									} else if ($c_product_condition == 'B Grade' || $c_product_condition == 'B' || $c_product_condition == 'BGrade') {
-										$new_stock_product_uniqueid = $c_product_uniqueid . "-B";
-									} else {
-										$new_stock_product_uniqueid = $c_product_uniqueid . "-Z";
-									}
-
-									if ($row_pd1[0]['is_tested'] == 'Yes' && $row_pd1[0]['is_wiped'] == 'Yes' && $row_pd1[0]['is_imaged'] == 'Yes') {
-										$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, stock_grade, p_inventory_status, sub_location,	battery_percentage, ram_size, storage_size, processor_size, defects_or_notes, is_final_pricing, add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-												VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id . "', '" . $data . "', 1, '" . $c_product_condition . "', 13, '" . $sub_location_id_manual . "', '" . $battery . "',  '" . $memory . "',  '" . $storage . "', '" . $processor . "', '" . $defects_or_notes . "', '1', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
+								$c_product_id2 					= $row_pd3[0]['product_id'];
+								$c_product_condition2 			= $row_pd3[0]['product_condition']; 
+								$c_expected_status2     		= $row_pd3[0]['expected_status'];
+								$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+										VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$ok = $db->query($conn, $sql6);
+								if ($ok) {
+									$receive_id = mysqli_insert_id($conn);
+									if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
+										$serial_no_barcode = $data;
+										$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, stock_grade, p_inventory_status, sub_location, add_by_user_id, add_date, add_by, add_ip, add_timezone)
+												VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', '" . $serial_no_barcode . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_manual . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 										$db->query($conn, $sql6);
+										if(isset($serial_no_barcode) && $serial_no_barcode == ''){
+											$serial_no_barcode = "GEN".$receive_id;
+										}
+										$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
+																								edit_lock 					= '1',
+																								is_import_diagnostic_data	= '1',
+																								is_diagnost					= '1',
+																								overall_grade				= '" . $c_product_condition2 . "',
+																								inventory_status			= '" . $c_expected_status2 . "',
+																								is_diagnostic_bypass 		= 1,
+
+																								update_by				= '" . $_SESSION['username'] . "',
+																								update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																								update_timezone			= '" . $timezone . "',
+																								update_date				= '" . $add_date . "',
+																								update_ip				= '" . $add_ip . "',
+																								update_from_module_id	= '" . $module_id . "'
+													WHERE id = '" . $receive_id . "' ";
+										$db->query($conn, $sql_c_up);
 									}
+									update_po_detail_status($db, $conn, $product_id_manual, $receive_status_dynamic);
+									/////////////////////////// Create Stock  END /////////////////////////////
+									$k++;
 								}
-								/////////////////////////// Create Stock  END /////////////////////////////
-								$k++;
 							}
 						} else {
 							$n++;
@@ -426,122 +373,66 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$product_uniqueid_main1 = "";
 				$package_id1 = $package_material_qty1 = $package_material_qty_received1 = 0;
 
-				$sql_pd3		= "	SELECT a.*, b.product_uniqueid 
+				$sql_pd3		= "	SELECT a.product_id, a.product_condition, c.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,a.expected_status
 									FROM purchase_order_detail a 
-									INNER JOIN products b ON b.id = a.product_id
-									WHERE 1 	= 1
-									AND a.id 	= '" . $product_id_barcode . "' ";
+									INNER JOIN products c ON c.id = a.product_id
+									INNER JOIN purchase_orders a2 ON a2.id = a.po_id
+									WHERE 1 = 1
+									AND a.id 	= '" . $product_id_barcode . "'";
 				$result_pd3		= $db->query($conn, $sql_pd3);
 				$count_pd3		= $db->counter($result_pd3);
 				if ($count_pd3 > 0) {
 					$row_pd3 						= $db->fetch($result_pd3);
 					$order_price					= $row_pd3[0]['order_price'];
-					$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
-					$package_id1					= $row_pd3[0]['package_id'];
-					$package_material_qty1			= $row_pd3[0]['package_material_qty'];
-					$package_material_qty_received1	= $row_pd3[0]['package_material_qty_received'];
-				}
-				$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-						VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_barcode . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-				$ok = $db->query($conn, $sql6);
-				if ($ok) {
-					/*
-					// Receive Package materials along with device if any
-					if ($package_id1 > 0) {
-						$package_material_qty_remaining = $package_material_qty1 - $package_material_qty_received1;
-						if ($package_material_qty_remaining > 0) {
-							$sql_c_up 	= "UPDATE packages SET 
-															stock_in_hand			= (stock_in_hand+1),
-															
-															update_by				= '" . $_SESSION['username'] . "',
-															update_by_user_id		= '" . $_SESSION['user_id'] . "',
-															update_timezone			= '" . $timezone . "',
-															update_date				= '" . $add_date . "',
-															update_ip				= '" . $add_ip . "',
-															added_from_module_id	= '" . $module_id . "'
-										WHERE id = '" . $package_id1 . "' ";
-							$db->query($conn, $sql_c_up);
+					$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
+ 					$c_product_id2 					= $row_pd3[0]['product_id'];
+					$c_product_condition2 			= $row_pd3[0]['product_condition']; 
+					$c_expected_status2     		= $row_pd3[0]['expected_status'];
+					
+					$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+							VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_barcode . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$ok = $db->query($conn, $sql6);
+					if ($ok) {
+						
+						$receive_id = mysqli_insert_id($conn);
+						/////////////////////////// Create Stock  START /////////////////////////////
 
-							$sql_c_up 	= "UPDATE purchase_order_detail SET 
-															package_material_qty_received	= (package_material_qty_received+1),
-															update_by						= '" . $_SESSION['username'] . "',
-															update_by_user_id				= '" . $_SESSION['user_id'] . "',
-															update_timezone					= '" . $timezone . "',
-															update_date						= '" . $add_date . "',
-															update_ip						= '" . $add_ip . "',
-															added_from_module_id			= '" . $module_id . "'
-										WHERE id = '" . $product_id_barcode . "' ";
-							$db->query($conn, $sql_c_up);
-						}
-					}
-					*/
-
-					$receive_id = mysqli_insert_id($conn);
-
-					update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
-					update_po_status($db, $conn, $id, $receive_status_dynamic);
-
-					/////////////////////////// Create Stock  START /////////////////////////////
-					$sql_pd1 		= "	SELECT a.*, c.product_uniqueid
-										FROM purchase_order_detail a 
-										INNER JOIN products c ON c.id = a.product_id
-										 WHERE 1 	= 1
-										AND a.id 	= '" . $product_id_barcode . "' ";
-					$result_pd1	= $db->query($conn, $sql_pd1);
-					$count_pd1	= $db->counter($result_pd1);
-					if ($count_pd1 > 0) {
-						$row_pd1 = $db->fetch($result_pd1);
-						$c_product_uniqueid 	= $row_pd1[0]['product_uniqueid'];
-						$c_product_id 			= $row_pd1[0]['product_id'];
-						$c_product_condition 	= $row_pd1[0]['product_condition'];
-						$c_order_price 			= $row_pd1[0]['order_price'];
-
-						$storage 	= $battery = $memory = $processor = $defects_or_notes = "";
-
-						$sql_pd2	= "	SELECT a.* 
-										FROM vender_po_data a  
-										WHERE 1 = 1 
-										AND a.po_id	= '" . $id . "' 
-										AND a.product_uniqueid	= '" . $c_product_uniqueid . "' ";
-						$result_pd2	= $db->query($conn, $sql_pd2);
-						$count_pd2	= $db->counter($result_pd2);
-						if ($count_pd2 > 0) {
-							$row_pd2			= $db->fetch($result_pd2);
-							$storage			= $row_pd2[0]['storage'];
-							$battery			= $row_pd2[0]['battery'];
-							$memory				= $row_pd2[0]['memory'];
-							$processor			= $row_pd2[0]['processor'];
-							$defects_or_notes	= $row_pd2[0]['defects_or_notes'];
-						}
-
-						if ($c_product_condition == 'A Grade' || $c_product_condition == 'A' || $c_product_condition == 'AGrade') {
-							$new_stock_product_uniqueid = $c_product_uniqueid . "-A";
-						} else if ($c_product_condition == 'B Grade' || $c_product_condition == 'B' || $c_product_condition == 'BGrade') {
-							$new_stock_product_uniqueid = $c_product_uniqueid . "-B";
-						} else if ($c_product_condition == 'C Grade' || $c_product_condition == 'C' || $c_product_condition == 'CGrade') {
-							$new_stock_product_uniqueid = $c_product_uniqueid . "-C";
-						} else {
-							$new_stock_product_uniqueid = $c_product_uniqueid . "-D";
-						}
-
-						// $po_receiving_labor	= po_receiving_labor($db, $conn, $id);
-						// $c_order_price 		= round(($c_order_price + $po_receiving_labor), 2);
-
-						if ($row_pd1[0]['is_tested'] == 'Yes' && $row_pd1[0]['is_wiped'] == 'Yes' && $row_pd1[0]['is_imaged'] == 'Yes') {
-							$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, 
-																stock_grade, p_inventory_status, sub_location,	battery_percentage, ram_size, storage_size, 
-																processor_size, defects_or_notes, price, is_final_pricing, add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id . "', '" . $serial_no_barcode . "', 1, 
-											'" . $c_product_condition . "', 13, '" . $sub_location_id_manual . "', '" . $battery . "',  '" . $memory . "',  '" . $storage . "', 
-											'" . $processor . "', '" . $defects_or_notes . "',  '" . $c_order_price . "', '1',
-											'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
+							$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
+									 VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 							$db->query($conn, $sql6);
+							
+							if(isset($serial_no_barcode) && $serial_no_barcode == ''){
+								$serial_no_barcode = "GEN".$receive_id;
+							}
+
+							$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
+																					edit_lock 					= '1',
+																					is_import_diagnostic_data	= '1',
+																					is_diagnost					= '1',
+																					overall_grade				= '" . $c_product_condition2 . "',
+																					inventory_status			= '" . $c_expected_status2 . "',
+																					is_diagnostic_bypass 		= 1,
+
+																					update_by				= '" . $_SESSION['username'] . "',
+																					update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																					update_timezone			= '" . $timezone . "',
+																					update_date				= '" . $add_date . "',
+																					update_ip				= '" . $add_ip . "',
+																					update_from_module_id	= '" . $module_id . "'
+										WHERE id = '" . $receive_id . "' ";
+							$db->query($conn, $sql_c_up);
 						}
+						
+						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
+						update_po_status($db, $conn, $id, $receive_status_dynamic);
+
+						 
+						/////////////////////////// Create Stock  END /////////////////////////////
+						$msg5['msg_success']	= "Product with barcode has been received successfully.";
+						$serial_no_barcode		=  "";
+						// $serial_no_barcode	= $sub_location_id_barcode = "";
 					}
-					/////////////////////////// Create Stock  END /////////////////////////////
-					$msg5['msg_success']	= "Product with barcode has been received successfully.";
-					$serial_no_barcode		=  "";
-					// $serial_no_barcode	= $sub_location_id_barcode = "";
 				}
 			} else {
 				$error5['msg'] = "The record is already exist";
@@ -602,63 +493,59 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 						$product_uniqueid_main1 = "";
 						$package_id1 	= $package_material_qty1 = $package_material_qty_received1 = 0;
-						$sql_pd3 		= "	SELECT a.*, b.product_uniqueid 
+						$sql_pd3 		= "	SELECT a.product_id, a.product_condition, b.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,
+													a.expected_status
 											FROM purchase_order_detail a 
 											INNER JOIN products b ON b.id = a.product_id
-											WHERE 1 	= 1
-											AND a.id 	= '" . $key . "' ";
+											INNER JOIN purchase_orders a2 ON a2.id = a.po_id
+											WHERE a.id 	= '" . $key . "' ";
 						$result_pd3		= $db->query($conn, $sql_pd3);
 						$count_pd3		= $db->counter($result_pd3);
 						if ($count_pd3 > 0) {
 							$row_pd3 						= $db->fetch($result_pd3);
 							$order_price					= $row_pd3[0]['order_price'];
-							$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
-							$package_id1					= $row_pd3[0]['package_id'];
-							$package_material_qty1			= $row_pd3[0]['package_material_qty'];
-							$package_material_qty_received1	= $row_pd3[0]['package_material_qty_received'];
-						}
+							$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
+							$c_product_id2					= $row_pd3[0]['product_id']; 
+							$c_product_condition2			= $row_pd3[0]['product_condition']; 
+							$c_expected_status2				= $row_pd3[0]['expected_status']; 
+						
+							for ($m = 0; $m < $receiving_qty; $m++) {
+								$receiving_location_add = $receiving_location[$key];
+								$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+										VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id . "', '" . $key . "',   '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$ok = $db->query($conn, $sql6);
+								if ($ok) {
+									$receive_id = mysqli_insert_id($conn);
 
-						for ($m = 0; $m < $receiving_qty; $m++) {
-							$receiving_location_add = $receiving_location[$key];
-							$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-									 VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id . "', '" . $key . "',   '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-							$ok = $db->query($conn, $sql6);
-							if ($ok) {
-								$k++;
-								update_po_detail_status($db, $conn, $key, $receive_status_dynamic);
+									if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
+										$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
+												VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_manual . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+										$db->query($conn, $sql6);
+										$serial_no_fake = "GEN".$receive_id;
+										
+										$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_fake . "',
+																								edit_lock 					= '1',
+																								is_import_diagnostic_data	= '1',
+																								is_diagnost					= '1',
+																								overall_grade				= '" . $c_product_condition2 . "',
+																								inventory_status			= '" . $c_expected_status2 . "',
+																								is_diagnostic_bypass 		= 1,
+
+																								update_by				= '" . $_SESSION['username'] . "',
+																								update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																								update_timezone			= '" . $timezone . "',
+																								update_date				= '" . $add_date . "',
+																								update_ip				= '" . $add_ip . "',
+																								update_from_module_id	= '" . $module_id . "'
+													WHERE id = '" . $receive_id . "' ";
+										$db->query($conn, $sql_c_up);
+									}
+
+									$k++;
+									update_po_detail_status($db, $conn, $key, $receive_status_dynamic);
+								}
 							}
-						}
-
-						/*
-						// Receive Package materials along with device if any
-						if ($package_id1 > 0) {
-							$package_material_qty_remaining = $package_material_qty1 - $package_material_qty_received1;
-							if ($package_material_qty_remaining > 0) {
-								$sql_c_up 	= "UPDATE packages SET 
-																stock_in_hand			= (stock_in_hand+" . $receiving_qty . "),
-																
-																update_by				= '" . $_SESSION['username'] . "',
-																update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																update_timezone			= '" . $timezone . "',
-																update_date				= '" . $add_date . "',
-																update_ip				= '" . $add_ip . "',
-																added_from_module_id	= '" . $module_id . "'
-											WHERE id = '" . $package_id1 . "' ";
-								$db->query($conn, $sql_c_up);
-
-								$sql_c_up 	= "UPDATE purchase_order_detail SET 
-																package_material_qty_received	= (package_material_qty_received+" . $receiving_qty . "),
-																update_by						= '" . $_SESSION['username'] . "',
-																update_by_user_id				= '" . $_SESSION['user_id'] . "',
-																update_timezone					= '" . $timezone . "',
-																update_date						= '" . $add_date . "',
-																update_ip						= '" . $add_ip . "',
-																added_from_module_id			= '" . $module_id . "'
-											WHERE id = '" . $key . "' ";
-								$db->query($conn, $sql_c_up);
-							}
-						}
-						*/
+						} 
 					}
 				}
 				if ($k > 0) {

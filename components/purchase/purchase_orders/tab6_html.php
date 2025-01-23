@@ -1124,6 +1124,7 @@
                                                             <?php
                                                             if ($serial_no_barcode != "") {
                                                                 ///*
+
                                                                 if ($is_import_diagnostic_data == '0' && ($data['phone_check_api_data'] == NULL || $data['phone_check_api_data'] == "[]" || $data['phone_check_api_data'] == "" || $data['phone_check_api_data'] == '(NULL)' || $data['phone_check_api_data'] == '{"msg":"Failed to get device info results"}')) {
                                                                     $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
                                                                     $sql_pd01_4         = "	SELECT  a.*
@@ -1131,7 +1132,6 @@
                                                                                             WHERE a.enabled = 1 
                                                                                             AND a.imei_no = '" . $serial_no_barcode . "'
                                                                                             ORDER BY a.id DESC LIMIT 1";
-
                                                                     $result_pd01_4    = $db->query($conn, $sql_pd01_4);
                                                                     $count_pd01_4    = $db->counter($result_pd01_4);
                                                                     if ($count_pd01_4 > 0) {
@@ -1152,8 +1152,6 @@
                                                                             $status_name = "";
                                                                         }
                                                                     }
-
-                                                                    include("overall_grade_calculation.php");
 
                                                                     $sql_c_up    = "UPDATE  purchase_order_detail_receive SET	phone_check_api_data	= '" . $jsonData2 . "',
                                                                                                                                 model_name				= '" . $model_name . "',

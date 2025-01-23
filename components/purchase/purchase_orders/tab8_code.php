@@ -15,7 +15,7 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 				foreach ($row_8_p1 as $data_8_p1) {
 					$po_product_uniq_id = $data_8_p1['po_product_uniq_id'];
 					$price_grade 		= $data_8_p1['price_grade'];
-					$suggested_price 	= $data_8_p1['suggested_price']; 
+					$suggested_price 	= $data_8_p1['suggested_price'];
 					$sql_c_up = "	UPDATE product_stock a
 									INNER JOIN purchase_order_detail_receive b ON b.id = a.receive_id
 									INNER JOIN purchase_order_detail c ON c.id = b.po_detail_id

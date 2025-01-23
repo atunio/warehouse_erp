@@ -49,6 +49,9 @@ foreach ($device_detail_array as $key1 => $data_api) {
         }
     }
 }
+
+include("overall_grade_calculation.php");
+
 $inventory_status = '6';
 $status_name = "Defective";
 if ($defectsCode == '' || $defectsCode == NULL) {
@@ -58,89 +61,6 @@ if ($defectsCode == '' || $defectsCode == NULL) {
     }
 }
 
-if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_grade == 'D')) {
-    $overall_grade = "D";
-} else if ($battery != "" && $battery >= '70') {
-    if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-        $overall_grade = "A";
-    }
-    if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'B') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'A') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'A') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'B') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'B') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-} else if ($battery < '70' && $battery >= '60') {
-    if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'A' && $body_grade == 'B') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'A' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'A' && $digitizer_grade == 'B' && $body_grade == 'A') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'B' && $body_grade == 'B') {
-        $overall_grade = "B";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'B' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-
-    if ($lcd_grade == 'A' && $digitizer_grade == 'C' && $body_grade == 'A') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'B' && $digitizer_grade == 'C' && $body_grade == 'B') {
-        $overall_grade = "C";
-    }
-    if ($lcd_grade == 'C' && $digitizer_grade == 'C' && $body_grade == 'C') {
-        $overall_grade = "C";
-    }
-}
 if (isset($serial_no_barcode_diagnostic) && $serial_no_barcode_diagnostic != "") {
     $serial_no_barcode = $serial_no_barcode_diagnostic;
 }

@@ -1,0 +1,18 @@
+[23-Jan-2025 03:07:30 America/New_York] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'e.school_user_id' in 'on clause' in /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php:78
+Stack trace:
+#0 /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php(78): mysqli_query(Object(mysqli), ' SELECT \n\t\t\t\t\t\t...')
+#1 /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php(1471): mySqlDB->query(Object(mysqli), ' SELECT \n\t\t\t\t\t\t...')
+#2 /home/customer/www/creativeworkflows.ai/public_html/components/purchase/purchase_orders/tab6_code.php(73): po_receiving_labor(Object(mySqlDB), Object(mysqli), '3')
+#3 /home/customer/www/creativeworkflows.ai/public_html/components/purchase/purchase_orders/purchase_orders-profile.php(139): include('/home/customer/...')
+#4 /home/customer/www/creativeworkflows.ai/public_html/index2.php(392): include('/home/customer/...')
+#5 {main}
+  thrown in /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php on line 78
+[23-Jan-2025 03:07:45 America/New_York] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'e.school_user_id' in 'on clause' in /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php:78
+Stack trace:
+#0 /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php(78): mysqli_query(Object(mysqli), ' SELECT \n\t\t\t\t\t\t...')
+#1 /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php(1471): mySqlDB->query(Object(mysqli), ' SELECT \n\t\t\t\t\t\t...')
+#2 /home/customer/www/creativeworkflows.ai/public_html/components/purchase/purchase_orders/tab6_code.php(73): po_receiving_labor(Object(mySqlDB), Object(mysqli), '3')
+#3 /home/customer/www/creativeworkflows.ai/public_html/components/purchase/purchase_orders/purchase_orders-profile.php(139): include('/home/customer/...')
+#4 /home/customer/www/creativeworkflows.ai/public_html/index2.php(392): include('/home/customer/...')
+#5 {main}
+  thrown in /home/customer/www/creativeworkflows.ai/public_html/conf/functions.php on line 78

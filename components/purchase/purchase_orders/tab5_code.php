@@ -427,7 +427,6 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
 						update_po_status($db, $conn, $id, $receive_status_dynamic);
 
-
 						/////////////////////////// Create Stock  END /////////////////////////////
 						$msg5['msg_success']	= "Product with barcode has been received successfully.";
 						$serial_no_barcode		=  "";

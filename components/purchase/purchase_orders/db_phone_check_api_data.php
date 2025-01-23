@@ -1,6 +1,6 @@
-<?php 
+<?php
 $jsonData2                      = $row_pd01_4[0]['phone_check_api_data'];
-$phone_check_api_data_id		= $row_pd01_4[0]['id'];  
+$phone_check_api_data_id        = $row_pd01_4[0]['id'];
 $model_name                     = $row_pd01_4[0]['model_name'];
 $sku_code                       = $row_pd01_4[0]['sku_code'];
 $model_no                       = $row_pd01_4[0]['model_no'];
@@ -25,4 +25,3 @@ if ($defectsCode == '' || $defectsCode == NULL) {
         $status_name = "Tested/Graded";
     }
 }
-?>

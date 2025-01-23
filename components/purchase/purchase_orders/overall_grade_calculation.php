@@ -1,10 +1,13 @@
-<?php 
-if ($battery != "" && $battery < '60') {
-    $defectsCode .= ' - Battery Health is less then 60%';
-}
-if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_grade == 'D')) {
+<?php
+if ($battery == "" || (!is_int($battery))) {
+    $defectsCode .= ' - Battery Health Data Not Found or Defected';
     $overall_grade = "D";
-} else if ($battery != "" && $battery >= '70') {
+} else if ($battery < '60') {
+    $defectsCode .= ' - Battery Health is less then 60%';
+    $overall_grade = "D";
+} else if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_grade == 'D')) {
+    $overall_grade = "D";
+} else if ($battery >= '70') {
     if ($lcd_grade == 'A' && $digitizer_grade == 'A' && $body_grade == 'A') {
         $overall_grade = "A";
     }
@@ -85,4 +88,3 @@ if ($battery > '60' && ($lcd_grade == 'D' || $digitizer_grade == 'D' || $body_gr
         $overall_grade = "C";
     }
 }
-?>

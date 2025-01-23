@@ -1447,7 +1447,7 @@ function po_receiving_labor($db, $conn, $po_id)
 {
 	$per_product_labor = 0;
 	$sql	= " SELECT 
-					user_id, SUM(TIMESTAMPDIFF(SECOND, startTime, stopTime)-(IF(pause_duration >0, (pause_duration/1000), 0))) / 3600 AS total_hours
+					user_id, IFNULL((SUM(TIMESTAMPDIFF(SECOND, startTime, stopTime)-(IF(pause_duration >0, (pause_duration/1000), 0))) / 3600), 0) AS total_hours
 				FROM time_clock_detail
 				WHERE po_id = '" . $po_id . "' 
 				AND entry_type = 'receive' 
@@ -1461,11 +1461,11 @@ function po_receiving_labor($db, $conn, $po_id)
 			$total_hours 	= $data['total_hours'];
 			$user_id 		= $data['user_id'];
 			$sql			= " SELECT 
-									count(d.id) as total_received, e.hourly_rate
+									count(d.id) as total_received, IFNULL(e.hourly_rate, 0) AS hourly_rate
 								FROM  purchase_orders b  
 								INNER JOIN purchase_order_detail c ON c.po_id = b.id
 								INNER JOIN purchase_order_detail_receive d ON d.po_detail_id = c.id
-								INNER JOIN employee_profile e ON e.school_user_id = '" . $user_id . "'
+								INNER JOIN employee_profile e ON e.user_id = '" . $user_id . "'
 								WHERE b.id = '" . $po_id . "' 
 								AND (d.add_by_user_id = '" . $user_id . "') ";
 			$result2		= $db->query($conn, $sql); //echo $sql;die;
@@ -1506,7 +1506,7 @@ function po_diagnostic_labor($db, $conn, $po_id)
 								FROM  purchase_orders b  
 								INNER JOIN purchase_order_detail c ON c.po_id = b.id
 								INNER JOIN purchase_order_detail_receive d ON d.po_detail_id = c.id
-								INNER JOIN employee_profile e ON e.school_user_id = '" . $user_id . "'
+								INNER JOIN employee_profile e ON e.user_id = '" . $user_id . "'
 								WHERE b.id = '" . $po_id . "' 
 								AND d.is_diagnost = 1
 								AND (d.diagnose_by_user_id = '" . $user_id . "') ";
@@ -1561,7 +1561,7 @@ function device_repaire_labor_cost($db, $conn, $receive_rma_id)
 			$total_hours 	= $data['total_hours'];
 			$user_id 		= $data['user_id'];
 
-			$sql			= " SELECT e.hourly_rate FROM  employee_profile e WHERE e.school_user_id = '" . $user_id . "'   ";
+			$sql			= " SELECT e.hourly_rate FROM  employee_profile e WHERE e.user_id = '" . $user_id . "'   ";
 			$result2		= $db->query($conn, $sql); //echo $sql;die;
 			$count2			= $db->counter($result2);
 			if ($count2 > 0) {
@@ -1595,7 +1595,7 @@ function device_processing_labor($db, $conn, $stock_id)
 
 			$sql			= " SELECT e.hourly_rate
 								FROM employee_profile e
-								WHERE e.school_user_id = '" . $user_id . "' ";
+								WHERE e.user_id = '" . $user_id . "' ";
 			$result2		= $db->query($conn, $sql);
 			// echo $sql;die;
 			$count_emp	= $db->counter($result2);
@@ -1631,7 +1631,7 @@ function device_repair_labor($db, $conn, $stock_id)
 
 			$sql			= " SELECT e.hourly_rate
 								FROM employee_profile e
-								WHERE e.school_user_id = '" . $user_id . "' ";
+								WHERE e.user_id = '" . $user_id . "' ";
 			$result2		= $db->query($conn, $sql);
 			// echo $sql;die;
 			$count_emp	= $db->counter($result2);

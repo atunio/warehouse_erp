@@ -151,7 +151,7 @@ if (!isset($insert_bin_and_po_id_fields)) {
 if ($serial_no_barcode != "" && $serial_no_barcode != NULL) {
     $sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, model_name, model_no, make_name, sku_code,
                 carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, 
-                `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, added_timezone, added_from_module_id)
+                `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
             VALUES	(" . $insert_bin_and_po_id_values . " '" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', '" . $sku_code . "', 
                 '" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "', 
                 '" . $ram . "', '" . $memory . "',  '" . $defectsCode . "',  '" . $overall_grade . "', '" . $jsonData2 . "', 

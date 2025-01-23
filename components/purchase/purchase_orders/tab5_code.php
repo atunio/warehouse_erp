@@ -99,7 +99,7 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 			if ($counter_ee1 == 0) {
 				foreach ($receiving_qties2 as $key => $receiving_qty) {
 					if ($receiving_qty > 0) {
-						
+
 						$sql_ee12 = " SELECT a.* FROM purchase_order_detail_receive_package_material a 
 									WHERE a.po_detail_id = '" . $key . "' ";
 						// echo $sql_ee1;
@@ -108,10 +108,10 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 						if ($counter_ee12 > 0) {
 							$sql_c_del = "DELETE FROM purchase_order_detail_receive_package_material WHERE po_detail_id = '" . $key . "' ";
 							$db->query($conn, $sql_c_del);
-	
+
 							$sql_c_up = "	UPDATE purchase_order_packages_detail a
 											INNER JOIN packages b ON b.id = a.package_id
-											SET b.stock_in_hand = (b.stock_in_hand-".$previous_receiving_qties2[$key]."),
+											SET b.stock_in_hand = (b.stock_in_hand-" . $previous_receiving_qties2[$key] . "),
 												b.avg_price = (b.stock_in_hand*b.avg_price - $previous_receiving_qties2[$key]*a.order_price)/(b.stock_in_hand-$previous_receiving_qties2[$key])
 											WHERE a.id = '" . $key . "' ";
 							$db->query($conn, $sql_c_up);
@@ -217,9 +217,9 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 							if ($count_pd3 > 0) {
 								$row_pd3 						= $db->fetch($result_pd3);
 								$order_price					= $row_pd3[0]['order_price'];
-								$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
+								$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
 								$c_product_id2 					= $row_pd3[0]['product_id'];
-								$c_product_condition2 			= $row_pd3[0]['product_condition']; 
+								$c_product_condition2 			= $row_pd3[0]['product_condition'];
 								$c_expected_status2     		= $row_pd3[0]['expected_status'];
 								$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
 										VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
@@ -231,8 +231,8 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 										$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, stock_grade, p_inventory_status, sub_location, add_by_user_id, add_date, add_by, add_ip, add_timezone)
 												VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', '" . $serial_no_barcode . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_manual . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 										$db->query($conn, $sql6);
-										if(isset($serial_no_barcode) && $serial_no_barcode == ''){
-											$serial_no_barcode = "GEN".$receive_id;
+										if (isset($serial_no_barcode) && $serial_no_barcode == '') {
+											$serial_no_barcode = "GEN" . $receive_id;
 										}
 										$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
 																								edit_lock 					= '1',
@@ -384,16 +384,16 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				if ($count_pd3 > 0) {
 					$row_pd3 						= $db->fetch($result_pd3);
 					$order_price					= $row_pd3[0]['order_price'];
-					$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
- 					$c_product_id2 					= $row_pd3[0]['product_id'];
-					$c_product_condition2 			= $row_pd3[0]['product_condition']; 
+					$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
+					$c_product_id2 					= $row_pd3[0]['product_id'];
+					$c_product_condition2 			= $row_pd3[0]['product_condition'];
 					$c_expected_status2     		= $row_pd3[0]['expected_status'];
-					
+
 					$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
 							VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_barcode . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
-						
+
 						$receive_id = mysqli_insert_id($conn);
 						/////////////////////////// Create Stock  START /////////////////////////////
 
@@ -401,9 +401,9 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 							$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
 									 VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 							$db->query($conn, $sql6);
-							
-							if(isset($serial_no_barcode) && $serial_no_barcode == ''){
-								$serial_no_barcode = "GEN".$receive_id;
+
+							if (isset($serial_no_barcode) && $serial_no_barcode == '') {
+								$serial_no_barcode = "GEN" . $receive_id;
 							}
 
 							$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
@@ -423,11 +423,11 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 										WHERE id = '" . $receive_id . "' ";
 							$db->query($conn, $sql_c_up);
 						}
-						
+
 						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
 						update_po_status($db, $conn, $id, $receive_status_dynamic);
 
-						 
+
 						/////////////////////////// Create Stock  END /////////////////////////////
 						$msg5['msg_success']	= "Product with barcode has been received successfully.";
 						$serial_no_barcode		=  "";
@@ -504,11 +504,11 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 						if ($count_pd3 > 0) {
 							$row_pd3 						= $db->fetch($result_pd3);
 							$order_price					= $row_pd3[0]['order_price'];
-							$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid']; 
-							$c_product_id2					= $row_pd3[0]['product_id']; 
-							$c_product_condition2			= $row_pd3[0]['product_condition']; 
-							$c_expected_status2				= $row_pd3[0]['expected_status']; 
-						
+							$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
+							$c_product_id2					= $row_pd3[0]['product_id'];
+							$c_product_condition2			= $row_pd3[0]['product_condition'];
+							$c_expected_status2				= $row_pd3[0]['expected_status'];
+
 							for ($m = 0; $m < $receiving_qty; $m++) {
 								$receiving_location_add = $receiving_location[$key];
 								$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
@@ -521,8 +521,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 										$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
 												VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_manual . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 										$db->query($conn, $sql6);
-										$serial_no_fake = "GEN".$receive_id;
-										
+										$serial_no_fake = "GEN" . $receive_id;
+
 										$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_fake . "',
 																								edit_lock 					= '1',
 																								is_import_diagnostic_data	= '1',
@@ -545,7 +545,7 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 									update_po_detail_status($db, $conn, $key, $receive_status_dynamic);
 								}
 							}
-						} 
+						}
 					}
 				}
 				if ($k > 0) {

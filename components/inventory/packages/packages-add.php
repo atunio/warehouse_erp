@@ -26,14 +26,15 @@ if ($cmd == 'add') {
 	$id 			= "";
 }
 if ($cmd == 'edit' && isset($id) && $id > 0) {
-	$sql_ee				= "SELECT a.* FROM packages a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee			= $db->query($conn, $sql_ee);
-	$row_ee				= $db->fetch($result_ee);
-	$package_name		= $row_ee[0]['package_name'];
-	$product_category	= $row_ee[0]['product_category'];
-	$product_ids		= explode(",", $row_ee[0]['product_ids']);
-	$stock_in_hand		= $row_ee[0]['stock_in_hand'];
-	$case_pack			= $row_ee[0]['case_pack'];
+	$sql_ee					= "SELECT a.* FROM packages a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee				= $db->query($conn, $sql_ee);
+	$row_ee					= $db->fetch($result_ee);
+	$package_name			= $row_ee[0]['package_name'];
+	$product_category		= $row_ee[0]['product_category'];
+	$product_ids_comma_sepr = $row_ee[0]['product_ids'];
+	$product_ids			= explode(",", $product_ids_comma_sepr);
+	$stock_in_hand			= $row_ee[0]['stock_in_hand'];
+	$case_pack				= $row_ee[0]['case_pack'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -59,7 +60,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
 	}
-	
+
 	$field_name = "product_category";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
@@ -86,7 +87,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) { //product_sku, case_pack,
 					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, package_name, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '".$case_pack."' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $case_pack . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -147,9 +148,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -159,16 +160,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 								<?php if (access("add_perm") == 1) { ?>
-										<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
-											Import
-										</a>
-								<?php }?>
+									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+										Import
+									</a>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 	</div>
@@ -232,9 +233,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								?>
 								<i class="material-icons prefix">question_answer</i>
 								<div class="select2div">
-									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																										echo ${$field_name . "_valid"};
-																																									} ?>">
+									<select id="product_category_main" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																											echo ${$field_name . "_valid"};
+																																										} ?>">
 										<option value="">Select</option>
 										<?php
 										if ($count1 > 0) {
@@ -283,10 +284,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>
 								<input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																															echo ${$field_name};
-																														} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																					echo ${$field_name . "_valid"};
-																																				} ?>">
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
 									<span class="color-red">* <?php
@@ -320,24 +321,123 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</label>
 							<br>
 							<?php
-							$sql1 			= " SELECT a.*, b.category_name
+							$count12 = 0;
+							if (isset($product_ids_comma_sepr) && $product_ids_comma_sepr != "") {
+								$sql12		= " SELECT a.*, b.category_name
+												FROM products a
+												INNER JOIN product_categories b ON b.id = a.product_category
+												WHERE a.enabled = 1 
+												AND FIND_IN_SET(a.id, '" . $product_ids_comma_sepr . "')
+												ORDER BY a.product_uniqueid ";
+								$result_cl2	= $db->query($conn, $sql12);
+								$count12	= $db->counter($result_cl2);
+
+								$sql12		= " SELECT a.*, b.category_name
+												FROM products a
+												INNER JOIN product_categories b ON b.id = a.product_category
+												WHERE a.enabled = 1 
+												AND NOT FIND_IN_SET(a.id, '" . $product_ids_comma_sepr . "')
+												ORDER BY a.product_uniqueid ";
+								$result_cl2_2	= $db->query($conn, $sql12);
+								$count12_2	= $db->counter($result_cl2_2);
+							} else {
+								$sql12		= " SELECT a.*, b.category_name
 												FROM products a
 												INNER JOIN product_categories b ON b.id = a.product_category
 												WHERE a.enabled = 1 
 												ORDER BY a.product_uniqueid ";
-							$result1	= $db->query($conn, $sql1);
-							$count1		= $db->counter($result1);
-							if ($count1 > 0) {
-								$row1 = $db->fetch($result1);
-								foreach ($row1 as $data2) { ?>
-									<div class="input-field col m2 s12">
-										<label>
-											<input type="checkbox" value="<?php echo $data2['id']; ?>" name="<?= $field_name; ?>[]" id="<?= $field_name; ?>" class="checkbox" <?php if (isset(${$field_name}) && in_array($data2['id'], ${$field_name})) { ?> checked <?php } ?>>
-											<span><?php echo $data2['product_uniqueid']; ?></span>
-										</label>
-									</div>
-							<?php }
+								$result_cl2_2	= $db->query($conn, $sql12);
+								$count12_2	= $db->counter($result_cl2_2);
 							} ?>
+							<div class="section section-data-tables">
+								<div class="row">
+									<div class="col s12">
+										<table id="page-length-option" class="display pagelength100">
+											<thead>
+												<tr>
+													<?php
+													$headings = '<th class="sno_width_60">Table Row#</th>
+																 <th>Product</th>
+																 <th>Product</th>
+																 <th>Product</th>';
+													echo $headings;
+													?>
+												</tr>
+											</thead>
+											<tbody>
+												<?php
+												$i = $j = $k = 0;
+												if ($count12 > 0) {
+													$row12 = $db->fetch($result_cl2);
+													foreach ($row12 as $data2) {
+														if ($i == 0) echo "<tr><td>" . ($k + 1) . "</td>"; ?>
+														<td>
+															<label>
+																<input type="checkbox" value="<?php echo $data2['id']; ?>" name="<?= $field_name; ?>[]" id="<?= $field_name; ?>" class="checkbox" <?php if (isset(${$field_name}) && in_array($data2['id'], ${$field_name})) { ?> checked <?php } ?>>
+																<span></span>
+															</label>
+															<?php echo $data2['product_uniqueid']; ?>
+														</td>
+														<?php
+														$i++;
+														$j++;
+
+														if ($j == $count12) {
+															if ($i == 1) {
+																echo "<td></td>";
+																echo "<td></td></tr>";
+																$k++;
+															} else if ($i == 2) {
+																echo "<td></td></tr>";
+																$k++;
+															}
+														} else {
+														}
+														if ($i == 3) {
+															echo "</tr>";
+															$k++;
+															$i = 0;
+														}
+													}
+												}
+												$i = $j = 0;
+												if ($count12_2 > 0) {
+													$row12_2 = $db->fetch($result_cl2_2);
+													foreach ($row12_2 as $data2_2) {
+														if ($i == 0) echo "<tr><td>" . $k + 1 . "</td>"; ?>
+														<td>
+															<label>
+																<input type="checkbox" value="<?php echo $data2_2['id']; ?>" name="<?= $field_name; ?>[]" id="<?= $field_name; ?>" class="checkbox" <?php if (isset(${$field_name}) && in_array($data2_2['id'], ${$field_name})) { ?> checked <?php } ?>>
+																<span></span>
+															</label>
+															<?php echo $data2_2['product_uniqueid']; ?>
+														</td>
+												<?php
+														$i++;
+														$j++;
+
+														if ($j == $count12_2) {
+															if ($i == 1) {
+																echo "<td></td>";
+																echo "<td></td></tr>";
+																$k++;
+															} else if ($i == 2) {
+																echo "<td></td></tr>";
+																$k++;
+															}
+														}
+														if ($i == 3) {
+															echo "</tr>";
+															$k++;
+															$i = 0;
+														}
+													}
+												} ?>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col m12 s12"><br></div>
@@ -356,43 +456,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			</div>
 		</div>
 	</div>
-	<?php include("sub_files/add_product_modal.php") ?>
-	<?php include("sub_files/add_vender_modal.php") ?>
 </div>
 <br><br><br><br>
 <!-- END: Page Main-->
 <!-- END: Page Main-->
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script>
-	$(document).on('click', '#add_product_btn', function(e) {
-
-		var product_desc = $("#product_desc").val();
-		var product_category = $("#product_category").val();
-		var detail_desc = $("#detail_desc").val();
-		var product_uniqueid = $("#product_uniqueid").val();
-		var cmd = $("#cmd").val();
-		var id = $("#id").val();
-
-		var dataString = 'type=add_product2&product_desc=' + product_desc + '&product_uniqueid=' + product_uniqueid + '&product_category=' + product_category + '&detail_desc=' + detail_desc + '&cmd=' + cmd + '&id=' + id;
-		$.ajax({
-			type: "POST",
-			url: "ajax/ajax_add_entries.php",
-			data: dataString,
-			cache: false,
-			success: function(data) {
-				if (data != 'Select') {
-					$("#product_uniqueid").val("");
-					$("#product_desc").val("");
-					$('#product_category').val("").trigger('change');
-					$("#detail_desc2").val("");
-					$("#product_id").append(data);
-				}
-			},
-			error: function() {
-				;
-			}
-		});
-	});
-</script>

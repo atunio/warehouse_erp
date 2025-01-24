@@ -51,7 +51,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'add_customer':
         if ($customer_name != "" && $phone_primary != "") {
             $count  = 0;
@@ -82,7 +82,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'add_product2':
         if ($product_uniqueid != "" && $product_desc != "" && $product_category != "") {
             $product_desc = ucwords(strtolower($product_desc));
@@ -120,7 +120,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'add_vender':
         if ($vender_name != "" && $phone_no != "") {
             $vender_name = ucwords(strtolower($vender_name));
@@ -132,7 +132,7 @@ switch ($type) {
             $count  = $db->counter($result);
             if ($count == 0) {
                 $sql    = "INSERT INTO venders(subscriber_users_id, vender_name, phone_no, `address`, note_about_vender,warranty_period_in_days, add_date, add_by, add_ip)
-                            VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $note_about_vender . "', '". $warranty_period_in_days ."','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+                            VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $note_about_vender . "', '" . $warranty_period_in_days . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
                 $ok     = $db->query($conn, $sql);
                 if ($ok) {
                     $vender_id = mysqli_insert_id($conn);
@@ -158,7 +158,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'add_repair_type':
         if ($repair_type_name != "") {
             $repair_type_name = ucwords(strtolower($repair_type_name));
@@ -185,7 +185,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'add_package':
 
         if ($package_name != "" && $product_category != "") {
@@ -227,7 +227,7 @@ switch ($type) {
         } else {
             echo 'Select';
         }
-    break;
+        break;
     case 'assign_bin':
         if ($bin_id != "" && $bin_id != "0") {
             $order_by       = 1;
@@ -300,7 +300,7 @@ switch ($type) {
             }
             echo 'Select';
         }
-    break;
+        break;
     case 'update_order':
         $user_ids = explode(",", $user_ids);
         if (isset($user_ids)) {
@@ -313,7 +313,7 @@ switch ($type) {
                 echo "Success";
             }
         }
-    break;
+        break;
     case 'assign_bin_repair':
         if ($bin_id != "" && $bin_id != "0") {
             $order_by       = 1;
@@ -386,7 +386,7 @@ switch ($type) {
             }
             echo 'Select';
         }
-    break;
+        break;
     case 'update_order_repair':
         $user_ids = explode(",", $user_ids);
         if (isset($user_ids)) {
@@ -399,21 +399,21 @@ switch ($type) {
                 echo "Success";
             }
         }
-    break;
+        break;
     case 'vendor_get_warranty_period_days':
         if (isset($vender_id)) {
-            $sql_v = "SELECT * FROM venders WHERE id = '".$vender_id."' ";
-            $result_v	= $db->query($conn, $sql_v);
+            $sql_v = "SELECT * FROM venders WHERE id = '" . $vender_id . "' ";
+            $result_v    = $db->query($conn, $sql_v);
             $count_v  = $db->counter($result_v);
-            if($count_v > 0){
-                $row_v		= $db->fetch($result_v);
+            if ($count_v > 0) {
+                $row_v        = $db->fetch($result_v);
                 $warranty_period_in_days = $row_v[0]['warranty_period_in_days'];
             }
             echo  $warranty_period_in_days;
-        }else{
+        } else {
             echo  "0";
         }
-    break;
+        break;
     case 'assign_bin_diagnostic':
         if ($bin_id != "" && $bin_id != "0") {
             $order_by       = 1;
@@ -486,7 +486,7 @@ switch ($type) {
             }
             echo 'Select';
         }
-    break;
+        break;
     case 'update_order_diagnostic':
         $user_ids = explode(",", $user_ids);
         if (isset($user_ids)) {
@@ -499,21 +499,36 @@ switch ($type) {
                 echo "Success";
             }
         }
-    break;
+        break;
     case 'get_case_pack':
-        if ($package_id != "" && $package_id != "0") {
+        if (isset($package_id) && $package_id != "" && $package_id != "0") {
             $sql_order      = " SELECT case_pack
                                 FROM packages   
-                                WHERE  id	= '".$package_id."'  ";
+                                WHERE  id	= '" . $package_id . "'  ";
             $result_order = $db->query($conn, $sql_order);
             $count_order  = $db->counter($result_order);
             if ($count_order > 0) {
                 $row_order = $db->fetch($result_order);
                 echo $row_order[0]['case_pack'];
             }
-        }else{
+        } else {
             echo "";
         }
-    break;
-
+    case 'get_pkg_stock_of_product':
+        if (isset($product_id) && $product_id != "" && $product_id != "0") {
+            $sql_order      = " SELECT IFNULL(SUM(stock_in_hand), 0) AS stock_in_hand
+                                FROM packages   
+                                WHERE FIND_IN_SET('" . $product_id . "', product_ids) ";
+            $result_order = $db->query($conn, $sql_order);
+            $count_order  = $db->counter($result_order);
+            if ($count_order > 0) {
+                $row_order = $db->fetch($result_order);
+                echo $row_order[0]['stock_in_hand'];
+            } else {
+                echo "0";
+            }
+        } else {
+            echo "";
+        }
+        break;
 }

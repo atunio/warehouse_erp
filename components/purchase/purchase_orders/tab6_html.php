@@ -982,7 +982,7 @@
             $sql            = " SELECT a.*, c.product_desc, a.base_product_id, d.category_name, 
                                         e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name, 
                                         i.sub_location_name as sub_location_name_after_diagnostic,
-                                        b.order_price, h.status_name, c.product_uniqueid
+                                        b.order_price, h.status_name, c.product_uniqueid 
                                 FROM purchase_order_detail_receive a 
                                 INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                 INNER JOIN products c ON c.id = b.product_id
@@ -1120,13 +1120,9 @@
                                                                 <span class="chip <?= $color; ?> lighten-5">
                                                                     <span class="<?= $color; ?>-text"><?php echo $serial_no_barcode; ?></span>
                                                                 </span>
-                                                            <?php } ?>
                                                             <?php
-                                                            if ($serial_no_barcode != "") {
-                                                                ///*
-
                                                                 if ($is_import_diagnostic_data == '0' && ($data['phone_check_api_data'] == NULL || $data['phone_check_api_data'] == "[]" || $data['phone_check_api_data'] == "" || $data['phone_check_api_data'] == '(NULL)' || $data['phone_check_api_data'] == '{"msg":"Failed to get device info results"}')) {
-                                                                    $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
+                                                                    $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $etching = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
                                                                     $sql_pd01_4         = "	SELECT  a.*
                                                                                             FROM phone_check_api_data a 
                                                                                             WHERE a.enabled = 1 
@@ -1136,23 +1132,20 @@
                                                                     $count_pd01_4    = $db->counter($result_pd01_4);
                                                                     if ($count_pd01_4 > 0) {
                                                                         $row_pd01_4 = $db->fetch($result_pd01_4);
-                                                                        $jsonData2  = $row_pd01_4[0]['phone_check_api_data'];
                                                                         include("db_phone_check_api_data.php");
                                                                     } else {
                                                                         $device_detail_array    = getinfo_phonecheck_imie($serial_no_barcode);
                                                                         $jsonData2              = json_encode($device_detail_array);
                                                                         if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
                                                                             include("process_phonecheck_response.php");
-                                                                            $is_diagnost    = 1;
+                                                                            $is_diagnost = 1;
 
                                                                             update_po_detail_status($db, $conn, $po_detail_id, $diagnost_status_dynamic);
                                                                             update_po_status($db, $conn, $id, $diagnost_status_dynamic);
                                                                         } else {
-                                                                            $inventory_status = '';
-                                                                            $status_name = "";
+                                                                            $inventory_status = $status_name = $jsonData2 = "";
                                                                         }
                                                                     }
-
                                                                     $sql_c_up    = "UPDATE  purchase_order_detail_receive SET	phone_check_api_data	= '" . $jsonData2 . "',
                                                                                                                                 model_name				= '" . $model_name . "',
                                                                                                                                 make_name				= '" . $make_name . "',
@@ -1163,6 +1156,7 @@
                                                                                                                                 body_grade	            = '" . $body_grade . "',
                                                                                                                                 lcd_grade				= '" . $lcd_grade . "',
                                                                                                                                 digitizer_grade	        = '" . $digitizer_grade . "',
+                                                                                                                                etching	                = '" . $etching . "',
                                                                                                                                 ram						= '" . $ram . "',
                                                                                                                                 storage					= '" . $memory . "',
                                                                                                                                 defects_or_notes		= '" . $defectsCode . "',
@@ -1180,7 +1174,6 @@
                                                                     // echo "<br><br>" . $sql_c_up;
                                                                     $db->query($conn, $sql_c_up);
                                                                 }
-                                                                //*/
                                                             } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
@@ -1198,14 +1191,15 @@
                                                             } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
-                                                            <?php if ($body_grade != '') {
-                                                                echo "Body: " . $body_grade . "<br>";
-                                                            } ?>
-                                                            <?php if ($lcd_grade != '') {
+                                                            <?php
+                                                            if ($lcd_grade != '') {
                                                                 echo "LCD: " . $lcd_grade . "<br>";
-                                                            } ?>
-                                                            <?php if ($digitizer_grade != '') {
+                                                            }
+                                                            if ($digitizer_grade != '') {
                                                                 echo "Digitizer: " . $digitizer_grade . "<br>";
+                                                            }
+                                                            if ($body_grade != '') {
+                                                                echo "Body: " . $body_grade . "<br>";
                                                             } ?>
                                                             <?php
                                                             $color  = "purple";

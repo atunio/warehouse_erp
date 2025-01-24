@@ -109,6 +109,8 @@ $(document).ready(function() {
             updateRemoveButtonVisibility();
             var total_products_in_po = parseInt($("#total_products_in_po").val());
             $("#total_products_in_po").val(total_products_in_po+1);
+
+            get_pkg_stock_of_product(selectedValue, rowno);
         }
 
     });
@@ -117,13 +119,14 @@ $(document).ready(function() {
 
     $(document).on('keyup', '.order_qty', function(event) {
  
-        var order_qty   = parseInt($(this).val());
-        var id          = $(this).attr('id');
-        var parts       = id.split('_');
-        var rowno       = parseInt(parts[1]);  
-        var value       = 0;
-        var order_price = parseFloat($("#orderprice_"+rowno).val());
-        if(!isNaN(order_price) && !isNaN(order_qty)){
+        var order_qty           = parseInt($(this).val());
+        var id                  = $(this).attr('id');
+        var parts               = id.split('_');
+        var rowno               = parseInt(parts[1]);  
+        var value               = 0;
+        var order_price         = parseFloat($("#orderprice_"+rowno).val());
+        var pkg_stock_in_hand   = parseFloat($("#pkg_stock_of_product_"+rowno).text());
+         if(!isNaN(order_price) && !isNaN(order_qty)){
             value = (order_price * order_qty);
             $("#value_"+rowno).text(formatNumber(value, 2));
         }
@@ -153,6 +156,11 @@ $(document).ready(function() {
         if(total_qty > 0){
             $("#total_qty").text(total_qty);
         } 
+        var pkg_stock_of_product_needed = order_qty - pkg_stock_in_hand;
+        if(pkg_stock_of_product_needed < 0){
+            pkg_stock_of_product_needed = 0;
+        }
+        $("#pkg_stock_of_product_needed_"+rowno).text(pkg_stock_of_product_needed);
     });
     $(document).on('keyup', '.order_price', function(event) {
         var order_price     = parseInt($(this).val());
@@ -983,6 +991,30 @@ function get_case_pack(package_id, rowno) {
                 deferred.resolve(parseFloat(response));
             } else {
                 $("#case_pack_" + rowno).text('');
+                deferred.resolve(0);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert('An error occurred while fetching the case pack.');
+            deferred.reject(error);
+        }
+    });
+    return deferred.promise();
+}
+function get_pkg_stock_of_product(product_id, rowno) {
+    let deferred = $.Deferred();
+    let dataString = `type=get_pkg_stock_of_product&product_id=${product_id}`;
+    $.ajax({
+        type: "POST",
+        url: "ajax/ajax_add_entries.php",
+        data: dataString,
+        success: function(response) {
+            response = $.trim(response);
+            if (response) {
+                $("#pkg_stock_of_product_" + rowno).text(response);
+                deferred.resolve(parseFloat(response));
+            } else {
+                $("#pkg_stock_of_product_" + rowno).text('');
                 deferred.resolve(0);
             }
         },

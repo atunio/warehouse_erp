@@ -247,7 +247,7 @@
                     <div id="Form-advance2" class="card card card-default scrollspy custom_margin_section">
                         <div class="card-content custom_padding_section">
                             <table id="page-length-option1" class="bordered addproducttable" cellpadding="0" cellspacing="0">
-                                
+
                                 <?php
                                 if (isset($id) && $id > 0) {
 
@@ -270,31 +270,30 @@
                                             $expected_status[]      = $data2['expected_status'];
                                         }
                                     }
-                                }?>
+                                } ?>
 
-                                <?php 
-                                if(isset($id) && $id>0){
+                                <?php
+                                if (isset($id) && $id > 0) {
                                     unset($package_ids);
                                     unset($order_part_qty);
                                     unset($order_part_price);
                                     unset($case_pack);
-                                    $sql_ee1		= " SELECT a.*, b.case_pack 
+                                    $sql_ee1        = " SELECT a.*, b.case_pack 
                                                         FROM purchase_order_packages_detail a 
                                                         INNER JOIN packages b ON b.id = a.package_id
                                                         WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
-                                    $result_ee1		= $db->query($conn, $sql_ee1);
-                                    $count_ee1  	= $db->counter($result_ee1);
-                                    if($count_ee1 > 0){
-                                        $row_ee1	= $db->fetch($result_ee1);
-                                        foreach($row_ee1 as $data2){ 
-                                            $package_ids[]	        = $data2['package_id'];
-                                            $order_part_qty[]		= $data2['order_qty'];
-                                            $order_part_price[]		= $data2['order_price'];
-                                            $case_pack[]		    = $data2['case_pack'];
-                                            
+                                    $result_ee1        = $db->query($conn, $sql_ee1);
+                                    $count_ee1      = $db->counter($result_ee1);
+                                    if ($count_ee1 > 0) {
+                                        $row_ee1    = $db->fetch($result_ee1);
+                                        foreach ($row_ee1 as $data2) {
+                                            $package_ids[]            = $data2['package_id'];
+                                            $order_part_qty[]        = $data2['order_qty'];
+                                            $order_part_price[]        = $data2['order_price'];
+                                            $case_pack[]            = $data2['case_pack'];
                                         }
                                     }
-                                }?>
+                                } ?>
                                 <thead>
                                     <tr>
                                         <th style="width: %;">
@@ -305,9 +304,9 @@
                                                     Import
                                                 </a> &nbsp;&nbsp;
                                                 <?php
-                                                if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) ==0)) { ?>
+                                                if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) { ?>
                                                     <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                        Add Packages / Parts 
+                                                        Add Packages / Parts
                                                     </a>
                                                 <?php } ?>
                                                 <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
@@ -315,7 +314,8 @@
                                                 </a>
                                             <?php } ?>
                                         </th>
-                                        
+                                        <th style="width: 100px;">Pkg Stock</th>
+                                        <th style="width: 120px;">Pkg Needed</th>
                                         <th style="width: 100px;">Qty</th>
                                         <th style="width: 100px;">Price</th>
                                         <th style="width: 100px;">Value</th>
@@ -336,7 +336,7 @@
                                         $disabled = "disabled='disabled'";
                                         $readonly = "readonly='readonly'";
                                     }
-                                    $sum_value = $sum_qty =  $sum_price = 0 ;
+                                    $sum_value = $sum_qty =  $sum_price = 0;
                                     for ($i = 1; $i <= 50; $i++) {
                                         $field_name     = "product_ids";
                                         $field_id       = "productids_" . $i;
@@ -360,14 +360,29 @@
                                                 $style_btn = $i === 1 ? 'style="display:none;"' : '';
                                             }
                                         }
-
-                                        $sql1             = " SELECT a.*, b.category_name
-                                                            FROM products a
-                                                            LEFT JOIN product_categories b ON b.id = a.product_category
-                                                            WHERE a.enabled = 1 
-                                                            ORDER BY a.product_desc";
-                                        $result1         = $db->query($conn, $sql1);
-                                        $count1         = $db->counter($result1); ?>
+                                        $sql1       = " SELECT a.*, b.category_name
+                                                        FROM products a
+                                                        LEFT JOIN product_categories b ON b.id = a.product_category
+                                                        WHERE a.enabled = 1 
+                                                        ORDER BY a.product_desc";
+                                        $result1    = $db->query($conn, $sql1);
+                                        $count1     = $db->counter($result1);
+                                        $pkg_stock_in_hand  = $pkg_stock_of_product_needed = $order_qty_val = 0;
+                                        if (isset(${$field_name}[$i - 1])) {
+                                            $sql_order      = " SELECT SUM(stock_in_hand) AS stock_in_hand
+                                                                FROM packages   
+                                                                WHERE FIND_IN_SET('" . ${$field_name}[$i - 1] . "', product_ids) ";
+                                            $result_order   = $db->query($conn, $sql_order);
+                                            $count_order    = $db->counter($result_order);
+                                            if ($count_order > 0) {
+                                                $row_order          = $db->fetch($result_order);
+                                                $pkg_stock_in_hand  = $row_order[0]['stock_in_hand'];
+                                            }
+                                        }
+                                        if (isset($order_qty[$i - 1])) {
+                                            $order_qty_val = $order_qty[$i - 1];
+                                        }
+                                        $pkg_stock_of_product_needed = $order_qty_val - $pkg_stock_in_hand; ?>
                                         <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                             <td>
                                                 <select <?php echo $disabled;
@@ -383,16 +398,17 @@
                                                     <option value="product_add_modal">+Add New Product</option>
                                                 </select>
                                             </td>
-                                            
+                                            <td><span id="pkg_stock_of_product_<?= $i; ?>"><?php if ($pkg_stock_in_hand > 0) echo $pkg_stock_in_hand; ?></span></td>
+                                            <td><span id="pkg_stock_of_product_needed_<?= $i; ?>"><?php echo $pkg_stock_of_product_needed > 0 ? $pkg_stock_of_product_needed : "0"; ?></span></td>
                                             <td>
                                                 <?php
                                                 $field_name     = "order_qty";
                                                 $field_id       = "orderqty_" . $i;
-                                                $field_label     = "Quantity";  
+                                                $field_label     = "Quantity";
                                                 ?>
                                                 <input <?php echo $disabled;
-                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
-                                                                                                                                                        echo ${$field_name}[$i - 1];
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset($order_qty_val)) {
+                                                                                                                                                        echo $order_qty_val;
                                                                                                                                                     } ?>" class="validate custom_input order_qty">
                                             </td>
                                             <td>
@@ -419,7 +435,6 @@
                                                     $sum_value += $value; ?>
                                                 </span>
                                             </td>
-                                           
                                             <td>
                                                 <?php
                                                 $field_name     = "product_condition";
@@ -462,33 +477,31 @@
                                                 </select>
                                             </td>
                                             <td>
-                                                <?php if (isset($order_status) && $order_status == 1) { ?>
+                                                <?php
+                                                if (isset($order_status) && $order_status == 1) { ?>
                                                     <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">cancel</i>
                                                     </a> &nbsp;
                                                     <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">add_circle</i>
                                                     </a>&nbsp;&nbsp;
-                                                <?php }
-                                                ?>
+                                                <?php } ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        
-                                        <td class="text_align_right"><b>Total: </b></td>
-                                        <td class="text_align_left">
-                                            <span id="total_qty"><?php echo ($sum_qty); ?></b></span>
-                                        </td>
+                                        <td class="text_align_right" colspan="3"><b>Total: </b></td>
+                                        <td class="text_align_left"><span id="total_qty"><?php echo ($sum_qty); ?></b></span></td>
                                         <td class="text_align_left"></td>
-                                        <td class="text_align_right"><b>
-                                                <span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span>
-                                        </td>
+                                        <td class="text_align_right"><b><span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span></td>
                                         <td colspan="3"></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div id="package_parts" style="<?php if(isset($package_ids) && $package_ids>0){ ; } else{ echo "display:none;";} ?>">
+                            <div id="package_parts" style="<?php if (isset($package_ids) && $package_ids > 0) {;
+                                                            } else {
+                                                                echo "display:none;";
+                                                            } ?>">
                                 <br>
                                 <table id="page-length-option2" class="bordered addproducttable" cellpadding="0" cellspacing="0">
                                     <thead>
@@ -509,82 +522,88 @@
                                     </thead>
                                     <tbody>
                                         <input type="hidden" id="total_products_part_in_po" value="<?php if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) {
-                                            echo "1";
-                                        } else {
-                                            echo sizeof($package_ids);
-                                        } ?>">
+                                                                                                        echo "1";
+                                                                                                    } else {
+                                                                                                        echo sizeof($package_ids);
+                                                                                                    } ?>">
                                         <?php
                                         $disabled = $readonly = "";
-                                        if((isset($order_status) && $order_status != 1 )){
+                                        if ((isset($order_status) && $order_status != 1)) {
                                             $disabled = "disabled='disabled'";
                                             $readonly = "readonly='readonly'";
                                         }
-                                        $sum_part_value = $sum_part_qty =  $sum_part_price = 0 ;
-                                        for($i = 1; $i <= 50; $i++) {
+                                        $sum_part_value = $sum_part_qty =  $sum_part_price = 0;
+                                        for ($i = 1; $i <= 50; $i++) {
                                             $field_name     = "package_ids";
-                                            $field_id       = "packageids_".$i;
+                                            $field_id       = "packageids_" . $i;
                                             $style_btn = '';
-                                            $style = ""; 
-                                        
-                                            if(!isset(${$field_name}[$i-1]) || (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == "" || ${$field_name}[$i-1] == 0)){  
-                                                if($i > 1){
-                                                    if(isset($package_ids) && sizeof($package_ids) >0){
-                                                        $style = 'style="display:none;"'; 
-                                                    }else{  
+                                            $style = "";
+
+                                            if (!isset(${$field_name}[$i - 1]) || (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "" || ${$field_name}[$i - 1] == 0)) {
+                                                if ($i > 1) {
+                                                    if (isset($package_ids) && sizeof($package_ids) > 0) {
+                                                        $style = 'style="display:none;"';
+                                                    } else {
                                                         $style = $i === 1 ? '' : 'style="display:none;"';
                                                     }
-                                                } 
-                                            }
-                                            else{
-                                                if(isset($package_ids) && is_array($package_ids) && sizeof($package_ids)>1){ 
+                                                }
+                                            } else {
+                                                if (isset($package_ids) && is_array($package_ids) && sizeof($package_ids) > 1) {
                                                     $style = $i <= sizeof($package_ids) ? '' : 'style="display:none;"';
                                                     $style_btn = $i <= sizeof($package_ids) ? 'style="display:none;"' : '';
-                                                }
-                                                else{
+                                                } else {
                                                     $style = $i === 1 ? '' : 'style="display:none;"';
                                                     $style_btn = $i === 1 ? 'style="display:none;"' : '';
                                                 }
                                             }
-                                            $sql1             = "   SELECT a.*, b.category_name
-                                                                    FROM packages a
-                                                                    LEFT JOIN product_categories b ON b.id = a.product_category
-                                                                    WHERE a.enabled = 1 
-                                                                    ORDER BY a.package_name, b.category_name";
-                                            $result1         = $db->query($conn, $sql1);
-                                            $count1         = $db->counter($result1);
-                                            ?>
-                                            <tr class="dynamic-row-part" id="row_part_<?=$i;?>" <?php echo $style; ?>>
+                                            $sql1       = " SELECT b.category_name, GROUP_CONCAT(' ',  c.product_uniqueid) AS product_uniqueids, a.*
+                                                            FROM packages a
+                                                            LEFT JOIN product_categories b ON b.id = a.product_category
+                                                            LEFT JOIN products c ON FIND_IN_SET(c.id, a.product_ids)
+                                                            WHERE a.enabled = 1 
+                                                            GROUP BY a.id
+                                                            ORDER BY a.package_name, b.category_name";
+                                            $result1    = $db->query($conn, $sql1);
+                                            $count1     = $db->counter($result1); ?>
+                                            <tr class="dynamic-row-part" id="row_part_<?= $i; ?>" <?php echo $style; ?>>
                                                 <td>
-                                                    <select <?php echo $disabled; echo $readonly; ?> name="<?=$field_name?>[]" id="<?=$field_id?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?=$field_name?>_<?=$i?>">
-                                                        <option value="">Select a product</option>
+                                                    <select <?php echo $disabled;
+                                                            echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?= $field_name ?>_<?= $i ?>">
+                                                        <option value="">Select a Package</option>
                                                         <?php
                                                         if ($count1 > 0) {
                                                             $row1    = $db->fetch($result1);
                                                             foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i-1]) && ${$field_name}[$i-1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>)</option>
+                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueids']; ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>
                                                     </select>
                                                 </td>
-                                                
+
                                                 <td>
-                                                    <?php 
+                                                    <?php
                                                     $field_name     = "order_part_qty";
-                                                    $field_id       = "orderpartqty_".$i; 
-                                                    
+                                                    $field_id       = "orderpartqty_" . $i;
+
                                                     if (isset($order_part_qty[$i - 1])) {
                                                         $sum_part_qty += $order_part_qty[$i - 1];
                                                     }
                                                     ?>
-                                                    <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_part_qty">
+                                                    <input <?php echo $disabled;
+                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                            echo ${$field_name}[$i - 1];
+                                                                                                                                                        } ?>" class="validate custom_input order_part_qty">
                                                 </td>
                                                 <td>
                                                     <?php
                                                     $field_name     = "order_part_price";
-                                                    $field_id       = "orderpartprice_".$i; 
+                                                    $field_id       = "orderpartprice_" . $i;
                                                     ?>
-                                                    <input <?php echo $disabled; echo $readonly; ?> name="<?= $field_name; ?>[]" type="number"  id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i-1])) { echo ${$field_name}[$i-1];} ?>" class="validate custom_input order_part_price">
+                                                    <input <?php echo $disabled;
+                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                            echo ${$field_name}[$i - 1];
+                                                                                                                                                        } ?>" class="validate custom_input order_part_price">
                                                 </td>
                                                 <td class="text_align_right">
                                                     <span id="part_value_<?= $i; ?>">
@@ -600,31 +619,33 @@
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i-1])) { echo $case_pack[$i-1];} ?></span>
+                                                    <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i - 1])) {
+                                                                                        echo $case_pack[$i - 1];
+                                                                                    } ?></span>
                                                 </td>
                                                 <td>
                                                     <span id="total_case_pack_<?= $i; ?>">
-                                                        <?php 
-                                                        if (isset($case_pack[$i-1]) && isset($order_part_qty[$i-1])) {
-                                                            echo ceil($order_part_qty[$i-1] / $case_pack[$i-1]);
+                                                        <?php
+                                                        if (isset($case_pack[$i - 1]) && isset($order_part_qty[$i - 1])) {
+                                                            echo ceil($order_part_qty[$i - 1] / $case_pack[$i - 1]);
                                                         } ?>
                                                     </span>
                                                 </td>
                                                 <td colspan="3">
-                                                    <?php if(isset($order_status) && $order_status == 1){ ?>
-                                                            <a  class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?=$i?>" href="javascript:void(0)">
-                                                                <i class="material-icons dp48">cancel</i>
-                                                            </a> &nbsp;
-                                                            <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?=$i?>" href="javascript:void(0)">
-                                                                <i class="material-icons dp48">add_circle</i>
-                                                            </a>&nbsp;&nbsp;
+                                                    <?php if (isset($order_status) && $order_status == 1) { ?>
+                                                        <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
+                                                            <i class="material-icons dp48">cancel</i>
+                                                        </a> &nbsp;
+                                                        <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?= $i ?>" href="javascript:void(0)">
+                                                            <i class="material-icons dp48">add_circle</i>
+                                                        </a>&nbsp;&nbsp;
                                                     <?php } ?>
                                                 </td>
                                             </tr>
-                                        <?php }  
-                                        $field_name     = "product_id_for_package_material"; 
+                                        <?php }
+                                        $field_name     = "product_id_for_package_material";
                                         ?>
-                                        <input name="<?= $field_name; ?>" type="hidden"  id="<?= $field_name; ?>" value="">
+                                        <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
                                         <tr>
                                             <td class="text_align_right"><b>Total: </b></td>
                                             <td class="text_align_left">
@@ -632,7 +653,7 @@
                                             </td>
                                             <td></td>
                                             <td class="text_align_right"><b>
-                                                <span id="total_part_value"><?php echo number_format($sum_part_value, 2); ?></b></span>
+                                                    <span id="total_part_value"><?php echo number_format($sum_part_value, 2); ?></b></span>
                                             </td>
                                             <td colspan="3"></td>
                                         </tr>

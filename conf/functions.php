@@ -1750,7 +1750,7 @@ function update_po_detail_logistics_package_materials($db, $conn, $logistic_id, 
 				WHERE id = '" . $logistic_id . "' ";
 	$db->query($conn, $sql_c_up);
 }
-function sendPostRequestFinale($data = null, $url, $method = 'POST')
+function sendPostRequestFinale($url, $data = null, $method = 'POST')
 {
 	$apiKey     = "Iu0p1MjbVtLi";    // Replace with your actual API Key
 	$apiSecret  = "vF1nDRFKtc2gpR9PC86pIVVI3niycppC"; // Replace with your actual Secret
@@ -1785,7 +1785,7 @@ function addSetupInFinale($baseUrl, $setupName, $finaleFieldName, $finaleFieldID
 	// Base URL for the API
 	$baseUrl = "https://app.finaleinventory.com" . $baseUrl; // Replace 'cti' with your actual accountPathComponent
 	// Fetch all party groups
-	$response = sendPostRequestFinale(null, $baseUrl, 'GET');
+	$response = sendPostRequestFinale($baseUrl, 'GET');
 	if ($response && is_array($response)) {
 		// Find the index of the target groupName
 		$index = array_search($setupName, $response[$finaleFieldName]);
@@ -1795,7 +1795,7 @@ function addSetupInFinale($baseUrl, $setupName, $finaleFieldName, $finaleFieldID
 		} else {
 			///////////////////////////// Suppplier ////////////////////////////////////////////////////////////////////////////////////////////
 			$apiUrl = $baseUrl;
-			$response = sendPostRequestFinale($data, $apiUrl);
+			$response = sendPostRequestFinale($apiUrl, $data);
 			if (isset($response[$finaleFieldID]) && $response[$finaleFieldID] != "") {
 				$id = $response[$finaleFieldID];
 				return $id;

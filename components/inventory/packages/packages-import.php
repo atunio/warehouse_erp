@@ -20,9 +20,9 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles 	= array("package_name", "stock_in_hand","case_pack","avg_price", "category", "category_type", "compatible_product_ids");
+$supported_column_titles 	= array("package_name", "stock_in_hand", "case_pack", "avg_price", "category", "category_type", "compatible_product_ids");
 $duplication_columns 		= array("package_name",);
-$required_columns 			= array("package_name", "category", "case_pack","category_type", "compatible_product_ids");
+$required_columns 			= array("package_name", "category", "case_pack", "category_type", "compatible_product_ids");
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
 		$error['excel_data']	= "Required";
@@ -256,9 +256,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -268,16 +268,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 									New
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-content custom_padding_card_content_table_top">
@@ -367,7 +367,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$cell_format = "Number";
 										}
 										if ($s_heading == 'compatible_product_ids') {
-											$cell_format = "Text (Multiple Product IDs =>Enter & Sign Between Each Product ID)";
+											$cell_format = "Text (Multiple Product IDs separated by the '&' symbol.)";
 										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>

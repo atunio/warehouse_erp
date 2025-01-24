@@ -175,7 +175,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 							["roleTypeId" => "SUPPLIER", "partyId" => $finale_supplier_id]
 						]
 					];
-					$response = sendPostRequestFinale($data, $apiUrl);
+					$response = sendPostRequestFinale($apiUrl, $data);
 					if (isset($response['msg']) && $response['msg'] == 'existing order with orderIdUser=' . $po_no) {
 						if (isset($is_test) && $is_test == 1) {
 							echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: already po: " . $po_no;
@@ -245,7 +245,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 							"orderHistoryListUrl"	=> "/cti/api/order/" . $po_no . "/history/",
 							"orderItemList"			=> $orderItemList
 						];
-						$response = sendPostRequestFinale($data, $apiUrl);
+						$response = sendPostRequestFinale($apiUrl, $data);
 						if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
 							$shipmentUrl = $response['shipmentUrlList'][0];
 							/// Add Shipment
@@ -258,7 +258,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								"shipmentTypeId" 	=> "PURCHASE_SHIPMENT",
 								"statusId" 			=> "SHIPMENT_INPUT"
 							];
-							$response = sendPostRequestFinale($data, $apiUrl);
+							$response = sendPostRequestFinale($apiUrl, $data);
 							if (isset($response['shipmentUrl']) && $response['shipmentUrl'] != "") {
 								$sql = "SELECT d.id, d.finale_product_unique_id, d.price_finale, d.serial_no, d.finale_location_id, d.productUrl
 										FROM purchase_orders a
@@ -286,10 +286,10 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 									$data = [
 										"receiveDate" => date('Y-m-d') . "T07:00:00.000"
 									];
-									sendPostRequestFinale($data, $apiUrl);
+									sendPostRequestFinale($apiUrl, $data);
 									$apiUrl = "https://app.finaleinventory.com/cti/api/order/" . $po_no . "/lock";
 									$data = [];
-									sendPostRequestFinale($data, $apiUrl);
+									sendPostRequestFinale($apiUrl, $data);
 								}
 								$sql_c_up	= "	UPDATE product_stock a
 													SET	a.is_processed					= '1', 

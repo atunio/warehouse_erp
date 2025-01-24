@@ -11,6 +11,7 @@ $battery                        = $row_pd01_4[0]['battery'];
 $body_grade                     = $row_pd01_4[0]['body_grade'];
 $lcd_grade                      = $row_pd01_4[0]['lcd_grade'];
 $digitizer_grade                = $row_pd01_4[0]['digitizer_grade'];
+$etching                        = $row_pd01_4[0]['etching'];
 $ram                            = $row_pd01_4[0]['ram'];
 $memory                         = $row_pd01_4[0]['memory'];
 $defectsCode                    = $row_pd01_4[0]['defectsCode'];

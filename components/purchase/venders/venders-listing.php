@@ -55,7 +55,7 @@ $page_heading 	= "List of Vendors";
 				<div class="row">
 					<div class="col s12">
 						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top_bottom"> 
+							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
 									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
@@ -63,20 +63,20 @@ $page_heading 	= "List of Vendors";
 										</h6>
 									</div>
 									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-										<?php  
+										<?php
 										if (access("add_perm") == 1) { ?>
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 												New
 											</a>
-										<?php }?>
-										<?php  
+										<?php } ?>
+										<?php
 										if (access("add_perm") == 1) { ?>
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 												Import
 											</a>
-										<?php }?>
+										<?php } ?>
 
-								
+
 									</div>
 								</div>
 							</div>
@@ -117,7 +117,7 @@ $page_heading 	= "List of Vendors";
 									</div>
 								<?php } ?>
 								<br>
-								
+
 								<table id="page-length-option" class="display pagelength50_3">
 									<thead>
 										<tr>
@@ -146,8 +146,8 @@ $page_heading 	= "List of Vendors";
 												<tr>
 													<td style="text-align: center;"><?php echo $i + 1; ?></td>
 													<td><?php echo $data['vender_no']; ?></td>
-													<td><?php echo ucwords(strtolower($data['vender_name'])); ?></td>
-													<td><?php echo ucwords(strtolower($data['phone_no'])); ?></td>
+													<td><?php if ($data['vender_name'] != "") echo ucwords(strtolower($data['vender_name'])); ?></td>
+													<td><?php echo $data['phone_no']; ?></td>
 													<td>
 														<?php
 														if ($data['address'] != '') {
@@ -158,7 +158,7 @@ $page_heading 	= "List of Vendors";
 															}
 														}  ?>
 													</td>
-													<td><?php echo ucwords(strtolower($data['type_name'])); ?></td>
+													<td><?php if ($data['type_name'] != "") echo ucwords(strtolower($data['type_name'])); ?></td>
 													<td>
 														<?php
 														$note_about_vender = $data['note_about_vender'];
@@ -197,7 +197,7 @@ $page_heading 	= "List of Vendors";
 										</tr>
 									</tfoot>
 								</table>
-									
+
 							</div>
 						</div>
 					</div>

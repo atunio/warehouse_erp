@@ -161,7 +161,7 @@ $data1 = [
     "lotId"         => $serial_no,
     "scanTypeId"    => "UNSPECIFIED_TEXT"
 ];
-$response = sendPostRequestFinale($data1, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data1);
 // Handle the response
 if (isset($response['scanKey']) && $response['scanKey'] != "") {
     echo "Lookup created successfully. LotID: " . $serial_no;
@@ -187,7 +187,7 @@ $data = [
     "internalName"      => "internalName " . date("YmdHis"),
     "longDescription"   => "longDescription " . date("YmdHis")
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['statusId']) && $response['statusId'] != "") {
     echo "Product Moved to Finale, Product ID: " . $productId;
 } else {
@@ -208,7 +208,7 @@ $data = [
     "internalName"      => "internalName " . date("YmdHis"),
     "longDescription"   => "longDescription " . date("YmdHis")
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['statusId']) && $response['statusId'] != "") {
     echo "Product Moved to Finale, Product ID: " . $productId;
 } else {
@@ -230,7 +230,7 @@ $data1 = [
     "lotId"         => $serial_no,
     "scanTypeId"    => "UNSPECIFIED_TEXT"
 ];
-$response = sendPostRequestFinale($data1, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data1);
 // Handle the response
 if (isset($response['scanKey']) && $response['scanKey'] != "") {
     echo "Lookup created successfully. LotID: " . $serial_no;
@@ -262,7 +262,7 @@ $data = [
         ["roleTypeId" => "SUPPLIER", "partyId" => "10198"]
     ]
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
     $shipmentUrl = $response['shipmentUrlList'][0];
     echo "Update Order in Finale, OrderID: " . $orderId;
@@ -293,7 +293,7 @@ $data = [
         ]
     ]
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
     echo "Update Order in Finale, OrderID: " . $orderId;
     echo "<br><br>";
@@ -330,7 +330,7 @@ if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
         "shipmentUrl" => $shipmentUrl,
         "statusId" => "SHIPMENT_INPUT"
     ];
-    $response = sendPostRequestFinale($data, $apiUrl);
+    $response = sendPostRequestFinale($apiUrl, $data);
     if (isset($response['shipmentUrl']) && $response['shipmentUrl'] != "") {
         echo "Shipment has been added, shipmentUrl: " . $shipmentUrl;
     } else {
@@ -358,7 +358,7 @@ $data = [
     "internalName"      => "internalName " . date("YmdHis"),
     "longDescription"   => "longDescription " . date("YmdHis")
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['statusId']) && $response['statusId'] != "") {
     echo "Product Moved to Finale, Product ID: " . $productId;
 } else {
@@ -427,7 +427,7 @@ $data = [
     // "actionUrlLock"             => "/cti/api/order/" . $orderId . "/lock",
     // "reserveAllUrl"             => "/cti/api/order/" . $orderId . "/reserveall",
 ];
-$response = sendPostRequestFinale($data, $apiUrl);
+$response = sendPostRequestFinale($apiUrl, $data);
 if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
     $shipmentUrl = $response['shipmentUrlList'][0];
 
@@ -451,7 +451,7 @@ if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
         "shipmentUrl" => $shipmentUrl,
         "statusId" => "SHIPMENT_INPUT"
     ];
-    $response = sendPostRequestFinale($data, $apiUrl);
+    $response = sendPostRequestFinale($apiUrl, $data);
     if (isset($response['shipmentUrl']) && $response['shipmentUrl'] != "") {
         echo "Shipment has been added, shipmentUrl: " . $shipmentUrl;
 
@@ -461,7 +461,7 @@ if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
         $data = [
             "receiveDate" => date('Y-m-d') . "T07:00:00.000"
         ];
-        $response = sendPostRequestFinale($data, $apiUrl);
+        $response = sendPostRequestFinale($apiUrl, $data);
         if (isset($response['shipmentId']) && $response['shipmentId'] != "") {
             echo "Shipment has been received";
         } else {
@@ -476,7 +476,7 @@ if (isset($response['orderUrl']) && $response['orderUrl'] != "") {
     /// Complete PO 
     $apiUrl = "https://app.finaleinventory.com/cti/api/order/" . $orderId . "/lock";
     $data = [];
-    $response = sendPostRequestFinale($data, $apiUrl);
+    $response = sendPostRequestFinale($apiUrl, $data);
     if (isset($response['orderId']) && $response['orderId'] != "") {
         echo "Order Commited";
     } else {

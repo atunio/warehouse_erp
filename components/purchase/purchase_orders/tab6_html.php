@@ -243,7 +243,7 @@
 
                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                     <?php
-                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
+                                                    echo "" . $data_r2['product_uniqueid'];
                                                     echo " -  Product: " . $data_r2['product_desc'];
                                                     if ($data_r2['category_name'] != "") {
                                                         echo " (" . $data_r2['category_name'] . ") ";
@@ -351,7 +351,7 @@
 
                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                     <?php
-                                                    echo " Product ID: " . $data_r2['product_uniqueid'];
+                                                    echo "" . $data_r2['product_uniqueid'];
                                                     echo " -  Product: " . $data_r2['product_desc'];
                                                     if ($data_r2['category_name'] != "") {
                                                         echo " (" . $data_r2['category_name'] . ") ";

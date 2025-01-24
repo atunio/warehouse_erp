@@ -382,8 +382,14 @@ class Otl
 							$this->GSUBdata[$this->GSUBfont]['pstf'] = $font['pstf'];
 						}
 					} else {
-						$this->GSUBdata[$this->GSUBfont] = ['rtlSUB' => [], 'rphf' => [], 'rphf' => [],
-							'pref' => [], 'blwf' => [], 'pstf' => [], 'finals' => ''
+						$this->GSUBdata[$this->GSUBfont] = [
+							'rtlSUB' => [],
+							'rphf' => [],
+							'rphf' => [],
+							'pref' => [],
+							'blwf' => [],
+							'pstf' => [],
+							'finals' => ''
 						];
 					}
 				}
@@ -475,7 +481,8 @@ class Otl
 						// Connected to preceding medial BAA (0628) = FE92
 						// Position: Before preceding medial Baa
 						// Although not mentioned in spec, added Farsi Yeh (06CC) FBFD FBFF; equivalent to 064A or 0649
-						elseif ($this->OTLdata[$i]['uni'] == 0xFEAE || $this->OTLdata[$i]['uni'] == 0xFEF2 || $this->OTLdata[$i]['uni'] == 0xFEF0 || $this->OTLdata[$i]['uni'] == 0xFEF4 || $this->OTLdata[$i]['uni'] == 0xFBE9 || $this->OTLdata[$i]['uni'] == 0xFBFD || $this->OTLdata[$i]['uni'] == 0xFBFF
+						elseif (
+							$this->OTLdata[$i]['uni'] == 0xFEAE || $this->OTLdata[$i]['uni'] == 0xFEF2 || $this->OTLdata[$i]['uni'] == 0xFEF0 || $this->OTLdata[$i]['uni'] == 0xFEF4 || $this->OTLdata[$i]['uni'] == 0xFBE9 || $this->OTLdata[$i]['uni'] == 0xFBFD || $this->OTLdata[$i]['uni'] == 0xFBFF
 						) {
 							$checkpos = $i - 1;
 							while (isset($this->OTLdata[$checkpos]) && strpos($this->GlyphClassMarks, $this->OTLdata[$checkpos]['hex']) !== false) {
@@ -872,13 +879,14 @@ class Otl
 
 								$ntones = 0; // number of (preceding) tone marks
 								// IS_TONE_MARK ((x) & ~0x0080, 0x0E34 - 0x0E37, 0x0E47 - 0x0E4E, 0x0E31)
-								while (isset($this->OTLdata[$ptr - 1 - $ntones]) && (
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) == 0x0E31 ||
-								(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E34 &&
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E37) ||
-								(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E47 &&
-								($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E4E)
-								)
+								while (
+									isset($this->OTLdata[$ptr - 1 - $ntones]) && (
+										($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) == 0x0E31 ||
+										(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E34 &&
+											($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E37) ||
+										(($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) >= 0x0E47 &&
+											($this->OTLdata[$ptr - 1 - $ntones]['uni'] & ~0x0080) <= 0x0E4E)
+									)
 								) {
 									$ntones++;
 								}
@@ -986,12 +994,17 @@ class Otl
 				$newinfo[0] = [
 					'general_category' => Ucdn::UNICODE_GENERAL_CATEGORY_FORMAT,
 					'bidi_type' => Ucdn::BIDI_CLASS_BN,
-					'group' => 'S', 'uni' => 0x200B, 'hex' => '0200B'];
+					'group' => 'S',
+					'uni' => 0x200B,
+					'hex' => '0200B'
+				];
 				// Then insert U+200B at (after) all word end boundaries
 				for ($i = count($this->OTLdata) - 1; $i > 0; $i--) {
 					// Make sure after GSUB that wordend has not been moved - check next char is not in the same syllable
-					if (isset($this->OTLdata[$i]['wordend']) && $this->OTLdata[$i]['wordend'] &&
-						isset($this->OTLdata[$i + 1]['uni']) && (!isset($this->OTLdata[$i + 1]['syllable']) || !isset($this->OTLdata[$i + 1]['syllable']) || $this->OTLdata[$i + 1]['syllable'] != $this->OTLdata[$i]['syllable'])) {
+					if (
+						isset($this->OTLdata[$i]['wordend']) && $this->OTLdata[$i]['wordend'] &&
+						isset($this->OTLdata[$i + 1]['uni']) && (!isset($this->OTLdata[$i + 1]['syllable']) || !isset($this->OTLdata[$i + 1]['syllable']) || $this->OTLdata[$i + 1]['syllable'] != $this->OTLdata[$i]['syllable'])
+					) {
 						array_splice($this->OTLdata, $i + 1, 0, $newinfo);
 						$this->_updateLigatureMarks($i, 1);
 					} elseif ($this->OTLdata[$i]['uni'] == 0x2e) { // Word end if Full-stop.
@@ -1105,7 +1118,7 @@ class Otl
 									}
 								}
 								if (isset($this->Exit[$i]['X']) && isset($this->Entry[$nextbase]['X'])) {
-									$adj = -($this->Entry[$i]['X'] - $this->Exit[$nextbase]['X']);
+									$adj = - ($this->Entry[$i]['X'] - $this->Exit[$nextbase]['X']);
 									// If XAdvance is aplied - in order for PDF to position the Advance correctly need to place it on:
 									// in RTL - the current glyph or the last of any associated marks
 									if (isset($this->OTLdata[$nextbase + 1]['GPOSinfo']['XAdvance'])) {
@@ -1147,7 +1160,7 @@ class Otl
 									}
 								}
 								if (isset($this->Exit[$i]['X']) && isset($this->Entry[$nextbase]['X'])) {
-									$adj = -($this->Exit[$i]['X'] - $this->Entry[$nextbase]['X']);
+									$adj = - ($this->Exit[$i]['X'] - $this->Entry[$nextbase]['X']);
 									// If XAdvance is aplied - in order for PDF to position the Advance correctly need to place it on:
 									// in LTR - the next glyph, ignoring marks
 									if (isset($this->OTLdata[$nextbase]['GPOSinfo']['XAdvance'])) {
@@ -1232,7 +1245,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags .= ' ' . $t;
 			}
 		}
@@ -1245,7 +1258,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags = str_replace($t, '', $usetags);
 			}
 		}
@@ -1258,7 +1271,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags .= ' ' . $m[0][$i];  //  - may include integer: salt4
 			}
 		}
@@ -1271,7 +1284,7 @@ class Otl
 		for ($i = 0; $i < count($m[0]); $i++) {
 			$t = $m[1][$i];
 			// Is it a valid tag?
-			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false )) {
+			if (isset($Features[$t]) && strpos($omittags, $t) === false && (!$onlytags || strpos($tags, $t) !== false)) {
 				$usetags = str_replace($t, '', $usetags);
 			}
 		}
@@ -1891,8 +1904,7 @@ class Otl
 
 							if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 								return $shift;
-							} /* OTL_FIX_3 */
-							else {
+							} /* OTL_FIX_3 */ else {
 								return $InputGlyphCount; // should be + matched ignores in Input Sequence
 							}
 						}
@@ -2000,8 +2012,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -2096,8 +2107,7 @@ class Otl
 						}
 						if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 							return $shift;
-						} /* OTL_FIX_3 */
-						else {
+						} /* OTL_FIX_3 */ else {
 							return $InputGlyphCount; // should be + matched ignores in Input Sequence
 						}
 					}
@@ -2267,8 +2277,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -2351,8 +2360,7 @@ class Otl
 					}
 					if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 						return (isset($shift) ? $shift : 0);
-					} /* OTL_FIX_3 */
-					else {
+					} /* OTL_FIX_3 */ else {
 						return $InputGlyphCount; // should be + matched ignores in Input Sequence
 					}
 				}
@@ -2716,122 +2724,674 @@ class Otl
 		// http://unicode.org/Public/UNIDATA/extracted/DerivedJoiningType.txt
 		// JOIN TO FOLLOWING LETTER IN LOGICAL ORDER (i.e. AS INITIAL/MEDIAL FORM) = Unicode Left-Joining (+ Dual-Joining + Join_Causing 00640)
 		$this->arabLeftJoining = [
-			0x0620 => 1, 0x0626 => 1, 0x0628 => 1, 0x062A => 1, 0x062B => 1, 0x062C => 1, 0x062D => 1, 0x062E => 1,
-			0x0633 => 1, 0x0634 => 1, 0x0635 => 1, 0x0636 => 1, 0x0637 => 1, 0x0638 => 1, 0x0639 => 1, 0x063A => 1,
-			0x063B => 1, 0x063C => 1, 0x063D => 1, 0x063E => 1, 0x063F => 1, 0x0640 => 1, 0x0641 => 1, 0x0642 => 1,
-			0x0643 => 1, 0x0644 => 1, 0x0645 => 1, 0x0646 => 1, 0x0647 => 1, 0x0649 => 1, 0x064A => 1, 0x066E => 1,
-			0x066F => 1, 0x0678 => 1, 0x0679 => 1, 0x067A => 1, 0x067B => 1, 0x067C => 1, 0x067D => 1, 0x067E => 1,
-			0x067F => 1, 0x0680 => 1, 0x0681 => 1, 0x0682 => 1, 0x0683 => 1, 0x0684 => 1, 0x0685 => 1, 0x0686 => 1,
-			0x0687 => 1, 0x069A => 1, 0x069B => 1, 0x069C => 1, 0x069D => 1, 0x069E => 1, 0x069F => 1, 0x06A0 => 1,
-			0x06A1 => 1, 0x06A2 => 1, 0x06A3 => 1, 0x06A4 => 1, 0x06A5 => 1, 0x06A6 => 1, 0x06A7 => 1, 0x06A8 => 1,
-			0x06A9 => 1, 0x06AA => 1, 0x06AB => 1, 0x06AC => 1, 0x06AD => 1, 0x06AE => 1, 0x06AF => 1, 0x06B0 => 1,
-			0x06B1 => 1, 0x06B2 => 1, 0x06B3 => 1, 0x06B4 => 1, 0x06B5 => 1, 0x06B6 => 1, 0x06B7 => 1, 0x06B8 => 1,
-			0x06B9 => 1, 0x06BA => 1, 0x06BB => 1, 0x06BC => 1, 0x06BD => 1, 0x06BE => 1, 0x06BF => 1, 0x06C1 => 1,
-			0x06C2 => 1, 0x06CC => 1, 0x06CE => 1, 0x06D0 => 1, 0x06D1 => 1, 0x06FA => 1, 0x06FB => 1, 0x06FC => 1,
+			0x0620 => 1,
+			0x0626 => 1,
+			0x0628 => 1,
+			0x062A => 1,
+			0x062B => 1,
+			0x062C => 1,
+			0x062D => 1,
+			0x062E => 1,
+			0x0633 => 1,
+			0x0634 => 1,
+			0x0635 => 1,
+			0x0636 => 1,
+			0x0637 => 1,
+			0x0638 => 1,
+			0x0639 => 1,
+			0x063A => 1,
+			0x063B => 1,
+			0x063C => 1,
+			0x063D => 1,
+			0x063E => 1,
+			0x063F => 1,
+			0x0640 => 1,
+			0x0641 => 1,
+			0x0642 => 1,
+			0x0643 => 1,
+			0x0644 => 1,
+			0x0645 => 1,
+			0x0646 => 1,
+			0x0647 => 1,
+			0x0649 => 1,
+			0x064A => 1,
+			0x066E => 1,
+			0x066F => 1,
+			0x0678 => 1,
+			0x0679 => 1,
+			0x067A => 1,
+			0x067B => 1,
+			0x067C => 1,
+			0x067D => 1,
+			0x067E => 1,
+			0x067F => 1,
+			0x0680 => 1,
+			0x0681 => 1,
+			0x0682 => 1,
+			0x0683 => 1,
+			0x0684 => 1,
+			0x0685 => 1,
+			0x0686 => 1,
+			0x0687 => 1,
+			0x069A => 1,
+			0x069B => 1,
+			0x069C => 1,
+			0x069D => 1,
+			0x069E => 1,
+			0x069F => 1,
+			0x06A0 => 1,
+			0x06A1 => 1,
+			0x06A2 => 1,
+			0x06A3 => 1,
+			0x06A4 => 1,
+			0x06A5 => 1,
+			0x06A6 => 1,
+			0x06A7 => 1,
+			0x06A8 => 1,
+			0x06A9 => 1,
+			0x06AA => 1,
+			0x06AB => 1,
+			0x06AC => 1,
+			0x06AD => 1,
+			0x06AE => 1,
+			0x06AF => 1,
+			0x06B0 => 1,
+			0x06B1 => 1,
+			0x06B2 => 1,
+			0x06B3 => 1,
+			0x06B4 => 1,
+			0x06B5 => 1,
+			0x06B6 => 1,
+			0x06B7 => 1,
+			0x06B8 => 1,
+			0x06B9 => 1,
+			0x06BA => 1,
+			0x06BB => 1,
+			0x06BC => 1,
+			0x06BD => 1,
+			0x06BE => 1,
+			0x06BF => 1,
+			0x06C1 => 1,
+			0x06C2 => 1,
+			0x06CC => 1,
+			0x06CE => 1,
+			0x06D0 => 1,
+			0x06D1 => 1,
+			0x06FA => 1,
+			0x06FB => 1,
+			0x06FC => 1,
 			0x06FF => 1,
 			/* Arabic Supplement */
-			0x0750 => 1, 0x0751 => 1, 0x0752 => 1, 0x0753 => 1, 0x0754 => 1, 0x0755 => 1, 0x0756 => 1, 0x0757 => 1,
-			0x0758 => 1, 0x075C => 1, 0x075D => 1, 0x075E => 1, 0x075F => 1, 0x0760 => 1, 0x0761 => 1, 0x0762 => 1,
-			0x0763 => 1, 0x0764 => 1, 0x0765 => 1, 0x0766 => 1, 0x0767 => 1, 0x0768 => 1, 0x0769 => 1, 0x076A => 1,
-			0x076D => 1, 0x076E => 1, 0x076F => 1, 0x0770 => 1, 0x0772 => 1, 0x0775 => 1, 0x0776 => 1, 0x0777 => 1,
-			0x077A => 1, 0x077B => 1, 0x077C => 1, 0x077D => 1, 0x077E => 1, 0x077F => 1,
+			0x0750 => 1,
+			0x0751 => 1,
+			0x0752 => 1,
+			0x0753 => 1,
+			0x0754 => 1,
+			0x0755 => 1,
+			0x0756 => 1,
+			0x0757 => 1,
+			0x0758 => 1,
+			0x075C => 1,
+			0x075D => 1,
+			0x075E => 1,
+			0x075F => 1,
+			0x0760 => 1,
+			0x0761 => 1,
+			0x0762 => 1,
+			0x0763 => 1,
+			0x0764 => 1,
+			0x0765 => 1,
+			0x0766 => 1,
+			0x0767 => 1,
+			0x0768 => 1,
+			0x0769 => 1,
+			0x076A => 1,
+			0x076D => 1,
+			0x076E => 1,
+			0x076F => 1,
+			0x0770 => 1,
+			0x0772 => 1,
+			0x0775 => 1,
+			0x0776 => 1,
+			0x0777 => 1,
+			0x077A => 1,
+			0x077B => 1,
+			0x077C => 1,
+			0x077D => 1,
+			0x077E => 1,
+			0x077F => 1,
 			/* Extended Arabic */
-			0x08A0 => 1, 0x08A2 => 1, 0x08A3 => 1, 0x08A4 => 1, 0x08A5 => 1, 0x08A6 => 1, 0x08A7 => 1, 0x08A8 => 1,
+			0x08A0 => 1,
+			0x08A2 => 1,
+			0x08A3 => 1,
+			0x08A4 => 1,
+			0x08A5 => 1,
+			0x08A6 => 1,
+			0x08A7 => 1,
+			0x08A8 => 1,
 			0x08A9 => 1,
 			/* 'syrc' Syriac */
-			0x0712 => 1, 0x0713 => 1, 0x0714 => 1, 0x071A => 1, 0x071B => 1, 0x071C => 1, 0x071D => 1, 0x071F => 1,
-			0x0720 => 1, 0x0721 => 1, 0x0722 => 1, 0x0723 => 1, 0x0724 => 1, 0x0725 => 1, 0x0726 => 1, 0x0727 => 1,
-			0x0729 => 1, 0x072B => 1, 0x072D => 1, 0x072E => 1, 0x074E => 1, 0x074F => 1,
+			0x0712 => 1,
+			0x0713 => 1,
+			0x0714 => 1,
+			0x071A => 1,
+			0x071B => 1,
+			0x071C => 1,
+			0x071D => 1,
+			0x071F => 1,
+			0x0720 => 1,
+			0x0721 => 1,
+			0x0722 => 1,
+			0x0723 => 1,
+			0x0724 => 1,
+			0x0725 => 1,
+			0x0726 => 1,
+			0x0727 => 1,
+			0x0729 => 1,
+			0x072B => 1,
+			0x072D => 1,
+			0x072E => 1,
+			0x074E => 1,
+			0x074F => 1,
 			/* N'Ko */
-			0x07CA => 1, 0x07CB => 1, 0x07CC => 1, 0x07CD => 1, 0x07CE => 1, 0x07CF => 1, 0x07D0 => 1, 0x07D1 => 1,
-			0x07D2 => 1, 0x07D3 => 1, 0x07D4 => 1, 0x07D5 => 1, 0x07D6 => 1, 0x07D7 => 1, 0x07D8 => 1, 0x07D9 => 1,
-			0x07DA => 1, 0x07DB => 1, 0x07DC => 1, 0x07DD => 1, 0x07DE => 1, 0x07DF => 1, 0x07E0 => 1, 0x07E1 => 1,
-			0x07E2 => 1, 0x07E3 => 1, 0x07E4 => 1, 0x07E5 => 1, 0x07E6 => 1, 0x07E7 => 1, 0x07E8 => 1, 0x07E9 => 1,
-			0x07EA => 1, 0x07FA => 1,
+			0x07CA => 1,
+			0x07CB => 1,
+			0x07CC => 1,
+			0x07CD => 1,
+			0x07CE => 1,
+			0x07CF => 1,
+			0x07D0 => 1,
+			0x07D1 => 1,
+			0x07D2 => 1,
+			0x07D3 => 1,
+			0x07D4 => 1,
+			0x07D5 => 1,
+			0x07D6 => 1,
+			0x07D7 => 1,
+			0x07D8 => 1,
+			0x07D9 => 1,
+			0x07DA => 1,
+			0x07DB => 1,
+			0x07DC => 1,
+			0x07DD => 1,
+			0x07DE => 1,
+			0x07DF => 1,
+			0x07E0 => 1,
+			0x07E1 => 1,
+			0x07E2 => 1,
+			0x07E3 => 1,
+			0x07E4 => 1,
+			0x07E5 => 1,
+			0x07E6 => 1,
+			0x07E7 => 1,
+			0x07E8 => 1,
+			0x07E9 => 1,
+			0x07EA => 1,
+			0x07FA => 1,
 			/* Mandaic */
-			0x0841 => 1, 0x0842 => 1, 0x0843 => 1, 0x0844 => 1, 0x0845 => 1, 0x0847 => 1, 0x0848 => 1, 0x084A => 1,
-			0x084B => 1, 0x084C => 1, 0x084D => 1, 0x084E => 1, 0x0850 => 1, 0x0851 => 1, 0x0852 => 1, 0x0853 => 1,
+			0x0841 => 1,
+			0x0842 => 1,
+			0x0843 => 1,
+			0x0844 => 1,
+			0x0845 => 1,
+			0x0847 => 1,
+			0x0848 => 1,
+			0x084A => 1,
+			0x084B => 1,
+			0x084C => 1,
+			0x084D => 1,
+			0x084E => 1,
+			0x0850 => 1,
+			0x0851 => 1,
+			0x0852 => 1,
+			0x0853 => 1,
 			0x0855 => 1,
 			/* ZWJ U+200D */
-			0x0200D => 1];
+			0x0200D => 1
+		];
 
 		/* JOIN TO PREVIOUS LETTER IN LOGICAL ORDER (i.e. AS FINAL/MEDIAL FORM) = Unicode Right-Joining (+ Dual-Joining + Join_Causing) */
 		$this->arabRightJoining = [
-			0x0620 => 1, 0x0622 => 1, 0x0623 => 1, 0x0624 => 1, 0x0625 => 1, 0x0626 => 1, 0x0627 => 1, 0x0628 => 1,
-			0x0629 => 1, 0x062A => 1, 0x062B => 1, 0x062C => 1, 0x062D => 1, 0x062E => 1, 0x062F => 1, 0x0630 => 1,
-			0x0631 => 1, 0x0632 => 1, 0x0633 => 1, 0x0634 => 1, 0x0635 => 1, 0x0636 => 1, 0x0637 => 1, 0x0638 => 1,
-			0x0639 => 1, 0x063A => 1, 0x063B => 1, 0x063C => 1, 0x063D => 1, 0x063E => 1, 0x063F => 1, 0x0640 => 1,
-			0x0641 => 1, 0x0642 => 1, 0x0643 => 1, 0x0644 => 1, 0x0645 => 1, 0x0646 => 1, 0x0647 => 1, 0x0648 => 1,
-			0x0649 => 1, 0x064A => 1, 0x066E => 1, 0x066F => 1, 0x0671 => 1, 0x0672 => 1, 0x0673 => 1, 0x0675 => 1,
-			0x0676 => 1, 0x0677 => 1, 0x0678 => 1, 0x0679 => 1, 0x067A => 1, 0x067B => 1, 0x067C => 1, 0x067D => 1,
-			0x067E => 1, 0x067F => 1, 0x0680 => 1, 0x0681 => 1, 0x0682 => 1, 0x0683 => 1, 0x0684 => 1, 0x0685 => 1,
-			0x0686 => 1, 0x0687 => 1, 0x0688 => 1, 0x0689 => 1, 0x068A => 1, 0x068B => 1, 0x068C => 1, 0x068D => 1,
-			0x068E => 1, 0x068F => 1, 0x0690 => 1, 0x0691 => 1, 0x0692 => 1, 0x0693 => 1, 0x0694 => 1, 0x0695 => 1,
-			0x0696 => 1, 0x0697 => 1, 0x0698 => 1, 0x0699 => 1, 0x069A => 1, 0x069B => 1, 0x069C => 1, 0x069D => 1,
-			0x069E => 1, 0x069F => 1, 0x06A0 => 1, 0x06A1 => 1, 0x06A2 => 1, 0x06A3 => 1, 0x06A4 => 1, 0x06A5 => 1,
-			0x06A6 => 1, 0x06A7 => 1, 0x06A8 => 1, 0x06A9 => 1, 0x06AA => 1, 0x06AB => 1, 0x06AC => 1, 0x06AD => 1,
-			0x06AE => 1, 0x06AF => 1, 0x06B0 => 1, 0x06B1 => 1, 0x06B2 => 1, 0x06B3 => 1, 0x06B4 => 1, 0x06B5 => 1,
-			0x06B6 => 1, 0x06B7 => 1, 0x06B8 => 1, 0x06B9 => 1, 0x06BA => 1, 0x06BB => 1, 0x06BC => 1, 0x06BD => 1,
-			0x06BE => 1, 0x06BF => 1, 0x06C0 => 1, 0x06C1 => 1, 0x06C2 => 1, 0x06C3 => 1, 0x06C4 => 1, 0x06C5 => 1,
-			0x06C6 => 1, 0x06C7 => 1, 0x06C8 => 1, 0x06C9 => 1, 0x06CA => 1, 0x06CB => 1, 0x06CC => 1, 0x06CD => 1,
-			0x06CE => 1, 0x06CF => 1, 0x06D0 => 1, 0x06D1 => 1, 0x06D2 => 1, 0x06D3 => 1, 0x06D5 => 1, 0x06EE => 1,
-			0x06EF => 1, 0x06FA => 1, 0x06FB => 1, 0x06FC => 1, 0x06FF => 1,
+			0x0620 => 1,
+			0x0622 => 1,
+			0x0623 => 1,
+			0x0624 => 1,
+			0x0625 => 1,
+			0x0626 => 1,
+			0x0627 => 1,
+			0x0628 => 1,
+			0x0629 => 1,
+			0x062A => 1,
+			0x062B => 1,
+			0x062C => 1,
+			0x062D => 1,
+			0x062E => 1,
+			0x062F => 1,
+			0x0630 => 1,
+			0x0631 => 1,
+			0x0632 => 1,
+			0x0633 => 1,
+			0x0634 => 1,
+			0x0635 => 1,
+			0x0636 => 1,
+			0x0637 => 1,
+			0x0638 => 1,
+			0x0639 => 1,
+			0x063A => 1,
+			0x063B => 1,
+			0x063C => 1,
+			0x063D => 1,
+			0x063E => 1,
+			0x063F => 1,
+			0x0640 => 1,
+			0x0641 => 1,
+			0x0642 => 1,
+			0x0643 => 1,
+			0x0644 => 1,
+			0x0645 => 1,
+			0x0646 => 1,
+			0x0647 => 1,
+			0x0648 => 1,
+			0x0649 => 1,
+			0x064A => 1,
+			0x066E => 1,
+			0x066F => 1,
+			0x0671 => 1,
+			0x0672 => 1,
+			0x0673 => 1,
+			0x0675 => 1,
+			0x0676 => 1,
+			0x0677 => 1,
+			0x0678 => 1,
+			0x0679 => 1,
+			0x067A => 1,
+			0x067B => 1,
+			0x067C => 1,
+			0x067D => 1,
+			0x067E => 1,
+			0x067F => 1,
+			0x0680 => 1,
+			0x0681 => 1,
+			0x0682 => 1,
+			0x0683 => 1,
+			0x0684 => 1,
+			0x0685 => 1,
+			0x0686 => 1,
+			0x0687 => 1,
+			0x0688 => 1,
+			0x0689 => 1,
+			0x068A => 1,
+			0x068B => 1,
+			0x068C => 1,
+			0x068D => 1,
+			0x068E => 1,
+			0x068F => 1,
+			0x0690 => 1,
+			0x0691 => 1,
+			0x0692 => 1,
+			0x0693 => 1,
+			0x0694 => 1,
+			0x0695 => 1,
+			0x0696 => 1,
+			0x0697 => 1,
+			0x0698 => 1,
+			0x0699 => 1,
+			0x069A => 1,
+			0x069B => 1,
+			0x069C => 1,
+			0x069D => 1,
+			0x069E => 1,
+			0x069F => 1,
+			0x06A0 => 1,
+			0x06A1 => 1,
+			0x06A2 => 1,
+			0x06A3 => 1,
+			0x06A4 => 1,
+			0x06A5 => 1,
+			0x06A6 => 1,
+			0x06A7 => 1,
+			0x06A8 => 1,
+			0x06A9 => 1,
+			0x06AA => 1,
+			0x06AB => 1,
+			0x06AC => 1,
+			0x06AD => 1,
+			0x06AE => 1,
+			0x06AF => 1,
+			0x06B0 => 1,
+			0x06B1 => 1,
+			0x06B2 => 1,
+			0x06B3 => 1,
+			0x06B4 => 1,
+			0x06B5 => 1,
+			0x06B6 => 1,
+			0x06B7 => 1,
+			0x06B8 => 1,
+			0x06B9 => 1,
+			0x06BA => 1,
+			0x06BB => 1,
+			0x06BC => 1,
+			0x06BD => 1,
+			0x06BE => 1,
+			0x06BF => 1,
+			0x06C0 => 1,
+			0x06C1 => 1,
+			0x06C2 => 1,
+			0x06C3 => 1,
+			0x06C4 => 1,
+			0x06C5 => 1,
+			0x06C6 => 1,
+			0x06C7 => 1,
+			0x06C8 => 1,
+			0x06C9 => 1,
+			0x06CA => 1,
+			0x06CB => 1,
+			0x06CC => 1,
+			0x06CD => 1,
+			0x06CE => 1,
+			0x06CF => 1,
+			0x06D0 => 1,
+			0x06D1 => 1,
+			0x06D2 => 1,
+			0x06D3 => 1,
+			0x06D5 => 1,
+			0x06EE => 1,
+			0x06EF => 1,
+			0x06FA => 1,
+			0x06FB => 1,
+			0x06FC => 1,
+			0x06FF => 1,
 			/* Arabic Supplement */
-			0x0750 => 1, 0x0751 => 1, 0x0752 => 1, 0x0753 => 1, 0x0754 => 1, 0x0755 => 1, 0x0756 => 1, 0x0757 => 1,
-			0x0758 => 1, 0x0759 => 1, 0x075A => 1, 0x075B => 1, 0x075C => 1, 0x075D => 1, 0x075E => 1, 0x075F => 1,
-			0x0760 => 1, 0x0761 => 1, 0x0762 => 1, 0x0763 => 1, 0x0764 => 1, 0x0765 => 1, 0x0766 => 1, 0x0767 => 1,
-			0x0768 => 1, 0x0769 => 1, 0x076A => 1, 0x076B => 1, 0x076C => 1, 0x076D => 1, 0x076E => 1, 0x076F => 1,
-			0x0770 => 1, 0x0771 => 1, 0x0772 => 1, 0x0773 => 1, 0x0774 => 1, 0x0775 => 1, 0x0776 => 1, 0x0777 => 1,
-			0x0778 => 1, 0x0779 => 1, 0x077A => 1, 0x077B => 1, 0x077C => 1, 0x077D => 1, 0x077E => 1, 0x077F => 1,
+			0x0750 => 1,
+			0x0751 => 1,
+			0x0752 => 1,
+			0x0753 => 1,
+			0x0754 => 1,
+			0x0755 => 1,
+			0x0756 => 1,
+			0x0757 => 1,
+			0x0758 => 1,
+			0x0759 => 1,
+			0x075A => 1,
+			0x075B => 1,
+			0x075C => 1,
+			0x075D => 1,
+			0x075E => 1,
+			0x075F => 1,
+			0x0760 => 1,
+			0x0761 => 1,
+			0x0762 => 1,
+			0x0763 => 1,
+			0x0764 => 1,
+			0x0765 => 1,
+			0x0766 => 1,
+			0x0767 => 1,
+			0x0768 => 1,
+			0x0769 => 1,
+			0x076A => 1,
+			0x076B => 1,
+			0x076C => 1,
+			0x076D => 1,
+			0x076E => 1,
+			0x076F => 1,
+			0x0770 => 1,
+			0x0771 => 1,
+			0x0772 => 1,
+			0x0773 => 1,
+			0x0774 => 1,
+			0x0775 => 1,
+			0x0776 => 1,
+			0x0777 => 1,
+			0x0778 => 1,
+			0x0779 => 1,
+			0x077A => 1,
+			0x077B => 1,
+			0x077C => 1,
+			0x077D => 1,
+			0x077E => 1,
+			0x077F => 1,
 			/* Extended Arabic */
-			0x08A0 => 1, 0x08A2 => 1, 0x08A3 => 1, 0x08A4 => 1, 0x08A5 => 1, 0x08A6 => 1, 0x08A7 => 1, 0x08A8 => 1,
-			0x08A9 => 1, 0x08AA => 1, 0x08AB => 1, 0x08AC => 1,
+			0x08A0 => 1,
+			0x08A2 => 1,
+			0x08A3 => 1,
+			0x08A4 => 1,
+			0x08A5 => 1,
+			0x08A6 => 1,
+			0x08A7 => 1,
+			0x08A8 => 1,
+			0x08A9 => 1,
+			0x08AA => 1,
+			0x08AB => 1,
+			0x08AC => 1,
 			/* 'syrc' Syriac */
-			0x0710 => 1, 0x0712 => 1, 0x0713 => 1, 0x0714 => 1, 0x0715 => 1, 0x0716 => 1, 0x0717 => 1, 0x0718 => 1,
-			0x0719 => 1, 0x071A => 1, 0x071B => 1, 0x071C => 1, 0x071D => 1, 0x071E => 1, 0x071F => 1, 0x0720 => 1,
-			0x0721 => 1, 0x0722 => 1, 0x0723 => 1, 0x0724 => 1, 0x0725 => 1, 0x0726 => 1, 0x0727 => 1, 0x0728 => 1,
-			0x0729 => 1, 0x072A => 1, 0x072B => 1, 0x072C => 1, 0x072D => 1, 0x072E => 1, 0x072F => 1, 0x074D => 1,
-			0x074E => 1, 0x074F,
+			0x0710 => 1,
+			0x0712 => 1,
+			0x0713 => 1,
+			0x0714 => 1,
+			0x0715 => 1,
+			0x0716 => 1,
+			0x0717 => 1,
+			0x0718 => 1,
+			0x0719 => 1,
+			0x071A => 1,
+			0x071B => 1,
+			0x071C => 1,
+			0x071D => 1,
+			0x071E => 1,
+			0x071F => 1,
+			0x0720 => 1,
+			0x0721 => 1,
+			0x0722 => 1,
+			0x0723 => 1,
+			0x0724 => 1,
+			0x0725 => 1,
+			0x0726 => 1,
+			0x0727 => 1,
+			0x0728 => 1,
+			0x0729 => 1,
+			0x072A => 1,
+			0x072B => 1,
+			0x072C => 1,
+			0x072D => 1,
+			0x072E => 1,
+			0x072F => 1,
+			0x074D => 1,
+			0x074E => 1,
+			0x074F,
 			/* N'Ko */
-			0x07CA => 1, 0x07CB => 1, 0x07CC => 1, 0x07CD => 1, 0x07CE => 1, 0x07CF => 1, 0x07D0 => 1, 0x07D1 => 1,
-			0x07D2 => 1, 0x07D3 => 1, 0x07D4 => 1, 0x07D5 => 1, 0x07D6 => 1, 0x07D7 => 1, 0x07D8 => 1, 0x07D9 => 1,
-			0x07DA => 1, 0x07DB => 1, 0x07DC => 1, 0x07DD => 1, 0x07DE => 1, 0x07DF => 1, 0x07E0 => 1, 0x07E1 => 1,
-			0x07E2 => 1, 0x07E3 => 1, 0x07E4 => 1, 0x07E5 => 1, 0x07E6 => 1, 0x07E7 => 1, 0x07E8 => 1, 0x07E9 => 1,
-			0x07EA => 1, 0x07FA => 1,
+			0x07CA => 1,
+			0x07CB => 1,
+			0x07CC => 1,
+			0x07CD => 1,
+			0x07CE => 1,
+			0x07CF => 1,
+			0x07D0 => 1,
+			0x07D1 => 1,
+			0x07D2 => 1,
+			0x07D3 => 1,
+			0x07D4 => 1,
+			0x07D5 => 1,
+			0x07D6 => 1,
+			0x07D7 => 1,
+			0x07D8 => 1,
+			0x07D9 => 1,
+			0x07DA => 1,
+			0x07DB => 1,
+			0x07DC => 1,
+			0x07DD => 1,
+			0x07DE => 1,
+			0x07DF => 1,
+			0x07E0 => 1,
+			0x07E1 => 1,
+			0x07E2 => 1,
+			0x07E3 => 1,
+			0x07E4 => 1,
+			0x07E5 => 1,
+			0x07E6 => 1,
+			0x07E7 => 1,
+			0x07E8 => 1,
+			0x07E9 => 1,
+			0x07EA => 1,
+			0x07FA => 1,
 			/* Mandaic */
-			0x0841 => 1, 0x0842 => 1, 0x0843 => 1, 0x0844 => 1, 0x0845 => 1, 0x0847 => 1, 0x0848 => 1, 0x084A => 1,
-			0x084B => 1, 0x084C => 1, 0x084D => 1, 0x084E => 1, 0x0850 => 1, 0x0851 => 1, 0x0852 => 1, 0x0853 => 1,
+			0x0841 => 1,
+			0x0842 => 1,
+			0x0843 => 1,
+			0x0844 => 1,
+			0x0845 => 1,
+			0x0847 => 1,
+			0x0848 => 1,
+			0x084A => 1,
+			0x084B => 1,
+			0x084C => 1,
+			0x084D => 1,
+			0x084E => 1,
+			0x0850 => 1,
+			0x0851 => 1,
+			0x0852 => 1,
+			0x0853 => 1,
 			0x0855 => 1,
-			0x0840 => 1, 0x0846 => 1, 0x0849 => 1, 0x084F => 1, 0x0854 => 1, /* Right joining */
+			0x0840 => 1,
+			0x0846 => 1,
+			0x0849 => 1,
+			0x084F => 1,
+			0x0854 => 1, /* Right joining */
 			/* ZWJ U+200D */
-			0x0200D => 1];
+			0x0200D => 1
+		];
 
 		/* VOWELS = TRANSPARENT-JOINING = Unicode Transparent-Joining type (not just vowels) */
 		$this->arabTransparent = [
-			0x0610 => 1, 0x0611 => 1, 0x0612 => 1, 0x0613 => 1, 0x0614 => 1, 0x0615 => 1, 0x0616 => 1, 0x0617 => 1,
-			0x0618 => 1, 0x0619 => 1, 0x061A => 1, 0x064B => 1, 0x064C => 1, 0x064D => 1, 0x064E => 1, 0x064F => 1,
-			0x0650 => 1, 0x0651 => 1, 0x0652 => 1, 0x0653 => 1, 0x0654 => 1, 0x0655 => 1, 0x0656 => 1, 0x0657 => 1,
-			0x0658 => 1, 0x0659 => 1, 0x065A => 1, 0x065B => 1, 0x065C => 1, 0x065D => 1, 0x065E => 1, 0x065F => 1,
-			0x0670 => 1, 0x06D6 => 1, 0x06D7 => 1, 0x06D8 => 1, 0x06D9 => 1, 0x06DA => 1, 0x06DB => 1, 0x06DC => 1,
-			0x06DF => 1, 0x06E0 => 1, 0x06E1 => 1, 0x06E2 => 1, 0x06E3 => 1, 0x06E4 => 1, 0x06E7 => 1, 0x06E8 => 1,
-			0x06EA => 1, 0x06EB => 1, 0x06EC => 1, 0x06ED => 1,
+			0x0610 => 1,
+			0x0611 => 1,
+			0x0612 => 1,
+			0x0613 => 1,
+			0x0614 => 1,
+			0x0615 => 1,
+			0x0616 => 1,
+			0x0617 => 1,
+			0x0618 => 1,
+			0x0619 => 1,
+			0x061A => 1,
+			0x064B => 1,
+			0x064C => 1,
+			0x064D => 1,
+			0x064E => 1,
+			0x064F => 1,
+			0x0650 => 1,
+			0x0651 => 1,
+			0x0652 => 1,
+			0x0653 => 1,
+			0x0654 => 1,
+			0x0655 => 1,
+			0x0656 => 1,
+			0x0657 => 1,
+			0x0658 => 1,
+			0x0659 => 1,
+			0x065A => 1,
+			0x065B => 1,
+			0x065C => 1,
+			0x065D => 1,
+			0x065E => 1,
+			0x065F => 1,
+			0x0670 => 1,
+			0x06D6 => 1,
+			0x06D7 => 1,
+			0x06D8 => 1,
+			0x06D9 => 1,
+			0x06DA => 1,
+			0x06DB => 1,
+			0x06DC => 1,
+			0x06DF => 1,
+			0x06E0 => 1,
+			0x06E1 => 1,
+			0x06E2 => 1,
+			0x06E3 => 1,
+			0x06E4 => 1,
+			0x06E7 => 1,
+			0x06E8 => 1,
+			0x06EA => 1,
+			0x06EB => 1,
+			0x06EC => 1,
+			0x06ED => 1,
 			/* Extended Arabic */
-			0x08E4 => 1, 0x08E5 => 1, 0x08E6 => 1, 0x08E7 => 1, 0x08E8 => 1, 0x08E9 => 1, 0x08EA => 1, 0x08EB => 1,
-			0x08EC => 1, 0x08ED => 1, 0x08EE => 1, 0x08EF => 1, 0x08F0 => 1, 0x08F1 => 1, 0x08F2 => 1, 0x08F3 => 1,
-			0x08F4 => 1, 0x08F5 => 1, 0x08F6 => 1, 0x08F7 => 1, 0x08F8 => 1, 0x08F9 => 1, 0x08FA => 1, 0x08FB => 1,
-			0x08FC => 1, 0x08FD => 1, 0x08FE => 1,
+			0x08E4 => 1,
+			0x08E5 => 1,
+			0x08E6 => 1,
+			0x08E7 => 1,
+			0x08E8 => 1,
+			0x08E9 => 1,
+			0x08EA => 1,
+			0x08EB => 1,
+			0x08EC => 1,
+			0x08ED => 1,
+			0x08EE => 1,
+			0x08EF => 1,
+			0x08F0 => 1,
+			0x08F1 => 1,
+			0x08F2 => 1,
+			0x08F3 => 1,
+			0x08F4 => 1,
+			0x08F5 => 1,
+			0x08F6 => 1,
+			0x08F7 => 1,
+			0x08F8 => 1,
+			0x08F9 => 1,
+			0x08FA => 1,
+			0x08FB => 1,
+			0x08FC => 1,
+			0x08FD => 1,
+			0x08FE => 1,
 			/* Arabic ligatures in presentation form (converted in 'ccmp' in e.g. Arial and Times ? need to add others in this range) */
-			0xFC5E => 1, 0xFC5F => 1, 0xFC60 => 1, 0xFC61 => 1, 0xFC62 => 1,
+			0xFC5E => 1,
+			0xFC5F => 1,
+			0xFC60 => 1,
+			0xFC61 => 1,
+			0xFC62 => 1,
 			/*  'syrc' Syriac */
-			0x070F => 1, 0x0711 => 1, 0x0730 => 1, 0x0731 => 1, 0x0732 => 1, 0x0733 => 1, 0x0734 => 1, 0x0735 => 1,
-			0x0736 => 1, 0x0737 => 1, 0x0738 => 1, 0x0739 => 1, 0x073A => 1, 0x073B => 1, 0x073C => 1, 0x073D => 1,
-			0x073E => 1, 0x073F => 1, 0x0740 => 1, 0x0741 => 1, 0x0742 => 1, 0x0743 => 1, 0x0744 => 1, 0x0745 => 1,
-			0x0746 => 1, 0x0747 => 1, 0x0748 => 1, 0x0749 => 1, 0x074A => 1,
+			0x070F => 1,
+			0x0711 => 1,
+			0x0730 => 1,
+			0x0731 => 1,
+			0x0732 => 1,
+			0x0733 => 1,
+			0x0734 => 1,
+			0x0735 => 1,
+			0x0736 => 1,
+			0x0737 => 1,
+			0x0738 => 1,
+			0x0739 => 1,
+			0x073A => 1,
+			0x073B => 1,
+			0x073C => 1,
+			0x073D => 1,
+			0x073E => 1,
+			0x073F => 1,
+			0x0740 => 1,
+			0x0741 => 1,
+			0x0742 => 1,
+			0x0743 => 1,
+			0x0744 => 1,
+			0x0745 => 1,
+			0x0746 => 1,
+			0x0747 => 1,
+			0x0748 => 1,
+			0x0749 => 1,
+			0x074A => 1,
 			/* N'Ko */
-			0x07EB => 1, 0x07EC => 1, 0x07ED => 1, 0x07EE => 1, 0x07EF => 1, 0x07F0 => 1, 0x07F1 => 1, 0x07F2 => 1,
+			0x07EB => 1,
+			0x07EC => 1,
+			0x07ED => 1,
+			0x07EE => 1,
+			0x07EF => 1,
+			0x07F0 => 1,
+			0x07F1 => 1,
+			0x07F2 => 1,
 			0x07F3 => 1,
 			/* Mandaic */
-			0x0859 => 1, 0x085A => 1, 0x085B => 1,
+			0x0859 => 1,
+			0x085A => 1,
+			0x085B => 1,
 		];
 	}
 
@@ -3104,21 +3664,21 @@ class Otl
 			$x = ord($dict[$dictptr]);
 			$c = $this->OTLdata[$ptr]['uni'] & 0xFF;
 			if ($x == static::_DICT_INTERMEDIATE_MATCH) {
-//echo "DICT_INTERMEDIATE_MATCH: ".dechex($c).'<br />';
+				//echo "DICT_INTERMEDIATE_MATCH: ".dechex($c).'<br />';
 				// Do not match if next character in text is a Mark
 				if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === false) {
 					$matches[] = $ptr - 1;
 				}
 				$dictptr++;
 			} elseif ($x == static::_DICT_FINAL_MATCH) {
-//echo "DICT_FINAL_MATCH: ".dechex($c).'<br />';
+				//echo "DICT_FINAL_MATCH: ".dechex($c).'<br />';
 				// Do not match if next character in text is a Mark
 				if (isset($this->OTLdata[$ptr]['uni']) && strpos($this->GlyphClassMarks, $this->OTLdata[$ptr]['hex']) === false) {
 					$matches[] = $ptr - 1;
 				}
 				return $matches;
 			} elseif ($x == static::_DICT_NODE_TYPE_LINEAR) {
-//echo "DICT_NODE_TYPE_LINEAR: ".dechex($c).'<br />';
+				//echo "DICT_NODE_TYPE_LINEAR: ".dechex($c).'<br />';
 				$dictptr++;
 				$m = ord($dict[$dictptr]);
 				if ($c == $m) {
@@ -3136,11 +3696,11 @@ class Otl
 					$dictptr++;
 					continue;
 				} else {
-//echo "DICT_NODE_TYPE_LINEAR NOT: ".dechex($c).'<br />';
+					//echo "DICT_NODE_TYPE_LINEAR NOT: ".dechex($c).'<br />';
 					return $matches;
 				}
 			} elseif ($x == static::_DICT_NODE_TYPE_SPLIT) {
-//echo "DICT_NODE_TYPE_SPLIT ON ".dechex($d).": ".dechex($c).'<br />';
+				//echo "DICT_NODE_TYPE_SPLIT ON ".dechex($d).": ".dechex($c).'<br />';
 				$dictptr++;
 				$d = ord($dict[$dictptr]);
 				if ($c < $d) {
@@ -3152,7 +3712,7 @@ class Otl
 					$dictptr = $offset;
 				}
 			} else {
-//echo "PROBLEM: ".($x).'<br />';
+				//echo "PROBLEM: ".($x).'<br />';
 				$ok = false; // Something has gone wrong
 			}
 		}
@@ -3327,7 +3887,7 @@ class Otl
 			$Coverage = $subtable_offset + $this->read_ushort();
 			$ValueFormat1 = $this->read_ushort();
 			$ValueFormat2 = $this->read_ushort();
-			$sizeOfPair = ( 2 * $this->count_bits($ValueFormat1) ) + ( 2 * $this->count_bits($ValueFormat2) );
+			$sizeOfPair = (2 * $this->count_bits($ValueFormat1)) + (2 * $this->count_bits($ValueFormat2));
 			//===========
 			// Format 1:
 			//===========
@@ -3544,7 +4104,7 @@ class Otl
 				$BasePos = strpos($BaseGlyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
 
 				// Move to the BaseRecord we want
-				$nSkip = (2 * $BasePos * $ClassCount );
+				$nSkip = (2 * $BasePos * $ClassCount);
 				$this->skip($nSkip);
 
 				// Read BaseRecord we want for appropriate Class
@@ -3708,7 +4268,7 @@ class Otl
 				$Mark2Pos = strpos($Mark2Glyphs, $this->OTLdata[$matchedpos]['hex']) / 6;
 
 				// Move to the Mark2Record we want
-				$nSkip = (2 * $Mark2Pos * $ClassCount );
+				$nSkip = (2 * $Mark2Pos * $ClassCount);
 				$this->skip($nSkip);
 
 				// Read Mark2Record we want for appropriate Class
@@ -3739,7 +4299,7 @@ class Otl
 				// This happens in Indic when the Mark being attached to e.g. [Halant Ma lig] -> MatraU,  [U+0B4D + U+B2E as E0F5]-> U+0B41 become E135
 				if (!defined("OMIT_OTL_FIX_1") || OMIT_OTL_FIX_1 != 1) {
 					/* OTL_FIX_1 */
-					if (isset($this->assocMarks[$matchedpos]) && ($prevLig != $thisLig || $prevComp != $thisComp )) {
+					if (isset($this->assocMarks[$matchedpos]) && ($prevLig != $thisLig || $prevComp != $thisComp)) {
 						return 0;
 					}
 				} else {
@@ -3882,8 +4442,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -4067,8 +4626,7 @@ class Otl
 
 								if (!defined("OMIT_OTL_FIX_3") || OMIT_OTL_FIX_3 != 1) {
 									return $shift;
-								} /* OTL_FIX_3 */
-								else {
+								} /* OTL_FIX_3 */ else {
 									return $InputGlyphCount; // should be + matched ignores in Input Sequence
 								}
 							}
@@ -4403,7 +4961,7 @@ class Otl
 
 	private function _getValueRecord($ValueFormat)
 	{
-	// Common ValueRecord for GPOS
+		// Common ValueRecord for GPOS
 		// Only returns 3 possible: $vra['XPlacement'] $vra['YPlacement'] $vra['XAdvance']
 		$vra = [];
 		// Horizontal adjustment for placement - in design units
@@ -4654,7 +5212,8 @@ class Otl
 				if (count($remember)) {
 					$last = count($remember) - 1;
 					if (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-						($remember[$last]['num'] == 8237)) {
+						($remember[$last]['num'] == 8237)
+					) {
 						$match = array_pop($remember);
 						$cel = $match['cel'];
 						$dos = $match['dos'];
@@ -5004,7 +5563,7 @@ class Otl
 		// In the resolution of levels in rules I1 and I2, the maximum embedding level of 62 can be reached.
 		$numchunks = count($para);
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chunkOTLdata = & $para[$nc][18];
+			$chunkOTLdata = &$para[$nc][18];
 
 			$numchars = count($chunkOTLdata['char_data']);
 			for ($i = 0; $i < $numchars; ++$i) {
@@ -5057,14 +5616,17 @@ class Otl
 					if (count($remember)) {
 						$last = count($remember) - 1;
 						if (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-							($remember[$last]['num'] == 8237)) {
+							($remember[$last]['num'] == 8237)
+						) {
 							$match = array_pop($remember);
 							$cel = $match['cel'];
 							$dos = $match['dos'];
 						}
 					}
-				} elseif ($chunkOTLdata['char_data'][$i]['uni'] == 8294 || $chunkOTLdata['char_data'][$i]['uni'] == 8295 ||
-					$chunkOTLdata['char_data'][$i]['uni'] == 8296) { // LRI // RLI // FSI
+				} elseif (
+					$chunkOTLdata['char_data'][$i]['uni'] == 8294 || $chunkOTLdata['char_data'][$i]['uni'] == 8295 ||
+					$chunkOTLdata['char_data'][$i]['uni'] == 8296
+				) { // LRI // RLI // FSI
 					// X5a. With each RLI:
 					// X5b. With each LRI:
 					// X5c. With each FSI, apply rules P2 and P3 for First Strong character
@@ -5148,7 +5710,8 @@ class Otl
 							break;
 						} // End/close any open embedding states not explicitly closed during the isolate
 						elseif (($remember[$last]['num'] == 8235) || ($remember[$last]['num'] == 8234) || ($remember[$last]['num'] == 8238) ||
-							($remember[$last]['num'] == 8237)) {
+							($remember[$last]['num'] == 8237)
+						) {
 							$match = array_pop($remember);
 						}
 					}
@@ -5221,7 +5784,7 @@ class Otl
 			$postlevel = $pel;
 			$firstchar = true;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5264,7 +5827,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$prevtype = 0;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5286,7 +5849,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5308,7 +5871,7 @@ class Otl
 
 		// W3. Change all ALs to R.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && $chardata[$i]['type'] == Ucdn::BIDI_CLASS_AL) {
@@ -5323,7 +5886,7 @@ class Otl
 			$prevtype = -1;
 			$nexttype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5365,7 +5928,7 @@ class Otl
 			$prevtype = -1;
 			$nexttype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5411,7 +5974,7 @@ class Otl
 
 		// W6. Otherwise, separators and terminators change to Other Neutral.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && (($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ET) || ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ES) || ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_CS))) {
@@ -5424,7 +5987,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5447,7 +6010,7 @@ class Otl
 		for ($ir = 0; $ir <= $dictr; $ir++) {
 			$laststrongtype = -1;
 			for ($nc = 0; $nc < $numchunks; $nc++) {
-				$chardata = & $para[$nc][18]['char_data'];
+				$chardata = &$para[$nc][18]['char_data'];
 				$numchars = count($chardata);
 				for ($i = 0; $i < $numchars; ++$i) {
 					if (!isset($chardata[$i]['diid']) || $chardata[$i]['diid'] != $ir) {
@@ -5510,7 +6073,7 @@ class Otl
 
 		// N2. Any remaining neutrals take the embedding direction
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['type']) && ($chardata[$i]['type'] == Ucdn::BIDI_CLASS_ON || $chardata[$i]['type'] == Ucdn::BIDI_CLASS_WS)) {
@@ -5523,7 +6086,7 @@ class Otl
 		// I1. For all characters with an even (left-to-right) embedding direction, those of type R go up one level and those of type AN or EN go up two levels.
 		// I2. For all characters with an odd (right-to-left) embedding direction, those of type L, EN or AN go up one level.
 		for ($nc = 0; $nc < $numchunks; $nc++) {
-			$chardata = & $para[$nc][18]['char_data'];
+			$chardata = &$para[$nc][18]['char_data'];
 			$numchars = count($chardata);
 			for ($i = 0; $i < $numchars; ++$i) {
 				if (isset($chardata[$i]['level'])) {
@@ -6135,18 +6698,23 @@ class Otl
 		if ($available == '') {
 			return '';
 		}
-		$tags = preg_split('/-/', $ietf);
-		$lang = '';
-		$country = '';
-		$script = '';
-		$lang = strtolower($tags[0]);
-		if (isset($tags[1]) && $tags[1]) {
-			if (strlen($tags[1]) == 2) {
-				$country = strtolower($tags[1]);
+		$lang 		= '';
+		$country 	= '';
+		$script		= '';
+		$tags 		= '';
+		if (isset($ietf)) {
+			$tags = preg_split('/-/', $ietf);
+			if (isset($tags) && $tags != '') {
+				$lang = strtolower($tags[0]);
+				if (isset($tags[1]) && $tags[1]) {
+					if (strlen($tags[1]) == 2) {
+						$country = strtolower($tags[1]);
+					}
+				}
+				if (isset($tags[2]) && $tags[2]) {
+					$country = strtolower($tags[2]);
+				}
 			}
-		}
-		if (isset($tags[2]) && $tags[2]) {
-			$country = strtolower($tags[2]);
 		}
 
 		if ($lang != '' && isset(Ucdn::$ot_languages[$lang])) {

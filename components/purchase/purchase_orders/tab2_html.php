@@ -58,27 +58,7 @@
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />
                 <div class="row">
-                    <div class="input-field col m4 s12">
-                        <?php
-                        $field_name     = "courier_name_update";
-                        $field_label    = "Courier Name";
-                        ?>
-                        <i class="material-icons prefix">description</i>
-                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                            echo ${$field_name};
-                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                } ?>">
-                        <label for="<?= $field_name; ?>">
-                            <?= $field_label; ?>
-                            <span class="color-red"> * <?php
-                                                        if (isset($error2[$field_name])) {
-                                                            echo $error2[$field_name];
-                                                        } ?>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "tracking_no_update";
                         $field_label    = "Tracking No";
@@ -98,7 +78,7 @@
                             </span>
                         </label>
                     </div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "logistics_cost_update";
                         $field_label    = "Logistics Cost";
@@ -118,7 +98,29 @@
                             </span>
                         </label>
                     </div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
+                        <?php
+                        $field_name     = "no_of_boxes_update";
+                        $field_label    = "Total Boxes";
+                        ?>
+                        <i class="material-icons prefix">description</i>
+                        <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                            echo ${$field_name};
+                                                                                                        } else {
+                                                                                                            echo "1";
+                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                } ?>">
+                        <label for="<?= $field_name; ?>">
+                            <?= $field_label; ?>
+                            <span class="color-red"> * <?php
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
+                                                        } ?>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "status_id_update";
                         $field_label     = "Status";
@@ -150,11 +152,33 @@
                             </label>
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col m3 s12">
+                        <?php
+                        $field_name     = "courier_name_update";
+                        $field_label    = "Courier Name";
+                        ?>
+                        <i class="material-icons prefix">description</i>
+                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                            echo ${$field_name};
+                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                } ?>">
+                        <label for="<?= $field_name; ?>">
+                            <?= $field_label; ?>
+                            <span class="color-red"><?php
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
+                                                    } ?>
+                            </span>
+                        </label>
+                    </div>
                     <?php
                     $field_name     = "shipment_date_update";
                     $field_label     = "Shipment Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
@@ -174,7 +198,7 @@
                     $field_name     = "expected_arrival_date_update";
                     $field_label     = "Expected Arrival Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
@@ -233,20 +257,21 @@
                                 <thead>
                                     <tr>
                                         <?php
-                                        $headings = '	<th class="sno_width_60">S.No</th>
-                                                        <th class="sno_width_60">
+                                        $headings = '	<th class="sno_width_60">
                                                             <label>
                                                                 <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1"   ';
                                         if (isset($all_checked3) && $all_checked3 == '1') {
                                             $headings .= ' checked ';
                                         }
                                         $headings .= ' 			/>
-                                                                <span>All</span>
+                                                                <span></span>
                                                             </label>
                                                         </th>
-                                                        <th>Detail</th>
+                                                        <th>Tracking#</th>
                                                         <th>Logistics <br>Cost (PO)</th> 
+                                                        <th>Total Boxes</th> 
                                                         <th>Status</th> 
+                                                        <th>Courier</th>
                                                         <th>Shipment Date</th>
                                                         <th>Expected <br>Arrival Date</th>
                                                         <th>Action</th>';
@@ -263,7 +288,6 @@
                                             $detail_id2     = $data['id'];
                                             $arrived_date_11   = $data['arrived_date']; ?>
                                             <tr>
-                                                <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?></td>
                                                 <td style="text-align: center; <?= $td_padding; ?>">
                                                     <?php
                                                     if ($arrived_date_11 == '' || $arrived_date_11 == null) { ?>
@@ -277,12 +301,11 @@
                                                     <?php
                                                     } ?>
                                                 </td>
-                                                <td style="<?= $td_padding; ?>">
-                                                    <b>Courier: </b><?php echo $data['courier_name']; ?></br>
-                                                    <b>Tracking#: </b><?php echo $data['tracking_no']; ?>
-                                                </td>
-                                                <td style="<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
+                                                <td style="text-align: right;<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>
+                                                <td style="text-align: center; <?= $td_padding; ?>"><?php echo $data['no_of_boxes']; ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['courier_name']; ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['shipment_date']); ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['expected_arrival_date']); ?></td>
                                                 <td style="<?= $td_padding; ?>">
@@ -312,7 +335,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="input-field col m6 s12">
+                        <div class="input-field col m4 s12">
                             <?php
                             $field_name     = "logistics_status";
                             $field_label     = "Status";
@@ -354,8 +377,7 @@
             </form>
         <?php }
     }
-    if (isset($cmd) && !isset($cmd2_1)) {
-        ?>
+    if (isset($cmd) && !isset($cmd2_1)) { ?>
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>" method="post">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab2" value="Y" />
@@ -364,30 +386,8 @@
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />
-
-
                 <div class="row">
-                    <div class="input-field col m4 s12">
-                        <?php
-                        $field_name     = "courier_name";
-                        $field_label    = "Courier Name";
-                        ?>
-                        <i class="material-icons prefix">description</i>
-                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                            echo ${$field_name};
-                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                } ?>">
-                        <label for="<?= $field_name; ?>">
-                            <?= $field_label; ?>
-                            <span class="color-red"> * <?php
-                                                        if (isset($error2[$field_name])) {
-                                                            echo $error2[$field_name];
-                                                        } ?>
-                            </span>
-                        </label>
-                    </div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "tracking_no";
                         $field_label    = "Tracking No";
@@ -407,7 +407,7 @@
                             </span>
                         </label>
                     </div>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "logistics_cost";
                         $field_label    = "PO Logistics Cost";
@@ -427,8 +427,29 @@
                             </span>
                         </label>
                     </div>
-
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
+                        <?php
+                        $field_name     = "no_of_boxes";
+                        $field_label    = "Total Boxes";
+                        ?>
+                        <i class="material-icons prefix">description</i>
+                        <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                            echo ${$field_name};
+                                                                                                        } else {
+                                                                                                            echo "1";
+                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                } ?>">
+                        <label for="<?= $field_name; ?>">
+                            <?= $field_label; ?>
+                            <span class="color-red"> * <?php
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
+                                                        } ?>
+                            </span>
+                        </label>
+                    </div>
+                    <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "status_id";
                         $field_label     = "Status";
@@ -446,7 +467,7 @@
                                 if ($count1 > 0) {
                                     $row1    = $db->fetch($result1);
                                     foreach ($row1 as $data2) { ?>
-                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?> </option>
+                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } else if (!isset(${$field_name}) && $data2['id'] == '10') { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?> </option>
                                 <?php }
                                 } ?>
                             </select>
@@ -460,12 +481,33 @@
                             </label>
                         </div>
                     </div>
-
+                </div>
+                <div class="row">
+                    <div class="input-field col m3 s12">
+                        <?php
+                        $field_name     = "courier_name";
+                        $field_label    = "Courier Name";
+                        ?>
+                        <i class="material-icons prefix">description</i>
+                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                            echo ${$field_name};
+                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                } ?>">
+                        <label for="<?= $field_name; ?>">
+                            <?= $field_label; ?>
+                            <span class="color-red"><?php
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
+                                                    } ?>
+                            </span>
+                        </label>
+                    </div>
                     <?php
                     $field_name     = "shipment_date";
                     $field_label     = "Shipment Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
@@ -485,7 +527,7 @@
                     $field_name     = "expected_arrival_date";
                     $field_label     = "Expected Arrival Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};

@@ -73,38 +73,52 @@ $sql_ee1 = " SELECT a.*, b.po_no, c.vender_name
 			FROM purchase_order_detail_logistics a
 			INNER JOIN purchase_orders b ON b.id = a.po_id
 			LEFT JOIN venders c ON c.id = b.vender_id
-			WHERE a.id = '" . $detail_id . "'";
+			WHERE a.po_id = '" . $id . "'
+			ORDER BY date_format(a.arrived_date, '%Y%m%d') "; //echo $sql_ee1;die;
+$k = 1;
 $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
 	$row_ee1				= $db->fetch($result_ee1);
-	$vender_name			= $row_ee1[0]['vender_name'];
-	$po_no					= $row_ee1[0]['po_no'];
-	$arrived_date			= dateformat2($row_ee1[0]['arrived_date']);
-	$arrival_no				= $row_ee1[0]['arrival_no'];
+	foreach ($row_ee1 as $data) {
 
-	$sql_ee1 		= "	SELECT a.id
-						FROM purchase_order_detail_logistics a
-						WHERE a.po_id = '" . $id . "' ";
-	$result_ee1 	= $db->query($conn, $sql_ee1);
-	$total_boxes	= $db->counter($result_ee1);
+		$logistic_id			= $data['id'];
+		$vender_name			= $data['vender_name'];
+		$po_no					= $data['po_no'];
+		$arrived_date			= dateformat2($data['arrived_date']);
+		$arrival_no				= $data['arrival_no'];
+		$no_of_boxes			= $data['no_of_boxes'];
 
-	$report_data = '
-	<div class="text_align_center main_font">
-		<br>
-		PO#: ' . $po_no . '
-		<br>
-		<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
-		<br><br>
-		Vendor Name: ' . $vender_name . '
-		<br><br>
-		Box/Pallet # ' . $arrival_no . ' out ' . $total_boxes . '
-		<br><br>
-		' . $arrived_date . '
-	</div>  ';  //echo $report_data;die;
-	$report_data = $report_data . $css;
-	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
-	$mpdf->writeHTML($report_data);
+		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
+							FROM purchase_order_detail_logistics a
+							WHERE a.po_id = '" . $id . "' ";
+		$result_ee12 	= $db->query($conn, $sql_ee12);
+		$counter_ee12	= $db->counter($result_ee12);
+		$total_boxes 	= 0;
+		if ($counter_ee12 > 0) {
+			$row_ee12		= $db->fetch($result_ee12);
+			$total_boxes	= $row_ee12[0]['total_boxes'];
+		}
+		for ($i = 1; $i <= $no_of_boxes; $i++) {
+			$report_data = '
+				<div class="text_align_center main_font">
+					<br>
+					PO#: ' . $po_no . '
+					<br>
+					<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
+					<br><br>
+					Vendor Name: ' . $vender_name . '
+					<br><br>
+					Box/Pallet # ' . $k . ' out ' . $total_boxes . '
+					<br><br>
+					' . $arrived_date . '
+				</div>  ';  //echo $report_data;die;
+			$report_data = $report_data . $css;
+			$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
+			$mpdf->writeHTML($report_data);
+			$k++;
+		}
+	}
 
 	$mpdf->SetTitle('Arrival Label PO_NO ' . $po_no);
 	$file_name = "Arrival Label " . $po_no . ".pdf";

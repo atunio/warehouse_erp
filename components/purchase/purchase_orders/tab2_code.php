@@ -1,12 +1,12 @@
 <?php
 
 if ($_SERVER['HTTP_HOST'] == 'localhost') {
-	$courier_name 			= "courier_name " . date('YmdHis');
 	$tracking_no 			= date('YmdHis');
-	$shipment_date 			= date('d/m/Y');
-	$expected_arrival_date 	= date('d/m/Y');
-	$status_id 				= 10;
 	$logistics_cost			= 20.5;
+	$status_id 				= 10;
+	// $courier_name 			= "courier_name " . date('YmdHis');
+	// $shipment_date 			= date('d/m/Y');
+	// $expected_arrival_date 	= date('d/m/Y');
 }
 if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	$sql_ee1 = "SELECT b.*, d.logistics_cost
@@ -25,6 +25,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 		$expected_arrival_date_update		= str_replace("-", "/", convert_date_display($row_ee1[0]['expected_arrival_date']));
 		$status_id_update					= $row_ee1[0]['logistics_status'];
 		$logistics_cost_update				= $row_ee1[0]['logistics_cost'];
+		$no_of_boxes_update					= $row_ee1[0]['no_of_boxes'];
 	} else {
 		$error4['msg'] = "No record found";
 	}
@@ -71,15 +72,18 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 				}
 			}
 			$msg2['msg_success'] = "Record has been added successfully.";
+			unset($cmd2_1);
 		}
 	}
 }
 
 if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	extract($_POST);
-	
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
 		$error2['status_id'] = "Required";
+	}
+	if (!isset($no_of_boxes) || (isset($no_of_boxes)  && ($no_of_boxes == "0" || $no_of_boxes == ""))) {
+		$error2['no_of_boxes'] = "Required";
 	}
 	if (!isset($logistics_cost) || (isset($logistics_cost)  && ($logistics_cost == ""))) {
 		$error2['logistics_cost'] = "Required";
@@ -96,20 +100,17 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		}
 	}
 	if (isset($shipment_date) && $shipment_date == "") {
-		$shipment_date1 = "0000-00-00";
+		$shipment_date1 = NULL;
 	} else {
 		$shipment_date1 = convert_date_mysql_slash($shipment_date);
 	}
 	if (isset($expected_arrival_date) && $expected_arrival_date == "") {
-		$expected_arrival_date1	= "0000-00-00";
+		$expected_arrival_date1	= NULL;
 	} else {
 		$expected_arrival_date1 = convert_date_mysql_slash($expected_arrival_date);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error2['msg'] = "Please add master record first";
-	}
-	if (isset($courier_name) && $courier_name == "") {
-		$error2['courier_name'] = "Required";
 	}
 	if (empty($error2)) {
 		if (po_permisions("Logistics") == 0) {
@@ -117,15 +118,16 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		} else {
 			$k = 0;
 			if ($cmd2 == 'add') {
-				
+
 				if (access("add_perm") == 0) {
 					$error2['msg'] = "You do not have add permissions.";
 				} else {
-					$sql6 = "INSERT INTO purchase_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, add_date, add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO purchase_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
+							 VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
-						$tracking_no = "";
+						$tracking_no	= "";
+						$no_of_boxes 	= 1;
 						$sql_c_up = "UPDATE  purchase_order_detail SET order_product_status	= '" . $status_id . "',
 																		update_timezone		= '" . $timezone . "',
 																		update_date			= '" . $add_date . "',
@@ -174,13 +176,15 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
-	$shipment_date_update1 = $expected_arrival_date_update1	= "0000-00-00";
-
+	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {
+		$error2['no_of_boxes_update'] = "Required";
+	}
+	$shipment_date_update1 = $expected_arrival_date_update1	= NULL;
 	if (isset($logistics_cost_update) && $logistics_cost_update == "") {
 		$error2['logistics_cost_update'] = "Required";
 	}
 	if (!isset($status_id_update) || (isset($status_id_update)  && ($status_id_update == "0" || $status_id_update == ""))) {
-		$error2['status_id'] = "Required";
+		$error2['status_id_update'] = "Required";
 	}
 	if (isset($tracking_no_update) && $tracking_no_update == "") {
 		$error2['tracking_no_update'] = "Required";
@@ -195,19 +199,14 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 			$error2['tracking_no_update'] = "The tracking no is already exist.";
 		}
 	}
-	if (isset($shipment_date_update) && $shipment_date_update == "") {
-	} else {
+	if (!empty($shipment_date_update)) {
 		$shipment_date_update1 = convert_date_mysql_slash($shipment_date_update);
 	}
-	if (isset($expected_arrival_date_update) && $expected_arrival_date_update == "") {
-	} else {
+	if (!empty($expected_arrival_date_update)) {
 		$expected_arrival_date_update1 = convert_date_mysql_slash($expected_arrival_date_update);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error2['msg'] = "Please add master record first";
-	}
-	if (isset($courier_name_update) && $courier_name_update == "") {
-		$error2['courier_name_update'] = "Required";
 	}
 	if (!isset($detail_id) || (isset($detail_id)  && ($detail_id == "0" || $detail_id == ""))) {
 		$error2['msg'] = "Please click to edit anyone record";
@@ -224,6 +223,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 											expected_arrival_date 	= '" . $expected_arrival_date_update1 . "',
 											logistics_status		= '" . $status_id_update . "',
 											logistics_cost			= '" . $logistics_cost_update . "',
+											no_of_boxes				= '" . $no_of_boxes_update . "',
 											
 											update_timezone			= '" . $timezone . "',
 											update_date				= '" . $add_date . "',

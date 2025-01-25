@@ -775,6 +775,8 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 								$error6['msg'] = "There are no available serial numbers to generate a new one.";
 							}
 						}
+					} else {
+						$error6['msg'] = "Please receive first";
 					}
 				}
 			}

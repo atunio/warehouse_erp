@@ -131,114 +131,112 @@
                             </div> <br>
                         <?php } ?>
                     </div>
-
-                    <label>
-                        <input type="checkbox" id="all_checked4" class="filled-in" name="all_checked4" value="1" <?php if (isset($all_checked4) && $all_checked4 == '1') {
-                                                                                                                        echo "checked";
-                                                                                                                    } ?> />
-                        <span>All</span>
-                    </label>
-                    <div class="section section-data-tables">
-                        <div class="row">
-                            <div class="col m12 s12">
-                                <table id="page-length-option" class="display ">
-                                    <thead>
-                                        <tr>
-                                            <?php
-                                            $headings = '	<th class="sno_width_60">S.No</th>
-                                                            <th>Tracking#</th>
-                                                            <th>Courier</th>
-                                                            <th>Status</th>
-                                                            <th>Arrived Date</th>
-                                                            <th>Location</th>
-                                                            <th>Actions</th>';
-                                            echo $headings;
-                                            $headings2 = ' '; ?>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                    <div class="row">
+                        <div class="col m12 s12">
+                            <table class="bordered ">
+                                <thead>
+                                    <tr>
                                         <?php
-                                        $i = 0;
-                                        if ($count_log > 0) {
-                                            $row_cl1 = $db->fetch($result_log);
-                                            foreach ($row_cl1 as $data) {
-                                                $detail_id2 = $data['id'];
-
-                                                $sql_pd1                = "	SELECT a.*
-                                                                            FROM purchase_order_detail_receive a
-                                                                            WHERE a.logistic_id = '" . $detail_id2 . "' ";
-                                                $result_pd1             = $db->query($conn, $sql_pd1);
-                                                $is_logistic_received   = $db->counter($result_pd1);
-
-                                                $sql_pd1                = "	SELECT a.*
-                                                                            FROM purchase_order_detail_receive a
-                                                                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                                                            WHERE b.po_id = '" . $id . "' ";
-                                                $result_pd1             = $db->query($conn, $sql_pd1);
-                                                $is_po_item_received    = $db->counter($result_pd1); ?>
-                                                <tr>
-                                                    <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?>
-                                                        <?php
-                                                        if ($is_po_item_received == 0) { ?>
-                                                            <label style="margin-left: 25px;">
-                                                                <input type="checkbox" name="logistics_ids_2[]" id="logistics_ids_2[]" value="<?= $detail_id2; ?>" <?php
-                                                                                                                                                                    if (isset($logistics_ids_2) && in_array($detail_id2, $logistics_ids_2)) {
-                                                                                                                                                                        echo "checked";
-                                                                                                                                                                    } ?> class="checkbox4 filled-in" />
+                                        $headings = '	<th class="sno_width_60">
+                                                            <label>
+                                                                <input type="checkbox" id="all_checked4" class="filled-in" name="all_checked4" value="1"   ';
+                                        if (isset($all_checked4) && $all_checked4 == '1') {
+                                            $headings .= ' checked ';
+                                        }
+                                        $headings .= ' 			/>
                                                                 <span></span>
                                                             </label>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td style="<?= $td_padding; ?>">
-                                                        <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd3=" . $cmd3 . "&active_tab=tab3&id=" . $id . "&detail_id=" . $data['tracking_no']) ?>">
-                                                            <?php echo $data['tracking_no']; ?>
+                                                        </th> 
+                                                        <th>Tracking#</th>
+                                                        <th>Total Boxes</th>
+                                                        <th>Courier</th>
+                                                        <th>Status</th>
+                                                        <th>Arrived Date</th>
+                                                        <th>Location</th>
+                                                        <th>Actions</th>';
+                                        echo $headings;
+                                        $headings2 = ' '; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $i = 0;
+                                    if ($count_log > 0) {
+                                        $row_cl1 = $db->fetch($result_log);
+                                        foreach ($row_cl1 as $data) {
+                                            $detail_id2 = $data['id'];
+
+                                            $sql_pd1                = "	SELECT a.*
+                                                                        FROM purchase_order_detail_receive a
+                                                                        WHERE a.logistic_id = '" . $detail_id2 . "' ";
+                                            $result_pd1             = $db->query($conn, $sql_pd1);
+                                            $is_logistic_received   = $db->counter($result_pd1);
+
+                                            $sql_pd1                = "	SELECT a.*
+                                                                        FROM purchase_order_detail_receive a
+                                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                                                        WHERE b.po_id = '" . $id . "' ";
+                                            $result_pd1             = $db->query($conn, $sql_pd1);
+                                            $is_po_item_received    = $db->counter($result_pd1); ?>
+                                            <tr>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php
+                                                    if ($is_po_item_received == 0) { ?>
+                                                        <label style="margin-left: 25px;">
+                                                            <input type="checkbox" name="logistics_ids_2[]" id="logistics_ids_2[]" value="<?= $detail_id2; ?>" <?php
+                                                                                                                                                                if (isset($logistics_ids_2) && in_array($detail_id2, $logistics_ids_2)) {
+                                                                                                                                                                    echo "checked";
+                                                                                                                                                                } ?> class="checkbox4 filled-in" />
+                                                            <span></span>
+                                                        </label>
+                                                    <?php } ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
+                                                <td style="text-align: center; <?= $td_padding; ?>"><?php echo $data['no_of_boxes']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['courier_name']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['arrived_date']); ?></td>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php
+                                                    echo $data['sub_location_name'];
+                                                    $sub_location_type = $data['sub_location_type'];
+                                                    if (isset($sub_location_type) && $sub_location_type != "") {
+                                                        echo " ( " . $sub_location_type . " )";
+                                                    } ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php
+                                                    if (access("delete_perm") == 1 && $data['arrived_date'] != "" && $data['arrived_date'] != null) {
+                                                        if ($is_logistic_received == 0) { ?>
+                                                            <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd3=delete&active_tab=tab3&id=" . $id . "&detail_id=" . $detail_id2) ?>">
+                                                                <i class="material-icons dp48">delete</i>
+                                                            </a>
+                                                        <?php
+                                                        }
+                                                    }
+                                                    $bill_of_landing = $data['bill_of_landing'];
+                                                    if (isset($bill_of_landing) && $bill_of_landing != "") { ?>
+                                                        &nbsp;
+                                                        <a target="_blank" href="app-assets/bills_of_landing/<?php echo ($bill_of_landing); ?>">
+                                                            <i class="material-icons dp48">folder</i>
                                                         </a>
-                                                    </td>
-                                                    <td style="<?= $td_padding; ?>"><?php echo $data['courier_name']; ?></td>
-                                                    <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
-                                                    <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['arrived_date']); ?></td>
-                                                    <td style="<?= $td_padding; ?>">
-                                                        <?php
-                                                        echo $data['sub_location_name'];
-                                                        $sub_location_type = $data['sub_location_type'];
-                                                        if (isset($sub_location_type) && $sub_location_type != "") {
-                                                            echo " ( " . $sub_location_type . " )";
-                                                        } ?>
-                                                    </td>
-                                                    <td style="<?= $td_padding; ?>">
-                                                        <?php
-                                                        if (access("delete_perm") == 1 && $data['arrived_date'] != "" && $data['arrived_date'] != null) {
-                                                            if ($is_logistic_received == 0) { ?>
-                                                                <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd3=delete&active_tab=tab3&id=" . $id . "&detail_id=" . $detail_id2) ?>">
-                                                                    <i class="material-icons dp48">delete</i>
-                                                                </a>
-                                                            <?php
-                                                            }
-                                                        }
-                                                        $bill_of_landing = $data['bill_of_landing'];
-                                                        if (isset($bill_of_landing) && $bill_of_landing != "") { ?>
-                                                            &nbsp;
-                                                            <a target="_blank" href="app-assets/bills_of_landing/<?php echo ($bill_of_landing); ?>">
-                                                                <i class="material-icons dp48">folder</i>
-                                                            </a>
-                                                        <?php
-                                                        }
-                                                        if ($data['arrived_date'] != NULL && $data['arrived_date'] != '') {  ?>
-                                                            &nbsp;&nbsp;
-                                                            <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
-                                                                <i class="material-icons dp48">print</i>
-                                                            </a>
-                                                        <?php
-                                                        } ?>
-                                                    </td>
-                                                </tr>
-                                        <?php
-                                                $i++;
-                                            }
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                                                    <?php
+                                                    }
+                                                    if ($data['arrived_date'] != NULL && $data['arrived_date'] != '') {  ?>
+                                                        &nbsp;&nbsp;
+                                                        <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
+                                                            <i class="material-icons dp48">print</i>
+                                                        </a>
+                                                    <?php
+                                                    } ?>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                            $i++;
+                                        }
+                                    } ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>

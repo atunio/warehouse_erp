@@ -108,9 +108,8 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 					$counter_ee1	= $db->counter($result_ee1);
 					if ($counter_ee1 > 0) {
 						$row_ee1_ano	= $db->fetch($result_ee1);
-						$arrival_no	= $row_ee1_ano[0]['arrival_no'];
+						$arrival_no		= $row_ee1_ano[0]['arrival_no'];
 					}
-					// echo "<br><br><br><br>arrival_noarrival_noarrival_noarrival_noarrival_noarrival_noarrival_noarrival_no" . $arrival_no;die;
 					if ($arrival_no == '0') {
 						$sql_ee1 = " SELECT IFNULL(max(a.arrival_no), 0) as max_arrival_no FROM purchase_order_detail_logistics a WHERE a.po_id = '" . $id . "'";
 						// echo $sql_ee1;

@@ -28,7 +28,9 @@
                 </div>
 
                 <div class="input-field col m4 s12">
-                    <?php $entry_type = "diagnostic";  ?>
+                    <?php
+                    /*
+                    $entry_type = "diagnostic";  ?>
                     <a class="btn gradient-45deg-light-blue-cyan timer_<?= $entry_type; ?>" title="Timer" href="javascript:void(0)" id="timer_<?= $entry_type; ?>_<?= $id ?>"
                         <?php
                         if (
@@ -65,6 +67,8 @@
                                                                                                                                                                                                                                                                             } ?> ">Resume <?php //echo $_SESSION[$entry_type]; 
                                                                                                                                                                                                                                                                                             ?>
                     </a>&nbsp;
+                    <?php 
+                    */ ?>
                     <input type="hidden" name="d_total_pause_duration" id="d_total_pause_duration" value="0">
                 </div>
             </div>
@@ -109,10 +113,9 @@
         // echo $sql; 
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
-        if ($count_log > 0) { ?>
-
-            <?php ///*
-            ?>
+        if ($count_log > 0) {
+            ///*
+        ?>
             <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab6_2" value="Y" />
                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
@@ -124,7 +127,7 @@
                 <div class="card-panel custom_padding_card_content_table_top_bottom">
                     <div class="row">
                         <div class="col m8 s12">
-                            <h5>Update Serial No from BarCode</h5>
+                            <h6>Update Serial No from BarCode</h6>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2) && $is_Submit_tab6_2 == 'Y') {
                                                                                                     echo "display: none;";
@@ -289,7 +292,7 @@
                 <div class="card-panel custom_padding_card_content_table_top_bottom">
                     <div class="row">
                         <div class="col m8 s12">
-                            <h5>Broken device data</h5>
+                            <h6>Broken device data</h6>
                         </div>
                         <div class="col m4 s12 show_broken_device_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_1) && $is_Submit_tab6_2_1 == 'Y') {
                                                                                             echo "display: none;";
@@ -672,11 +675,7 @@
                     </div>
                 </div>
             </form>
-
-            <?php //*/ 
-            ?>
-
-            <?php
+            <?php //*/  
             $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
                             FROM purchase_order_detail_logistics a
                             LEFT JOIN inventory_status c ON c.id = a.logistics_status
@@ -720,7 +719,7 @@
                 <div class="card-panel custom_padding_card_content_table_top_bottom">
                     <div class="row">
                         <div class="col m8 s12">
-                            <h5>Fetch Data from PhoneCheck</h5>
+                            <h6>Fetch Data from PhoneCheck</h6>
                         </div>
                         <div class="col m4 s12 update_tested_devices_serial_from_phonechecker_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {
                                                                                                                         echo "display: none;";
@@ -835,8 +834,7 @@
                     <input type="hidden" name="is_Submit2_preview" value="Y" />
                     <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
                         <div class="card-content custom_padding_card_content_table_top">
-                            <h4 class="card-title">Preview Fetched Data</h4><br>
-
+                            <h6 class="card-title">Preview Fetched Data</h6><br>
                             <div class="row">
                                 <table id="page-length-option1" class="display bordered striped addproducttable">
                                     <thead>

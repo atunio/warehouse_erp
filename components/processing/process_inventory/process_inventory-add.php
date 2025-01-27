@@ -656,7 +656,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 									<?php
 									$field_name 	= "stock_id";
 									$field_label 	= "Product";
-									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name
+									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
+																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
@@ -684,7 +685,12 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														<?php
 														if ($data2['category_name'] != "") {
 															echo " (" . $data2['category_name'] . ") ";
-														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?></option>
+														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?>
+														-> Body: <?php echo $data2['body_grade']; ?>,
+														LCD: <?php echo $data2['lcd_grade']; ?>,
+														Digitizer: <?php echo $data2['digitizer_grade']; ?>,
+														Overall Grade: <?php echo $data2['stock_grade']; ?>
+													</option>
 											<?php }
 											} ?>
 										</select>

@@ -771,8 +771,6 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 									$db->query($conn, $sql_c_up);
 									$msg6['msg_success']	= "Serial No has been updated successfully.";
 								}
-							} else {
-								$error6['msg'] = "There are no available serial numbers to generate a new one.";
 							}
 						}
 					} else {

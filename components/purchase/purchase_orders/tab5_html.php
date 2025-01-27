@@ -144,7 +144,7 @@
                              <div class="input-field col m12 s12"> </div>
                          </div>
                          <div class="row">
-                             <div class="input-field col m12 s12">
+                             <div class="input-field col m8 s12">
                                  <?php
                                     $field_name     = "product_id_barcode";
                                     $field_label    = "Product ID";
@@ -206,49 +206,7 @@
                                      </label>
                                  </div>
                              </div>
-                         </div>
-                         <div class="row">
-                             <div class="input-field col m12 s12"> </div>
-                         </div>
-                         <div class="row">
-                             <div class="input-field col m4 s12">
-                                 <?php
-                                    $field_name     = "logistic_id_barcode";
-                                    $field_label    = "Tracking No";
-                                    $count_r2     = $count_log;
-                                    ?>
-                                 <i class="material-icons prefix pt-1">location_on</i>
-                                 <div class="select2div">
-                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                         <?php
-                                            if ($count_r2 > 1) { ?>
-                                             <option value="">Select</option>
-                                             <?php
-                                            }
-                                            if ($count_r2 > 0) {
-                                                $row_r2    = $db->fetch($result_log);
-                                                foreach ($row_r2 as $data_r2) { ?>
-                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                     <?php echo $data_r2['tracking_no']; ?>
-                                                 </option>
-                                         <?php
-                                                }
-                                            } ?>
-                                     </select>
-                                     <label for="<?= $field_name; ?>">
-                                         <?= $field_label; ?>
-                                         <span class="color-red">* <?php
-                                                                    if (isset($error5[$field_name])) {
-                                                                        echo $error5[$field_name];
-                                                                    } ?>
-                                         </span>
-                                     </label>
-                                 </div>
-                             </div>
-
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m2 s12">
                                  <?php
                                     $field_name     = "sub_location_id_barcode";
                                     $field_label    = "Location";
@@ -285,7 +243,7 @@
                                      </label>
                                  </div>
                              </div>
-                             <div class="input-field col m4 s12">
+                             <div class="input-field col m2 s12">
                                  <?php
                                     $field_name     = "serial_no_barcode";
                                     $field_label    = "Product Bar Code";
@@ -305,9 +263,6 @@
                                      </span>
                                  </label>
                              </div>
-                         </div>
-                         <div class="row">
-                             <div class="input-field col m12 s12"></div>
                          </div>
                          <div class="row">
                              <div class="input-field col m12 s12 text_align_center">
@@ -376,56 +331,61 @@
                              <div class="row">
                                  <div class="input-field col m12 s12"> </div>
                              </div>
-                             <div class="row">
-                                 <div class="input-field col m4 s12">
-                                     <?php
-                                        $field_name     = "logistic_id";
-                                        $field_label    = "Tracking No";
-                                        $count_r2     = $count_log;
-                                        ?>
-                                     <i class="material-icons prefix pt-1">location_on</i>
-                                     <div class="select2div">
-                                         <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                                                        } ?>">
-                                             <?php
-                                                if ($count_r2 > 1) { ?>
-                                                 <option value="">Select</option>
-                                                 <?php
+
+                             <?php
+                                /*
+                            <div class="row">
+                                <div class="input-field col m4 s12">
+                                    <?php
+                                    $field_name     = "logistic_id";
+                                    $field_label    = "Tracking No";
+                                    $count_r2     = $count_log;
+                                    ?>
+                                    <i class="material-icons prefix pt-1">location_on</i>
+                                    <div class="select2div">
+                                        <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                            <?php
+                                            if ($count_r2 > 1) { ?>
+                                                <option value="">Select</option>
+                                                <?php
+                                            }
+                                            if ($count_r2 > 0) {
+                                                $row_r2    = $db->fetch($result_log);
+                                                foreach ($row_r2 as $data_r2) { ?>
+                                                    <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                        <?php echo $data_r2['tracking_no']; ?>
+                                                    </option>
+                                            <?php
                                                 }
-                                                if ($count_r2 > 0) {
-                                                    $row_r2    = $db->fetch($result_log);
-                                                    foreach ($row_r2 as $data_r2) { ?>
-                                                     <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                         <?php echo $data_r2['tracking_no']; ?>
-                                                     </option>
-                                             <?php
-                                                    }
-                                                } ?>
-                                         </select>
-                                         <label for="<?= $field_name; ?>">
-                                             <?= $field_label; ?>
-                                             <span class="color-red">* <?php
-                                                                        if (isset($error5[$field_name])) {
-                                                                            echo $error5[$field_name];
-                                                                        } ?>
-                                             </span>
-                                         </label>
-                                     </div>
-                                 </div>
-                             </div>
+                                            } ?>
+                                        </select>
+                                        <label for="<?= $field_name; ?>">
+                                            <?= $field_label; ?>
+                                            <span class="color-red">* <?php
+                                                                    if (isset($error5[$field_name])) {
+                                                                        echo $error5[$field_name];
+                                                                    } ?>
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                             <?php */ ?>
                              <div class="row">
                                  <div class="input-field col m12 s12"> </div>
                              </div>
                              <?php
-                                $sql_r1     = "	SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
-                                                    FROM purchase_order_detail a 
-                                                    INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                    INNER JOIN products c ON c.id = a.product_id
-                                                    INNER JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE 1=1 
-                                                    AND a.po_id = '" . $id . "' 
-                                                    ORDER BY c.product_uniqueid, a.product_condition "; //echo $sql_cl;
+                                $sql_r1     = "	SELECT c.product_category, d.category_name, sum(a.order_qty) as order_qty
+                                                FROM purchase_order_detail a 
+                                                INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                INNER JOIN products c ON c.id = a.product_id
+                                                INNER JOIN product_categories d ON d.id = c.product_category
+                                                WHERE 1=1 
+                                                AND a.po_id = '" . $id . "' 
+                                                GROUP BY d.category_name
+                                                ORDER BY d.category_name"; //echo $sql_cl;
                                 $result_r1  = $db->query($conn, $sql_r1);
                                 $count_r1   = $db->counter($result_r1);
                                 if ($count_r1 > 0) { ?>
@@ -435,12 +395,11 @@
                                              <thead>
                                                  <tr>
                                                      <?php
-                                                        $headings = '<th>Product ID</th>
-                                                                        <th>Product Detail</th>
-                                                                        <th>Order Qty</th>
-                                                                        <th>Total Received Yet</th>
-                                                                        <th>Receiving Qty</th> 
-                                                                        <th>Location</th>';
+                                                        $headings = '<th>Product Category</th>
+                                                                    <th>Expected Receive</th>
+                                                                    <th>Total Received Yet</th>
+                                                                    <th>Receiving Qty <span class="color-red">*</span> </th>
+                                                                    <th>Location <span class="color-red">*</span></th>';
                                                         echo $headings; ?>
                                                  </tr>
                                              </thead>
@@ -450,25 +409,25 @@
                                                     if ($count_r1 > 0) {
                                                         $row_cl_r1 = $db->fetch($result_r1);
                                                         foreach ($row_cl_r1 as $data_r1) {
-                                                            $detail_id_r1   = $data_r1['id'];
-                                                            $order_qty      = $data_r1['order_qty'];
-
-                                                            $sql_rc1            = "	SELECT a.* 
-                                                                                        FROM purchase_order_detail_receive a 
-                                                                                        WHERE 1=1 
-                                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                                        AND a.enabled = 1 "; //echo $sql_rc1;
+                                                            $detail_id_r1       = $data_r1['product_category'];
+                                                            $order_qty          = $data_r1['order_qty'];
+                                                            $sql_rc1            = "	SELECT a.*
+                                                                                    FROM purchase_order_detail_receive a 
+                                                                                    INNER JOIN  purchase_order_detail b  ON a.po_detail_id = b.id
+                                                                                    INNER JOIN products c ON c.id = b.product_id
+                                                                                    WHERE 1=1 
+                                                                                    AND c.product_category =  '" . $detail_id_r1 . "'
+                                                                                    AND b.po_id = '" . $id . "' 
+                                                                                    AND a.enabled = 1 "; //echo $sql_rc1;
                                                             $result_rc1         = $db->query($conn, $sql_rc1);
                                                             $total_received_qty = $db->counter($result_rc1);  ?>
                                                          <tr>
                                                              <td style="width: 400px;">
-                                                                 <?php echo $data_r1['product_uniqueid']; ?>
-                                                             </td>
-                                                             <td style="width: 400px;">
                                                                  <?php
-                                                                    echo $data_r1['product_desc'];
                                                                     if ($data_r1['category_name'] != '') {
-                                                                        echo "(" . $data_r1['category_name'] . ")";
+                                                                        echo "" . $data_r1['category_name'] . "";
+                                                                    } else {
+                                                                        echo "No Category";
                                                                     } ?>
                                                              </td>
                                                              <td style="width: 150px; text-align: center;"><?php echo $order_qty; ?></td>
@@ -672,7 +631,7 @@
                      </div>
                  </div>
              </form>
-
+             <?php /*
              <form id="receiving_manual" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                  <input type="hidden" name="is_Submit_tab5_5" value="Y" />
                  <input type="hidden" name="cmd5" value="<?php if (isset($cmd5)) echo $cmd5; ?>" />
@@ -930,6 +889,7 @@
                  </div>
              </form>
              <?php
+             */
                 $sql_r1     = "	SELECT  aa.id, b.package_name,c.category_name AS package_material_category_name, aa.order_qty AS package_material_qty
                                                 FROM purchase_order_packages_detail aa
                                                 INNER JOIN purchase_order_detail a ON a.po_id = aa.po_id
@@ -1410,14 +1370,13 @@
              <?php }
                 $td_padding = "padding:5px 10px !important;";
                 $sql            = " SELECT a.*, c.product_desc, c.product_uniqueid, d.category_name, 
-                                            e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name, b1.is_pricing_done
+                                           e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done
                                     FROM purchase_order_detail_receive a
                                     INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                     INNER JOIN purchase_orders b1 ON b1.id = b.po_id
                                     INNER JOIN products c ON c.id = b.product_id
                                     LEFT JOIN product_categories d ON d.id =c.product_category
                                     LEFT JOIN users e ON e.id = a.add_by_user_id
-                                    INNER JOIN purchase_order_detail_logistics f ON f.id = a.logistic_id
                                     LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                     WHERE a.enabled = 1 
                                     AND b.po_id = '" . $id . "'
@@ -1489,8 +1448,6 @@
                          <div class="row">
                              <table class="bordered">
                                  <tr>
-                                     <th>PO No</th>
-                                     <th>Diagnostic Invoice#</th>
                                      <th>Product ID</th>
                                      <th>Product</th>
                                      <th> Total Received</th>
@@ -1514,14 +1471,6 @@
                                             foreach ($row_t1 as $data_t1) {
                                                 $detail_id2 = $data_t1['po_detail_id']; ?>
                                              <tr>
-                                                 <td><?php echo $data_t1['po_no']; ?></td>
-                                                 <td>
-                                                     <?php echo $data_t1['po_no']; ?>P<?php echo $data_t1['po_detail_id']; ?>
-                                                     &nbsp;&nbsp;
-                                                     <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_po_productno_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
-                                                         <i class="material-icons dp48">print</i>
-                                                     </a>
-                                                 </td>
                                                  <td><?php echo $data_t1['product_uniqueid']; ?></td>
                                                  <td>
                                                      <?php echo $data_t1['product_desc']; ?>
@@ -1555,13 +1504,12 @@
                          <div class="section section-data-tables">
                              <div class="row">
                                  <div class="col m12 s12">
-                                     <table id="page-length-option" class="display pagelength50_3 dataTable dtr-inline">
+                                     <table id="page-length-option" class="display pagelength100 dataTable dtr-inline">
                                          <thead>
                                              <tr>
                                                  <?php
                                                     $headings = '   <th class="sno_width_60">S.No</th>
                                                                     <th></th>
-                                                                    <th>Tracking#</th>
                                                                     <th>Serial#</th>
                                                                     <th>Product Base ID</th>
                                                                     <th>Product Detail</th>
@@ -1592,9 +1540,6 @@
                                                                      <span></span>
                                                                  </label>
                                                              <?php } ?>
-                                                         </td>
-                                                         <td style="<?= $td_padding; ?>">
-                                                             <?php echo $data['tracking_no']; ?>
                                                          </td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php

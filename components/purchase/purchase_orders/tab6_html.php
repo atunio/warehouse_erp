@@ -26,7 +26,6 @@
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                 </div>
-
                 <div class="input-field col m4 s12">
                     <?php
                     /*
@@ -80,7 +79,7 @@
                     </div>
                 </div>
         <?php }
-        }  ?>
+        } ?>
     </div>
     <?php
     if (!isset($id)) { ?>
@@ -552,6 +551,42 @@
                             </div>
                             <div class="input-field col m2 s12">
                                 <?php
+                                $field_name     = "inventory_status_boken_device";
+                                $field_label    = "Inventory Status";
+                                $sql_status     = "SELECT id, status_name
+                                                    FROM  inventory_status  
+                                                    WHERE enabled = 1
+                                                    AND id IN (5,6)
+                                                    Order BY id";
+                                $result_status  = $db->query($conn, $sql_status);
+                                $count_status   = $db->counter($result_status);
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count_status > 0) {
+                                            $row_status    = $db->fetch($result_status);
+                                            foreach ($row_status as $data2) { ?>
+                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">*<?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col m2 s12">
+                                <?php
                                 $field_name     = "ram_boken_device";
                                 $field_label    = "RAM";
                                 ?>
@@ -629,40 +664,6 @@
                                                                 } ?>
                                     </span>
                                 </label>
-                            </div>
-                            <div class="input-field col m2 s12">
-                                <?php
-                                $field_name     = "inventory_status_boken_device";
-                                $field_label    = "Inventory Status";
-                                $sql_status     = "SELECT id, status_name
-                                                    FROM  inventory_status  
-                                                    WHERE enabled = 1
-                                                    AND id IN (5,6)
-                                                    Order BY id";
-                                $result_status  = $db->query($conn, $sql_status);
-                                $count_status   = $db->counter($result_status);
-                                ?>
-                                <i class="material-icons prefix">question_answer</i>
-                                <div class="select2div">
-                                    <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
-                                        <option value="">Select</option>
-                                        <?php
-                                        if ($count_status > 0) {
-                                            $row_status    = $db->fetch($result_status);
-                                            foreach ($row_status as $data2) { ?>
-                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                        <?php }
-                                        } ?>
-                                    </select>
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">*<?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
                             </div>
                         </div>
                         <div class="row">
@@ -978,7 +979,7 @@
 
             $td_padding = "padding:5px 10px !important;";
             $sql            = " SELECT a.*, c.product_desc, a.base_product_id, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name, 
+                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, 
                                         i.sub_location_name as sub_location_name_after_diagnostic,
                                         b.order_price, h.status_name, c.product_uniqueid 
                                 FROM purchase_order_detail_receive a 
@@ -986,7 +987,6 @@
                                 INNER JOIN products c ON c.id = b.product_id
                                 LEFT JOIN product_categories d ON d.id =c.product_category
                                 LEFT JOIN users e ON e.id = a.add_by_user_id
-                                INNER JOIN purchase_order_detail_logistics f ON f.id = a.logistic_id
                                 LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                 LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic

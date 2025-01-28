@@ -1363,7 +1363,7 @@
                 $td_padding = "padding:5px 10px !important;";
                 $sql            = " SELECT * FROM (
                                         SELECT 'ProductReceived' as record_type, '1' as total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done, c.product_category
+                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, c.product_category
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN purchase_orders b1 ON b1.id = b.po_id
@@ -1378,7 +1378,7 @@
                                         UNION ALL
 
                                         SELECT 'CateogryReceived' AS record_type, COUNT(a.id) AS total_qty_received, a.*, '' AS product_desc, '' AS product_uniqueid, d.category_name, 
-                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done, a.recevied_product_category AS product_category 
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, a.recevied_product_category AS product_category 
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                         INNER JOIN product_categories d ON d.id = a.recevied_product_category  
@@ -1388,7 +1388,7 @@
                                         AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
                                         GROUP BY a.recevied_product_category
                                     ) AS t1
-                                    ORDER BY product_category, sub_location_id, serial_no_barcode ";
+                                    ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
                 $result_log     = $db->query($conn, $sql);
                 $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
@@ -1598,7 +1598,13 @@
                                                                     }
                                                                 } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>"><?php echo $data['sub_location_name']; ?></td>
+                                                         <td style="<?= $td_padding; ?>">
+                                                             <?php echo $data['sub_location_name']; ?>
+                                                             <?php
+                                                                if ($data['sub_location_type'] != "") {
+                                                                    echo " (" . $data['sub_location_type'] . ")";
+                                                                } ?>
+                                                         </td>
                                                          <td style="<?= $td_padding; ?>"><?php echo $data['total_qty_received']; ?></td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php echo $data['first_name']; ?>

@@ -978,21 +978,44 @@
 
 
             $td_padding = "padding:5px 10px !important;";
-            $sql            = " SELECT a.*, c.product_desc, a.base_product_id, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, 
-                                        i.sub_location_name as sub_location_name_after_diagnostic,
-                                        b.order_price, h.status_name, c.product_uniqueid 
-                                FROM purchase_order_detail_receive a 
-                                INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                INNER JOIN products c ON c.id = b.product_id
-                                LEFT JOIN product_categories d ON d.id =c.product_category
-                                LEFT JOIN users e ON e.id = a.add_by_user_id
-                                LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
-                                LEFT JOIN inventory_status h ON h.id = a.inventory_status
-                                LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
-                                WHERE a.enabled = 1 
-                                AND b.po_id = '" . $id . "'
-                                ORDER BY a.is_diagnost DESC, a.edit_lock,  a.base_product_id, a.serial_no_barcode DESC";
+            $sql            = " SELECT * FROM (
+                                    SELECT 'ProductReceived' as record_type, '1' as total_qty_received, 
+                                            a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
+                                            i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
+                                            b.order_price, h.status_name, c.product_category 
+                                    FROM purchase_order_detail_receive a
+                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                    INNER JOIN purchase_orders b1 ON b1.id = b.po_id
+                                    INNER JOIN products c ON c.id = b.product_id
+                                    LEFT JOIN product_categories d ON d.id =c.product_category
+                                    LEFT JOIN users e ON e.id = a.add_by_user_id
+                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                    LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                    LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                    WHERE a.enabled = 1 
+                                    AND b.po_id = '" . $id . "'
+                                    AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+
+                                    UNION ALL
+
+                                    SELECT 'CateogryReceived' AS record_type, COUNT(a.id) AS total_qty_received, 
+                                        a.*, '' AS product_uniqueid, '' AS product_desc, d.category_name, 
+                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
+                                        i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
+                                        '' as order_price, h.status_name, a.recevied_product_category as product_category
+                                    FROM purchase_order_detail_receive a 
+                                    INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+                                    INNER JOIN product_categories d ON d.id = a.recevied_product_category  
+                                    LEFT JOIN users e ON e.id = a.add_by_user_id
+                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                    LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                    LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                    WHERE a.po_id = '" . $id . "'
+                                    AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
+                                    GROUP BY a.recevied_product_category
+                                ) AS t1
+                                ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
             if ($count_log > 0) { ?>
@@ -1034,11 +1057,12 @@
                                             <tr>
                                                 <?php
                                                 $headings = '<th class="sno_width_60">S.No</th>
-                                                            <th>Product ID / <br>Product Detail</th>
+                                                            <th>Product Detail</th>
+                                                            <th>Qty</th>
                                                             <th>Serial#</th>   
                                                             <th>Specification</th>
                                                              <th>Grading</th> 
-                                                            <th>Warranty / <br>Price / <br>Defects</th> 
+                                                            <th>Price / <br>Defects</th> 
                                                              <th>Inventory Status</th>';
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
@@ -1052,6 +1076,7 @@
                                                 foreach ($row_cl1 as $data) {
                                                     $detail_id2                 = $data['id'];
                                                     $po_detail_id               = $data['po_detail_id'];
+                                                    $total_qty_received         = $data['total_qty_received'];
                                                     $product_uniqueid_main      = $data['product_uniqueid'];
                                                     $battery                    = $data['battery'];
                                                     $body_grade                 = $data['body_grade'];
@@ -1084,9 +1109,9 @@
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
-                                                            echo $data['base_product_id']; ?>
-                                                            <br>
-                                                            <?php
+                                                            if ($product_uniqueid_main != "" && $product_uniqueid_main != null) {
+                                                                echo $product_uniqueid_main . "<br>";
+                                                            }
                                                             echo $data['product_desc'];
                                                             if ($data['category_name'] != "") {
                                                                 echo " (" . $data['category_name'] . ")";
@@ -1096,7 +1121,12 @@
                                                             if ($data['sub_location_name_after_diagnostic'] != "") {
                                                                 echo " Location: " . $data['sub_location_name_after_diagnostic'];
                                                             } ?>
+                                                            <?php
+                                                            if ($data['sub_location_type_after_diagnostic'] != "") {
+                                                                echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
+                                                            } ?>
                                                         </td>
+                                                        <td style="<?= $td_padding; ?>"><?php echo "" . $data['total_qty_received']; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
                                                             $color  = "purple";
@@ -1223,9 +1253,6 @@
                                                             <?php } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
-                                                            <?php if ($warranty != null || $warranty != '') {
-                                                                echo "Warranty: " . $warranty . "<br>";
-                                                            } ?>
                                                             <?php if ($order_price != '') {
                                                                 echo "Price: " . number_format($order_price, 2) . "<br>";
                                                             } ?>

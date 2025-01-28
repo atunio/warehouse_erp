@@ -21,8 +21,14 @@ $is_diagnost                    = 1;
 $inventory_status = '6';
 $status_name = "Defective";
 if ($defectsCode == '' || $defectsCode == NULL) {
-    if ($battery != "" && $battery >= '60') {
+    if ($lcd_grade == '' || $digitizer_grade == '' || $body_grade == '') {
+        $inventory_status = '';
+        $status_name = "";
+    } else if (is_numeric($battery) && $battery >= '60') {
         $inventory_status = '5';
         $status_name = "Tested/Graded";
+    } else {
+        $inventory_status = '';
+        $status_name = "";
     }
 }

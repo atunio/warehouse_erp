@@ -553,6 +553,19 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
+
+			$sql_pd01 		= "	SELECT c.product_category
+								FROM purchase_order_detail a 
+								INNER JOIN products c ON c.id = a.product_id
+								WHERE 1=1 
+								AND a.id = '" . $product_id_barcode_diagnostic . "'  ";
+			$result_pd01	= $db->query($conn, $sql_pd01);
+			$count_pd01		= $db->counter($result_pd01);
+			if ($count_pd01 > 0) {
+				$row_pd01				= $db->fetch($result_pd01);
+				$product_category_diagn	= $row_pd01[0]['product_category'];
+			}
+
 			$sql_pd01 		= "	SELECT a.* 
 								FROM purchase_order_detail_receive a 
 								WHERE a.enabled = 1  
@@ -563,7 +576,8 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 				$sql_pd01 		= "	SELECT a.* 
 									FROM purchase_order_detail_receive a 
 									WHERE a.enabled = 1 
-									AND a.po_detail_id = '" . $product_id_barcode_diagnostic . "' 
+									AND a.recevied_product_category = '" . $product_category_diagn . "' 
+									AND a.po_id = '" . $id . "' 
 									AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
 									LIMIT 1";
 				$result_pd01	= $db->query($conn, $sql_pd01);
@@ -571,7 +585,8 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 				if ($count_pd01 > 0) {
 					$row_pd01		= $db->fetch($result_pd01);
 					$receive_id_2 	= $row_pd01[0]['id'];
-					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		serial_no_barcode					= '" . $serial_no_barcode_diagnostic . "',
+					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		po_detail_id						= '" . $product_id_barcode_diagnostic . "',
+																				serial_no_barcode					= '" . $serial_no_barcode_diagnostic . "',
 																				sub_location_id_after_diagnostic	= '" . $sub_location_id_barcode_diagnostic . "',
 																				is_diagnost							= '1',
 																				diagnose_by_user					= '" . $_SESSION['username'] . "',
@@ -752,14 +767,16 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 								$db->query($conn, $sql6);
 
 								$sql_c_up = "UPDATE purchase_order_detail_receive SET 	
-																						po_detail_id				= '" . $po_detail_id . "',
-																						serial_no_barcode			= '" . $serial_no_fake . "',
-																						edit_lock 					= '1',
-																						is_import_diagnostic_data	= '1',
-																						is_diagnost					= '1',
-																						overall_grade				= '" . $c_product_condition2 . "',
-																						inventory_status			= '" . $c_expected_status2 . "',
-																						is_diagnostic_bypass 		= 1,
+																						po_detail_id						= '" . $po_detail_id . "',
+																						serial_no_barcode					= '" . $serial_no_fake . "',
+																						edit_lock 							= '1',
+																						is_import_diagnostic_data			= '1',
+																						is_diagnost							= '1',
+																						overall_grade						= '" . $c_product_condition2 . "',
+																						inventory_status					= '" . $c_expected_status2 . "',
+																						sub_location_id_after_diagnostic 	= '" . $sub_location_id . "',
+																						is_diagnostic_bypass 				= 1,
+																						
 
 																						update_by				= '" . $_SESSION['username'] . "',
 																						update_by_user_id		= '" . $_SESSION['user_id'] . "',

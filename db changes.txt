@@ -1,13 +1,14 @@
 Created tables:
 
-sales_order_detail_packing
+
 
 
 ==========================================
 
 Alter:
 
-product_stock = > is_packed
-sales_order_detail = > product_stock_id
- 
-
+purchase_order_detail_receive = > recevied_product_category
+purchase_order_detail_receive = > po_id
+purchase_order_detail_receive = > receive_type
+purchase_order_detail = > is_fk_serial_generated
+   

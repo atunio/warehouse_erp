@@ -698,18 +698,20 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 }
 if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') {
 	extract($_POST);
+	if (!isset($product_id_generate) || (isset($product_id_generate)  && ($product_id_generate == "0" || $product_id_generate == ""))) {
+		$error6['product_id_generate'] = "Required";
+	}
 	if (empty($error6)) {
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
-			$sql_ee1 = "SELECT a.id, a.product_id, a.product_condition, c.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,a.expected_status
+			$sql_ee1 = "SELECT a.id, a.product_id, a.product_condition, a.order_price, a.expected_status, a.order_qty, c.product_category
 						FROM purchase_order_detail a 
 						INNER JOIN products c ON c.id = a.product_id
 						INNER JOIN purchase_orders a2 ON a2.id = a.po_id
-						WHERE 1 = 1 AND a.po_id = '" . $id . "' ";
-			if (isset($product_id_generate) && $product_id_generate > 0) {
-				$sql_ee1 .= " AND a.id = '" . $product_id_generate . "' ";
-			}
+						WHERE 1 = 1 
+						AND a.po_id = '" . $id . "'
+						AND a.id = '" . $product_id_generate . "' ";
 			//echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
@@ -717,64 +719,73 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 				$row_ee1 = $db->fetch($result_ee1);
 				foreach ($row_ee1 as $data_ee1) {
 					$po_detail_id					= $data_ee1['id'];
+					$order_qty						= $data_ee1['order_qty'];
 					$order_price					= $data_ee1['order_price'];
-					$product_uniqueid_main1			= $data_ee1['product_uniqueid'];
 					$c_product_id2 					= $data_ee1['product_id'];
 					$c_product_condition2 			= $data_ee1['product_condition'];
 					$c_expected_status2     		= $data_ee1['expected_status'];
+					$product_category2     			= $data_ee1['product_category'];
+					$k = 0;
+					for ($i = 0; $i < $order_qty; $i++) {
+						$sql_pd01 		= " SELECT a.* 
+											FROM purchase_order_detail_receive a
+											WHERE a.enabled = 1
+											AND a.recevied_product_category = '" . $product_category2 . "' 
+											AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
+											LIMIT 1 ";
+						$result_pd01	= $db->query($conn, $sql_pd01);
+						$count_pd01		= $db->counter($result_pd01);
+						if ($count_pd01 > 0) {
+							$row_pd01 = $db->fetch($result_pd01);
+							foreach ($row_pd01 as $data_pd01) {
+								$receive_id_2 		= $data_pd01['id'];
+								$sub_location_id 	= $data_pd01['sub_location_id'];
+								$price 				= $data_pd01['price'];
+								$serial_no_fake 	= "GEN" . $receive_id_2;
 
-					$sql_ee2 		= "SELECT a.* FROM purchase_order_detail_receive a WHERE a.po_detail_id = '" . $po_detail_id . "' "; //echo $sql_ee1;
-					$result_ee2 	= $db->query($conn, $sql_ee2);
-					$counter_ee2	= $db->counter($result_ee2);
-					if ($counter_ee2 > 0) {
-						$row_ee2 = $db->fetch($result_ee2);
-						foreach ($row_ee2 as $data_ee2) {
-							$sql_pd01 		= " SELECT a.* 
-												FROM purchase_order_detail_receive a
-												WHERE a.enabled = 1
-												AND a.po_detail_id = '" . $po_detail_id . "' 
-												AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
-												LIMIT 1 ";
-							$result_pd01	= $db->query($conn, $sql_pd01);
-							$count_pd01		= $db->counter($result_pd01);
-							if ($count_pd01 > 0) {
-								$row_pd01 = $db->fetch($result_pd01);
-								foreach ($row_pd01 as $data_pd01) {
-									$receive_id_2 		= $data_pd01['id'];
-									$sub_location_id 	= $data_pd01['sub_location_id'];
-									$price 				= $data_pd01['price'];
-									$serial_no_fake 	= "GEN" . $receive_id_2;
+								$sql6 = "	INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, 
+																		stock_grade, p_inventory_status, sub_location, price, 
+																		add_by_user_id, add_date, add_by, add_ip, add_timezone)
+											VALUES('" . $subscriber_users_id . "', '" . $receive_id_2 . "', '" . $c_product_id2 . "', '" . $serial_no_fake . "', 1, 
+												'" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id . "', '" . $price . "',  
+												'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$db->query($conn, $sql6);
 
-									$sql6 = "	INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, 
-																			stock_grade, p_inventory_status, sub_location, price, 
-																			add_by_user_id, add_date, add_by, add_ip, add_timezone)
-												VALUES('" . $subscriber_users_id . "', '" . $receive_id_2 . "', '" . $c_product_id2 . "', '" . $serial_no_fake . "', 1, 
-													'" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id . "', '" . $price . "',  
-													'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-									$db->query($conn, $sql6);
+								$sql_c_up = "UPDATE purchase_order_detail_receive SET 	
+																						po_detail_id				= '" . $po_detail_id . "',
+																						serial_no_barcode			= '" . $serial_no_fake . "',
+																						edit_lock 					= '1',
+																						is_import_diagnostic_data	= '1',
+																						is_diagnost					= '1',
+																						overall_grade				= '" . $c_product_condition2 . "',
+																						inventory_status			= '" . $c_expected_status2 . "',
+																						is_diagnostic_bypass 		= 1,
 
-									$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_fake . "',
-																							edit_lock 					= '1',
-																							is_import_diagnostic_data	= '1',
-																							is_diagnost					= '1',
-																							overall_grade				= '" . $c_product_condition2 . "',
-																							inventory_status			= '" . $c_expected_status2 . "',
-																							is_diagnostic_bypass 		= 1,
-
-																							update_by				= '" . $_SESSION['username'] . "',
-																							update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																							update_timezone			= '" . $timezone . "',
-																							update_date				= '" . $add_date . "',
-																							update_ip				= '" . $add_ip . "',
-																							update_from_module_id	= '" . $module_id . "'
-												WHERE id = '" . $receive_id_2 . "' ";
-									$db->query($conn, $sql_c_up);
-									$msg6['msg_success']	= "Serial No has been updated successfully.";
-								}
+																						update_by				= '" . $_SESSION['username'] . "',
+																						update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																						update_timezone			= '" . $timezone . "',
+																						update_date				= '" . $add_date . "',
+																						update_ip				= '" . $add_ip . "',
+																						update_from_module_id	= '" . $module_id . "'
+											WHERE id = '" . $receive_id_2 . "' ";
+								$db->query($conn, $sql_c_up);
+								$k++;
+								$msg6['msg_success']	= "Serial No has been updated successfully.";
 							}
 						}
-					} else {
-						$error6['msg'] = "Please receive first";
+					}
+					if ($k > 0) {
+						$sql_c_up = "UPDATE purchase_order_detail SET 	
+																		is_fk_serial_generated	= 1,
+
+																		update_by				= '" . $_SESSION['username'] . "',
+																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																		update_timezone			= '" . $timezone . "',
+																		update_date				= '" . $add_date . "',
+																		update_ip				= '" . $add_ip . "',
+																		update_from_module_id	= '" . $module_id . "'
+									WHERE id = '" . $po_detail_id . "' ";
+						$db->query($conn, $sql_c_up);
 					}
 				}
 			}

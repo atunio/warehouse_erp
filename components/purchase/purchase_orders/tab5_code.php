@@ -32,12 +32,18 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 		} else {
 			$k = 0;
 			foreach ($receviedProductIds as $receviedProductId) {
+				$receviedProductId_array = explode("-", $receviedProductId);
+				if ($receviedProductId_array[0] == 'CateogryReceived') {
+					$delete_id = " recevied_product_category = '" . $receviedProductId_array[1] . "' AND po_id = '" . $id . "' ";
+				} else {
+					$delete_id = " id= '" . $receviedProductId_array[1] . "' ";
+				}
 				$sql_c_up = "DELETE FROM  purchase_order_detail_receive  
-							WHERE id = '" . $receviedProductId . "' AND (is_diagnost = 0 OR is_diagnostic_bypass = 1) ";
-				// echo "<br><br>" . $sql_c_up;
+							WHERE " . $delete_id . " AND (is_diagnost = 0 OR is_diagnostic_bypass = 1) ";
+				//echo "<br><br>" . $sql_c_up;
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {
-					$sql_c_up = "DELETE FROM  product_stock  WHERE receive_id = '" . $receviedProductId . "' ";
+					$sql_c_up = "DELETE FROM  product_stock WHERE receive_id = '" . $receviedProductId . "' ";
 					$db->query($conn, $sql_c_up);
 					$k++;
 				}
@@ -52,8 +58,6 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 		}
 	}
 }
-
-
 if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 	extract($_POST);
 	if (!isset($receiving_location2) || (isset($receiving_location2)  && sizeof($receiving_location2) == "0")) {
@@ -85,7 +89,6 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error5['msg'] = "Please add master record first";
 	}
-
 	if (empty($error5)) {
 		if (po_permisions("Receive") == 0) {
 			$error5['msg'] = "You do not have add permissions.";
@@ -490,13 +493,15 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 						$product_uniqueid_main1 = "";
 						$rn 					= 1;
 
+						$recevied_product_category = $key;
+
 						$package_id1 	= $package_material_qty1 = $package_material_qty_received1 = 0;
 						$sql_pd3 		= "	SELECT  a.id, a.product_id, a.product_condition, b.product_uniqueid, 
 													a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price, a.order_qty, a.expected_status
 											FROM purchase_order_detail a
 											INNER JOIN products b ON b.id = a.product_id
 											INNER JOIN purchase_orders a2 ON a2.id = a.po_id
- 											WHERE b.product_category 	= '" . $key . "' 
+ 											WHERE b.product_category 	= '" . $recevied_product_category . "' 
  											AND a.po_id 				= '" . $id . "' ";
 						$result_pd3		= $db->query($conn, $sql_pd3);
 						$count_pd3		= $db->counter($result_pd3);
@@ -522,8 +527,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 								for ($m = 0; $m < $allocated_qty; $m++) {
 									$receiving_location_add = $receiving_location[$key];
-									$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, po_detail_id, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-											VALUES('" . $product_uniqueid_main1 . "', '" . $po_detail_id . "',   '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+									$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, base_product_id, recevied_product_category, po_detail_id, receive_type, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+											 VALUES('" . $id . "', '" . $product_uniqueid_main1 . "', '" . $recevied_product_category . "',  '" . $po_detail_id . "', 'CateogryReceived', '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 										$receive_id = mysqli_insert_id($conn);

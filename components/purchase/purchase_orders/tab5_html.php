@@ -567,6 +567,7 @@
                                                         INNER JOIN product_categories d ON d.id = c.product_category
                                                         WHERE 1=1 
                                                         AND a.po_id = '" . $id . "' 
+                                                        AND a.is_fk_serial_generated = 0
                                                         ORDER BY c.product_uniqueid, a.product_condition "; // echo $sql; 
                                     $result_log2    = $db->query($conn, $sql);
                                     $count_r2       = $db->counter($result_log2); ?>
@@ -578,24 +579,14 @@
                                                                                                                                                                     } ?>">
                                          <?php
                                             if ($count_r2 > 1) { ?>
-                                             <option value="">All</option>
+                                             <option value="">Select</option>
                                              <?php
                                             }
                                             if ($count_r2 > 0) {
                                                 $row_r2    = $db->fetch($result_log2);
                                                 foreach ($row_r2 as $data_r2) {
-
                                                     $detail_id_r1       = $data_r2['id'];
-                                                    $order_qty          = $data_r2['order_qty'];
-
-                                                    $sql_rc1            = "	SELECT a.* 
-                                                                        FROM purchase_order_detail_receive a 
-                                                                        WHERE 1=1 
-                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                        AND a.enabled = 1 "; //echo $sql_cl;
-                                                    $result_rc1         = $db->query($conn, $sql_rc1);
-                                                    $total_received_qty = $db->counter($result_rc1);  ?>
-
+                                                    $order_qty          = $data_r2['order_qty']; ?>
                                                  <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                      <?php
                                                         echo "" . $data_r2['product_uniqueid'];
@@ -603,7 +594,7 @@
                                                         if ($data_r2['category_name'] != "") {
                                                             echo " (" . $data_r2['category_name'] . ") ";
                                                         }
-                                                        echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
+                                                        echo " - Order QTY: " . $order_qty; ?>
                                                  </option>
                                          <?php
                                                 }
@@ -611,9 +602,9 @@
                                      </select>
                                      <label for="<?= $field_name; ?>">
                                          <?= $field_label; ?>
-                                         <span class="color-red"><?php
-                                                                    if (isset($error5[$field_name])) {
-                                                                        echo $error5[$field_name];
+                                         <span class="color-red"> * <?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
                                                                     } ?>
                                          </span>
                                      </label>
@@ -1369,18 +1360,34 @@
                  </form>
              <?php }
                 $td_padding = "padding:5px 10px !important;";
-                $sql            = " SELECT a.*, c.product_desc, c.product_uniqueid, d.category_name, 
-                                           e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done
-                                    FROM purchase_order_detail_receive a
-                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                    INNER JOIN purchase_orders b1 ON b1.id = b.po_id
-                                    INNER JOIN products c ON c.id = b.product_id
-                                    LEFT JOIN product_categories d ON d.id =c.product_category
-                                    LEFT JOIN users e ON e.id = a.add_by_user_id
-                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
-                                    WHERE a.enabled = 1 
-                                    AND b.po_id = '" . $id . "'
-                                    ORDER BY a.serial_no_barcode DESC, g.sub_location_name, a.id DESC ";
+                $sql            = " SELECT * FROM (
+                                        SELECT 'ProductReceived' as record_type, '1' as total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
+                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done, c.product_category
+                                        FROM purchase_order_detail_receive a
+                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                        INNER JOIN purchase_orders b1 ON b1.id = b.po_id
+                                        INNER JOIN products c ON c.id = b.product_id
+                                        LEFT JOIN product_categories d ON d.id =c.product_category
+                                        LEFT JOIN users e ON e.id = a.add_by_user_id
+                                        LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                        WHERE a.enabled = 1 
+                                        AND b.po_id = '" . $id . "'
+                                        AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+
+                                        UNION ALL
+
+                                        SELECT 'CateogryReceived' AS record_type, COUNT(a.id) AS total_qty_received, a.*, '' AS product_desc, '' AS product_uniqueid, d.category_name, 
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, b1.is_pricing_done, a.recevied_product_category AS product_category 
+                                        FROM purchase_order_detail_receive a 
+                                        INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+                                        INNER JOIN product_categories d ON d.id = a.recevied_product_category  
+                                        LEFT JOIN users e ON e.id = a.add_by_user_id
+                                        LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                        WHERE a.po_id = '" . $id . "'
+                                        AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
+                                        GROUP BY a.recevied_product_category
+                                    ) AS t1
+                                    ORDER BY product_category, sub_location_id, serial_no_barcode ";
                 $result_log     = $db->query($conn, $sql);
                 $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
@@ -1393,22 +1400,36 @@
                      <div class="row">
                          <table class="bordered">
                              <tr>
-                                 <th>Location</th>
                                  <th>Category</th>
+                                 <th>Location</th>
                                  <th>Qty</th>
                              </tr>
                              <?php
-                                $sql        = " SELECT e.`sub_location_name`, e.sub_location_type, d.`category_name`, COUNT(a.id) AS total_products
-                                            FROM purchase_order_detail_receive a
-                                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                            INNER JOIN purchase_orders b2 ON b2.id = b.po_id
-                                            INNER JOIN products c ON c.id = b.product_id
-                                            LEFT JOIN product_categories d ON d.id =c.product_category
-                                            INNER JOIN warehouse_sub_locations e ON e.id = a.`sub_location_id`
-                                            WHERE a.enabled = 1 
-                                            AND b.po_id = '" . $id . "'
-                                            GROUP BY a.sub_location_id, c.product_category
-                                            ORDER BY a.sub_location_id, c.product_category";
+                                $sql        =   "SELECT sub_location_name, sub_location_type, category_name, SUM(total_products) AS total_products
+                                                    FROM (
+                                                    SELECT e.sub_location_name, e.sub_location_type, d.`category_name`, COUNT(a.id) AS total_products
+                                                    FROM purchase_order_detail b 
+                                                    INNER JOIN products c ON c.id = b.product_id
+                                                    INNER JOIN purchase_order_detail_receive a ON a.`po_detail_id` = b.id
+                                                    LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
+                                                    INNER JOIN product_categories d ON d.id = c.product_category  
+                                                    WHERE a.enabled = 1 
+                                                    AND b.po_id = '" . $id . "'
+                                                    AND a.`receive_type` != 'CateogryReceived'
+                                                    GROUP BY c.product_category
+
+                                                    UNION ALL 
+
+                                                    SELECT e.sub_location_name, e.sub_location_type, d.`category_name`, COUNT(a.id) AS total_products
+                                                    FROM purchase_order_detail_receive a 
+                                                    INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+                                                    INNER JOIN product_categories d ON d.id = a.recevied_product_category  
+                                                    LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
+                                                    WHERE a.po_id = '" . $id . "'
+                                                    GROUP BY a.recevied_product_category
+                                                ) AS t1
+                                                GROUP BY category_name, sub_location_name
+                                                ORDER BY category_name, sub_location_name ";
                                 $result_t1  = $db->query($conn, $sql);
                                 $count_t1   = $db->counter($result_t1);
                                 if ($count_t1 > 0) {
@@ -1416,13 +1437,14 @@
                                         $row_t1 = $db->fetch($result_t1);
                                         foreach ($row_t1 as $data_t1) { ?>
                                          <tr>
-                                             <td><?php echo $data_t1['sub_location_name']; ?>
+                                             <td><?php echo $data_t1['category_name']; ?></td>
+                                             <td>
+                                                 <?php echo $data_t1['sub_location_name']; ?>
                                                  <?php
                                                     if ($data_t1['sub_location_type'] != "") {
                                                         echo " (" . $data_t1['sub_location_type'] . ")";
                                                     } ?>
                                              </td>
-                                             <td><?php echo $data_t1['category_name']; ?></td>
                                              <td><?php echo $data_t1['total_products']; ?></td>
                                          </tr>
                              <?php
@@ -1445,6 +1467,7 @@
                                  <h6>Received Products</h6>
                              </div>
                          </div>
+                         <?php /*?>
                          <div class="row">
                              <table class="bordered">
                                  <tr>
@@ -1490,6 +1513,7 @@
                                     } ?>
                              </table>
                          </div>
+                         <?php */ ?>
                          <br>
                          <div class="row">
                              <div class="col m12 s12">
@@ -1514,6 +1538,7 @@
                                                                     <th>Product Base ID</th>
                                                                     <th>Product Detail</th>
                                                                     <th>Location</th>
+                                                                    <th>Qty</th>
                                                                     <th>Received By</th>
                                                                     <th>Receiving Date/Time</th>';
                                                     echo $headings;
@@ -1526,51 +1551,54 @@
                                                 if ($count_log > 0) {
                                                     $row_cl1 = $db->fetch($result_log);
                                                     foreach ($row_cl1 as $data) {
-                                                        $detail_id2 = $data['id']; ?>
+                                                        $detail_id2 = $data['id'];
+                                                        if ($data['record_type'] == 'CateogryReceived') {
+                                                            $detail_id2 = $data['product_category'];
+                                                        } ?>
                                                      <tr>
-                                                         <td style="<?= $td_padding; ?>">
-                                                             <?php echo $i + 1; ?>
-                                                         </td>
+                                                         <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?></td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
                                                                  <label style="margin-left: 25px;">
-                                                                     <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $detail_id2; ?>" class="checkbox6 filled-in" />
+                                                                     <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $data['record_type']; ?>-<?= $detail_id2; ?>" class="checkbox6 filled-in" />
                                                                      <span></span>
                                                                  </label>
                                                              <?php } ?>
                                                          </td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php
-                                                                $color  = "color-red";
-                                                                $serial_no_barcode = $data['serial_no_barcode'];
-
-                                                                $sql        = " SELECT a.*
-                                                                            FROM vender_po_data a
-                                                                            WHERE a.enabled = 1
-                                                                            AND a.serial_no = '" . $serial_no_barcode . "'
-                                                                            AND a.po_id             = '" . $id . "'  ";
-                                                                $result_log3 = $db->query($conn, $sql);
-                                                                $count_log3  = $db->counter($result_log3);
-                                                                if ($count_log3 > 0) {
-                                                                    $color  = "color-green";
-                                                                }
-                                                                echo "<span class='" . $color . "'>" . $serial_no_barcode . "</span>"; ?>
+                                                                $color              = "color-red";
+                                                                $serial_no_barcode  = $data['serial_no_barcode'];
+                                                                if ($data['serial_no_barcode'] != "" && $data['serial_no_barcode'] != null) {
+                                                                    $sql        = " SELECT a.*
+                                                                                    FROM vender_po_data a
+                                                                                    WHERE a.enabled = 1
+                                                                                    AND a.serial_no = '" . $serial_no_barcode . "'
+                                                                                    AND a.po_id             = '" . $id . "'  ";
+                                                                    $result_log3 = $db->query($conn, $sql);
+                                                                    $count_log3  = $db->counter($result_log3);
+                                                                    if ($count_log3 > 0) {
+                                                                        $color  = "color-green";
+                                                                    }
+                                                                    echo "<span class='" . $color . "'>" . $serial_no_barcode . "</span>";
+                                                                } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>">
-                                                             <?php echo $data['product_uniqueid']; ?>
-                                                         </td>
+                                                         <td style="<?= $td_padding; ?>"><?php echo $data['product_uniqueid']; ?></td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php echo $data['product_desc']; ?>
                                                              <?php
                                                                 if ($data['category_name'] != "") {
-                                                                    echo "(" . $data['category_name'] . ")";
+                                                                    if ($data['record_type'] == "CateogryReceived") {
+                                                                        echo "" . $data['category_name'] . "";
+                                                                    } else {
+                                                                        echo " (" . $data['category_name'] . ")";
+                                                                    }
                                                                 } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>">
-                                                             <?php echo $data['sub_location_name']; ?>
-                                                         </td>
+                                                         <td style="<?= $td_padding; ?>"><?php echo $data['sub_location_name']; ?></td>
+                                                         <td style="<?= $td_padding; ?>"><?php echo $data['total_qty_received']; ?></td>
                                                          <td style="<?= $td_padding; ?>">
                                                              <?php echo $data['first_name']; ?>
                                                              (<?php echo $data['username']; ?>)

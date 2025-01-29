@@ -227,9 +227,13 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								<?php
 								$field_name 	= "product_category";
 								$field_label 	= "Category";
-								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type != 'Device' ORDER BY category_name ";
-								$result1 		= $db->query($conn, $sql1);
-								$count1 		= $db->counter($result1);
+								$sql1 			= "SELECT * FROM product_categories WHERE category_type != 'Device'  ";
+								if (isset($cmd) && $cmd != "edit") {
+									$sql1 .= " AND enabled = 1";
+								}
+								$sql1 			.= "  ORDER BY category_name ";
+								$result1 		 = $db->query($conn, $sql1);
+								$count1 		 = $db->counter($result1);
 								?>
 								<i class="material-icons prefix">question_answer</i>
 								<div class="select2div">

@@ -8,7 +8,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$address			= "address " . date('Ymd');
 	$product_category	= "1";
 	$product_uniqueid	= uniqid();
- }
+}
 if (isset($test_on_local) && $test_on_local == 1 && $cmd2 == 'add') {
 	$product_id					= "2001";
 	$order_qty					= "1";
@@ -20,7 +20,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd2 == 'add') {
 	$product_condition			= "A Grade";
 	$warranty_period_in_days	= "15";
 	$vender_invoice_no			= date('YmdHis');
-	$product_model_no			= "AKB".date('YmdHis');
+	$product_model_no			= "AKB" . date('YmdHis');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -83,8 +83,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_category		=  $row_ee[0]['product_category'];
 	$inventory_status		= $row_ee[0]['inventory_status'];
 	$total_stock			= $row_ee[0]['total_stock'];
- 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
- 	$product_model_no		= $row_ee[0]['product_model_no'];
+	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
+	$product_model_no		= $row_ee[0]['product_model_no'];
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
 	$sql_ee						= "SELECT a.* FROM product_packages a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
@@ -132,7 +132,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$sql_dup	= " SELECT a.* 
 								FROM products a 
 								WHERE a.product_uniqueid	= '" . $product_uniqueid . "' ";
-				if($product_model_no !=""){
+				if ($product_model_no != "") {
 					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
 				}
 
@@ -165,7 +165,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* FROM products a 
 								WHERE  (a.product_uniqueid 	= '" . $product_uniqueid . "' ";
-				if($product_model_no !=""){
+				if ($product_model_no != "") {
 					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
 				}
 				$sql_dup .= ") AND a.id != '" . $id . "' ";
@@ -274,9 +274,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -286,17 +286,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
-								<?php  
+								</a>
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 	</div>
@@ -328,12 +328,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					<form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id); ?>">
 						<input type="hidden" name="is_Submit" value="Y" />
 						<input type="hidden" id="cmd" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
-						<div class="row"> 
+						<div class="row">
 							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "product_uniqueid";
-								$field_label 	= "Product ID"; 
-								$sql1 			= "SELECT * FROM product_ids WHERE enabled = 1 ";
+								$field_label 	= "Product ID";
+								$sql1 			= "SELECT * FROM product_ids WHERE 1=1  ";
+								if (isset($cmd) && $cmd != "edit") {
+									$sql1 .= " AND enabled = 1";
+								}
 								$result1 		= $db->query($conn, $sql1);
 								$count1 		= $db->counter($result1);
 								?>
@@ -369,7 +372,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$field_name 	= "product_category";
 								$field_id 		= "product_category2";
 								$field_label 	= "Category";
-								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
+								$sql1 			= "SELECT * FROM product_categories WHERE category_type = 'Device' ";
+								if (isset($cmd) && $cmd != "edit") {
+									$sql1 .= " AND enabled = 1";
+								}
+								$sql1 .= "  ORDER BY category_name ";
 								$result1 		= $db->query($conn, $sql1);
 								$count1 		= $db->counter($result1);
 								?>
@@ -421,27 +428,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																} ?>
 									</span>
 								</label>
-							</div> 
+							</div>
 							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "product_model_no";
-								$field_label 	= "Model#"; 
+								$field_label 	= "Model#";
 								?>
 								<i class="material-icons prefix">description</i>
 								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																						echo ${$field_name . "_valid"};
-																																					} ?>">
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
 									<span class="color-red"><?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
+															if (isset($error[$field_name])) {
+																echo $error[$field_name];
+															} ?>
 									</span>
 								</label>
-							</div> 
+							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">

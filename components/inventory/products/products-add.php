@@ -8,8 +8,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$address			= "address " . date('Ymd');
 	$product_category	= "1";
 	$product_uniqueid	= uniqid();
-	$detail_desc		= "detail_desc " . date('Ymd');
-}
+ }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd2 == 'add') {
 	$product_id					= "2001";
 	$order_qty					= "1";
@@ -21,6 +20,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd2 == 'add') {
 	$product_condition			= "A Grade";
 	$warranty_period_in_days	= "15";
 	$vender_invoice_no			= date('YmdHis');
+	$product_model_no			= "AKB".date('YmdHis');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -83,8 +83,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_category		=  $row_ee[0]['product_category'];
 	$inventory_status		= $row_ee[0]['inventory_status'];
 	$total_stock			= $row_ee[0]['total_stock'];
-	$detail_desc			= $row_ee[0]['detail_desc'];
-	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
+ 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
+ 	$product_model_no		= $row_ee[0]['product_model_no'];
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
 	$sql_ee						= "SELECT a.* FROM product_packages a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
@@ -132,11 +132,15 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$sql_dup	= " SELECT a.* 
 								FROM products a 
 								WHERE a.product_uniqueid	= '" . $product_uniqueid . "' ";
+				if($product_model_no !=""){
+					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
+				}
+
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, detail_desc, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $detail_desc  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, product_model_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $product_model_no . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -147,12 +151,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
 						echo redirect_to_page("?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id . "&msg_success=" . $msg['msg_success']));
-						$product_desc = $product_category = $inventory_status = $total_stock = $detail_desc =  $product_uniqueid = "";
+						$product_desc = $product_category = $inventory_status = $total_stock =  $product_uniqueid = $product_model_no = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$error['msg'] = "The model# or product id is already exist.";
 				}
 			}
 		} else if ($cmd == 'edit') {
@@ -160,15 +164,19 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
 				$sql_dup	= " SELECT a.* FROM products a 
-								WHERE  a.product_uniqueid		= '" . $product_uniqueid . "'
-								AND a.id		  		   != '" . $id . "'";
+								WHERE  (a.product_uniqueid 	= '" . $product_uniqueid . "' ";
+				if($product_model_no !=""){
+					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
+				}
+				$sql_dup .= ") AND a.id != '" . $id . "' ";
+
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE products SET 	product_desc		= '" . $product_desc . "', 
 														product_category	= '" . $product_category . "',
-														detail_desc			= '" . $detail_desc . "', 
 														product_uniqueid	= '" . $product_uniqueid . "', 
+														product_model_no	= '" . $product_model_no . "', 
 														
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
@@ -184,7 +192,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$error['msg'] = "The model# or product id is already exist.";
 				}
 			}
 		}
@@ -320,28 +328,81 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					<form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id); ?>">
 						<input type="hidden" name="is_Submit" value="Y" />
 						<input type="hidden" id="cmd" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
-						<div class="row">
-							<div class="input-field col m3 s12">
+						<div class="row"> 
+							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "product_uniqueid";
-								$field_label 	= "Product ID";
+								$field_label 	= "Product ID"; 
+								$sql1 			= "SELECT * FROM product_ids WHERE enabled = 1 ";
+								$result1 		= $db->query($conn, $sql1);
+								$count1 		= $db->counter($result1);
 								?>
 								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																						echo ${$field_name . "_valid"};
-																																					} ?>">
-								<label for="<?= $field_name; ?>">
-									<?= $field_label; ?>
-									<span class="color-red"> * <?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
-									</span>
-								</label>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">Select</option>
+										<?php
+										if ($count1 > 0) {
+											$row1	= $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['product_id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_id']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
 							</div>
-							<div class="input-field col m6 s12">
+							<div class="input-field col m2 s12 custom_margin_bottom_col"><br>
+								<a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#productid_add_modal">Add New Product ID</a>
+							</div>
+							<div class="input-field col m4 s12">
+								<?php
+								$field_name 	= "product_category";
+								$field_id 		= "product_category2";
+								$field_label 	= "Category";
+								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
+								$result1 		= $db->query($conn, $sql1);
+								$count1 		= $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">Select</option>
+										<?php
+										if ($count1 > 0) {
+											$row1	= $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['category_name']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_id; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
+							</div>
+							<div class="input-field col m2 s12 custom_margin_bottom_col"><br>
+								<a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#category_add_modal">Add New Category</a>
+							</div>
+						</div>
+						<div class="row">
+							<div class="input-field col m8 s12">
 								<?php
 								$field_name 	= "product_desc";
 								$field_label 	= "Product Descripton";
@@ -360,59 +421,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																} ?>
 									</span>
 								</label>
-							</div>
-							<div class="input-field col m3 s12">
+							</div> 
+							<div class="input-field col m4 s12">
 								<?php
-								$field_name 	= "product_category";
-								$field_label 	= "Category";
-								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
-								$result1 		= $db->query($conn, $sql1);
-								$count1 		= $db->counter($result1);
-								?>
-								<i class="material-icons prefix">question_answer</i>
-								<div class="select2div">
-									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																										echo ${$field_name . "_valid"};
-																																									} ?>">
-										<option value="">Select</option>
-										<?php
-										if ($count1 > 0) {
-											$row1	= $db->fetch($result1);
-											foreach ($row1 as $data2) { ?>
-												<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['category_name']; ?></option>
-										<?php }
-										} ?>
-									</select>
-									<label for="<?= $field_name; ?>">
-										<?= $field_label; ?>
-										<span class="color-red">* <?php
-																	if (isset($error[$field_name])) {
-																		echo $error[$field_name];
-																	} ?>
-										</span>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="input-field col m12 s12">
-								<?php
-								$field_name 	= "detail_desc";
-								$field_label 	= "Detail Description";
+								$field_name 	= "product_model_no";
+								$field_label 	= "Model#"; 
 								?>
 								<i class="material-icons prefix">description</i>
-								<textarea id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "><?php if (isset(${$field_name})) {
-																																			echo ${$field_name};
-																																		} ?></textarea>
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																																echo ${$field_name};
+																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																						echo ${$field_name . "_valid"};
+																																					} ?>">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
-									<span class="color-red"> <?php
+									<span class="color-red"><?php
 																if (isset($error[$field_name])) {
 																	echo $error[$field_name];
 																} ?>
 									</span>
 								</label>
-							</div>
+							</div> 
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">
@@ -673,13 +702,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		<?php }
 		} ?>
 	</div>
-	<?php include("sub_files/add_product_modal.php") ?>
-	<?php include("sub_files/add_vender_modal.php") ?>
+	<?php include("sub_files/add_category_modal.php") ?>
+	<?php include("sub_files/add_productid_modal.php") ?>
 </div>
 <br><br><br><br>
 <!-- END: Page Main-->
 <!-- END: Page Main-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<?php include("sub_files/add_product_js_code.php") ?>
-<?php include("sub_files/add_vender_js_code.php") ?>
+<?php include("sub_files/add_category_js_code.php") ?>
+<?php include("sub_files/add_productid_js_code.php") ?>

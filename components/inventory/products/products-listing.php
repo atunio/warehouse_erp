@@ -245,6 +245,7 @@ $page_heading 	= "List of Products";
 																<th>Product ID </th>
 																<th>Description</th>
 																<th>Category</th>
+																<th>Model#</th>
 																<th>Action</th>';
 													echo $headings;
 													?>
@@ -262,6 +263,7 @@ $page_heading 	= "List of Products";
 															<td><?php echo $data['product_uniqueid']; ?></td>
 															<td><?php echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . "")); ?></td>
 															<td><?php echo $data['category_name']; ?></td>
+															<td><?php echo $data['product_model_no']; ?></td>
 															<td class="text-align-center">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>

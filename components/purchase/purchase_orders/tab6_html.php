@@ -702,13 +702,6 @@
                     </div>
                 </div>
             <?php } ?>
-            <?php ///*
-            ?>
-
-            <?php
-            //*/ 
-            ///*
-            ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab6_6" value="Y" />
                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
@@ -766,7 +759,6 @@
                                             $row_r2    = $db->fetch($result_log2);
                                             foreach ($row_r2 as $data_r2) { ?>
                                                 <option value="<?php echo $data_r2['username']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['username']) { ?> selected="selected" <?php } ?>>
-
                                                     <?php echo $data_r2['username'];  ?><?php if ($data_r2['full_name'] != "") {
                                                                                             echo " (" . $data_r2['full_name'] . ")";
                                                                                         }  ?>
@@ -822,7 +814,6 @@
                     </div>
                 </div>
             </form>
-
             <?php
             $sql_preview = "SELECT a.*
 							FROM phone_check_api_data a
@@ -975,8 +966,6 @@
                     </div>
                 </form>
             <?php }
-
-
             $td_padding = "padding:5px 10px !important;";
             $sql            = " SELECT * FROM (
                                     SELECT 'ProductReceived' as record_type, '1' as total_qty_received, 
@@ -993,7 +982,7 @@
                                     LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                     LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                     LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
-                                    WHERE a.enabled = 1 
+                                    WHERE a.enabled = 1
                                     AND b.po_id = '" . $id . "'
                                     AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 

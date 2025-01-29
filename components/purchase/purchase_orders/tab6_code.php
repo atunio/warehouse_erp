@@ -5,7 +5,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 	$product_id_manual_diagnostic 		= "5";
 	$sub_location_id_barcode_diagnostic	= 1737;
 	$sub_location_id_manual_diagnostic	= 2311;
-	$phone_check_username				= 'Ctinno7';
+	$phone_check_username				= 'Ctinno2';
 	$serial_no_manual_diagnostic		= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "DMQD7TMFMF3M9", "DMQD7TMFMF3M10", "DMQD7TMFMF3M11", "DMQD7TMFMF3M12", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");
 }
 

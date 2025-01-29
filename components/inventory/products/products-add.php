@@ -332,6 +332,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "product_uniqueid";
+								$field_id 		= "product_uniqueid2";
 								$field_label 	= "Product ID";
 								$sql1 			= "SELECT * FROM product_ids WHERE 1=1  ";
 								if (isset($cmd) && $cmd != "edit") {
@@ -342,7 +343,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								?>
 								<i class="material-icons prefix">description</i>
 								<div class="select2div">
-									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+									<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
 																																										echo ${$field_name . "_valid"};
 																																									} ?>">
 										<option value="">Select</option>
@@ -354,7 +355,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										<?php }
 										} ?>
 									</select>
-									<label for="<?= $field_name; ?>">
+									<label for="<?= $field_id; ?>">
 										<?= $field_label; ?>
 										<span class="color-red">* <?php
 																	if (isset($error[$field_name])) {

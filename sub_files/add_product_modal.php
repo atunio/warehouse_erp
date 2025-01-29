@@ -8,22 +8,34 @@
         <div class="input-field col m6 s12">
             <?php
             $field_name     = "product_uniqueid";
-            $field_label     = "Product ID";
+            $field_label    = "Product ID";
+            $sql1           = "SELECT * FROM product_ids WHERE enabled = 1 ORDER BY product_id ";
+            $result1        = $db->query($conn, $sql1);
+            $count1         = $db->counter($result1);
             ?>
-            <i class="material-icons prefix">description</i>
-            <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                echo ${$field_name};
-                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                    } ?>">
-            <label for="<?= $field_name; ?>">
-                <?= $field_label; ?>
-                <span class="color-red"> * <?php
-                                            if (isset($error[$field_name])) {
-                                                echo $error[$field_name];
-                                            } ?>
-                </span>
-            </label>
+            <i class="material-icons prefix">question_answer</i>
+            <div class="select2div">
+                <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate  <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                } ?>">
+                    <option value="">Select</option>
+                    <?php
+                    if ($count1 > 0) {
+                        $row1    = $db->fetch($result1);
+                        foreach ($row1 as $data2) { ?>
+                            <option value="<?php echo $data2['product_id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_id']; ?></option>
+                    <?php }
+                    } ?>
+                </select2>
+                <label for="<?= $field_name; ?>">
+                    <?= $field_label; ?>
+                    <span class="color-red">* <?php
+                                                if (isset($error[$field_name])) {
+                                                    echo $error[$field_name];
+                                                } ?>
+                    </span>
+                </label>
+            </div>
         </div>
 
         <div class="input-field col m6 s12">

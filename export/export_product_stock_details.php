@@ -44,17 +44,17 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 			if ($string_data_explode[0] == 'page') {
 				$page 	= $string_data_explode[1];
 			}
-			
 		}
 	}
-	$parm1 = $parm2 = $parm3 = "";$error = [];
+	$parm1 = $parm2 = $parm3 = "";
+	$error = [];
 	check_session_exist4($db, $conn, $_SESSION["user_id"], $_SESSION["username"], $_SESSION["user_type"], $_SESSION["db_name"], $parm2, $parm3);
 	$check_module_permission = "";
 	$check_module_permission = check_module_permission($db, $conn, $module_id, $_SESSION["user_id"], $_SESSION["user_type"]);
 	if ($check_module_permission == "") {
 		echo redirect_to_page("signout");
 	} else {
-		ob_start(); 
+		ob_start();
 		$filename = "export_product_stock_details_" . date('YmdHis') . ".csv";
 		header("Content-type: text/csv");
 		header("Content-Disposition: attachment; filename=\"$filename\"");
@@ -73,7 +73,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				// Output the row after processing
 				echo implode(",", $escaped_row) . "\n";
 			}
-		}	
+		}
 	}
 } else {
 	echo redirect_to_page("signin");
@@ -87,6 +87,7 @@ function enclose_in_quotes($value)
 
 function prevent_excel_date_format($value, $column_name)
 {
+	$value = str_replace(',', '', $value);
 	if ($column_name == 'body_grade' || $column_name == 'lcd_grade' || $column_name == 'digitizer_grade') {
 		if ($value != "") {
 			$position_s = strpos($value, "-");

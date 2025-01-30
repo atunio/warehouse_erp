@@ -817,7 +817,10 @@
             <?php
             $sql_preview = "SELECT a.*
 							FROM phone_check_api_data a
- 							WHERE a.po_id = '" . $id . "' ";
+                            LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
+ 							WHERE a.po_id = '" . $id . "' 
+                            AND a.is_processed = 0
+                            ORDER BY c.enabled DESC, a.sku_code, a.model_no ";
             $result_preview    = $db->query($conn, $sql_preview);
             $count_preview        = $db->counter($result_preview);
             if ($count_preview > 0) {
@@ -831,6 +834,7 @@
                                 <table id="page-length-option1" class="display bordered striped addproducttable">
                                     <thead>
                                         <tr>
+                                            <th style="text-align: center;">S.No</th>
                                             <th style="text-align: center;">
                                                 <label>
                                                     <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
@@ -841,7 +845,8 @@
                                             </th>
                                             <th style="text-align: center;">Serial#</th>
                                             <th>PO Product ID</th>
-                                            <th>PhoneCheck Product ID</th>
+                                            <th>Diagnostic Product ID</th>
+                                            <th>Diagnostic Model#</th>
                                             <th>Price</th>
                                         </tr>
                                     </thead>
@@ -854,14 +859,29 @@
                                             $po_id                  = $data['po_id'];
                                             $bulkserialNo[]         = $data['imei_no'];
                                             $phone_check_api_data   = $data['phone_check_api_data'];
-                                            if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') { ?>
+                                            if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
+                                                $product_item_price = $checked = "";
+                                                $sql_pd02         = "	SELECT a.id, a.order_price 
+                                                                        FROM purchase_order_detail a 
+                                                                        INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                                        INNER JOIN products c ON c.id = a.product_id
+                                                                        WHERE 1=1
+                                                                        AND a.po_id = '" . $id . "'
+                                                                        AND c.product_model_no = '" . $phone_check_model_no . "'
+                                                                        AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+                                                $result_pd02    = $db->query($conn, $sql_pd02);
+                                                $count_pd02     = $db->counter($result_pd02);
+                                                if ($count_pd02 > 0) {
+                                                    $checked = "checked";
+                                                } ?>
                                                 <tr>
-                                                    <td style="width:150px; text-align: center;">
+                                                    <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
+                                                    <td style="width:80px; text-align: center;">
                                                         <?php
                                                         if (access("delete_perm") == 1) { ?>
                                                             <label>
-                                                                <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($data['imei_no']) && in_array($data['imei_no'], $bulkserialNo)) {
-                                                                                                                                                                        echo "checked";
+                                                                <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
+                                                                                                                                                                        echo $checked;
                                                                                                                                                                     } ?> class="checkbox filled-in" />
                                                                 <span></span>
                                                             </label>
@@ -870,25 +890,17 @@
                                                     <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
                                                     <td>
                                                         <?php
-                                                        $product_item_price = "";
-                                                        $sql_pd02         = "	SELECT a.id, a.order_price 
-                                                                                FROM purchase_order_detail a 
-                                                                                INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                                                INNER JOIN products c ON c.id = a.product_id
-                                                                                WHERE 1=1 
-                                                                                AND a.po_id = '" . $id . "' 
-                                                                                AND (c.product_uniqueid = '" . $phone_check_product_id . "')  ";
-                                                        $result_pd02    = $db->query($conn, $sql_pd02);
-                                                        $count_pd02        = $db->counter($result_pd02);
-                                                        if ($count_pd02 > 0) {
+                                                        if ($count_pd02 > 0 && ($phone_check_product_id != "" && $phone_check_product_id != NULL)) {
                                                             $row_pd02 = $db->fetch($result_pd02);
                                                             $product_item_price = $row_pd02[0]['order_price']; ?>
-                                                            <input type="text" readonly class="green-text" name="product_ids[]" id="fetched_productids_<?php echo $i; ?>" value="<?php echo $phone_check_product_id; ?>">
+                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
+                                                                <option value="<?php echo $phone_check_product_id; ?>"><?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
+                                                            </select>
                                                         <?php } else { ?>
-                                                            <select name="product_ids[]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
+                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
                                                                 <option value="">Select</option>
                                                                 <?php
-                                                                $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid
+                                                                $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
                                                                                         FROM purchase_order_detail a 
                                                                                         INNER JOIN purchase_orders b ON b.id = a.po_id
                                                                                         INNER JOIN products c ON c.id = a.product_id
@@ -899,7 +911,7 @@
                                                                 if ($count_pd03 > 0) {
                                                                     $row_pd03 = $db->fetch($result_pd03);
                                                                     foreach ($row_pd03 as $data_pd03) { ?>
-                                                                        <option value="<?php echo $data_pd03['product_uniqueid']; ?>"><?php echo $data_pd03['product_uniqueid']; ?></option>
+                                                                        <option value="<?php echo $data_pd03['product_uniqueid']; ?>"><?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
                                                                 <?php }
                                                                 } ?>
                                                             </select>
@@ -908,6 +920,7 @@
                                                         ?>
                                                     </td>
                                                     <td><?php echo $phone_check_product_id; ?></td>
+                                                    <td><?php echo $phone_check_model_no; ?></td>
                                                     <td><?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?></td>
                                                 </tr>
                                         <?php }
@@ -1047,6 +1060,7 @@
                                             <tr>
                                                 <?php
                                                 $headings = '<th class="sno_width_60">S.No</th>
+                                                            <th class="sno_width_60"></th>
                                                             <th>Product Detail</th>
                                                             <th>Qty</th>
                                                             <th>Serial#</th>   
@@ -1087,11 +1101,12 @@
                                                     $is_rma_processed           = $data['is_rma_processed'];
                                                     $edit_lock                  = $data['edit_lock']; ?>
                                                     <tr>
-                                                        <td style="<?= $td_padding; ?>">
-                                                            <?php echo $i + 1;
+                                                        <td style="<?= $td_padding; ?>; text-align: center;"><?php echo $i + 1; ?></td>
+                                                        <td style="<?= $td_padding; ?>; text-align: center;">
+                                                            <?php
                                                             if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
                                                                 $checkbox_del++; ?>
-                                                                <label style="margin-left: 25px;">
+                                                                <label>
                                                                     <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" class="checkbox7 filled-in" />
                                                                     <span></span>
                                                                 </label>
@@ -1119,15 +1134,14 @@
                                                         <td style="<?= $td_padding; ?>"><?php echo "" . $data['total_qty_received']; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
-                                                            $color  = "purple";
-
-                                                            $sql                = " SELECT a.*
-                                                                                    FROM vender_po_data a
-                                                                                    WHERE a.enabled = 1
-                                                                                    AND a.serial_no = '" . $serial_no_barcode . "'
-                                                                                    AND a.po_id             = '" . $id . "'  ";
-                                                            $result_vebder = $db->query($conn, $sql);
-                                                            $count_vebder  = $db->counter($result_vebder);
+                                                            $color          = "purple";
+                                                            $sql            = " SELECT a.*
+                                                                                FROM vender_po_data a
+                                                                                WHERE a.enabled = 1
+                                                                                AND a.serial_no = '" . $serial_no_barcode . "'
+                                                                                AND a.po_id             = '" . $id . "'  ";
+                                                            $result_vebder  = $db->query($conn, $sql);
+                                                            $count_vebder   = $db->counter($result_vebder);
                                                             if ($count_vebder > 0) {
                                                                 $row_vender = $db->fetch($result_vebder);
                                                             }
@@ -1211,13 +1225,13 @@
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
                                                             if ($lcd_grade != '') {
-                                                                echo "LCD: " . $lcd_grade . "<br>";
+                                                                echo "LCD: " . $lcd_grade . ", ";
                                                             }
                                                             if ($digitizer_grade != '') {
-                                                                echo "Digitizer: " . $digitizer_grade . "<br>";
+                                                                echo "Digitizer: " . $digitizer_grade . ", ";
                                                             }
                                                             if ($body_grade != '') {
-                                                                echo "Body: " . $body_grade . "<br>";
+                                                                echo "Body: " . $body_grade . "";
                                                             } ?>
                                                             <?php
                                                             $color  = "purple";
@@ -1227,6 +1241,7 @@
                                                                 if ($overall_grade == $vender_grade) {
                                                                     $color  = "green";
                                                                 } else { ?>
+                                                                    <br>
                                                                     <span class="chip orange lighten-5">
                                                                         <span class="orange-text">
                                                                             Vendor Grade: <?php echo $vender_grade; ?></span>
@@ -1235,7 +1250,7 @@
 
                                                                 }
                                                             }
-                                                            if ($overall_grade != "") { ?>
+                                                            if ($overall_grade != "") { ?><br>
                                                                 <span class="chip <?= $color; ?> lighten-5">
                                                                     <span class="<?= $color; ?>-text">
                                                                         Overall Grade: <?php echo $overall_grade; ?></span>

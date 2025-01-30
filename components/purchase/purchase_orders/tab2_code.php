@@ -293,7 +293,6 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 	if (!isset($logistics_status) || (isset($logistics_status)  && ($logistics_status == "0" || $logistics_status == ""))) {
 		$error2['logistics_status'] = "Required";
 	}
-
 	if (empty($error2)) {
 		if (po_permisions("Logistics") == 0) {
 			$error2['msg'] = "You do not have add permissions.";

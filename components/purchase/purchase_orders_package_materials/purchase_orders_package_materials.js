@@ -35,7 +35,9 @@ $(document).ready(function() {
 
 // Initially hide the "Remove" buttons except for the last row
 updateRemoveButtonVisibility();
-
+$(document).on('click', '.tab', function(event) {
+    updateRemoveButtonVisibility();
+});
 // Handle "Add More" button click to show the next hidden row
 $(document).on('click', '.add-more-btn', function(event) {
     event.preventDefault(); // Prevent form submission or page reload

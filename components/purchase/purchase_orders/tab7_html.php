@@ -61,6 +61,7 @@
         if ($count_log > 0) {   ?>
             <?php //*/ 
             $td_padding = "padding:5px 10px !important;";
+            /*
             $sql        = " SELECT * FROM(
                                 SELECT  '1' as rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
                                         a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
@@ -134,16 +135,37 @@
                                 )
                             ) AS t1
                             ORDER BY rec_sort, is_rma_processed DESC, is_rma_added DESC, base_product_id, serial_no_barcode DESC ";
+            */
+            $sql        = " SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
+                                a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
+                                a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
+                                c.product_desc, d.category_name, 
+                                e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
+                                i.sub_location_name AS sub_location_name_after_diagnostic,
+                                c1.order_price, h.status_name, c.product_uniqueid
+                            FROM purchase_order_detail_receive_rma a1
+                            INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
+                            INNER JOIN purchase_order_detail c1 ON c1.id = a.po_detail_id
+                            INNER JOIN purchase_orders d1 ON d1.id = c1.po_id
+                            LEFT JOIN inventory_status h ON h.id = a1.status_id 
+                            LEFT JOIN warehouse_sub_locations i ON i.id = a1.sub_location_id
+                            LEFT JOIN users e ON e.id = a.add_by_user_id
+                            INNER JOIN products c ON c.id = c1.product_id
+                            LEFT JOIN product_categories d ON d.id =c.product_category
+                            WHERE d.id = '" . $id . "' 
+                            AND a.enabled = 1 ";
+
             // echo $sql;
             $result_log = $db->query($conn, $sql);
             $count_log  = $db->counter($result_log);
             if ($count_log > 0) { ?>
                 <div class="card-panel">
                     <div class="row">
-                        <div class="col m4 s12">
-                            <h5>Reconcile</h5>
+                        <div class="col m6 s12">
+                            <h6>Reconcile</h6>
                         </div>
-                        <div class="col m12 s12 text_align_center">
+                        <div class="col m6 s12 text_align_center">
                             <a href="export/export_po_data_for_reconcile.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Reconcile</a>
                         </div>
                     </div>
@@ -289,7 +311,7 @@
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m8 s12">
-                            <h5>Update RMA using BarCode</h5>
+                            <h6>Update RMA using BarCode</h6>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_show_btn_tab7" style="<?php if (isset($is_Submit_tab7_2) && $is_Submit_tab7_2 == 'Y') {
                                                                                                     echo "display: none;";
@@ -325,10 +347,13 @@
                                                         LEFT JOIN product_categories d ON d.id =c.product_category
                                                         LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                                         LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
-                                                        INNER JOIN product_stock j ON j.receive_id = a.id
+                                                        INNER JOIN product_stock j ON j.receive_id = a.id 
+                                                        LEFT JOIN purchase_order_detail_receive_rma a1 ON a1.receive_id = a.id
                                                         WHERE a.enabled = 1 
                                                         AND b.po_id = '" . $id . "'
-                                                        AND a.inventory_status != '" . $tested_or_graded_status . "'  
+                                                        AND a1.id IS NULL
+                                                        AND a.inventory_status = '6' 
+                                                        AND a.edit_lock = 1 
                                                     ) AS t1
                                                     ORDER BY  is_rma_processed, base_product_id, serial_no_barcode DESC ";
                                 // echo $sql; 
@@ -545,12 +570,9 @@
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd7 == 'add' || $cmd7 == '') && access("add_perm") == 1)  || ($cmd7 == 'edit' && access("edit_perm") == 1) || ($cmd7 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                 <?php } ?>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"></div>
                         </div>
                     </div>
                 </div>
@@ -565,12 +587,6 @@
                     <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                     <input type="hidden" name="active_tab" value="tab7" />
                     <div class="section section-data-tables">
-                        <div class="row">
-                            <div class="col m12 s12 text_align_center">
-                                <a href="export/export_rma_data.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Excel</a>
-                            </div>
-                            <br>
-                        </div>
                         <?php
                         if (po_permisions("RMA Process") == 1) { ?>
                             <div class="row">
@@ -814,20 +830,20 @@
                             </div>
                         </div>
                     </div>
-                    <?php
-                    if (po_permisions("RMA Process") == 1 && $checkbox_del >0) {  ?>
-                        <div class="row">
-                            <div class="input-field col m12 s12 text_align_center">
+                    <div class="row">
+                        <?php
+                        if (po_permisions("RMA Process") == 1 && $checkbox_del > 0) {  ?>
+                            <div class="col m6 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process RMA</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process RMA</button>
                                 <?php } ?>
                             </div>
+                        <?php
+                        } ?>
+                        <div class="col m6 s12 text_align_center">
+                            <a href="export/export_rma_data.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Excel</a>
                         </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"></div>
-                        </div>
-                    <?php
-                    } ?>
+                    </div>
                 </form>
             </div>
         <?php

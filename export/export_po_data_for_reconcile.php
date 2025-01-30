@@ -221,6 +221,7 @@ function enclose_in_quotes($value)
 }
 function prevent_excel_date_format($value, $column_name)
 {
+	$value = str_replace(',', '', $value);
 	if ($column_name == 'body_grade' || $column_name == 'lcd_grade' || $column_name == 'digitizer_grade') {
 		if ($value != "") {
 			$position_s = strpos($value, "-");

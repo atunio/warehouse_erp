@@ -1533,8 +1533,8 @@
                                          <thead>
                                              <tr>
                                                  <?php
-                                                    $headings = '   <th class="sno_width_60">S.No</th>
-                                                                    <th></th>
+                                                    $headings = '   <th style="width:80px;">S.No</th>
+                                                                    <th style="width:80px;"></th>
                                                                     <th>Serial#</th>
                                                                     <th>Product Base ID</th>
                                                                     <th>Product Detail</th>
@@ -1557,12 +1557,12 @@
                                                             $detail_id2 = $data['product_category'];
                                                         } ?>
                                                      <tr>
-                                                         <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?></td>
-                                                         <td style="<?= $td_padding; ?>">
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;"><?php echo $i + 1; ?></td>
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;">
                                                              <?php
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
-                                                                 <label style="margin-left: 25px;">
+                                                                 <label>
                                                                      <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $data['record_type']; ?>-<?= $detail_id2; ?>" class="checkbox6 filled-in" />
                                                                      <span></span>
                                                                  </label>

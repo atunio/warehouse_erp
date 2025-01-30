@@ -2,7 +2,7 @@
 include("../conf/session_start.php");
 include("../conf/connection.php");
 include("../conf/functions.php");
-$db = new mySqlDB; 
+$db = new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 
 	extract($_REQUEST);
@@ -82,13 +82,14 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 } else {
 	echo redirect_to_page("signin");
 	exit();
-} 
+}
 function enclose_in_quotes($value)
 {
 	return '"' . $value . '"';
 }
 function prevent_excel_date_format($value, $column_name)
 {
+	$value = str_replace(',', '', $value);
 	if ($column_name == 'body_grade' || $column_name == 'lcd_grade' || $column_name == 'digitizer_grade') {
 		if ($value != "") {
 			$position_s = strpos($value, "-");

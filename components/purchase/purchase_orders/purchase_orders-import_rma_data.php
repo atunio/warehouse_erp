@@ -43,7 +43,7 @@ foreach ($_POST as $key => $value) {
 $supported_column_titles	= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
 $master_columns				= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
 $duplication_columns 		= array("record_id");
-$required_columns 			= array("record_id");
+$required_columns 			= array("record_id", "rma_status");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -202,8 +202,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									}
 								} else if ($key == 'sub_location') {
 									$insert_db_field_id_detail	= "sub_location_id";
-									if ($data1['rma_status'] == 'Repair' || $data1['rma_status'] == 'Partial Refund') {
-										if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										if ($data1['rma_status'] == 'Repair' || $data1['rma_status'] == 'Partial Refund') {
 											${$insert_db_field_id_detail}	= 0;
 											$field 			= "sub_location_name";
 											$table 			= "warehouse_sub_locations";
@@ -226,8 +226,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										} else {
 											$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
 										}
-									} else {
-										$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
 									}
 								} else if ($key == 'tracking_no') {
 									if ($data1['rma_status'] != 'Repair' && $data1['rma_status'] != 'Partial Refund') {
@@ -317,9 +315,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -329,16 +327,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 									PO List
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab7") ?>">
 									PO Profile
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-panel custom_padding_card_content_table_top">

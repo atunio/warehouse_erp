@@ -58,21 +58,26 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = "	SELECT  a.id as record_id, a.base_product_id, serial_no_barcode AS `serial`, a.battery ,
+		$sql_cl = "	SELECT * FROM (
+						SELECT a.id as record_id, a.base_product_id, serial_no_barcode AS `serial`, a.battery ,
 							a.body_grade, a.lcd_grade, a.digitizer_grade,
 							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
 							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
-					FROM purchase_order_detail_receive a
-					INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-					INNER JOIN products c ON c.id = b.product_id
-					LEFT JOIN product_categories d ON d.id =c.product_category
-					LEFT JOIN users e ON e.id = a.add_by_user_id
-					INNER JOIN purchase_order_detail_logistics f ON f.id = a.logistic_id
-					LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
-					LEFT JOIN inventory_status h ON h.id = a.inventory_status
-					WHERE a.enabled = 1 
-					AND b.po_id = '" . $id . "'
-					ORDER BY a.id ";
+						
+						FROM purchase_order_detail_receive a
+						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+						INNER JOIN purchase_orders b1 ON b1.id = b.po_id
+						INNER JOIN products c ON c.id = b.product_id
+						LEFT JOIN product_categories d ON d.id =c.product_category
+						LEFT JOIN users e ON e.id = a.add_by_user_id
+						LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+						LEFT JOIN inventory_status h ON h.id = a.inventory_status
+						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+						WHERE a.enabled = 1
+						AND b.po_id = '" . $id . "'
+						AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+					) AS t1
+					ORDER BY record_id  ";
 		// echo $sql_cl;
 		$result_cl 	= $db->query($conn, $sql_cl);
 		$count_cl 	= $db->counter($result_cl);
@@ -114,6 +119,7 @@ function enclose_in_quotes($value)
 
 function prevent_excel_date_format($value, $column_name)
 {
+	$value = str_replace(',', '', $value);
 	if ($column_name == 'body_grade' || $column_name == 'lcd_grade' || $column_name == 'digitizer_grade') {
 		if ($value != "") {
 			$position_s = strpos($value, "-");
@@ -127,6 +133,11 @@ function prevent_excel_date_format($value, $column_name)
 		if ($value == "" || $value == null) {
 			return "-";
 		} else {
+			if ($column_name == 'serial') {
+				if (is_numeric($value)) {
+					$value = "'" . $value;
+				}
+			}
 			return $value;
 		}
 	}

@@ -69,9 +69,9 @@ $sql_cl		= "	SELECT * FROM (
 					WHERE 1=1 
 					AND a.enabled 	= 1 
 					AND is_final_pricing = 1 ";
-					if ((isset($flt_bin_id) && $flt_bin_id > 0) || (isset($flt_stock_status) && $flt_stock_status > 0) || (isset($flt_serial_no) && $flt_serial_no > 0)) {
-						// $sql_cl		.= "  AND is_final_pricing = 1";
-					} 
+if ((isset($flt_bin_id) && $flt_bin_id > 0) || (isset($flt_stock_status) && $flt_stock_status > 0) || (isset($flt_serial_no) && $flt_serial_no > 0)) {
+	// $sql_cl		.= "  AND is_final_pricing = 1";
+}
 $sql_cl		.= "	GROUP BY a.id 
 				) AS t1
 			WHERE 1=1 ";
@@ -83,7 +83,7 @@ if (isset($flt_product_desc) && $flt_product_desc != "") {
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND product_category = '" . trim($flt_product_category) . "%' ";
-} 
+}
 if (isset($flt_stock_status) && $flt_stock_status > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) ";
 }
@@ -94,7 +94,7 @@ if (isset($flt_serial_no) && $flt_serial_no > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) ";
 }
 
-$sql_cl		   .= " ORDER BY r_type, product_uniqueid";
+$sql_cl		   .= " ORDER BY product_uniqueid, r_type";
 // echo "<br><br><br><br><br>" .$sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
@@ -107,6 +107,11 @@ $page_heading 	= "Stock Summary";
 
 	.minus_icon {
 		display: none;
+	}
+
+	table.bordered td {
+		padding-top: 10px !important;
+		padding-bottom: 10px !important;
 	}
 </style>
 <!-- BEGIN: Page Main-->
@@ -293,7 +298,7 @@ $page_heading 	= "Stock Summary";
 													if ($count1 > 0) {
 														$row1	= $db->fetch($result1);
 														foreach ($row1 as $data2) { ?>
-															<option value="<?php echo $data2['serial_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['serial_no']) { ?> selected="selected" <?php } ?>><?php echo "".$data2['serial_no']; ?></option>
+															<option value="<?php echo $data2['serial_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['serial_no']) { ?> selected="selected" <?php } ?>><?php echo "" . $data2['serial_no']; ?></option>
 													<?php }
 													} ?>
 												</select>
@@ -450,7 +455,7 @@ $page_heading 	= "Stock Summary";
 																		AND a.enabled = 1 
 																		AND a2.enabled = 1 
 																		AND a2.is_final_pricing = 1
-																		AND a2.product_id = '" . $id . "' "; 
+																		AND a2.product_id = '" . $id . "' ";
 														//echo "<br><br><br><br><br><br><br><br><br><br>" . $sql_cl1;
 														$result_cl1	= $db->query($conn, $sql_cl1);
 														$count_cl1	= $db->counter($result_cl1);
@@ -463,7 +468,8 @@ $page_heading 	= "Stock Summary";
 															$sub_location_names = $row_cl1[0]['sub_location_names'];
 														}
 														if ($data['r_type'] == 'Non Stock') {
-															//for($c = 0;$c<1000; $c++){?>
+															//for($c = 0;$c<1000; $c++){
+												?>
 															<tr>
 																<td style="text-align: center;"></td>
 																<td>
@@ -484,8 +490,8 @@ $page_heading 	= "Stock Summary";
 																<td></td>
 																<td></td>
 																<td>
-																	In transit 
- 																	<?php 
+																	In transit
+																	<?php
 																	$po_id_array 			= explode(",", $po_id);
 																	$po_no_array 			= explode(",", $po_no);
 																	$po_status_name_array 	= explode(",", $po_status_name);
@@ -493,33 +499,32 @@ $page_heading 	= "Stock Summary";
 																	$po_module_permision 	=  check_module_permission($db, $conn, 10, $_SESSION["user_id"], $_SESSION["user_type"]);
 																	if ($po_module_permision != "") {
 																		$m = 0;
-																		foreach($po_id_array as $data_po){?>
+																		foreach ($po_id_array as $data_po) { ?>
 																			<br>
 																			<a class="" href="?string=<?php echo encrypt("module_id=10&page=profile&cmd=edit&id=" . $data_po . "&active_tab=tab1") ?>">
 																				<?php echo $po_no_array[$m]; ?>
 																			</a>
-																		<?php 
-																			echo " ".$po_status_name_array[$m];  
-																			echo " (".$po_order_qty_array[$m].")"; 
+																	<?php
+																			echo " " . $po_status_name_array[$m];
+																			echo " (" . $po_order_qty_array[$m] . ")";
 																			$m++;
 																		}
-																	}
-																	else{
+																	} else {
 																		$m = 0;
-																		foreach($po_id_array as $data_po){
+																		foreach ($po_id_array as $data_po) {
 																			echo "<br>";
 																			echo $po_no_array[$m];
-																			echo " ".$po_status_name_array[$m]; 
-																			echo " (".$po_order_qty_array[$m].")"; 
+																			echo " " . $po_status_name_array[$m];
+																			echo " (" . $po_order_qty_array[$m] . ")";
 																			$m++;
 																		}
-																	}?>
+																	} ?>
 																</td>
 																<td><span style="padding-left: 20px;"></td>
 																<td><span style="padding-left: 20px;"><?php echo $data['total_qty']; ?></span></td>
 															</tr>
 														<?php //}
-													} else { 
+														} else {
 															$sql_cl2	= "	SELECT  a2.id, a2.product_id, a2.stock_product_uniqueid, a2.stock_grade, sum(a2.p_total_stock) as p_total_stock, sum(a2.price)/sum(a2.p_total_stock)  as avg_price,
 																					b.category_name, c.status_name, a.product_desc, a.product_uniqueid, a2.p_inventory_status,
 																					GROUP_CONCAT(DISTINCT CONCAT(' ', b1.sub_location_name)) AS sub_location_names
@@ -533,13 +538,13 @@ $page_heading 	= "Stock Summary";
 																			AND a2.is_final_pricing = 1 
 																			AND a.enabled = 1 ";
 															$sql_cl2	.= "AND a2.product_id = '" . $id . "' ";
-															
+
 															$sql_cl2	.= " GROUP BY c.status_name, a2.stock_grade  
 																			 ORDER BY c.status_name DESC, a2.stock_grade "; //a2.p_inventory_status
 															// echo "<br><br><br><br><br><br><br><br><br><br>" . $sql_cl2;
 															$result_cl2	= $db->query($conn, $sql_cl2);
 															$count_cl2	= $db->counter($result_cl2);
-															?>
+														?>
 															<tr>
 																<td style="text-align: center;">
 																	<?php
@@ -591,7 +596,7 @@ $page_heading 	= "Stock Summary";
 																		echo $total_stock_p;
 																	} ?>
 																</td>
-																
+
 															</tr>
 															<?php
 															if ($count_cl2 > 0) {
@@ -605,10 +610,10 @@ $page_heading 	= "Stock Summary";
 																		<td style="text-align: center;"></td>
 																		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
 																		<td>
-																			
+
 																			<a href="javascript:void(0)" class="plus_icon_sub <?= "sub_plus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
 																			<a href="javascript:void(0)" class="minus_icon_sub <?= "sub_minus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
-																		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 																			<?php echo $data2['status_name']; ?>
 																		</td>
 																		<td><?php echo $data2['stock_grade']; ?></td>
@@ -621,7 +626,7 @@ $page_heading 	= "Stock Summary";
 																		<td>
 																			<?php
 																			if (access("edit_perm") == 1) { ?>
-																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																					<?php echo round($data2['avg_price'], 2); ?>
 																				</a> &nbsp;&nbsp;
 																			<?php } else {
@@ -631,7 +636,7 @@ $page_heading 	= "Stock Summary";
 																		<td>
 																			<?php
 																			if (access("edit_perm") == 1) { ?>
-																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																					<?php echo $data2['p_total_stock']; ?>
 																				</a> &nbsp;&nbsp;
 																			<?php } else {
@@ -639,7 +644,7 @@ $page_heading 	= "Stock Summary";
 																			} ?>
 																		</td>
 																	</tr>
-																	
+
 																	<?php
 																	$sql_cl3 = "SELECT a2.*, d.sub_location_name
 																				FROM product_stock a2 
@@ -649,9 +654,9 @@ $page_heading 	= "Stock Summary";
 																				AND a2.is_final_pricing = 1
 																				AND a2.enabled = 1 ";
 																	$sql_cl3	.= " AND a2.product_id = '" . $product_id . "' ";
-																	$sql_cl3	.= " AND a2.p_inventory_status = '" . $filter_1 . "' "; 
+																	$sql_cl3	.= " AND a2.p_inventory_status = '" . $filter_1 . "' ";
 																	$sql_cl3	.= " AND a2.stock_grade = '" . $filter_2 . "' ";
-																	
+
 																	if (isset($flt_bin_id) && $flt_bin_id > 0) {
 																		$sql_cl3 .= " AND a2.sub_location = '" . $flt_bin_id . "'";
 																	}
@@ -664,11 +669,11 @@ $page_heading 	= "Stock Summary";
 																	if ($count_cl3 > 0) {
 																		$row_cl3 = $db->fetch($result_cl3);
 																		foreach ($row_cl3 as $data3) {
-																			$id3 = $data3['id'];?>
+																			$id3 = $data3['id']; ?>
 																			<tr class="detail_tr <?= $id2; ?> datatr_<?= $id; ?>">
 																				<td style="text-align: center;"></td>
 																				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-																					
+
 																					<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
 																				</td>
 																				<td></td>
@@ -683,17 +688,17 @@ $page_heading 	= "Stock Summary";
 																					<?php
 																					$filter_3 = $data3['serial_no'];
 																					if (access("edit_perm") == 1) { ?>
-																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&filter_3=" . $filter_3. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																							<?php echo round($data3['price'], 2); ?>
 																						</a> &nbsp;&nbsp;
 																					<?php } else {
 																						echo round($data3['price'], 2);
 																					} ?>
 																				</td>
- 																				<td>
+																				<td>
 																					<?php
 																					if (access("edit_perm") == 1) { ?>
-																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2. "&filter_3=" . $filter_3. "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																						<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																							<?php echo $data3['p_total_stock']; ?>
 																						</a> &nbsp;&nbsp;
 																					<?php } else {
@@ -701,7 +706,7 @@ $page_heading 	= "Stock Summary";
 																					} ?>
 																				</td>
 																			</tr>
-																		<?php
+												<?php
 																		}
 																	}
 																}

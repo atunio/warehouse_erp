@@ -571,6 +571,7 @@ $general_heading = "PO Profile"; ?>
 	<?php include("sub_files/add_product_modal.php") ?>
 	<?php include("sub_files/add_vender_modal.php") ?>
 	<?php include("sub_files/add_package_modal.php") ?>
+	<?php include("sub_files/add_repair_type_modal.php") ?>
 </div>
 <br><br>
 <!-- END: Page Main-->
@@ -599,3 +600,4 @@ $general_heading = "PO Profile"; ?>
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>
 <?php include("sub_files/add_package_js_code.php") ?>
+<?php include("sub_files/add_repair_type_js_code.php") ?>

@@ -302,6 +302,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								</label>
 							</div>
 						</div>
+
+						<div class="row">
+							<div class="input-field col m6 s12">
+								<?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+									<button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val; ?>
+										<i class="material-icons right">send</i>
+									</button>
+								<?php } ?>
+							</div>
+						</div>
+
 						<div class="row">
 							<?php
 							$field_name 	= "product_ids";
@@ -445,15 +456,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						</div>
 						<div class="row">
 							<div class="input-field col m12 s12"><br></div>
-						</div>
-						<div class="row">
-							<div class="input-field col m6 s12">
-								<?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
-									<button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val; ?>
-										<i class="material-icons right">send</i>
-									</button>
-								<?php } ?>
-							</div>
 						</div>
 					</form>
 				</div>

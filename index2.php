@@ -105,10 +105,10 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 
 		<?php
 		$menu_horizontal = 1;
-			if($menu_horizontal == 1){ ?>
- 				<link rel="stylesheet" type="text/css" href="app-assets/css/themes/horizontal-menu-template/materialize.css">
-    			<link rel="stylesheet" type="text/css" href="app-assets/css/themes/horizontal-menu-template/style.css">
-    			<link rel="stylesheet" type="text/css" href="app-assets/css/layouts/style-horizontal.css">
+		if ($menu_horizontal == 1) { ?>
+			<link rel="stylesheet" type="text/css" href="app-assets/css/themes/horizontal-menu-template/materialize.css">
+			<link rel="stylesheet" type="text/css" href="app-assets/css/themes/horizontal-menu-template/style.css">
+			<link rel="stylesheet" type="text/css" href="app-assets/css/layouts/style-horizontal.css">
 		<?php } ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/data-tables.min.css">
@@ -116,7 +116,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		<link rel="stylesheet" type="text/css" href="app-assets/css/pages/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/intro.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/form-select2.min.css">
-		
+
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/app-sidebar.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/app-todo.css">
 
@@ -286,10 +286,16 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				}
 				if ($string_data_explode[0] == 'filter_3') {
 					$filter_3	= $string_data_explode[1];
-				} 
+				}
 				if ($string_data_explode[0] == 'is_Submit') {
 					$is_Submit	= $string_data_explode[1];
-				} 
+				}
+				if ($string_data_explode[0] == 'sub_location_id') {
+					$sub_location_id	= $string_data_explode[1];
+				}
+				if ($string_data_explode[0] == 'product_category') {
+					$product_category	= $string_data_explode[1];
+				}
 			}
 			$sql_md 		= "SELECT * FROM menus WHERE id = '" . $module_id . "' ORDER BY id DESC LIMIT 1 ";
 			$result_md 		= $db->query($conn, $sql_md);
@@ -351,43 +357,47 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$allow_password_change	= 1;
 		//sidebar-collapse    this is css class to hide side bar
 		?>
-		<?php 
-		
-		if(isset($module_id) && ($module_id == 46 || $module_id == 10 || $module_id == 34)){?>
+		<?php
+
+		if (isset($module_id) && ($module_id == 46 || $module_id == 10 || $module_id == 34)) { ?>
 			<link rel="stylesheet" type="text/css" href="">
-		<?php 
-		}
-		else{ ?>
+		<?php
+		} else { ?>
 			<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/page-account-settings.min.css">
 		<?php } ?>
 		<title><?php echo $pageTitle; ?> | <?php echo PROJECT_TITLE2; ?></title>
-		<?php $menu_horizontal = 1;?>
+		<?php $menu_horizontal = 1; ?>
 	</head>
 	<!-- END: Head-->
+
 	<body class="<?php
-				if($menu_horizontal == 1){
-					echo "horizontal-layout page-header-light horizontal-menu preload-transitions 2-columns";
-				}
-				else{ echo "vertical-layout vertical-menu-collapsible page-header-dark vertical-modern-menu preload-transitions 2-columns";}?>" 
-				data-open="click" data-menu="<?php if($menu_horizontal == 1){ echo "horizontal-menu"; } else{ echo "vertical-modern-menu"; }?>" data-col="2-columns">
-		<?php 
-		if($menu_horizontal == 1){
-			include('sub_files/header_top_menu.php');?>
+					if ($menu_horizontal == 1) {
+						echo "horizontal-layout page-header-light horizontal-menu preload-transitions 2-columns";
+					} else {
+						echo "vertical-layout vertical-menu-collapsible page-header-dark vertical-modern-menu preload-transitions 2-columns";
+					} ?>"
+		data-open="click" data-menu="<?php if ($menu_horizontal == 1) {
+											echo "horizontal-menu";
+										} else {
+											echo "vertical-modern-menu";
+										} ?>" data-col="2-columns">
+		<?php
+		if ($menu_horizontal == 1) {
+			include('sub_files/header_top_menu.php'); ?>
 			<!-- END: Header-->
 			<!-- BEGIN: SideNav-->
 			<?php include('sub_files/sidebar_top_menu.php');  ?>
 			<!-- END: SideNav-->
 			<!-- BEGIN: Page Main-->
-			<?php
-		}
-		else{
-			include('sub_files/header.php');?>
+		<?php
+		} else {
+			include('sub_files/header.php'); ?>
 			<!-- END: Header-->
 			<!-- BEGIN: SideNav-->
 			<?php include('sub_files/sidebar.php');  ?>
 			<!-- END: SideNav-->
 			<!-- BEGIN: Page Main-->
-			<?php
+		<?php
 		}
 		include($sub_page);
 		?>

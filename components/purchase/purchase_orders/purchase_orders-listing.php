@@ -328,7 +328,9 @@ $page_heading 	= "List Purchase Orders ";
 																					FROM purchase_order_detail_logistics a
  																					LEFT JOIN inventory_status b ON b.id = a.logistics_status
 																					WHERE a.po_id = '" . $id . "'";
-															$result2			= $db->query($conn, $sql2);  ?>
+															$result2			= $db->query($conn, $sql2);
+															// for ($m = 0; $m < 200; $m++) { 
+													?>
 															<tr>
 																<td style="text-align: center;"><?php echo $i + 1; ?></td>
 																<td>
@@ -470,9 +472,9 @@ $page_heading 	= "List Purchase Orders ";
 																		$row3 = $db->fetch($result3);
 																		$k = 0;
 																		foreach ($row3 as $data3) { ?>
-																			<div class="row">
-																				<div class="col m6 s12" style="text-align: right;"><?php echo $data3['category_name']; ?>:</div>
-																				<div class="col m6 s12"><?php echo "" . $data3['order_qty']; ?></div>
+																			<div style="width: 100%;">
+																				<div style="width: 80%; display: inline-block; border: 1px solid #eee;"><?php echo $data3['category_name']; ?>: </div>
+																				<div style="width: 60px; display: inline-block; border: 1px solid #eee; text-align: center;"><?php echo "" . $data3['order_qty']; ?></div>
 																			</div>
 																	<?php
 																			$k++;
@@ -521,7 +523,7 @@ $page_heading 	= "List Purchase Orders ";
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 																			<i class="material-icons dp48">edit</i>
 																		</a> &nbsp;&nbsp;
-																	<?php }
+																		<?php }
 																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
@@ -536,6 +538,7 @@ $page_heading 	= "List Purchase Orders ";
 																</td>
 															</tr>
 													<?php $i++;
+															//}
 														}
 													} ?>
 												<tfoot>

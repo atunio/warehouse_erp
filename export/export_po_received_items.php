@@ -105,6 +105,8 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					echo implode(",", $escaped_row) . "\n";
 				}
 			}
+		} else {
+			echo "No Serial# Found";
 		}
 	}
 } else {

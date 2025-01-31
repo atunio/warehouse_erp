@@ -1278,6 +1278,7 @@
                 </form>
                 <?php */ ?>
              <?php
+                /*
                 if (isset($all_deduct_info) && sizeof($all_deduct_info) > 0) { ?>
                  <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                      <input type="hidden" name="is_Submit_tab5_4" value="Y" />
@@ -1360,6 +1361,7 @@
                      </div>
                  </form>
              <?php }
+             */
                 $td_padding = "padding:5px 10px !important;";
                 $sql            = " SELECT * FROM (
                                         SELECT 'ProductReceived' as record_type, '1' as total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
@@ -1404,11 +1406,12 @@
                                  <th>Category</th>
                                  <th>Location</th>
                                  <th>Qty</th>
+                                 <th>Actions</th>
                              </tr>
                              <?php
-                                $sql        =   "SELECT sub_location_name, sub_location_type, category_name, SUM(total_products) AS total_products
+                                $sql        =   "SELECT sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
                                                     FROM (
-                                                    SELECT e.sub_location_name, e.sub_location_type, d.`category_name`, COUNT(a.id) AS total_products
+                                                    SELECT a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
                                                     FROM purchase_order_detail b 
                                                     INNER JOIN products c ON c.id = b.product_id
                                                     INNER JOIN purchase_order_detail_receive a ON a.`po_detail_id` = b.id
@@ -1421,7 +1424,7 @@
 
                                                     UNION ALL 
 
-                                                    SELECT e.sub_location_name, e.sub_location_type, d.`category_name`, COUNT(a.id) AS total_products
+                                                    SELECT a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
                                                     FROM purchase_order_detail_receive a 
                                                     INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                                     INNER JOIN product_categories d ON d.id = a.recevied_product_category  
@@ -1436,7 +1439,9 @@
                                 if ($count_t1 > 0) {
                                     if ($count_log > 0) {
                                         $row_t1 = $db->fetch($result_t1);
-                                        foreach ($row_t1 as $data_t1) { ?>
+                                        foreach ($row_t1 as $data_t1) {
+                                            $detail_id2             = $data_t1['sub_location_id'];
+                                            $product_category_rc2   = $data_t1['product_category']; ?>
                                          <tr>
                                              <td><?php echo $data_t1['category_name']; ?></td>
                                              <td>
@@ -1447,6 +1452,11 @@
                                                     } ?>
                                              </td>
                                              <td><?php echo $data_t1['total_products']; ?></td>
+                                             <td>
+                                                 <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&sub_location_id=" . $detail_id2 . "&product_category=" . $product_category_rc2)  ?>" target="_blank">
+                                                     <i class="material-icons dp48">print</i>
+                                                 </a>
+                                             </td>
                                          </tr>
                              <?php
                                         }

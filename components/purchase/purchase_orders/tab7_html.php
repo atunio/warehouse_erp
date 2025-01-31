@@ -165,9 +165,11 @@
                         <div class="col m6 s12">
                             <h6>Reconcile</h6>
                         </div>
-                        <div class="col m6 s12 text_align_center">
-                            <a href="export/export_po_data_for_reconcile.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Reconcile</a>
-                        </div>
+                        <?php /*?>
+                            <div class="col m6 s12 text_align_center">
+                                <a href="export/export_po_data_for_reconcile.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-1">Export in Reconcile</a>
+                            </div>
+                        <?php */ ?>
                     </div>
                     <div class="row">
                         <table class="bordered">
@@ -561,16 +563,16 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="input-field col m1 s12 repair_type" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '19') || $status_id_rma == '') {
+                            <div class="input-field col m4 s12 repair_type" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '19') || $status_id_rma == '') {
                                                                                         echo "display: none;";
                                                                                     } ?>">
-                                <a class="waves-effect waves-light btn modal-trigger mb-2 mr-1" href="#repair_type_add_modal">Add New</a>
+                                <a class="btn waves-effect waves-light gradient-45deg-amber-amber modal-trigger" href="#repair_type_add_modal">New Repair Type</a>
                             </div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd7 == 'add' || $cmd7 == '') && access("add_perm") == 1)  || ($cmd7 == 'edit' && access("edit_perm") == 1) || ($cmd7 == 'delete' && access("delete_perm") == 1)) { ?>
-                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Add RMA</button>
                                 <?php } ?>
                             </div>
                         </div>

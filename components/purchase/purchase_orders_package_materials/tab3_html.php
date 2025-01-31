@@ -276,12 +276,9 @@
                             <div class="row">
                                 <div class="input-field col m12 s12 text_align_center">
                                     <?php if (isset($id) && $id > 0 && (($cmd3 == 'add' || $cmd3 == '') && access("add_perm") == 1)  || ($cmd3 == 'edit' && access("edit_perm") == 1) || ($cmd3 == 'delete' && access("delete_perm") == 1)) { ?>
-                                        <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive</button>
+                                        <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive</button>
                                     <?php } ?>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="input-field col m12 s12"></div>
                             </div>
                         </div>
                     </div>
@@ -317,6 +314,62 @@
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
             if ($count_log > 0) { ?>
+
+                <div class="card-panel custom_padding_card_content_table_top_bottom">
+                    <div class="row">
+                        <div class="col m12 s12">
+                            <h6>Received Packages</h6>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <table class="bordered">
+                            <tr>
+                                <th>Package Detail</th>
+                                <th>Location</th>
+                                <th class="text_align_center">Qty</th>
+                                <th>Actions</th>
+                            </tr>
+                            <?php
+                            $sql        =  "SELECT b.package_id, a.sub_location_id, f.sub_location_name, f.sub_location_type, d.product_category, e.`category_name`, COUNT(a.id) AS total_products
+                                            FROM package_materials_order_detail_receive a 
+                                            INNER JOIN package_materials_order_detail b ON b.id = a.`po_detail_id`
+                                            INNER JOIN package_materials_orders c ON c.id = b.po_id
+                                            INNER JOIN packages d ON d.id = b.package_id
+                                            INNER JOIN product_categories e ON e.id = d.product_category  
+                                            LEFT JOIN warehouse_sub_locations f ON f.id = a.sub_location_id
+                                            WHERE b.po_id = '" . $id . "'
+                                            GROUP BY b.package_id, f.sub_location_name 
+                                            ORDER BY b.package_id, f.sub_location_name ";
+                            $result_t1  = $db->query($conn, $sql);
+                            $count_t1   = $db->counter($result_t1);
+                            if ($count_t1 > 0) {
+                                if ($count_log > 0) {
+                                    $row_t1 = $db->fetch($result_t1);
+                                    foreach ($row_t1 as $data_t1) {
+                                        $detail_id2 = $data_t1['package_id']; ?>
+                                        <tr>
+                                            <td><?php echo $data_t1['category_name']; ?></td>
+                                            <td>
+                                                <?php echo $data_t1['sub_location_name']; ?>
+                                                <?php
+                                                if ($data_t1['sub_location_type'] != "") {
+                                                    echo " (" . $data_t1['sub_location_type'] . ")";
+                                                } ?>
+                                            </td>
+                                            <td class="text_align_center"><?php echo $data_t1['total_products']; ?></td>
+                                            <td>
+                                                <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_packages_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2)  ?>" target="_blank">
+                                                    <i class="material-icons dp48">print</i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                            <?php
+                                    }
+                                }
+                            } ?>
+                        </table>
+                    </div>
+                </div>
                 <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab3_4_2" value="Y" />
                     <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -348,7 +401,8 @@
                                         <thead>
                                             <tr>
                                                 <?php
-                                                $headings = '   <th class="sno_width_60">S.No</th>
+                                                $headings = '   <th class="sno_width_60 text_align_center" >S.No</th>
+                                                                <th></th>
                                                                 <th>Tracking#</th>
                                                                 <th>Package / Part Name</th>
                                                                 <th>Category</th>
@@ -367,9 +421,9 @@
                                                 foreach ($row_cl1 as $data) {
                                                     $detail_id2 = $data['id']; ?>
                                                     <tr>
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>;"><?php echo $i + 1; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
-                                                            echo $i + 1;
                                                             if (access("delete_perm") == 1 && $data['edit_lock'] == "0" && $data['is_diagnost'] == "0") { ?>
                                                                 <label style="margin-left: 25px;">
                                                                     <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $detail_id2; ?>" class="checkbox6 filled-in" />
@@ -377,10 +431,7 @@
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
-                                                            <?php
-                                                            echo $data['tracking_no']; ?>
-                                                        </td>
+                                                        <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
                                                         <td style="<?= $td_padding; ?>"><?php echo $data['package_name']; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
@@ -409,12 +460,9 @@
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 &&  access("delete_perm") == 1) { ?>
-                                    <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deletepserial">Delete</button>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deletepserial">Delete</button>
                                 <?php } ?>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"></div>
                         </div>
                     </div>
                 </form>

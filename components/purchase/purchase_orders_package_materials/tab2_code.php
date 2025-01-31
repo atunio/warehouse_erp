@@ -1,10 +1,7 @@
 <?php
 
 if ($_SERVER['HTTP_HOST'] == 'localhost') {
-	$courier_name 			= "courier_name " . date('YmdHis');
 	$tracking_no 			= date('YmdHis');
-	$shipment_date 			= date('d/m/Y');
-	$expected_arrival_date 	= date('d/m/Y');
 	$status_id 				= 10;
 	$logistics_cost			= 50.0;
 }
@@ -25,6 +22,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 		$expected_arrival_date_update		= str_replace("-", "/", convert_date_display($row_ee1[0]['expected_arrival_date']));
 		$status_id_update					= $row_ee1[0]['logistics_status'];
 		$logistics_cost_update				= $row_ee1[0]['logistics_cost'];
+		$no_of_boxes_update					= $row_ee1[0]['no_of_boxes'];
 	} else {
 		$error4['msg'] = "No record found";
 	}
@@ -82,9 +80,9 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	extract($_POST);
 
-	$shipment_date1			= "0000-00-00";
-	$expected_arrival_date1	= "0000-00-00";
-
+	if (!isset($no_of_boxes) || (isset($no_of_boxes)  && ($no_of_boxes == "0" || $no_of_boxes == ""))) {
+		$error3['no_of_boxes'] = "Required";
+	}
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
 		$error3['status_id'] = "Required";
 	}
@@ -103,17 +101,14 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		}
 	}
 	if (isset($shipment_date) && $shipment_date == "") {
-		$error3['shipment_date'] = "Required";
+		$shipment_date1 = NULL;
 	} else {
 		$shipment_date1 = convert_date_mysql_slash($shipment_date);
 	}
 	if (isset($expected_arrival_date) && $expected_arrival_date == "") {
-		$error3['expected_arrival_date'] = "Required";
+		$expected_arrival_date1 = NULL;
 	} else {
 		$expected_arrival_date1 = convert_date_mysql_slash($expected_arrival_date);
-	}
-	if (isset($courier_name) && $courier_name == "") {
-		$error3['courier_name'] = "Required";
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error3['msg'] = "Please add master record first";
@@ -126,8 +121,8 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			if (access("add_perm") == 0) {
 				$error3['msg'] = "You do not have add permissions.";
 			} else {
-				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 				$ok = $db->query($conn, $sql6);
 				if ($ok) {
 					$tracking_no = "";
@@ -201,20 +196,17 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		}
 	}
 	if (isset($shipment_date_update) && $shipment_date_update == "") {
-		$shipment_date_update1	= "0000-00-00";
+		$shipment_date_update1	= NULL;
 	} else {
 		$shipment_date_update1 = convert_date_mysql_slash($shipment_date_update);
 	}
 	if (isset($expected_arrival_date_update) && $expected_arrival_date_update == "") {
-		$expected_arrival_date_update1	= "0000-00-00";
+		$expected_arrival_date_update1	= NULL;
 	} else {
 		$expected_arrival_date_update1 = convert_date_mysql_slash($expected_arrival_date_update);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error3['msg'] = "Please add master record first";
-	}
-	if (isset($courier_name_update) && $courier_name_update == "") {
-		$error3['courier_name_update'] = "Required";
 	}
 	if (!isset($detail_id) || (isset($detail_id)  && ($detail_id == "0" || $detail_id == ""))) {
 		$error3['msg'] = "Please click to edit anyone record";

@@ -196,75 +196,73 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												$data = "";
 											}
 											if ($key != "" && $key != 'is_insert') {
-												if ($data != "") {
+												// if ($data != "") {
+												if ($key == 'serial') {
+													$key = "serial_no_barcode";
+												}
+												$insert_db_field_id		= $key;
+												${$insert_db_field_id} 	= $data;
 
-													if ($key == 'serial') {
-														$key = "serial_no_barcode";
-													}
+												if ($key == 'sub_location_name') {
+													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+														$insert_db_field_id_detail	= "sub_location_id_after_diagnostic";
+														$insert_db_field_id_detai2	= "sub_location_name";
+														$table1 					= "warehouse_sub_locations";
 
-													$insert_db_field_id		= $key;
-													${$insert_db_field_id} 	= $data;
-
-													if ($key == 'sub_location_name') {
-														if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-															$insert_db_field_id_detail	= "sub_location_id_after_diagnostic";
-															$insert_db_field_id_detai2	= "sub_location_name";
-															$table1 					= "warehouse_sub_locations";
-
-															$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
-															$result1	= $db->query($conn, $sql1);
-															$count1		= $db->counter($result1);
-															if ($count1 > 0) {
-																$row1 							= $db->fetch($result1);
-																${$insert_db_field_id_detail}	= $row1[0]['id'];
-															} else {
-																$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, warehouse_id, " . $insert_db_field_id_detai2 . ", purpose, sub_location_type, add_date, add_by, add_ip, add_timezone)
+														$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
+														$result1	= $db->query($conn, $sql1);
+														$count1		= $db->counter($result1);
+														if ($count1 > 0) {
+															$row1 							= $db->fetch($result1);
+															${$insert_db_field_id_detail}	= $row1[0]['id'];
+														} else {
+															$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, warehouse_id, " . $insert_db_field_id_detai2 . ", purpose, sub_location_type, add_date, add_by, add_ip, add_timezone)
 																		 VALUES('" . $subscriber_users_id . "', 1, '" . $data . "', 'Diagnostic', 'bin', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
-																$ok = $db->query($conn, $sql6);
-																if ($ok) {
-																	${$insert_db_field_id_detail} = mysqli_insert_id($conn);
-																}
+															$ok = $db->query($conn, $sql6);
+															if ($ok) {
+																${$insert_db_field_id_detail} = mysqli_insert_id($conn);
 															}
-															$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
 														}
-													} else if ($key == 'inventory_status') {
-														if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-															$insert_db_field_id_detail	= "inventory_status";
-															$insert_db_field_id_detai2	= "status_name";
-															$table1 					= "inventory_status";
+														$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
+													}
+												} else if ($key == 'inventory_status') {
+													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+														$insert_db_field_id_detail	= "inventory_status";
+														$insert_db_field_id_detai2	= "status_name";
+														$table1 					= "inventory_status";
 
-															$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
-															$result1	= $db->query($conn, $sql1);
-															$count1		= $db->counter($result1);
-															if ($count1 > 0) {
-																$row1 							= $db->fetch($result1);
-																${$insert_db_field_id_detail}	= $row1[0]['id'];
-															} else {
-																$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, " . $insert_db_field_id_detai2 . ", add_date, add_by, add_ip, add_timezone)
+														$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data . "' ";
+														$result1	= $db->query($conn, $sql1);
+														$count1		= $db->counter($result1);
+														if ($count1 > 0) {
+															$row1 							= $db->fetch($result1);
+															${$insert_db_field_id_detail}	= $row1[0]['id'];
+														} else {
+															$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, " . $insert_db_field_id_detai2 . ", add_date, add_by, add_ip, add_timezone)
 																		VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
-																$ok = $db->query($conn, $sql6);
-																if ($ok) {
-																	${$insert_db_field_id_detail} = mysqli_insert_id($conn);
-																}
+															$ok = $db->query($conn, $sql6);
+															if ($ok) {
+																${$insert_db_field_id_detail} = mysqli_insert_id($conn);
 															}
-															$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
 														}
-													} else if ($key == 'serial_no_barcode') {
-														if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-															$sql_pd04 		= "	SELECT a.* 
+														$update_master .= "`" . $insert_db_field_id_detail . "` = '" . ${$insert_db_field_id_detail} . "', ";
+													}
+												} else if ($key == 'serial_no_barcode') {
+													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+														$sql_pd04 		= "	SELECT a.* 
 																				FROM purchase_order_detail_receive a 
 																				WHERE a.enabled = 1 
 																				AND a.serial_no_barcode = '" . ${$insert_db_field_id} . "' ";
-															$result_pd04	= $db->query($conn, $sql_pd04);
-															$count_pd04		= $db->counter($result_pd04);
-															if ($count_pd04 == 0) {
-																$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
-															}
+														$result_pd04	= $db->query($conn, $sql_pd04);
+														$count_pd04		= $db->counter($result_pd04);
+														if ($count_pd04 == 0) {
+															$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
 														}
-													} else if ($insert_db_field_id != 'record_id') {
-														$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
 													}
+												} else if ($insert_db_field_id != 'record_id') {
+													$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
 												}
+												//}
 											}
 										}
 										if ($update_master != "" && isset($receive_id_1) && $receive_id_1 > 0) {

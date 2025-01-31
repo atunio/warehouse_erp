@@ -291,6 +291,7 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 	}
 }
 */
+/*
 if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 	extract($_POST);
 	if (empty($error5)) {
@@ -343,6 +344,7 @@ if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 		$error5['msg'] = "Please check required fields in the form.";
 	}
 }
+*/
 if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 	extract($_POST);
 

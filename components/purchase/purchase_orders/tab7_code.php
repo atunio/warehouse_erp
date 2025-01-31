@@ -202,6 +202,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 				if ($ok) {
 					$sql_c_up 	= "UPDATE purchase_order_detail_receive SET is_rma_added = '1'  WHERE id = '" . $receive_id_barcode_rma . "' ";
 					$db->query($conn, $sql_c_up);
+					$new_value = $repair_type = "";
 				}
 			} else {
 

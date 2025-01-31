@@ -1,14 +1,16 @@
 <style>
-.tabs .tab a:hover, .tabs .tab a.active {
-    color:rgb(7, 123, 218);
-    background-color: rgba(17, 116, 245, 0.15);
-}
-.tabs .tab a.active {
-    color:rgb(7, 123, 218);
-    background-color: rgba(17, 116, 245, 0.15);
-}
+    .tabs .tab a:hover,
+    .tabs .tab a.active {
+        color: rgb(7, 123, 218);
+        background-color: rgba(17, 116, 245, 0.15);
+    }
+
+    .tabs .tab a.active {
+        color: rgb(7, 123, 218);
+        background-color: rgba(17, 116, 245, 0.15);
+    }
 </style>
-<div class="row"> 
+<div class="row">
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
         <li class="tab">
             <a href="#tab1_html" class="<?php if (isset($active_tab) && $active_tab == 'tab1') {
@@ -39,7 +41,7 @@
                         <?php
                         $total_items_ordered = 0;
                         $sql2       = " SELECT sum(a.order_qty) as order_qty
-                                        FROM purchase_order_detail a
+                                        FROM package_materials_order_detail a
                                         WHERE a.po_id = '" . $id . "'
                                         AND a.enabled = 1 ";
                         $result_r2  = $db->query($conn, $sql2);
@@ -51,8 +53,8 @@
 
                         $j = 0;
                         $sql3               = "SELECT a.id
-                                                FROM purchase_order_detail_receive a
-                                                INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
+                                                FROM package_materials_order_detail_receive a
+                                                INNER JOIN package_materials_order_detail b ON b.id = a.po_detail_id 
                                                 WHERE b.po_id = '" . $id . "'
                                                 AND a.enabled = 1 ";
                         $result3            = $db->query($conn, $sql3);
@@ -66,7 +68,7 @@
                         <?php
                                 }
                             }
-                        }?>
+                        } ?>
                     </span>
                 </a>
             </li>
@@ -74,4 +76,3 @@
         <li class="indicator" style="left: 0px; right: auto;"></li>
     </ul>
 </div>
-  

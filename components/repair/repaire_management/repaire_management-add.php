@@ -388,6 +388,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<div class="input-field col m5 s12">
 							<?php
 							$entry_type = "repair";  ?>
+							<?php /*?>
 							<a class="btn gradient-45deg-light-blue-cyan timer_<?= $entry_type; ?>" title="Timer" href="javascript:void(0)" id="timer_<?= $entry_type; ?>_<?= $id ?>"
 								<?php
 								if (
@@ -424,6 +425,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																																																																					} ?> ">Resume <?php //echo $_SESSION[$entry_type]; 
 																																																																									?>
 							</a>&nbsp;
+							<?php */ ?>
 							<input type="hidden" name="r_total_pause_duration" id="r_total_pause_duration" value="0">
 						</div>
 					</div>

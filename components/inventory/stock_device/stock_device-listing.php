@@ -418,11 +418,7 @@ $page_heading 	= "Stock Summary";
 																<th>Status</th>
 																<th>Condition</th>
 																<th>Serial No</th>
-																<th>Model No</th>
-																<th>Battery</th>
-																<th>RAM</th>
-																<th>Storage</th>
-																<th>Location</th>
+ 																<th>Location</th>
 																<th>Average Stock</th>
 																<th>Stock</th>';
 													echo $headings;
@@ -483,10 +479,6 @@ $page_heading 	= "Stock Summary";
 																	<?php } ?>
 																</td>
 																<td><?php echo $data['status_name']; ?></td>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
 																<td></td>
 																<td></td>
 																<td>
@@ -571,10 +563,6 @@ $page_heading 	= "Stock Summary";
 																<td><?php echo $status_names; ?></td>
 																<td><?php echo $stock_grades; ?></td>
 																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
-																<td></td>
 																<td><?php echo $sub_location_names; ?></td>
 																<td>
 																	<?php
@@ -617,10 +605,6 @@ $page_heading 	= "Stock Summary";
 																			<?php echo $data2['status_name']; ?>
 																		</td>
 																		<td><?php echo $data2['stock_grade']; ?></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
 																		<td></td>
 																		<td><?php echo $data2['sub_location_names']; ?></td>
 																		<td>
@@ -677,12 +661,8 @@ $page_heading 	= "Stock Summary";
 																					<!-- <i class="material-icons prefix">subdirectory_arrow_right</i> -->
 																				</td>
 																				<td></td>
-																				<td></td>
 																				<td><?php echo $data3['serial_no']; ?></td>
 																				<td><?php echo $data3['model_no']; ?></td>
-																				<td><?php echo $data3['battery_percentage']; ?></td>
-																				<td><?php echo $data3['ram_size']; ?></td>
-																				<td><?php echo $data3['storage_size']; ?></td>
 																				<td><?php echo $data3['sub_location_name']; ?></td>
 																				<td>
 																					<?php

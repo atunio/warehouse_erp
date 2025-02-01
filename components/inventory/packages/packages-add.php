@@ -35,7 +35,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_ids			= explode(",", $product_ids_comma_sepr);
 	$stock_in_hand			= $row_ee[0]['stock_in_hand'];
 	$case_pack				= $row_ee[0]['case_pack'];
-	$package_product_id		= $row_ee[0]['package_product_id'];
+	$sku_code		= $row_ee[0]['sku_code'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -67,7 +67,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
 	}
-	$field_name = "package_product_id";
+	$field_name = "sku_code";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
@@ -85,12 +85,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* 
 								FROM packages a 
-								WHERE  a.package_product_id = '" . $package_product_id . "' ";
+								WHERE  a.sku_code = '" . $sku_code . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) { //product_sku, case_pack,
-					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, package_product_id, package_name, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $package_product_id . "',  '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $case_pack . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, sku_code, package_name, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $sku_code . "',  '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $case_pack . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -107,7 +107,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['package_product_id'] = "Already exist.";
+					$error['sku_code'] = "Already exist.";
 				}
 			}
 		} else if ($cmd == 'edit') {
@@ -116,12 +116,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* 
 								FROM packages a 
-								WHERE a.package_product_id = '" . $package_product_id . "' 
+								WHERE a.sku_code = '" . $sku_code . "' 
 								AND a.id			   != '" . $id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE packages SET 	package_product_id	= '" . $package_product_id . "', 
+					$sql_c_up = "UPDATE packages SET 	sku_code	= '" . $sku_code . "', 
 														package_name		= '" . $package_name . "',
 														product_category	= '" . $product_category . "',  
  														product_ids			= '" . $product_ids_str . "', 
@@ -137,7 +137,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['package_product_id'] = "Already exist.";
+					$error['sku_code'] = "Already exist.";
 				}
 			}
 		}
@@ -227,8 +227,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								</label>
 							</div>
 							<?php
-							$field_name 	= "package_product_id";
-							$field_label 	= "Package Product ID";
+							$field_name 	= "sku_code";
+							$field_label 	= "SKU Code";
 							?>
 							<div class="input-field col m4 s12">
 								<i class="material-icons prefix">question_answer</i>

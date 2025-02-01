@@ -83,7 +83,7 @@ if (isset($flt_product_desc) && $flt_product_desc != "") {
 	$sql_cl 	.= " AND product_desc LIKE '%" . trim($flt_product_desc) . "%' ";
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
-	$sql_cl 	.= " AND product_category = '" . trim($flt_product_category) . "%' ";
+	$sql_cl 	.= " AND product_category = '" . trim($flt_product_category) . "' ";
 }
 if (isset($flt_stock_status) && $flt_stock_status > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) ";

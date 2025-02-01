@@ -52,56 +52,56 @@ switch ($type) {
             echo 'Select';
         }
         break;
-        case 'add_category':
-            if ($category_name != "") {
-                $count  = 0;
-                $sql    = " SELECT a.* FROM product_categories a  WHERE a.category_name    = '" . $category_name . "' ";
-                $result = $db->query($conn, $sql);
-                $count  = $db->counter($result);
-                if ($count == 0) {
-                    $sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+    case 'add_category':
+        if ($category_name != "") {
+            $count  = 0;
+            $sql    = " SELECT a.* FROM product_categories a  WHERE a.category_name    = '" . $category_name . "' ";
+            $result = $db->query($conn, $sql);
+            $count  = $db->counter($result);
+            if ($count == 0) {
+                $sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
                              VALUES('" . $subscriber_users_id . "',  '" . $category_name  . "',  'Device',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-                    $ok = $db->query($conn, $sql6);
-                    if ($ok) {
-                        $id = mysqli_insert_id($conn);
-                        echo '<option value="' . $id . '" selected="selected">' . $category_name . ' </option>';
-                    } else {
-                        echo "Fail";
-                    }
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    $id = mysqli_insert_id($conn);
+                    echo '<option value="' . $id . '" selected="selected">' . $category_name . ' </option>';
                 } else {
-                    $row    = $db->fetch($result);
-                    $id     = $row[0]['id'];
-                    $category_name  = $row[0]['category_name'];
-                    echo '<option value="' . $id . '" selected="selected">' . $category_name . '</option>';
+                    echo "Fail";
                 }
             } else {
-                echo 'Select';
+                $row    = $db->fetch($result);
+                $id     = $row[0]['id'];
+                $category_name  = $row[0]['category_name'];
+                echo '<option value="' . $id . '" selected="selected">' . $category_name . '</option>';
             }
-            break;
-        case 'add_productid':
-            if ($product_id != "") {
-                $count  = 0;
-                $sql    = " SELECT a.* FROM product_ids a  WHERE a.product_id    = '" . $product_id . "' ";
-                $result = $db->query($conn, $sql);
-                $count  = $db->counter($result);
-                if ($count == 0) {
-                    $sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+        } else {
+            echo 'Select';
+        }
+        break;
+    case 'add_productid':
+        if ($product_id != "") {
+            $count  = 0;
+            $sql    = " SELECT a.* FROM product_ids a  WHERE a.product_id    = '" . $product_id . "' ";
+            $result = $db->query($conn, $sql);
+            $count  = $db->counter($result);
+            if ($count == 0) {
+                $sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
                                 VALUES('" . $subscriber_users_id . "',  '" . $product_id  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-                    $ok = $db->query($conn, $sql6);
-                    if ($ok) { 
-                        echo '<option value="' . $product_id . '" selected="selected">' . $product_id . ' </option>';
-                    } else {
-                        echo "Fail";
-                    }
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    echo '<option value="' . $product_id . '" selected="selected">' . $product_id . ' </option>';
                 } else {
-                    $row            = $db->fetch($result);
-                    $product_id     = $row[0]['product_id'];
-                     echo '<option value="' . $product_id . '" selected="selected">' . $product_id . '</option>';
+                    echo "Fail";
                 }
             } else {
-                echo 'Select';
+                $row            = $db->fetch($result);
+                $product_id     = $row[0]['product_id'];
+                echo '<option value="' . $product_id . '" selected="selected">' . $product_id . '</option>';
             }
-            break;
+        } else {
+            echo 'Select';
+        }
+        break;
     case 'add_customer':
         if ($customer_name != "" && $phone_primary != "") {
             $count  = 0;
@@ -238,11 +238,10 @@ switch ($type) {
         break;
     case 'add_package':
 
-        if ($package_name != "" && $product_category != "") {
-            $count = 0;
-
-            $table              = "product_categories";
-            $columns            = array("category_name");
+        if ($package_name != "" && $product_category != ""  && $sku_code != "") {
+            $count      = 0;
+            $table      = "product_categories";
+            $columns    = array("category_name");
             $get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $product_category, $columns);
             foreach ($get_col_from_table as $array_key1 => $array_data1) {
                 ${$array_key1} = $array_data1;
@@ -250,13 +249,12 @@ switch ($type) {
             $sql    = " SELECT a.*, b.category_name
                         FROM packages a 
                         LEFT JOIN product_categories b ON b.id = a.product_category
-                        WHERE a.package_name    = '" . $package_name . "'
-                        AND a.product_category	= '" . $product_category . "' ";
+                        WHERE a.sku_code    = '" . $sku_code . "' ";
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids,  package_name, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
-                        VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, sku_code, package_name, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+                        VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $sku_code  . "', '" . $package_name  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
                     $package_id         = mysqli_insert_id($conn);
@@ -271,7 +269,6 @@ switch ($type) {
                 $row            = $db->fetch($result);
                 $package_id     = $row[0]['id'];
                 $package_name   = $row[0]['package_name'];
-                $category_name  = $row[0]['category_name'];
                 echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
             }
         } else {

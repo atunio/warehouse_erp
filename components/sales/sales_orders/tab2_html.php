@@ -18,7 +18,7 @@ if (isset($flt_product_id) && $flt_product_id != "") {
 // 	$sql_cl 	.= " AND c.product_desc LIKE '%" . trim($flt_product_desc) . "%' ";
 // }
 if (isset($flt_product_category) && $flt_product_category != "") {
-    $sql_cl     .= " AND c.product_category = '" . trim($flt_product_category) . "%' ";
+    $sql_cl     .= " AND c.product_category = '" . trim($flt_product_category) . "' ";
 }
 if (isset($packing_type_filter) && $packing_type_filter > 0) {
     $sql_cl        .= " AND b2.id = '" . $packing_type_filter . "'";

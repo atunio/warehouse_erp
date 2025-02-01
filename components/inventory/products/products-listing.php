@@ -49,7 +49,7 @@ if (isset($flt_product_desc) && $flt_product_desc != "") {
 	$sql_cl 	.= " AND a.product_desc LIKE '%" . trim($flt_product_desc) . "%' ";
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
-	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "%' ";
+	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
 }
 $sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);

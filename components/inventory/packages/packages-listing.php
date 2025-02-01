@@ -45,8 +45,11 @@ $sql_cl		= "	SELECT a.*, b.category_name, c.status_name
 if (isset($package_name) && $package_name != "") {
 	$sql_cl 	.= " AND a.package_name LIKE '%" . trim($package_name) . "%' ";
 }
+if (isset($sku_code) && $sku_code != "") {
+	$sql_cl 	.= " AND a.sku_code = '" . trim($sku_code) . "' ";
+}
 if (isset($flt_product_category) && $flt_product_category != "") {
-	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "%' ";
+	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
 }
 $sql_cl	.= " ORDER BY a.enabled DESC, b.category_name, a.package_name "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
@@ -131,16 +134,70 @@ $page_heading 	= "List of Packages / Parts";
 																						echo encrypt($_SESSION['csrf_session']);
 																					} ?>">
 									<div class="row">
-										<?php
-										$field_name = "package_name";
-										$field_label = "Package/Part Name";
-										?>
 										<div class="input-field col m2 s12">
+											<?php
+											$field_name = "package_name";
+											$field_label = "Package/Part Name";
+
+											$sql1 			= "SELECT DISTINCT package_name FROM packages WHERE enabled = 1 AND package_name != '' ORDER BY package_name ";
+											$result1 		= $db->query($conn, $sql1);
+											$count1 		= $db->counter($result1);
+											?>
 											<i class="material-icons prefix">description</i>
-											<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>">
-											<label for="<?= $field_name; ?>"><?= $field_label; ?></label>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">ALL</option>
+													<?php
+													if ($count1 > 0) {
+														$row1	= $db->fetch($result1);
+														foreach ($row1 as $data2) { ?>
+															<option value="<?php echo $data2['package_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['package_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?></option>
+													<?php }
+													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
+										<div class="input-field col m2 s12">
+											<?php
+											$field_name = "sku_code";
+											$field_label = "SKU Code";
+											$sql1 			= "SELECT DISTINCT sku_code FROM packages WHERE enabled = 1 AND sku_code != '' ORDER BY sku_code ";
+											$result1 		= $db->query($conn, $sql1);
+											$count1 		= $db->counter($result1);
+											?>
+											<i class="material-icons prefix">description</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">ALL</option>
+													<?php
+													if ($count1 > 0) {
+														$row1	= $db->fetch($result1);
+														foreach ($row1 as $data2) { ?>
+															<option value="<?php echo $data2['sku_code']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['sku_code']) { ?> selected="selected" <?php } ?>><?php echo $data2['sku_code']; ?></option>
+													<?php }
+													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
 										</div>
 										<div class="input-field col m2 s12">
 											<?php
@@ -190,13 +247,13 @@ $page_heading 	= "List of Packages / Parts";
 												<tr>
 													<?php
 													$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Package Product ID</th>
-																	<th>Package/Part Name</th>
-																	<th>Category</th>
-																	<th>Stock In Hand</th>
-																	<th>Avg Price</th>
-																	<th>Case Pack</th>
- 																	<th>Action</th>';
+																<th>SKU Code</th>
+																<th>Package/Part Name</th>
+																<th>Category</th>
+																<th>Stock In Hand</th>
+																<th>Avg Price</th>
+																<th>Case Pack</th>
+																<th>Action</th>';
 													echo $headings;
 													?>
 												</tr>
@@ -210,7 +267,7 @@ $page_heading 	= "List of Packages / Parts";
 														$id = $data['id'];  ?>
 														<tr>
 															<td style="text-align: center;"><?php echo $i + 1; ?></td>
-															<td><?php echo $data['package_product_id']; ?></td>
+															<td><?php echo $data['sku_code']; ?></td>
 															<td><?php echo $data['package_name']; ?></td>
 															<td><?php echo $data['category_name']; ?></td>
 															<td><?php echo $data['stock_in_hand']; ?></td>

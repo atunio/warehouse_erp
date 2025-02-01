@@ -42,7 +42,7 @@ $sql_cl		= "	SELECT a.*, b.category_name
 				LEFT JOIN product_categories b ON b.id = a.product_category
 				WHERE 1=1  ";
 if (isset($flt_product_category) && $flt_product_category != "") {
-	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "%' ";
+	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
 }
 $sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
@@ -58,7 +58,7 @@ $page_heading 	= "List of Formula";
 				<div class="row">
 					<div class="col s12">
 						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top_bottom"> 
+							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
 									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
@@ -66,12 +66,12 @@ $page_heading 	= "List of Formula";
 										</h6>
 									</div>
 									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-										<?php  
+										<?php
 										if (access("add_perm") == 1) { ?>
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 												New
 											</a>
-										<?php }?>
+										<?php } ?>
 									</div>
 								</div>
 							</div>

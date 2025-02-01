@@ -26,6 +26,32 @@
                 </span>
             </label>
         </div>
+        <?php
+        $field_name     = "sku_code";
+        $field_label     = "SKU Code";
+        ?>
+        <div class="input-field col m6 s12">
+            <i class="material-icons prefix">question_answer</i>
+            <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                echo ${$field_name};
+                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                    } ?>">
+            <label for="<?= $field_name; ?>">
+                <?= $field_label; ?>
+                <span class="color-red">* <?php
+                                            if (isset($error[$field_name])) {
+                                                echo $error[$field_name];
+                                            } ?>
+                </span>
+            </label>
+        </div>
+    </div>
+    <div class="row">
+        <div class="input-field col m6 s12"></div>
+    </div>
+    <div class="row">
+
         <div class="input-field col m6 s12">
             <?php
             $field_name     = "company_id_customer";
@@ -58,16 +84,11 @@
                 </label>
             </div>
         </div>
-    </div>
-    <div class="row">
-        <div class="input-field col m6 s12"></div>
-    </div>
-    <div class="row">
         <div class="input-field col m6 s12">
             <?php
             $field_name     = "inquiry_id_modal";
-            $field_label    = "Product ID";
-            $sql1           = "SELECT a.*, b.category_name
+            $field_label    = "Compatible Product ID";
+            $sql1           = " SELECT a.*, b.category_name
                                 FROM products a
                                 INNER JOIN product_categories b ON b.id = a.product_category
                                 WHERE a.enabled = 1 
@@ -91,15 +112,16 @@
                 </select2>
                 <label for="<?= $field_name; ?>">
                     <?= $field_label; ?>
-                    <span class="color-red"> * <?php
-                                                if (isset($error[$field_name])) {
-                                                    echo $error[$field_name];
-                                                } ?>
+                    <span class="color-red"><?php
+                                            if (isset($error[$field_name])) {
+                                                echo $error[$field_name];
+                                            } ?>
                     </span>
                 </label>
             </div>
         </div>
     </div>
+    <br>
     <div class="row">
         <div class="input-field col m6 s12">
             <a href="javascript:void(0)" name="add_package_btn" id="add_package_btn" class="btn modal-close cyan waves-effect waves-light right">

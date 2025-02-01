@@ -6,7 +6,7 @@ include($directory_path . "conf/functions.php");
 $db 	= new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 } else {
-	echo redirect_to_page("signin");
+	echo redirect_to_page($directory_path . "signin");
 	exit();
 }
 
@@ -250,7 +250,7 @@ if ($counter_ee11 > 0) {
 			$order_qty				= $data_sub['order_qty'];
 			$case_pack				= $data_sub['case_pack'];
 			$totat_case_pack		= 0;
-			if($order_qty > 0 && $case_pack > 0){
+			if ($order_qty > 0 && $case_pack > 0) {
 				$totat_case_pack = ($order_qty / $case_pack);
 			}
 			$serial_no				= "";

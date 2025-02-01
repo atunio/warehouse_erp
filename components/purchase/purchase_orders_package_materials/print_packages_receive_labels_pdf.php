@@ -6,7 +6,7 @@ include($directory_path . "conf/functions.php");
 $db 	= new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 } else {
-	echo redirect_to_page("signin");
+	echo redirect_to_page($directory_path . "signin");
 	exit();
 }
 
@@ -39,12 +39,6 @@ if (isset($_GET['string'])) {
 		if ($string_data_explode[0] == 'id') {
 			$id = $string_data_explode[1];
 		}
-		if ($string_data_explode[0] == 'sub_location_id') {
-			$sub_location_id = $string_data_explode[1];
-		}
-		if ($string_data_explode[0] == 'product_category') {
-			$product_category = $string_data_explode[1];
-		}
 	}
 } else {
 	echo redirect_to_page($directory_path . "signout");
@@ -64,66 +58,62 @@ $css = "
 			text-align: center;
 		}
 		.main_font{
-			font-size: 20px;
+			font-size: 28px;
 		}
 	</style>";
 require_once $directory_path . 'mpdf/vendor/autoload.php';
 // $mpdf = new \Mpdf\Mpdf();
-$mpdf = new \Mpdf\Mpdf(['format' => [152.4, 101.6]]);
+$mpdf = new \Mpdf\Mpdf(['format' => [101.6, 152.4]]);
 
-$sql_ee1 = "SELECT c.po_no, c.po_date, g.vender_name, d.package_name, d.product_category, a.sub_location_id, f.sub_location_name, f.sub_location_type, e.`category_name`
-			FROM package_materials_order_detail_receive a 
-			INNER JOIN package_materials_order_detail b ON b.id = a.`po_detail_id`
-			INNER JOIN package_materials_orders c ON c.id = b.po_id
-			INNER JOIN packages d ON d.id = b.package_id
-			INNER JOIN product_categories e ON e.id = d.product_category  
-			LEFT JOIN warehouse_sub_locations f ON f.id = a.sub_location_id
-			LEFT JOIN venders g ON g.id = c.vender_id
-			WHERE b.po_id 			= '" . $id . "'
-			AND b.package_id 		=  '" . $detail_id . "'
-			ORDER BY b.package_id, f.sub_location_name ";
-// echo $sql_ee1;die;
-$k = 1;
+$k 				= 1;
+$sql_ee1 		= "SELECT a.*, b.po_no, c.vender_name
+					FROM package_materials_order_detail_logistics a
+					INNER JOIN package_materials_orders b ON b.id = a.po_id
+					LEFT JOIN venders c ON c.id = b.vender_id
+					WHERE a.po_id = '" . $id . "' "; //echo $sql_ee1;die;
 $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
-	$row_ee1				= $db->fetch($result_ee1);
+	$row_ee1 = $db->fetch($result_ee1);
 	foreach ($row_ee1 as $data) {
-		$vender_name			= $data['vender_name'];
-		$po_no					= $data['po_no'];
-		$po_date				= $data['po_date'];
-		$package_name			= $data['package_name'];
-		$category_name			= $data['category_name'];
-		$sub_location_name		= $data['sub_location_name'];
-		$sub_location_type		= $data['sub_location_type'];
-		if ($sub_location_type != "") {
-			$sub_location_name .= " (" . $sub_location_type . ")";
+
+		$logistic_id	= $data['id'];
+		$vender_name	= $data['vender_name'];
+		$po_no			= $data['po_no'];
+		$no_of_boxes	= $data['no_of_boxes'];
+		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
+							FROM package_materials_order_detail_logistics a
+							WHERE a.po_id = '" . $id . "' ";
+		$result_ee12 	= $db->query($conn, $sql_ee12);
+		$counter_ee12	= $db->counter($result_ee12);
+		$total_boxes 	= 0;
+		if ($counter_ee12 > 0) {
+			$row_ee12		= $db->fetch($result_ee12);
+			$total_boxes	= $row_ee12[0]['total_boxes'];
 		}
-		if ($category_name != "") {
-			$package_name .= " (" . $category_name . ")";
+		for ($i = 1; $i <= $no_of_boxes; $i++) {
+			$report_data = '
+				<div class="text_align_center main_font">
+					Packages
+					<br><br>
+					PO#: ' . $po_no . '
+					<br>
+					<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
+					<br><br>
+					Vendor: ' . $vender_name . '
+					<br><br>
+					Box/Pallet # ' . $k . ' out ' . $total_boxes . ' 
+				</div>  ';  //echo $report_data;die;
+			$report_data = $report_data . $css;
+			$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
+			$mpdf->writeHTML($report_data);
+			$k++;
 		}
-		$report_data = '
-			<div class="text_align_center main_font">
-			
-				PO#: ' . $po_no . '
-				<br>
-				<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
-				<br>' . dateformat2($po_date) . '
-				<br><br>
-				Vendor: ' . $vender_name . '
-				<br><br>
-				Package: ' . $package_name . '
-				<br><br>
-				Location: ' . $sub_location_name . ' 
-			</div>  ';  //echo $report_data;die;
-		$report_data = $report_data . $css;
-		$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
-		$mpdf->writeHTML($report_data);
-		$k++;
 	}
 
-	$mpdf->SetTitle('Receive Package Material Label PO#: ' . $po_no);
-	$file_name = "Receive Package Material Label " . $po_no . ".pdf";
+	$mpdf->SetTitle('Packages Recived Labels Box Wise PO#: ' . $po_no);
+	$file_name = "Packages Recived Labels Box Wise " . $po_no . ".pdf";
+
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
@@ -132,7 +122,7 @@ if ($counter_ee1 > 0) {
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
-	$mpdf->SetTitle('Receive Package Material Label PO_NO ' . $id);
-	$file_name = "Receive Label " . $id . ".pdf";
+	$mpdf->SetTitle('Packages Recived Labels Box Wise PO_NO ' . $id);
+	$file_name = "Packages Recived Labels Box Wise " . $id . ".pdf";
 	$mpdf->output($file_name, 'I');
 }

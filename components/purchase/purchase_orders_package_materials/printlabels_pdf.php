@@ -6,7 +6,7 @@ include($directory_path . "conf/functions.php");
 $db 	= new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 } else {
-	echo redirect_to_page("signin");
+	echo redirect_to_page($directory_path . "signin");
 	exit();
 }
 

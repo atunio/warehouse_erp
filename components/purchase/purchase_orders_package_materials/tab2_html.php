@@ -180,7 +180,7 @@
                     $field_name     = "shipment_date_update";
                     $field_label     = "Shipment Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
@@ -200,7 +200,7 @@
                     $field_name     = "expected_arrival_date_update";
                     $field_label     = "Expected Arrival Date (d/m/Y)";
                     ?>
-                    <div class="input-field col m4 s12">
+                    <div class="input-field col m3 s12">
                         <i class="material-icons prefix">date_range</i>
                         <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
@@ -270,6 +270,7 @@
                                                         </th>
                                                         <th>Detail</th>
                                                         <th>Logistics <br>Cost (PO)</th> 
+                                                        <th>Total Boxes</th> 
                                                         <th>Status</th> 
                                                         <th>Shipment Date</th>
                                                         <th>Expected <br>Arrival Date</th>
@@ -306,6 +307,7 @@
                                                     <b>Tracking#: </b><?php echo $data['tracking_no']; ?>
                                                 </td>
                                                 <td style="<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['no_of_boxes']; ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['shipment_date']); ?></td>
                                                 <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['expected_arrival_date']); ?></td>

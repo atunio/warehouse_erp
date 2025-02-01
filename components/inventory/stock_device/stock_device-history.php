@@ -22,7 +22,6 @@ if (isset($id)) {
 	$product_desc		= $row_ee[0]['product_desc'];
 	$category_name		=  $row_ee[0]['category_name'];
 	$detail_desc		= $row_ee[0]['detail_desc'];
-	$total_stock		= $row_ee[0]['total_stock'];
 }
 $page_heading 	= "Stock Hisotry";
 ?>
@@ -32,9 +31,9 @@ $page_heading 	= "Stock Hisotry";
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -42,19 +41,19 @@ $page_heading 	= "Stock Hisotry";
 								</h6>
 							</div>
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-								<?php  
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 										List
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div>   
-		<div class="col s12 m12 l12">	
+		</div>
+		<div class="col s12 m12 l12">
 			<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
 				<div class="card-content custom_padding_card_content_table_top">
 					<h4 class="card-title">Product Info</h4>
@@ -71,23 +70,15 @@ $page_heading 	= "Stock Hisotry";
 											} ?>
 										</span>
 									</div>
-									<div class="col xl3 s12">
-										<span class="invoice-number mr-1"><b>Stock: </b></span>
-										<span>
-											<?php if (isset($total_stock)) {
-												echo $total_stock;
-											} ?>
-										</span>
-									</div>
 									<div class="col xl6 s12">
 										<div class="invoice-date display-flex align-items-center flex-wrap">
 											<div class="mr-3">
-												<small><b>Last Purchase Date:</b></small>
-												<span>08/08/2024</span>
+												<small><b><?php //echo "Last Purchase Date:" 
+															?></b></small>
+												<span></span>
 											</div>
 											<div>
-												<small><b>Last Update Date:</b></small>
-												<span>08/08/2024</span>
+												<span><?= $row_ee[0]['update_date'] != "" && $row_ee[0]['update_date'] != NULL ?  "<b>Last Update Date:</b>" . $row_ee[0]['update_date'] : ""; ?></span>
 											</div>
 										</div>
 									</div>
@@ -151,7 +142,8 @@ $page_heading 	= "Stock Hisotry";
 										<tr>
 											<?php
 											$headings = '<th class="sno_width_60">S.No</th>
-														<th>Product </th> 
+														<th>Category </th> 
+														<th>Product Desc </th> 
 														<th>Product ID</th> 
 														<th>Status</th>
 														<th>Condition</th>
@@ -170,13 +162,8 @@ $page_heading 	= "Stock Hisotry";
 												$product_id2 = $data['product_id'];  ?>
 												<tr>
 													<td style="text-align: center;"><?php echo $i + 1; ?></td>
-													<td>
-														<?php
-														echo ucwords(strtolower($data['product_desc']));
-														if ($data['category_name'] != "") { ?>
-															(<?php echo $data['category_name']; ?>)
-														<?php } ?>
-													</td>
+													<td><?php echo $data['category_name']; ?></td>
+													<td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
 													<td><?php echo $data['product_uniqueid']; ?></td>
 													<td><?php echo $data['status_name']; ?></td>
 													<td><?php echo $data['stock_grade']; ?></td>
@@ -252,6 +239,7 @@ $page_heading 	= "Stock Hisotry";
 											<?php
 											$headings = '<th class="sno_width_60">S.No</th>
 														<th>Product ID <br> Product Detail</th>
+														<th>Category</th>
 														<th>Status</th>
 														<th>Condition</th>
 														<th>Serial No</th>
@@ -277,13 +265,11 @@ $page_heading 	= "Stock Hisotry";
 														<?php echo $data['product_uniqueid']; ?>
 														<br>
 														<?php
-														echo ucwords(strtolower($data['product_desc']));
-														if ($data['category_name'] != "") { ?>
-															(<?php echo $data['category_name']; ?>)
-														<?php } ?>
+														echo ucwords(strtolower($data['product_desc'])); ?>
 														<br>
 														Location: <?php echo $data['sub_location_name']; ?>
 													</td>
+													<td><?php echo $data['category_name']; ?></td>
 													<td>
 														<?php
 														$status_name = $data['status_name'];

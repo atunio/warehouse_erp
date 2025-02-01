@@ -20,9 +20,9 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles 	= array("package_name", "stock_in_hand", "case_pack", "avg_price", "category", "category_type", "compatible_product_ids");
-$duplication_columns 		= array("package_name",);
-$required_columns 			= array("package_name", "category", "case_pack", "category_type", "compatible_product_ids");
+$supported_column_titles 	= array("package_product_id", "package_name", "stock_in_hand", "case_pack", "avg_price", "category", "category_type", "compatible_product_ids");
+$duplication_columns 		= array("package_product_id");
+$required_columns 			= array("package_product_id", "package_name", "category", "case_pack", "category_type");
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
 		$error['excel_data']	= "Required";
@@ -49,7 +49,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			}
 		}
 		*/
-
 		////////////// validation on missing headings  ///////////////////
 		//////////////////////////////////////////////////////////////////
 		foreach ($data as $row_v1) {

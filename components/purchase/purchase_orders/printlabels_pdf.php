@@ -6,7 +6,7 @@ include($directory_path . "conf/functions.php");
 $db 	= new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 } else {
-	echo redirect_to_page("signin");
+	echo redirect_to_page($directory_path . "signin");
 	exit();
 }
 
@@ -65,10 +65,6 @@ require_once $directory_path . 'mpdf/vendor/autoload.php';
 // $mpdf = new \Mpdf\Mpdf();
 $mpdf = new \Mpdf\Mpdf(['format' => [101.6, 152.4]]);
 
-$total_boxes 		= 3;
-$box_arrival_no 	= 1;
-
-
 $sql_ee1 = " SELECT a.*, b.po_no, c.vender_name
 			FROM purchase_order_detail_logistics a
 			INNER JOIN purchase_orders b ON b.id = a.po_id
@@ -79,15 +75,14 @@ $k = 1;
 $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
-	$row_ee1				= $db->fetch($result_ee1);
+	$row_ee1 = $db->fetch($result_ee1);
 	foreach ($row_ee1 as $data) {
 
-		$logistic_id			= $data['id'];
-		$vender_name			= $data['vender_name'];
-		$po_no					= $data['po_no'];
-		$arrived_date			= dateformat2($data['arrived_date']);
-		$arrival_no				= $data['arrival_no'];
-		$no_of_boxes			= $data['no_of_boxes'];
+		$logistic_id	= $data['id'];
+		$vender_name	= $data['vender_name'];
+		$po_no			= $data['po_no'];
+		$arrived_date	= dateformat2($data['arrived_date']);
+		$no_of_boxes	= $data['no_of_boxes'];
 
 		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
 							FROM purchase_order_detail_logistics a
@@ -107,7 +102,7 @@ if ($counter_ee1 > 0) {
 					<br>
 					<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
 					<br><br>
-					Vendor Name: ' . $vender_name . '
+					Vendor: ' . $vender_name . '
 					<br><br>
 					Box/Pallet # ' . $k . ' out ' . $total_boxes . '
 					<br><br>

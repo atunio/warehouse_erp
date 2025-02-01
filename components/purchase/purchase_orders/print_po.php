@@ -6,7 +6,7 @@ include($directory_path . "conf/functions.php");
 $db 	= new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {
 } else {
-	echo redirect_to_page("signin");
+	echo redirect_to_page($directory_path . "signin");
 	exit();
 }
 
@@ -280,14 +280,14 @@ if ($counter_ee11 > 0) {
 						</table> ';
 
 
-	
+
 
 	$sql_sub1 		= "	SELECT b.package_name , c.category_name , a.order_price,a.order_qty,b.case_pack
 						FROM purchase_order_packages_detail a
 						LEFT JOIN packages b ON b.id = a.package_id
 						LEFT JOIN product_categories c ON c.id = b.product_category
 						WHERE a.enabled = 1 
-						AND a.po_id = '". $po_id ."'
+						AND a.po_id = '" . $po_id . "'
 						ORDER BY b.package_name, c.category_name"; //echo $sql_sub1;die;
 	$result_sub1 	= $db->query($conn, $sql_sub1);
 	$counter_sub1	= $db->counter($result_sub1);
@@ -313,7 +313,7 @@ if ($counter_ee11 > 0) {
 			$order_qty				= $data_sub1['order_qty'];
 			$case_pack				= $data_sub1['case_pack'];
 			$tota_case_pack         = 0;
-			if($order_qty > 0 && $case_pack > 0){
+			if ($order_qty > 0 && $case_pack > 0) {
 				$tota_case_pack   = ($order_qty / $case_pack);
 			}
 			$sum_order_qty			+= $order_qty;
@@ -339,7 +339,7 @@ if ($counter_ee11 > 0) {
 									</tbody>
 								</table>';
 	}
-	
+
 
 	$report_data .= '
 					</div>';

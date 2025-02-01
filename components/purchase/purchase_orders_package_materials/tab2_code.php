@@ -175,7 +175,9 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
-
+	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {
+		$error3['no_of_boxes_update'] = "Required";
+	}
 	if (isset($logistics_cost_update) && $logistics_cost_update == "") {
 		$error3['logistics_cost_update'] = "Required";
 	}
@@ -223,6 +225,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 											expected_arrival_date 	= '" . $expected_arrival_date_update1 . "',
 											logistics_status		= '" . $status_id_update . "',
 											logistics_cost			= '" . $logistics_cost_update . "',
+											no_of_boxes				= '" . $no_of_boxes_update . "',
 											
 											update_timezone			= '" . $timezone . "',
 											update_date				= '" . $add_date . "',

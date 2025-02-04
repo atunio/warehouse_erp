@@ -296,6 +296,9 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				if ($string_data_explode[0] == 'product_category') {
 					$product_category	= $string_data_explode[1];
 				}
+				if ($string_data_explode[0] == 'logistic_id') {
+					$logistic_id	= $string_data_explode[1];
+				}
 			}
 			$sql_md 		= "SELECT * FROM menus WHERE id = '" . $module_id . "' ORDER BY id DESC LIMIT 1 ";
 			$result_md 		= $db->query($conn, $sql_md);
@@ -359,8 +362,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		?>
 		<?php
 
-		if (isset($module_id) && ($module_id == 46 || $module_id == 10 || $module_id == 34)) { ?>
-			<link rel="stylesheet" type="text/css" href="">
+		if (isset($module_id) && ($module_id == 46 || $module_id == 10 || $module_id == 34 || $module_id == 62)) { ?>
 		<?php
 		} else { ?>
 			<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/page-account-settings.min.css">
@@ -447,6 +449,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		<script src="<?php echo $directory_path; ?>app-assets/js/scripts/app-todo.js"></script>
 
 		<?php
+		/*
 		if (isset($module_id) && ($module_id == '10' || $module_id == '31' || $module_id == '37'  || $module_id == '41') && isset($id)) {
 			$sql             = "SELECT a.* FROM " . $selected_db_name . ".time_clock_detail a
 								WHERE a.enabled             = 1
@@ -733,12 +736,6 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						if (startTime == '' || startTime == NULL || startTime == 'undefined') {
 							startTime = new Date();
 						}
-						<?php
-						/*
-						if (isset($_SESSION['startTime']) && $_SESSION['startTime'] != "") { ?>
-							startTime = '<?= $_SESSION['startTime'] ?>';
-						<?php } 
-						*/ ?>
 						r_pause_start_time = "";
 						r_pause_end_time = "";
 						r_pause_duration = 0;
@@ -764,13 +761,6 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						if (startTime_Diagnostic == '' || startTime_Diagnostic == NULL || startTime_Diagnostic == 'undefined') {
 							startTime_Diagnostic = new Date();
 						}
-						<?php
-						/*
-						if (isset($_SESSION['startTime_Diagnostic']) && $_SESSION['startTime_Diagnostic'] != "") { ?>
-							startTime_Diagnostic = '<?= $_SESSION['startTime_Diagnostic'] ?>';
-							alert(startTime_Diagnostic);
-						<?php } 
-						*/ ?>
 
 						d_pause_start_time = "";
 						d_pause_end_time = "";
@@ -1292,7 +1282,8 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				}
 				// Function to update the timer
 			</script>
-		<?php } ?>
+		<?php } 
+		*/ ?>
 	</body>
 
 	</html>

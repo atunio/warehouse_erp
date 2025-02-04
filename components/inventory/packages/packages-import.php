@@ -20,9 +20,9 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles 	= array("sku_code", "package_name", "stock_in_hand", "case_pack", "avg_price", "category", "category_type", "compatible_product_ids");
+$supported_column_titles 	= array("sku_code", "package_name", "package_desc", "stock_in_hand", "case_pack", "avg_price", "category", "category_type", "compatible_product_ids");
 $duplication_columns 		= array("sku_code");
-$required_columns 			= array("sku_code", "package_name", "category", "case_pack", "category_type");
+$required_columns 			= array("sku_code", "package_name", "category", "category_type");
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
 		$error['excel_data']	= "Required";
@@ -126,23 +126,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$duplicate_data_array = array();
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
-
 				$duplicate_colum_values_category 	= array_unique(array_column($all_data, "category"));
 				$duplicate_colum_values 			= array_unique(array_column($all_data, $dup_data));
 				$n = 0;
 				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-					$cateogry_value = $duplicate_colum_values_category[$n];
-					$db_column = $dup_data;
-					if ($dup_data == 'category') {
-						$db_column = "product_category";
-					}
-					if ($dup_data == 'sku') {
-						$db_column = "product_sku";
-					}
-					$sql1		= "	SELECT * FROM " . $master_table . " a
-									INNER JOIN product_categories c ON c.id = a.product_category
-									WHERE a." . $db_column . " 	= '" . $duplicate_colum_values1 . "'
-									AND  c.category_name 		= '" . $cateogry_value . "'  ";
+					$db_column 	= $dup_data;
+					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
@@ -153,7 +142,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
 						}
 					}
-					$n++;
 				}
 			}
 			foreach ($all_data  as $data1) {
@@ -199,7 +187,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$product_id_array 		= explode("&", $data);
 										$all_product_ids_array 	= array();
 										foreach ($product_id_array as $array_element) {
-											$table = "products";
+											$table 			= "products";
 											$sql1 			= "SELECT * FROM " . $table . " WHERE product_uniqueid = '" . $array_element . "' ";
 											$result1 		= $db->query($conn, $sql1);
 											$count1 		= $db->counter($result1);

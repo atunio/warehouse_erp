@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("product_base_id", "product_sub_id", "model_no", "serial_no", "product_grade", "cosmetic_grade", "battery_percentage", "ram_size", "storage_size", "processor_size", "defects_or_notes", "status", "total_stock", "sub_location");
-$duplication_columns 		= array("product_sub_id");
-$required_columns 			= array("product_sub_id");
+$supported_column_titles 	= array("product_id", "model_no", "serial_no", "body_grade", "lcd_grade", "digitizer_grade", "overall_grade", "battery_percentage", "ram_size", "storage_size", "processor_size", "defects_or_notes", "status", "total_stock", "sub_location");
+$duplication_columns 		= array("serial_no");
+$required_columns 			= array("product_id", "serial_no");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -113,20 +113,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	}
 
 	$all_data = $modified_array;
-
 	if (empty($error)) {
 		$duplicate_data_array = array();
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
 				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-
 					$db_column = $dup_data;
-
-					if ($dup_data == 'product_sub_id') {
+					if ($dup_data == 'product_id') {
 						$db_column = "stock_product_uniqueid";
 					}
-
 					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
@@ -146,15 +142,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$columns = $column_data = "";
 					$prod_id = $total_stock1 = 0;
 					foreach ($data1 as $key => $data) {
-
 						if ($key != "" && $key != 'is_insert') {
-
-
-							if ($key == 'product_grade') {
+							if ($key == 'overall_grade') {
 								$key = "stock_grade";
-							}
-							if ($key == 'product_sub_id') {
-								$key = "stock_product_uniqueid";
 							}
 							if ($key == 'status') {
 								$key = "p_inventory_status";
@@ -165,16 +155,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if ($key == 'product_base_id') {
 								$key = "product_id";
 							}
-
 							if ($key == 'p_total_stock') {
 								$total_stock1 = $data;
 							}
-
 							if ($key == 'p_inventory_status') {
-
 								$table = "inventory_status";
 								$field = "status_name";
-
 								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 									$id_for_insert 	= 0;
 									$sql1 			= "SELECT * FROM " . $table . " WHERE " . $field . " = '" . $data . "' ";
@@ -226,7 +212,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 									$table 			= "products";
 									$field 			= "product_uniqueid";
-
 									$sql1 			= "SELECT * FROM " . $table . " WHERE " . $field . " = '" . $data . "' ";
 									$result1 		= $db->query($conn, $sql1);
 									$count1 		= $db->counter($result1);
@@ -236,14 +221,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$column_data 	.= ", '" . $row1[0]['id'] . "'";
 									} else {
 
-										$sql6 = "INSERT INTO " . $selected_db_name . "." . $table . "(subscriber_users_id, " . $field . ", add_date, add_by, add_ip, add_timezone)
-												 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+										$sql6 = "INSERT INTO " . $selected_db_name . "." . $table . "(subscriber_users_id, " . $field . ", add_date, add_by, add_ip, add_timezone, added_from_module_id)
+												 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 										$ok = $db->query($conn, $sql6);
 										if ($ok) {
 											$prod_id	= mysqli_insert_id($conn);
 											$product_no	= "P" . $prod_id;
-											$sql6		= "	UPDATE " . $table . " SET product_no = '" . $product_no . "' 
-															WHERE id = '" . $prod_id . "' ";
+											$sql6		= "	UPDATE " . $table . " SET product_no = '" . $product_no . "'  WHERE id = '" . $prod_id . "' ";
 											$db->query($conn, $sql6);
 
 											$columns 		.= ", " . $key;
@@ -258,16 +242,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						}
 					}
 
-					$sql_c_up = "UPDATE products SET 	total_stock		= (total_stock+" . $total_stock1 . "), 
-										update_date		= '" . $add_date . "',
-										update_by		= '" . $_SESSION['username'] . "',
-										update_ip		= '" . $add_ip . "',
-										update_timezone	= '" . $timezone . "'
+					$sql_c_up = "UPDATE products SET 	total_stock 			= (total_stock+" . $total_stock1 . "), 
+														update_date				= '" . $add_date . "',
+														update_by				= '" . $_SESSION['username'] . "',
+														update_ip				= '" . $add_ip . "',
+														update_timezone			= '" . $timezone . "',
+														update_from_module_id	= '" . $module_id . "'
 									WHERE id = '" . $prod_id . "'   ";
 					$db->query($conn, $sql_c_up);
 
-					$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip, add_timezone)
-						VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip, add_timezone, added_from_module_id)
+						VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$added++;
@@ -391,7 +376,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
-										if ($s_heading == 'product_sub_id') {
+										if ($s_heading == 'product_id') {
 											$cell_format = "Text (Unique)";
 										}
 										if ($s_heading == 'total_stock') {
@@ -432,10 +417,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 													$column_name_c1 = $headings[$col_c1_no];
 													$column_name_c1_org = $column_name_c1;
 
-													if ($column_name_c1 == 'product_grade') {
+													if ($column_name_c1 == 'overall_grade') {
 														$column_name_c1 = "stock_grade";
 													}
-													if ($column_name_c1 == 'product_sub_id') {
+													if ($column_name_c1 == 'product_id') {
 														$column_name_c1 = "stock_product_uniqueid";
 													}
 													if ($column_name_c1 == 'status') {
@@ -449,7 +434,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 													if ($column_name_c1 == 'product_base_id') {
 														$column_name_c1 = "product_id";
 													}
-
 
 													if ($column_name_c1 == 'product_category') {
 														$db_name_c1 = 'category_name';
@@ -571,10 +555,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														if (in_array($db_column_excel, $duplication_columns)) {
 
 
-															if ($db_column == 'product_grade') {
+															if ($db_column == 'overall_grade') {
 																$db_column = "stock_grade";
 															}
-															if ($db_column == 'product_sub_id') {
+															if ($db_column == 'product_id') {
 																$db_column = "stock_product_uniqueid";
 															}
 

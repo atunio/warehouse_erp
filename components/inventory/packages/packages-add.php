@@ -35,7 +35,9 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_ids			= explode(",", $product_ids_comma_sepr);
 	$stock_in_hand			= $row_ee[0]['stock_in_hand'];
 	$case_pack				= $row_ee[0]['case_pack'];
-	$sku_code		= $row_ee[0]['sku_code'];
+	$sku_code				= $row_ee[0]['sku_code'];
+	$stock_in_hand			= $row_ee[0]['stock_in_hand'];
+	$package_desc			= $row_ee[0]['package_desc'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -45,23 +47,16 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-
 	$field_name = "product_ids";
 	if (isset(${$field_name}) && sizeof(${$field_name}) == "0") {
 		$error[$field_name] 		= "Select atleat one Compatible Product";
 		${$field_name . "_valid"} 	= "invalid";
-	}
-	$field_name = "stock_in_hand";
-	if (isset(${$field_name}) && ${$field_name} == ""  && $cmd != 'edit') {
-		$error[$field_name] 	= "Required";
-		${$field_name . "_valid"} = "invalid";
 	}
 	$field_name = "case_pack";
 	if (isset(${$field_name}) && ${$field_name} == ""  && $cmd != 'edit') {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
 	}
-
 	$field_name = "product_category";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
@@ -89,8 +84,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) { //product_sku, case_pack,
-					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, sku_code, package_name, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $sku_code . "',  '" . $package_name . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $case_pack . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids, sku_code, package_name, package_desc, product_category, stock_in_hand, case_pack , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							 VALUES('" . $subscriber_users_id . "', '" . $product_ids_str . "', '" . $sku_code . "',  '" . $package_name . "', '" . $package_desc . "',  '" . $product_category . "', '" . $stock_in_hand  . "', '" . $case_pack . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -100,7 +95,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$product_sku = $package_name = $product_category = $case_pack = $stock_in_hand = "";
+						$product_sku = $package_name = $product_category = $case_pack = $stock_in_hand = $package_desc = "";
 						unset($product_ids);
 						unset($all_checked);
 					} else {
@@ -126,6 +121,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 														product_category	= '" . $product_category . "',  
  														product_ids			= '" . $product_ids_str . "', 
  														case_pack			= '" . $case_pack . "', 
+ 														package_desc		= '" . $package_desc . "', 
 														update_date			= '" . $add_date . "',
 														update_by			= '" . $_SESSION['username'] . "',
 														update_ip			= '" . $add_ip . "'
@@ -208,9 +204,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						<div class="row">
 							<?php
 							$field_name 	= "package_name";
-							$field_label 	= "Package / Part Name";
+							$field_label 	= "Package Name";
 							?>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>
 								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																													echo ${$field_name};
@@ -227,29 +223,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								</label>
 							</div>
 							<?php
-							$field_name 	= "sku_code";
-							$field_label 	= "SKU Code";
+							$field_name 	= "product_category";
+							$field_label 	= "Category";
 							?>
-							<div class="input-field col m4 s12">
-								<i class="material-icons prefix">question_answer</i>
-								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																			echo ${$field_name . "_valid"};
-																																		} ?>">
-								<label for="<?= $field_name; ?>">
-									<?= $field_label; ?>
-									<span class="color-red">* <?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
-									</span>
-								</label>
-							</div>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<?php
-								$field_name 	= "product_category";
-								$field_label 	= "Category";
 								$sql1 			= "SELECT * FROM product_categories WHERE category_type != 'Device'  ";
 								if (isset($cmd) && $cmd != "edit") {
 									$sql1 .= " AND enabled = 1";
@@ -282,13 +260,31 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</label>
 								</div>
 							</div>
-						</div>
-						<div class="row">
+							<?php
+							$field_name 	= "sku_code";
+							$field_label 	= "SKU Code";
+							?>
+							<div class="input-field col m3 s12">
+								<i class="material-icons prefix">question_answer</i>
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
 							<?php
 							$field_name 	= "case_pack";
 							$field_label 	= "No of Case Pack";
 							?>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>
 								<input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																													echo ${$field_name};
@@ -304,11 +300,34 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
+						</div>
+						<div class="row">
+
+							<?php
+							$field_name 	= "package_desc";
+							$field_label 	= "Description";
+							?>
+							<div class="input-field col m6 s12">
+								<i class="material-icons prefix">question_answer</i>
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red"><?php
+															if (isset($error[$field_name])) {
+																echo $error[$field_name];
+															} ?>
+									</span>
+								</label>
+							</div>
 							<?php
 							$field_name 	= "stock_in_hand";
 							$field_label 	= "Stock In Hand";
 							?>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<i class="material-icons prefix">question_answer</i>
 								<input id="<?= $field_name; ?>" <?php if (isset($cmd) && $cmd == 'edit') {
 																	echo "disabled";
@@ -319,14 +338,14 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 																																				} ?>">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
-									<span class="color-red">* <?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
+									<span class="color-red"><?php
+															if (isset($error[$field_name])) {
+																echo $error[$field_name];
+															} ?>
 									</span>
 								</label>
 							</div>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m3 s12">
 								<?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
 									<button class="btn cyan waves-effect waves-light " type="submit" name="action"><?php echo $button_val; ?>
 										<i class="material-icons right">send</i>

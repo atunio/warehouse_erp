@@ -38,8 +38,23 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 				} else {
 					$delete_id = " id= '" . $receviedProductId_array[1] . "' ";
 				}
+
+				$sql_ee12 		= " SELECT po_detail_id FROM purchase_order_detail_receive   WHERE " . $delete_id . " ";
+				$result_rc3 	= $db->query($conn, $sql_ee12);
+				$counter_rc3	= $db->counter($result_rc3);
+				if ($counter_rc3 > 0) {
+					$row_cl_rc3 = $db->fetch($result_rc3);
+					foreach ($row_cl_rc3 as $data_rc3) {
+						$po_detail_id1 = $data_rc3['po_detail_id'];
+						if($po_detail_id1 > 0){
+							$sql_c_up = "UPDATE purchase_order_detail SET is_fk_serial_generated = 0 WHERE id = '" . $po_detail_id1 . "'";
+							$db->query($conn, $sql_c_up);
+						}
+					}
+				}
+
 				$sql_c_up = "DELETE FROM  purchase_order_detail_receive  
-							WHERE " . $delete_id . " AND (is_diagnost = 0 OR is_diagnostic_bypass = 1) ";
+							 WHERE " . $delete_id . " AND (is_diagnost = 0 OR is_diagnostic_bypass = 1) ";
 				//echo "<br><br>" . $sql_c_up;
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {
@@ -105,7 +120,7 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 					if ($receiving_qty > 0) {
 
 						$sql_ee12 = " SELECT a.* FROM purchase_order_detail_receive_package_material a 
-									WHERE a.po_detail_id = '" . $key . "' ";
+										WHERE a.po_detail_id = '" . $key . "' ";
 						// echo $sql_ee1;
 						$result_ee12 	= $db->query($conn, $sql_ee12);
 						$counter_ee12	= $db->counter($result_ee12);

@@ -5,7 +5,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
 	$product_id_barcode 		= 1;
 	$logistic_id_barcode 		= 1;
 	$sub_location_id_manual		= 1737;
-	$logistic_id 				= 1;
+	!isset($logistic_id) ? $logistic_id = 1 : $logistic_id;
 	$receiving_qties[5] 		= 15;
 	$receiving_location[5] 		= 1737;
 	$product_id_manual 			= 1;
@@ -47,7 +47,7 @@ if (isset($_POST['is_Submit_tab3_4_2']) && $_POST['is_Submit_tab3_4_2'] == 'Y') 
 					$package_id			= $row_pd5_pks1[0]['package_id'];
 					$order_price_upd	= $row_pd5_pks1[0]['order_price'];
 					$po_id1	            = $row_pd5_pks1[0]['po_id'];
-					$logistic_id1       = $row_pd5_pks1[0]['logistic_id']; 
+					$logistic_id1       = $row_pd5_pks1[0]['logistic_id'];
 
 					$per_item_logistics = 0;
 					$sql_pd3 		= "	SELECT b.logistics_cost, sum(order_qty) as total_item_in_po
@@ -84,23 +84,23 @@ if (isset($_POST['is_Submit_tab3_4_2']) && $_POST['is_Submit_tab3_4_2'] == 'Y') 
 					$db->query($conn, $sql_c_up);
 
 					$sql_c_up = "DELETE FROM  package_materials_order_detail_receive  WHERE id = '" . $receviedProductId . "' ";
-					$ok = $db->query($conn, $sql_c_up); 
+					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
 
-                        $sql5_pks1	= " SELECT a.id
+						$sql5_pks1	= " SELECT a.id
                                         FROM package_materials_order_detail_receive a
                                         INNER JOIN package_materials_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN package_materials_orders c ON c.id = b.po_id
                                         WHERE b.po_id = '" . $po_id1 . "' ";
-                        // echo "<br><br>" . $sql5_pks1;die;
-                        $result5_pks1	= $db->query($conn, $sql5_pks1);
-                        $count5_pks1	= $db->counter($result5_pks1);
-                        if ($count5_pks1 == 0) { 
-                            
-                            update_po_status_package_materials($db, $conn, $id, $shipped_status_dynamic);
-                            update_po_detail_status_package_materials($db, $conn, $key, $shipped_status_dynamic);
+						// echo "<br><br>" . $sql5_pks1;die;
+						$result5_pks1	= $db->query($conn, $sql5_pks1);
+						$count5_pks1	= $db->counter($result5_pks1);
+						if ($count5_pks1 == 0) {
 
-                            $sql_c_up = "UPDATE  package_materials_order_detail_logistics SET 	edit_lock	            = '0',
+							update_po_status_package_materials($db, $conn, $id, $shipped_status_dynamic);
+							update_po_detail_status_package_materials($db, $conn, $key, $shipped_status_dynamic);
+
+							$sql_c_up = "UPDATE  package_materials_order_detail_logistics SET 	edit_lock	            = '0',
                                                                                 
                                                                                                 update_date				= '" . $add_date . "',
                                                                                                 update_by				= '" . $_SESSION['username'] . "',
@@ -109,8 +109,8 @@ if (isset($_POST['is_Submit_tab3_4_2']) && $_POST['is_Submit_tab3_4_2'] == 'Y') 
                                                                                                 update_timezone			= '" . $timezone . "',
                                                                                                 update_from_module_id	= '" . $module_id . "'
                                 WHERE id = '" . $logistic_id1 . "' ";
-                            $db->query($conn, $sql_c_up); 
-                        }
+							$db->query($conn, $sql_c_up);
+						}
 						$k++;
 					}
 				}

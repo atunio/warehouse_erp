@@ -37,11 +37,12 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "	SELECT a.*, b.category_name, c.status_name
+$sql_cl		= "	SELECT a.*, b.category_name, c.status_name, GROUP_CONCAT('<br>', d.product_uniqueid) AS compatible_product_uniqueids
 				FROM packages a
 				INNER JOIN product_categories b ON b.id = a.product_category
 				LEFT JOIN inventory_status c ON c.id = a.inventory_status
- 				WHERE 1=1  ";
+				LEFT JOIN products d ON  FIND_IN_SET(d.id, a.product_ids)
+				WHERE 1=1 ";
 if (isset($package_name) && $package_name != "") {
 	$sql_cl 	.= " AND a.package_name LIKE '%" . trim($package_name) . "%' ";
 }
@@ -51,7 +52,8 @@ if (isset($sku_code) && $sku_code != "") {
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
 }
-$sql_cl	.= " ORDER BY a.enabled DESC, b.category_name, a.package_name "; // echo $sql_cl;
+$sql_cl	.= " GROUP BY a.id 
+			 ORDER BY a.enabled DESC, b.category_name, a.package_name "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
 $count_cl	= $db->counter($result_cl);
 $page_heading 	= "List of Packages / Parts";
@@ -87,8 +89,6 @@ $page_heading 	= "List of Packages / Parts";
 												Import
 											</a>
 										<?php } ?>
-
-
 									</div>
 								</div>
 							</div>
@@ -231,11 +231,8 @@ $page_heading 	= "List of Packages / Parts";
 												</label>
 											</div>
 										</div>
-
-										<div class="input-field col m1 s12">
-											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
-										</div>
-										<div class="input-field col m1 s12">
+										<div class="input-field col m2 s12">
+											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp; &nbsp;
 											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
 										</div>
 									</div>
@@ -247,12 +244,14 @@ $page_heading 	= "List of Packages / Parts";
 												<tr>
 													<?php
 													$headings = '<th class="sno_width_60">S.No</th>
-																<th>SKU Code</th>
-																<th>Package/Part Name</th>
 																<th>Category</th>
-																<th>Stock In Hand</th>
-																<th>Avg Price</th>
+																<th>SKU Code</th>
+																<th>Package Name</br> Description</th>
 																<th>Case Pack</th>
+																<th>Avg Price</th>
+ 																<th>Stock In Hand</th>
+																<th>Compatible Mandatory Products</th>
+																<th>Compatible Optional Products</th>
 																<th>Action</th>';
 													echo $headings;
 													?>
@@ -267,14 +266,46 @@ $page_heading 	= "List of Packages / Parts";
 														$id = $data['id'];  ?>
 														<tr>
 															<td style="text-align: center;"><?php echo $i + 1; ?></td>
-															<td><?php echo $data['sku_code']; ?></td>
-															<td><?php echo $data['package_name']; ?></td>
 															<td><?php echo $data['category_name']; ?></td>
-															<td><?php echo $data['stock_in_hand']; ?></td>
-															<td><?php echo $data['avg_price']; ?></td>
+															<td><?php echo $data['sku_code']; ?></td>
+															<td><?php echo $data['package_name']; ?></br><?php echo $data['package_desc']; ?></td>
 															<td><?php echo $data['case_pack']; ?></td>
-															<?php //*/ 
-															?>
+															<td><?php echo $data['avg_price']; ?></td>
+															<td><?php echo $data['stock_in_hand']; ?></td>
+															<td>
+																<?php
+																$sql_cl		= " SELECT GROUP_CONCAT('<br>', b.product_uniqueid) AS compatible_mandatory
+																				FROM product_packages a
+																				INNER JOIN products  b ON b.id = a.product_id
+																				INNER JOIN packages  c ON c.id = a.package_id
+																				WHERE a.package_id = '" . $id . "'
+																				AND FIND_IN_SET(a.product_id, c.product_ids)
+																				AND a.is_mandatory = 'Yes'
+																				GROUP BY a.is_mandatory ";
+																$result_cl2	= $db->query($conn, $sql_cl);
+																$count_cl2	= $db->counter($result_cl2);
+																if ($count_cl2 > 0) {
+																	$row_cl2 = $db->fetch($result_cl2);
+																	echo $row_cl2[0]['compatible_mandatory'];
+																} ?>
+															</td>
+															<td>
+																<?php
+																$sql_cl		= " SELECT GROUP_CONCAT('<br>', b.product_uniqueid) AS compatible_optional
+																				FROM product_packages a
+																				INNER JOIN products  b ON b.id = a.product_id
+																				INNER JOIN packages  c ON c.id = a.package_id
+																				WHERE a.package_id = '" . $id . "'
+																				AND FIND_IN_SET(a.product_id, c.product_ids)
+																				AND a.is_mandatory = 'No'
+																				GROUP BY a.is_mandatory ";
+																$result_cl2	= $db->query($conn, $sql_cl);
+																$count_cl2	= $db->counter($result_cl2);
+																if ($count_cl2 > 0) {
+																	$row_cl2 = $db->fetch($result_cl2);
+																	echo $row_cl2[0]['compatible_optional'];
+																} ?>
+															</td>
 															<td class="text-align-center">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>

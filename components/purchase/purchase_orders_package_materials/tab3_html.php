@@ -152,7 +152,8 @@
                                     </label>
                                 </div>
                             </div>
-                            <?php if ($count_log2 > 0) { ?>
+                            <?php
+                            if ($count_log2 > 0) { ?>
                                 <div class="input-field col m1 s12"></div>
                                 <div class="input-field col m4 s12">
                                     <a class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_packages_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id)  ?>" target="_blank">

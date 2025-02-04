@@ -245,8 +245,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$i++;
 				}
 			}
-
-			$db->query($conn, $sql_dup);
 			if (isset($package_ids)) {
 				$sql_dup = " DELETE FROM purchase_order_packages_detail WHERE po_id	= '" . $id . "'";
 				$db->query($conn, $sql_dup);

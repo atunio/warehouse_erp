@@ -596,7 +596,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					?>
 				</div>
 			</div>
-
 			<?php
 			$sql_cl		= "	SELECT  a1.*, b.category_name, a.package_name
 							FROM product_packages a1 
@@ -605,7 +604,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							WHERE 1=1
 							AND a.enabled = 1 
 							AND a1.product_id = '" . $id . "' 
-							ORDER BY a1.enabled DESC, b.category_name, a.package_name   ";
+							ORDER BY a1.enabled DESC, b.category_name, a.package_name";
 			// echo $sql_cl;
 			$result_cl	= $db->query($conn, $sql_cl);
 			$count_cl	= $db->counter($result_cl);

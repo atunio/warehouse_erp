@@ -3596,6 +3596,37 @@ insert  into `requested_shipments`(`id`,`subscriber_users_id`,`requested_shipmen
 (2,1,'Shipment02',1,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
 (3,1,'Shipment03',1,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,0,1);
 
+/*Table structure for table `return_items_detail` */
+
+DROP TABLE IF EXISTS `return_items_detail`;
+
+CREATE TABLE `return_items_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscriber_users_id` int(11) DEFAULT 0,
+  `return_id` int(11) DEFAULT 0,
+  `return_qty` int(10) DEFAULT 0,
+  `product_id` int(11) DEFAULT 0,
+  `return_status_item` int(11) DEFAULT 1,
+  `expected_status` int(11) DEFAULT 0,
+  `edit_lock` smallint(1) DEFAULT 0,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT NULL,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT NULL,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `return_items_detail` */
+
 /*Table structure for table `returns` */
 
 DROP TABLE IF EXISTS `returns`;
@@ -3626,9 +3657,12 @@ CREATE TABLE `returns` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `returns` */
+
+insert  into `returns`(`id`,`subscriber_users_id`,`ro_no`,`return_type`,`removal_order_id`,`return_date`,`store_id`,`public_note`,`internal_note`,`return_status`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(2,1,'RO2','Shipstation','20250204232312','2025-02-04',2,NULL,NULL,1,0,'2025-02-04 23:23:14','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `rma_order_detail` */
 
@@ -10031,9 +10065,12 @@ CREATE TABLE `stores` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `stores` */
+
+insert  into `stores`(`id`,`subscriber_users_id`,`store_name`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(2,1,'Qdg',0,'2025-02-04 23:22:26','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `sub_users_role_permissions` */
 

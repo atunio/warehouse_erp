@@ -69,7 +69,7 @@ $total_boxes 		= 3;
 $box_arrival_no 	= 1;
 
 
-$sql_ee1 = "SELECT DISTINCT b2.po_no, a.po_detail_id, c.product_desc, c.product_uniqueid, d.category_name, count(a.id) as total_products
+$sql_ee1 = "SELECT DISTINCT b2.return_no, a.po_detail_id, c.product_desc, c.product_uniqueid, d.category_name, count(a.id) as total_products
 			FROM purchase_order_detail_receive a
 			INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
 			INNER JOIN purchase_orders b2 ON b2.id = b.po_id
@@ -83,8 +83,8 @@ $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
 	$row_ee1				= $db->fetch($result_ee1);
-	$po_no					= $row_ee1[0]['po_no'];
-	$po_productNo			= $row_ee1[0]['po_no'] . "P" . $row_ee1[0]['po_detail_id'];
+	$return_no					= $row_ee1[0]['return_no'];
+	$po_productNo			= $row_ee1[0]['return_no'] . "P" . $row_ee1[0]['po_detail_id'];
 	$product_uniqueid		= $row_ee1[0]['product_uniqueid'];
 	$total_products			= $row_ee1[0]['total_products'];
 	$product_desc			= $row_ee1[0]['product_desc'];

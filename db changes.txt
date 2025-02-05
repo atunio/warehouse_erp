@@ -7,8 +7,4 @@ Created tables:
 
 Alter:
 
-purchase_order_detail_receive = > recevied_product_category
-purchase_order_detail_receive = > po_id
-purchase_order_detail_receive = > receive_type
-purchase_order_detail = > is_fk_serial_generated
-   
+table = >  field

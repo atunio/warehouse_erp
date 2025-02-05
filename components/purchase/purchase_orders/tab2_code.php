@@ -144,7 +144,6 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			}
 
 			if ($k > 0) {
-
 				$sql_c_up = "UPDATE  purchase_orders SET 	order_status	= '" . $logistic_status_dynamic . "',
 															logistics_cost	= '" . $logistics_cost . "',
 															update_timezone	= '" . $timezone . "',
@@ -154,16 +153,16 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
+				$disp_status_name = get_status_name($db, $conn, $logistic_status_dynamic);
+
 				if (isset($msg2['msg_success'])) {
 					$msg2['msg_success'] .= "<br>Logistics info has been added successfully.";
 				} else {
 					$msg2['msg_success'] = "Logistics info has been added successfully.";
 				}
-
 				if ($_SERVER['HTTP_HOST'] != 'localhost') {
 					$tracking_no = "";
 				}
-
 				if ($_SERVER['HTTP_HOST'] == 'localhost') {
 					$tracking_no = date('YmdHis');
 				}

@@ -25,7 +25,7 @@
                     </a>  &nbsp;&nbsp;
                 <?php */ ?>
                     <?php
-                    if (isset($ro_no) && isset($id)) {
+                    if (isset($return_no) && isset($id)) {
                         if (access("edit_perm") == 1) { ?>
                             <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                                 Save changes
@@ -47,8 +47,8 @@
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
                         <?php
-                        if (isset($ro_no) && isset($id)) { ?>
-                            <h5 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $ro_no; ?></span></h5>
+                        if (isset($return_no) && isset($id)) { ?>
+                            <h5 class="media-heading"><span class=""><?php echo "<b>Return#:</b>" . $return_no; ?></span></h5>
                         <?php } ?>
                         <?php
                         if (isset($cmd) && $cmd == 'add') { ?>

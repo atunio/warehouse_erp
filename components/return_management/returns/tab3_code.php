@@ -8,7 +8,7 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Arrival") == 0) {
 		$error3['msg'] = "You do not have add permissions.";
 	} else {
-		$sql_c_up = "UPDATE  purchase_order_detail_logistics 
+		$sql_c_up = "UPDATE  return_order_detail_logistics 
 												SET 	
 													bill_of_landing		= '',
 													sub_location_id		= '0',
@@ -24,12 +24,12 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 		$ok = $db->query($conn, $sql_c_up);
 		if ($ok) {
 
-			$sql_ee1 = " SELECT b.* FROM purchase_order_detail_logistics b WHERE b.po_id = '" . $id . "' AND b.arrived_date IS NOT NULL";
+			$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "' AND b.arrived_date IS NOT NULL";
 			// echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
 			if ($counter_ee1 == 0) {
-				$sql_c_up = "UPDATE  purchase_order_detail
+				$sql_c_up = "UPDATE  return_items_detail
 							SET 	
 								return_status_item	= '" . $logistic_status_dynamic . "',
 
@@ -37,10 +37,10 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 								update_date				= '" . $add_date . "',
 								update_by				= '" . $_SESSION['username'] . "',
 								update_ip				= '" . $add_ip . "'
-						WHERE po_id = '" . $id . "' ";
+						WHERE return_id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
-				$sql_c_up = "UPDATE  purchase_orders
+				$sql_c_up = "UPDATE  returns
 							SET 	
 								return_status		= '" . $logistic_status_dynamic . "',
 
@@ -59,9 +59,11 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 	extract($_POST);
 	$arrived_date1 = "0000-00-00";
+
 	if (!isset($sub_location_id) || (isset($sub_location_id)  && ($sub_location_id == "0" || $sub_location_id == ""))) {
 		$error3['sub_location_id'] = "Required";
 	}
+	
 	if (isset($arrived_date) && $arrived_date == "") {
 		$error3['arrived_date'] = "Required";
 	} else {
@@ -102,7 +104,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 			if (isset($logistics_ids_2) && sizeof($logistics_ids_2) > 0) {
 				foreach ($logistics_ids_2 as $logistics_id) {
 					$arrival_no = 0;
-					$sql_ee1 = " SELECT b.* FROM purchase_order_detail_logistics b WHERE b.id = '" . $logistics_id . "'";
+					$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.id = '" . $logistics_id . "'";
 					// echo $sql_ee1;
 					$result_ee1 	= $db->query($conn, $sql_ee1);
 					$counter_ee1	= $db->counter($result_ee1);
@@ -111,7 +113,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 						$arrival_no		= $row_ee1_ano[0]['arrival_no'];
 					}
 					if ($arrival_no == '0') {
-						$sql_ee1 = " SELECT IFNULL(max(a.arrival_no), 0) as max_arrival_no FROM purchase_order_detail_logistics a WHERE a.po_id = '" . $id . "'";
+						$sql_ee1 = " SELECT IFNULL(max(a.arrival_no), 0) as max_arrival_no FROM return_order_detail_logistics a WHERE a.return_id = '" . $id . "'";
 						// echo $sql_ee1;
 						$result_ee1 	= $db->query($conn, $sql_ee1);
 						$counter_ee1	= $db->counter($result_ee1);
@@ -121,7 +123,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 						}
 
 						for ($k = 1; $k < $arrival_no; $k++) {
-							$sql_ee1 = " SELECT a.arrival_no FROM purchase_order_detail_logistics a WHERE a.po_id = '" . $id . "' AND a.arrival_no = '" . $k . "'";
+							$sql_ee1 = " SELECT a.arrival_no FROM return_order_detail_logistics a WHERE a.return_id = '" . $id . "' AND a.arrival_no = '" . $k . "'";
 							// echo $sql_ee1;
 							$result_ee1 	= $db->query($conn, $sql_ee1);
 							$counter_ee1	= $db->counter($result_ee1);
@@ -132,7 +134,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 						}
 					}
 
-					$sql_c_up = "UPDATE  purchase_order_detail_logistics SET 	bill_of_landing		= '" . $file_landing . "',
+					$sql_c_up = "UPDATE  return_order_detail_logistics SET 	bill_of_landing		= '" . $file_landing . "',
 																				sub_location_id		= '" . $sub_location_id . "',
 																				arrived_date		= '" . $arrived_date1 . "',
 																				logistics_status	= '" . $arrival_status_dynamic . "',

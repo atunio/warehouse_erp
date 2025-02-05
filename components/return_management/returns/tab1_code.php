@@ -43,7 +43,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 
 	$store_id				=  $row_ee[0]['store_id'];
 	$store_name				= $row_ee[0]['store_name'];
-	$ro_no					= $row_ee[0]['ro_no']; 
+	$return_no				= $row_ee[0]['return_no']; 
 	$return_status			= $row_ee[0]['return_status'];   
 	$return_type			= $row_ee[0]['return_type'];   
 	$removal_order_id		= $row_ee[0]['removal_order_id'];   
@@ -52,8 +52,6 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$public_note			= $row_ee[0]['public_note'];   
 	
 	$return_date			= str_replace("-", "/", convert_date_display($row_ee[0]['return_date']));
- 
-
 
 	$return_qty				= [];
 	$expected_status		= [];
@@ -104,29 +102,31 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		${$field_name . "_valid"} 	= "invalid";
 	}
 	if (empty($error)) {
+		$return_date1 = NULL;
 		if (isset($return_date) && $return_date != "") {
-			$return_date = convert_date_mysql_slash($return_date);
-		}
+			$return_date1 = convert_date_mysql_slash($return_date);
+		} 
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
 				$sql_dup	= " SELECT a.* 
 								FROM `returns` a 
-								WHERE a.store_id		= '" . $store_id . "'
-								AND a.return_date			= '" . $return_date . "' ";
+								WHERE a.store_id	= '" . $store_id . "'
+								AND a.return_date	= '" . $return_date1 . "' 
+								AND a.removal_order_id	= '" . $removal_order_id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql6 = "INSERT INTO " . $selected_db_name . ".returns(subscriber_users_id, store_id,  return_date  ,  return_type , removal_order_id,  add_date, add_by, add_by_user_id, add_ip, add_timezone)
-							 VALUES('" . $subscriber_users_id . "', '" . $store_id . "','" . $return_date  . "' ,'" . $return_type  . "' ,'" . $removal_order_id  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+							 VALUES('" . $subscriber_users_id . "', '" . $store_id . "','" . $return_date1  . "' ,'" . $return_type  . "' ,'" . $removal_order_id  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id				= mysqli_insert_id($conn);
-						$ro_no			= "RO" . $id;
+						$return_no			= "RO" . $id;
 						$return_status	= 1;
 
-						$sql6 = " UPDATE `returns` SET ro_no = '" . $ro_no . "' WHERE id = '" . $id . "' ";
+						$sql6 = " UPDATE `returns` SET return_no = '" . $return_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 
 						$msg['msg_success'] = "Return Order has been created successfully.";

@@ -47,8 +47,16 @@
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
                         <?php
+
                         if (isset($po_no) && isset($id)) { ?>
-                            <h5 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h5>
+                            <h5 class="media-heading">
+                                <span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span>
+                                <span class="chip green lighten-5">
+                                    <span class="green-text">
+                                        <?php echo $disp_status_name; ?>
+                                    </span>
+                                </span>
+                            </h5>
                         <?php } ?>
                         <?php
                         if (isset($cmd) && $cmd == 'add') { ?>
@@ -242,7 +250,9 @@
                     </div>
                 </div>
             </div>
-            <?php if (isset($cmd) && $cmd == 'edit') { ?>
+            <?php
+
+            if (isset($cmd) && $cmd == 'edit') { ?>
                 <div class="col s12 m12 l12">
                     <div id="Form-advance2" class="card card card-default scrollspy custom_margin_section">
                         <div class="card-content custom_padding_section">
@@ -269,10 +279,21 @@
                                             $order_qty[]            = $data2['order_qty'];
                                             $expected_status[]      = $data2['expected_status'];
                                         }
+                                    } else {
+                                        if (isset($test_on_local) && $test_on_local == 1) {
+                                            $product_ids[]          = "212";
+                                            $product_ids[]          = "213";
+                                            $product_condition[]    = "A";
+                                            $product_condition[]    = "A";
+                                            $order_price[]          = "200";
+                                            $order_price[]          = "300";
+                                            $order_qty[]            = "5";
+                                            $order_qty[]            = "10";
+                                            $expected_status[]      = "5";
+                                            $expected_status[]      = "5";
+                                        }
                                     }
-                                } ?>
-
-                                <?php
+                                }
                                 if (isset($id) && $id > 0) {
                                     unset($package_ids);
                                     unset($order_part_qty);

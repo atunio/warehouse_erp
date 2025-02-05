@@ -1,4 +1,5 @@
 <?php
+
 if (!isset($module)) {
 	require_once('../../../conf/functions.php');
 	disallow_direct_school_directory_access();
@@ -11,7 +12,9 @@ $user_id 				= $_SESSION["user_id"];
 
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
-} else {
+} 
+
+else {
 	if (isset($cmd) && $cmd == 'disabled') {
 		$sql_c_upd = "UPDATE purchase_orders set enabled = 0,
 												update_date = '" . $add_date . "' ,
@@ -25,6 +28,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 			$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 		}
 	}
+	
 	if (isset($cmd) && $cmd == 'enabled') {
 		$sql_c_upd = "UPDATE purchase_orders set 	enabled 	= 1,
 											update_date = '" . $add_date . "' ,
@@ -37,50 +41,29 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl			= " SELECT * FROM (
-						SELECT '' AS offer_no, aa.po_no,aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
-								aa.id AS po_id_master,   
-								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
-						FROM purchase_orders aa
-						LEFT JOIN venders c ON c.id = aa.vender_id
-						LEFT JOIN inventory_status f ON f.id = aa.order_status
-						WHERE 1=1 
-						AND aa.offer_id = 0
-						
-						UNION ALL 
-						
-						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
-								aa.id AS po_id_master, 
-								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
-						FROM purchase_orders aa
-						INNER JOIN offers a ON a.id = aa.offer_id
-						INNER JOIN venders c ON c.id = a.vender_id
-						INNER JOIN inventory_status f ON f.id = aa.order_status
-						WHERE 1=1 
-						AND aa.offer_id != 0
-					) AS t1
-					WHERE 1=1 ";
-if (po_permisions("ALL PO in List") != '1') {
-	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
+$sql_cl			="	SELECT aa.return_no,aa.removal_order_id, aa.return_status, aa.id,c.store_name, aa.return_date, aa.enabled AS order_enabled, 
+						aa.add_by_user_id AS add_by_user_id_order, f.status_name AS ro_status_name
+					FROM  `returns` aa 
+					LEFT JOIN stores c ON c.id = aa.store_id
+					LEFT JOIN inventory_status f ON f.id = aa.return_status
+					WHERE 1=1   "; 
+if (isset($flt_return_no) && $flt_return_no != "") {
+	$sql_cl 	.= " AND aa.return_no LIKE '%" . trim($flt_return_no) . "%' ";
 }
-if (isset($flt_po_no) && $flt_po_no != "") {
-	$sql_cl 	.= " AND t1.po_no LIKE '%" . trim($flt_po_no) . "%' ";
+if (isset($flt_store_id) && $flt_store_id != "") {
+	$sql_cl 	.= " AND aa.`store_id` = '" . trim($flt_store_id) . "' ";
 }
-if (isset($flt_vender_id) && $flt_vender_id != "") {
-	$sql_cl 	.= " AND t1.vender_id = '" . trim($flt_vender_id) . "' ";
+if (isset($flt_removal_order_id) && $flt_removal_order_id != "") {
+	$sql_cl 	.= " AND aa.removal_order_id LIKE '%" . trim($flt_removal_order_id) . "%' ";
 }
-if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
-	$sql_cl 	.= " AND t1.vender_invoice_no LIKE '%" . trim($flt_vender_invoice_no) . "%' ";
+if (isset($flt_return_status) && $flt_return_status != "") {
+	$sql_cl 	.= " AND aa.return_status = '" . trim($flt_return_status) . "' ";
 }
-if (isset($flt_po_status) && $flt_po_status != "") {
-	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_po_status) . "' ";
-}
-$sql_cl	.= " 		ORDER BY  t1.po_id_master DESC";
-// echo $sql_cl;
+$sql_cl	.= " 		  ORDER BY id DESC";
+ //echo $sql_cl; die;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
+
 $page_heading 	= "List of Returns ";
 ?>
 <!-- BEGIN: Page Main-->
@@ -162,9 +145,9 @@ $page_heading 	= "List of Returns ";
 											<br>
 											<div class="input-field col m2 s12 custom_margin_bottom_col">
 												<?php
-												$field_name     = "flt_po_no";
-												$field_label	= "PO#";
-												$sql1			= "SELECT DISTINCT po_no FROM purchase_orders WHERE 1=1 ";
+												$field_name     = "flt_return_no";
+												$field_label	= "ro#";
+												$sql1			= "SELECT DISTINCT return_no FROM returns WHERE 1=1 ";
 												$result1		= $db->query($conn, $sql1);
 												$count1         = $db->counter($result1);
 												?>
@@ -178,7 +161,7 @@ $page_heading 	= "List of Returns ";
 														if ($count1 > 0) {
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
-																<option value="<?php echo $data2['po_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['po_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['po_no']; ?></option>
+																<option value="<?php echo $data2['return_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['return_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['return_no']; ?></option>
 														<?php }
 														} ?>
 													</select>
@@ -192,15 +175,14 @@ $page_heading 	= "List of Returns ";
 													</label>
 												</div>
 											</div>
+
 											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<?php
-												$field_name     = "flt_vender_id";
-												$field_label	= "Vendor";
-												$sql1			= " SELECT DISTINCT b.id, b.vender_name, b.vender_no, c.type_name
-																	FROM purchase_orders a
-																	INNER JOIN venders b ON b.id = a.vender_id
-																	INNER JOIN vender_types c ON c.id = b.vender_type
-																	WHERE 1=1";
+												$field_name     = "flt_store_id";
+												$field_label	= "Store";
+												$sql1			= " SELECT DISTINCT c.* FROM `returns` a 
+																	JOIN `return_items_detail` b  ON a.`id`= b.return_id
+																	JOIN stores c ON c.`id` = a.`store_id` ORDER BY a.`id`";
 												$result1		= $db->query($conn, $sql1);
 												$count1         = $db->counter($result1);
 												?>
@@ -214,7 +196,7 @@ $page_heading 	= "List of Returns ";
 														if ($count1 > 0) {
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
-																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['vender_name']; ?> (<?php echo $data2['type_name']; ?>) </option>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['store_name']; ?> </option>
 														<?php }
 														} ?>
 													</select>
@@ -228,11 +210,13 @@ $page_heading 	= "List of Returns ";
 													</label>
 												</div>
 											</div>
+
 											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<?php
-												$field_name = "flt_vender_invoice_no";
-												$field_label = "Vendor Invoice#";
-												$sql1			= "SELECT DISTINCT vender_invoice_no FROM purchase_orders WHERE 1=1 ";
+												$field_name = "flt_removal_order_id";
+												$field_label = "Removal Order #";
+												$sql1			= " SELECT DISTINCT a.removal_order_id FROM `returns` a 
+																	JOIN `return_items_detail` b  ON a.`id`= b.return_id";
 												$result1		= $db->query($conn, $sql1);
 												$count1         = $db->counter($result1);
 												?>
@@ -246,7 +230,7 @@ $page_heading 	= "List of Returns ";
 														if ($count1 > 0) {
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
-																<option value="<?php echo $data2['vender_invoice_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['vender_invoice_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['vender_invoice_no']; ?></option>
+																<option value="<?php echo $data2['removal_order_id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['removal_order_id']) { ?> selected="selected" <?php } ?>><?php echo $data2['removal_order_id']; ?></option>
 														<?php }
 														} ?>
 													</select>
@@ -263,7 +247,7 @@ $page_heading 	= "List of Returns ";
 
 											<div class="input-field col m2 s12 custom_margin_bottom_col">
 												<?php
-												$field_name     = "flt_po_status";
+												$field_name     = "flt_return_status";
 												$field_label	= "Status";
 												$sql1			= "SELECT *  FROM inventory_status WHERE 1=1 AND id IN(1, 3, 4, 5)  ";
 												$result1		= $db->query($conn, $sql1);
@@ -293,6 +277,7 @@ $page_heading 	= "List of Returns ";
 													</label>
 												</div>
 											</div>
+
 											<div class="input-field col m2 s12">
 												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
 												<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
@@ -306,10 +291,9 @@ $page_heading 	= "List of Returns ";
 													<tr>
 														<?php
 														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>PO#</th>
-																	<th>PO Date</th>
-																	<th>To Be</th>
- 																	<th>Vendor / Invoice# / OfferID</th>
+																	<th>RO#</th>
+																	<th>RO Date</th>
+ 																	<th>Removal Order</th>
 																	<th>Category Wise Qty</th>
  																	<th>Tracking / Pro #</th>
  																	<th>Action</th>';
@@ -321,48 +305,49 @@ $page_heading 	= "List of Returns ";
 													<?php
 													$i = 0;
 													if ($count_cl > 0) {
+														
 														$row_cl = $db->fetch($result_cl);
 														foreach ($row_cl as $data) {
-															$id 				= $data['po_id_master'];
+															$id 				= $data['id'];
 															$sql2				= "	SELECT a.*, status_name
-																					FROM purchase_order_detail_logistics a
- 																					LEFT JOIN inventory_status b ON b.id = a.logistics_status
-																					WHERE a.po_id = '" . $id . "'";
-															$result2			= $db->query($conn, $sql2);
-															// for ($m = 0; $m < 200; $m++) { 
-													?>
+																					FROM return_items_detail a
+ 																					LEFT JOIN inventory_status b ON b.id = a.return_status_item
+																					WHERE a.return_status_item = '" . $id . "'";
+															$result2			= $db->query($conn, $sql2);?>
 															<tr>
 																<td style="text-align: center;"><?php echo $i + 1; ?></td>
 																<td>
 																	<?php
-																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
+																	if ($data['return_status'] == 1 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-																			<?php echo $data['po_no']; ?>
+																			<?php echo $data['return_no']; ?>
 																		</a>
-																	<?php } else {
-																		echo $data['po_no'];
+																	<?php } 
+																	else {
+																		echo $data['return_no'];
 																	} ?>
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php
-																			echo $data['po_status_name'];
+																			echo $data['ro_status_name'];
 																			///*
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
 																			$sql2_2				= "SELECT a.*
-																									FROM purchase_order_detail_logistics a
-																									WHERE a.po_id = '" . $id . "'";
+																									FROM return_items_detail a
+																									WHERE a.return_id = '" . $id . "'";
 																			$result2_2			= $db->query($conn, $sql2_2);
 																			$total_logistics	= $db->counter($result2_2);
 
+																	
 																			$j              = 0;
 																			$sql3           = " SELECT a.*
-																								FROM purchase_order_detail_logistics a
-																								WHERE a.po_id = '" . $id . "'
-																								AND arrived_date IS NOT NULL ";
+																								FROM returns a
+																								WHERE a.id = '" . $id . "'
+																								AND return_date IS NOT NULL ";
 																			$result3        = $db->query($conn, $sql3);
 																			$total_arrived  = $db->counter($result3);
-																			if ($data['order_status'] == $arrival_status_dynamic) {
+																			if ($data['return_status'] == $arrival_status_dynamic) {
 																				if ($total_logistics > 0 && $total_arrived > 0) {
 																					$total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
 																					if ($total_arrival_percentage > 0) {
@@ -373,24 +358,24 @@ $page_heading 	= "List of Returns ";
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
 																			$total_items_ordered = 0;
-																			$sql2       = " SELECT sum(a.order_qty) as order_qty
-																							FROM purchase_order_detail a
-																							WHERE a.po_id = '" . $id . "'
+																			$sql2       = " SELECT sum(a.return_qty) as return_qty
+																							FROM return_items_detail a
+																							WHERE a.return_id = '" . $id . "'
 																							AND a.enabled = 1 ";
 																			$result_r2    = $db->query($conn, $sql2);
 																			$count2     = $db->counter($result_r2);
 																			if ($count2 > 0) {
 																				$row_lg2                = $db->fetch($result_r2);
-																				$total_items_ordered    = $row_lg2[0]['order_qty'];
+																				$total_items_ordered    = $row_lg2[0]['return_qty'];
 																			}
 																			$sql3               = "SELECT a.id
-																									FROM purchase_order_detail_receive a
-																									INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-																									WHERE b.po_id = '" . $id . "'
+																									FROM return_items_detail_receive a
+																									INNER JOIN return_items_detail b ON b.id = a.ro_detail_id 
+																									WHERE b.return_id = '" . $id . "'
 																									AND a.enabled = 1 ";
 																			$result3            = $db->query($conn, $sql3);
 																			$total_received     = $db->counter($result3);
-																			if ($data['order_status'] == $receive_status_dynamic) {
+																			if ($data['return_status'] == $receive_status_dynamic) {
 																				if ($total_items_ordered > 0 && $total_received > 0) {
 																					$total_received_percentage = ($total_received / $total_items_ordered) * 100;
 																					if ($total_received_percentage > 0) {
@@ -398,11 +383,11 @@ $page_heading 	= "List of Returns ";
 																					}
 																				}
 																			}
-																			if ($data['order_status'] == $diagnost_status_dynamic) {
+																			if ($data['return_status'] == $diagnost_status_dynamic) {
 																				$sql3               = "SELECT a.id
-																										FROM purchase_order_detail_receive a
-																										INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-																										WHERE b.po_id = '" . $id . "'
+																										FROM return_items_detail_receive a
+																										INNER JOIN return_items_detail b ON b.id = a.ro_detail_id 
+																										WHERE b.return_id = '" . $id . "'
 																										AND a.serial_no_barcode IS NOT NULL
 																										AND a.serial_no_barcode !=''
 																										AND a.is_diagnost = 1
@@ -418,12 +403,12 @@ $page_heading 	= "List of Returns ";
 																					}
 																				}
 																			}
-																			if ($data['order_status'] == $inventory_status_dynamic) {
+																			if ($data['return_status'] == $inventory_status_dynamic) {
 																				$sql3               = " SELECT a.id
 																										FROM product_stock a
-																										INNER JOIN purchase_order_detail_receive b ON b.id = a.receive_id
-																										INNER JOIN purchase_order_detail c ON c.id = b.po_detail_id 
-																										WHERE c.po_id = '" . $id . "'
+																										INNER JOIN return_items_detail_receive b ON b.id = a.receive_id
+																										INNER JOIN return_items_detail c ON c.id = b.ro_detail_id 
+																										WHERE c.return_id = '" . $id . "'
  																										AND a.enabled = 1 AND b.enabled = 1 ";
 																				$result3            = $db->query($conn, $sql3);
 																				$total_inventory    = $db->counter($result3);
@@ -433,38 +418,23 @@ $page_heading 	= "List of Returns ";
 																						echo " (" . round(($total_inventory_percentage)) . "%)";
 																					}
 																				}
-																			}
-																			//*/ 
-																			?>
+																			}?>
 																		</span>
 																	</span>
 																</td>
-																<td> <?php echo dateformat2($data['po_date']); ?></td>
+																<td> <?php echo dateformat2($data['return_date']); ?></td>
 																<td>
-																	<?php
-																	if ($data['is_tested_po'] == 'Yes') {
-																		echo "<b>Tested, </b>";
-																	}
-																	if ($data['is_wiped_po'] == 'Yes') {
-																		echo "<b>Wiped, </b>";
-																	}
-																	if ($data['is_imaged_po'] == 'Yes') {
-																		echo "<b>Imaged</b>";
-																	} ?>
-																</td>
-																<td>
-																	<b>Vender: </b><?php echo $data['vender_name']; ?></br>
-																	<b>Invoice#: </b><?php echo $data['vender_invoice_no']; ?></br>
-																	<?php if ($data['offer_no'] != '') echo "<b>Offer#: </b>" . $data['offer_no']; ?>
+																	<b>Removal_order_id#: </b><?php echo $data['removal_order_id']; ?></br>
+																	<?php  //if ($data['offer_no'] != '') echo "<b>Offer#: </b>" . $data['offer_no']; ?>
 																</td>
 																<td>
 																	<?php
-																	$sql3		= " SELECT   d.category_name, sum(aa2.order_qty) as order_qty
-																					FROM  purchase_order_detail aa2 
+																	$sql3		= " SELECT   d.category_name, sum(aa2.return_qty) as return_qty
+																					FROM  return_items_detail aa2 
 																					INNER JOIN products b ON b.id = aa2.product_id
 																					INNER JOIN product_categories d ON d.id = b.product_category
 																					WHERE 1=1 
-																					AND aa2.po_id = '" . $id . "'  
+																					AND aa2.return_id = '" . $id . "'  
 																					GROUP BY b.product_category ";
 																	$result3	= $db->query($conn, $sql3);
 																	$count3		= $db->counter($result3);
@@ -474,7 +444,7 @@ $page_heading 	= "List of Returns ";
 																		foreach ($row3 as $data3) { ?>
 																			<div style="width: 100%;">
 																				<div style="width: 80%; display: inline-block; border: 1px solid #eee;"><?php echo $data3['category_name']; ?>: </div>
-																				<div style="width: 60px; display: inline-block; border: 1px solid #eee; text-align: center;"><?php echo "" . $data3['order_qty']; ?></div>
+																				<div style="width: 60px; display: inline-block; border: 1px solid #eee; text-align: center;"><?php echo "" . $data3['return_qty']; ?></div>
 																			</div>
 																	<?php
 																			$k++;
@@ -483,6 +453,7 @@ $page_heading 	= "List of Returns ";
 																</td>
 																<td>
 																	<?php
+																	/*
 																	$j = 0;
 																	if ($total_logistics > 0) {
 																		$row2 = $db->fetch($result2);
@@ -510,7 +481,7 @@ $page_heading 	= "List of Returns ";
 																			}
 																			$j++;
 																		}
-																	} ?>
+																	} */?>
 																</td>
 																<td class="text-align-center">
 																	<?php
@@ -524,7 +495,7 @@ $page_heading 	= "List of Returns ";
 																			<i class="material-icons dp48">edit</i>
 																		</a> &nbsp;&nbsp;
 																		<?php }
-																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
+																	if ($data['return_status'] == 1 || $data['return_status'] == '') {
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>
@@ -538,7 +509,6 @@ $page_heading 	= "List of Returns ";
 																</td>
 															</tr>
 													<?php $i++;
-															//}
 														}
 													} ?>
 												<tfoot>

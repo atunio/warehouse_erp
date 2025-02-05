@@ -23,6 +23,13 @@
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                 </div>
+                <div class="input-field col m4 s12">
+                    <span class="chip green lighten-5">
+                        <span class="green-text">
+                            <?php echo $disp_status_name; ?>
+                        </span>
+                    </span>
+                </div>
             </div>
         <?php }  ?>
     </div>
@@ -61,9 +68,9 @@
                 <?php //*/ 
                 $td_padding = "padding:5px 10px !important;";
                 $sql        = " WITH cte AS (
-                                    SELECT  c.product_uniqueid, 
+                                    SELECT  a.po_detail_id, c.product_uniqueid, 
                                             c2.stock_grade,
-                                            b.order_price,  
+                                            b.order_price,
                                             COUNT(c2.id) AS total_qty, 
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
@@ -99,9 +106,9 @@
                                 LEFT JOIN product_totals pt ON cte.product_uniqueid = pt.product_uniqueid
                                 ORDER BY product_uniqueid, stock_grade ";
                 // echo $sql;
-                $result_log = $db->query($conn, $sql);
-                $result_log2 = $db->query($conn, $sql);
-                $count_log  = $db->counter($result_log);
+                $result_log     = $db->query($conn, $sql);
+                $result_log2    = $db->query($conn, $sql);
+                $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
                     <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab8") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab8" value="Y" />
@@ -147,6 +154,7 @@
                                                         ];
                                                     }
                                                     foreach ($row_cl1 as $data) {
+                                                        $po_detail_id_prc       = $data['po_detail_id'];
                                                         $product_uniqueid       = $data['product_uniqueid'];
                                                         $product_total_price    = $data['product_total_price'];
                                                         $total_cost             = ($data['total_price']);
@@ -298,10 +306,10 @@
 
                                                                     $price_grade    = $data["stock_grade"];
                                                                     if (!isset($is_Submit_tab8)) {
-                                                                        $sql = "INSERT INTO temp_po_pricing (uniq_session_id, po_id, po_product_uniq_id, price_grade, suggested_price,
+                                                                        $sql = "INSERT INTO temp_po_pricing (uniq_session_id, po_id, po_detail_id, po_product_uniq_id, price_grade, suggested_price,
                                                                                                         logistic_percentage_per_item, receiving_percentage_per_item, diagnostic_percentage_per_item, distributed_percentage_per_item, 
                                                                                                         add_by_user_id, add_date,  add_by, add_ip, add_timezone, added_from_module_id) 
-                                                                            VALUES( '" . $uniq_session_id . "', '" . $id . "', '" . $product_uniqueid . "', '" . $price_grade . "', '" . round($suggested_price, 2) . "',
+                                                                                VALUES( '" . $uniq_session_id . "', '" . $id . "', '" . $po_detail_id_prc . "', '" . $product_uniqueid . "', '" . $price_grade . "', '" . round($suggested_price, 2) . "',
                                                                                     '" . $logistic_percentage_per_item . "', '" . $receiving_percentage_per_item . "', '" . $diagnostic_percentage_per_item . "', '" . $distributed_percentage_per_item . "',
                                                                                     '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                                                                         $db->query($conn, $sql);

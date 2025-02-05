@@ -135,10 +135,10 @@ foreach ($_POST as $key => $value) {
 include('tab1_code.php');
 include('tab2_code.php');
 include('tab3_code.php');
-include('tab5_code.php');
-include('tab6_code.php');
-include('tab7_code.php');
-include('tab8_code.php');
+ include('tab5_code.php');
+ include('tab6_code.php');
+// include('tab7_code.php');
+// include('tab8_code.php');
 
 $button_val = "Create";
 if (isset($cmd) && $cmd == 'edit') {
@@ -553,14 +553,15 @@ $general_heading = "Return"; ?>
 							</div>
 							<!-- tabs content -->
 							<!--General Tab Begin-->
-							<?php include('tab1_html.php'); ?>
-							<?php include('tab2_html.php'); ?>
-							<?php include('tab3_html.php'); ?>
-							<?php include('tab4_html.php'); ?>
-							<?php include('tab5_html.php'); ?>
-							<?php include('tab6_html.php'); ?>
-							<?php include('tab7_html.php'); ?>
-							<?php include('tab8_html.php'); ?>
+							<?php 
+							include('tab1_html.php'); 
+							include('tab2_html.php');
+							include('tab3_html.php');
+							include('tab4_html.php');
+							include('tab5_html.php'); 
+							// include('tab6_html.php');
+							// include('tab7_html.php');
+							// include('tab8_html.php'); ?>
 						</div>
 					</div>
 				</section>

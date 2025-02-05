@@ -14,7 +14,7 @@ $user_id 				= $_SESSION["user_id"];
 $title_heading			= "Import to Map Data";
 $button_val				= "Preview";
 
-$po_no = $vender_invoice_no = $vender_name = "";
+$return_no = $removal_order_id= $vender_name = "";
 
 if (isset($id) && $id > 0) {
 	$sql_ee 		= " SELECT a.*, b.vender_name
@@ -25,8 +25,8 @@ if (isset($id) && $id > 0) {
 	$counter_ee1	= $db->counter($result_ee);
 	if ($counter_ee1 > 0) {
 		$row_ee				= $db->fetch($result_ee);
-		$po_no				= $row_ee[0]['po_no'];
-		$vender_invoice_no	= $row_ee[0]['vender_invoice_no'];
+		$return_no				= $row_ee[0]['return_no'];
+		$removal_order_id	= $row_ee[0]['removal_order_id'];
 		$vender_name		= $row_ee[0]['vender_name'];
 	} else {
 		$error['msg'] = "No record found";
@@ -347,13 +347,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if (isset($id)) {  ?>
 						<div class="row">
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Return#:</b>" . $return_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
 								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Name: </b>" . $vender_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $removal_order_id; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>

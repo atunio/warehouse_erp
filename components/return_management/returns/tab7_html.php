@@ -18,13 +18,13 @@
             </div>
         </div>
         <?php
-        if (isset($id) && isset($po_no)) {  ?>
+        if (isset($id) && isset($return_no)) {  ?>
             <div class="row">
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>PO#: </b>" . $po_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Return#: </b>" . $return_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $removal_order_id; ?></span></h6>
                 </div>
             </div>
         <?php }  ?>

@@ -14,6 +14,7 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 				$row_8_p1 = $db->fetch($result_8_p1);
 				foreach ($row_8_p1 as $data_8_p1) {
 					$po_product_uniq_id = $data_8_p1['po_product_uniq_id'];
+					$po_detail_id_prc2	= $data_8_p1['po_detail_id'];
 					$price_grade 		= $data_8_p1['price_grade'];
 					$suggested_price 	= $data_8_p1['suggested_price'];
 					$sql_c_up = "	UPDATE product_stock a
@@ -30,6 +31,10 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 									AND a.p_inventory_status 	= 5  ";
 					// echo "<br>" . $sql_c_up;
 					$db->query($conn, $sql_c_up);
+
+					update_po_detail_status($db, $conn, $po_detail_id_prc2, $tested_or_graded_status);
+					update_po_status($db, $conn, $id, $tested_or_graded_status);
+					$disp_status_name = get_status_name($db, $conn, $tested_or_graded_status);
 				}
 			}
 			$msg8['msg_success'] = " Pricing has been processed successfully.";

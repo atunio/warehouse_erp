@@ -2,12 +2,12 @@
                                         echo "block";
                                     } else {
                                         echo "none";
-                                    } ?>;"> 
+                                    } ?>;">
     <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading;?> => Vendor's Data 
+                    <?= $general_heading; ?> => Vendor's Data
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
@@ -16,8 +16,8 @@
                         Import Vendor Data
                     </a>
                 <?php } ?>
-                <?php include("tab_action_btns.php");?>
-            </div> 
+                <?php include("tab_action_btns.php"); ?>
+            </div>
         </div>
         <?php
         if (isset($id) && isset($po_no)) {  ?>
@@ -27,9 +27,16 @@
                 </div>
                 <div class="input-field col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-                </div> 
+                </div>
+                <div class="input-field col m4 s12">
+                    <span class="chip green lighten-5">
+                        <span class="green-text">
+                            <?php echo $disp_status_name; ?>
+                        </span>
+                    </span>
+                </div>
             </div>
-        <?php }  ?> 
+        <?php }  ?>
     </div>
     <?php
     if (!isset($id)) { ?>

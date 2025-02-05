@@ -1005,7 +1005,7 @@ CREATE TABLE `formula_category` (
   `subscriber_users_id` int(11) DEFAULT 0,
   `formula_type` varchar(100) DEFAULT NULL,
   `product_category` int(11) DEFAULT NULL,
-  `devices_per_user_per_day` int(10) DEFAULT NULL,
+  `devices_per_user_per_day` int(10) DEFAULT 0,
   `no_of_employees` int(10) DEFAULT NULL,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
@@ -1031,6 +1031,39 @@ insert  into `formula_category`(`id`,`subscriber_users_id`,`formula_type`,`produ
 (5,1,'Repair',3,8,2,'2024-12-14 15:35:04','admin_albert',1,'::1','Asia/Karachi',39,NULL,NULL,NULL,NULL,NULL,0,1),
 (6,1,'Repair',22,8,1,'2024-12-14 15:35:15','admin_albert',1,'::1','Asia/Karachi',39,NULL,NULL,NULL,NULL,NULL,0,1),
 (7,1,'Repair',1,15,5,'2024-12-14 15:35:52','admin_albert',1,'::1','Asia/Karachi',39,NULL,NULL,NULL,NULL,NULL,0,1);
+
+/*Table structure for table `formula_labor_cost` */
+
+DROP TABLE IF EXISTS `formula_labor_cost`;
+
+CREATE TABLE `formula_labor_cost` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscriber_users_id` int(11) DEFAULT 0,
+  `formula_type` varchar(50) DEFAULT NULL,
+  `product_category` int(11) DEFAULT NULL,
+  `labor_cost` float DEFAULT 0,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT NULL,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT NULL,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `formula_labor_cost` */
+
+insert  into `formula_labor_cost`(`id`,`subscriber_users_id`,`formula_type`,`product_category`,`labor_cost`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'Repair',1,10,'2025-02-05 22:32:34','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
+(2,1,'Receive',8,NULL,'2025-02-05 22:32:34','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
+(3,1,'Repair',3,10,'2025-02-05 22:32:34','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `fullfilments` */
 
@@ -1520,7 +1553,7 @@ CREATE TABLE `menus` (
   KEY `permissions_NewIndex` (`folder_name`),
   KEY `permissions_NewIndex5` (`folder_name`,`enabled`),
   KEY `permissions_NewIndex6` (`id`,`enabled`)
-) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `menus` */
 
@@ -1562,7 +1595,7 @@ insert  into `menus`(`id`,`menu_name`,`module_folder`,`folder_name`,`m_level`,`s
 (36,'Manager View','processing','process_manager_view',2,1,35,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (37,'User View','processing','process_inventory',2,2,35,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (38,'Setups','','',2,500,3,1,1,'settings','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
-(39,'Formula','setups','formula',3,1,38,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(39,'Formula Category','setups','formula',3,1,38,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (40,'Manager View','repair','repaire_manager_view',2,2,31,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (41,'User View','repair','repaire_management',2,2,31,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (42,'Diagnostic','','',1,6,0,1,1,'search','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
@@ -1587,7 +1620,8 @@ insert  into `menus`(`id`,`menu_name`,`module_folder`,`folder_name`,`m_level`,`s
 (62,'Returns','return_management','returns',2,1,61,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (63,'Logistic Tracking','purchase','logistic_tracking',2,4,15,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (64,'Setups','','',2,2,61,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
-(65,'Stores','return_management/setups','stores',3,1,64,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1);
+(65,'Stores','return_management/setups','stores',3,1,64,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(66,'Formula Labor Cost','setups','formula_labor_cost',3,1,38,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `offer_detail` */
 
@@ -1778,13 +1812,9 @@ CREATE TABLE `package_materials_order_detail_logistics` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail_logistics` */
-
-insert  into `package_materials_order_detail_logistics`(`id`,`po_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`no_of_boxes`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'','20250204164612','0000-00-00','0000-00-00',NULL,10,NULL,NULL,NULL,NULL,NULL,0,1,0,'2025-02-04 16:46:14','admin_albert',NULL,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
-(2,1,'','20250204170446','0000-00-00','0000-00-00',NULL,10,NULL,NULL,NULL,NULL,NULL,0,1,0,'2025-02-04 17:04:50','admin_albert',NULL,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `package_materials_order_detail_receive` */
 
@@ -1883,12 +1913,9 @@ CREATE TABLE `package_materials_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_orders` */
-
-insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`logistics_cost`,`sub_user_id`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PPO1','20250204164610',1,0,'2025-02-04',NULL,NULL,NULL,4,50,0,0,'2025-02-04 16:46:12','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-04 17:04:50','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_stock` */
 
@@ -1977,18 +2004,7 @@ CREATE TABLE `packages` (
 
 insert  into `packages`(`id`,`subscriber_users_id`,`sku_code`,`package_no`,`package_name`,`package_desc`,`stock_in_hand`,`avg_price`,`product_category`,`product_ids`,`product_sku`,`case_pack`,`pack_desc`,`inventory_status`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
 (1,1,'12233','PP1','Charger','',1032,31.75,4,'212,3,1',NULL,10,NULL,NULL,'2025-01-14 11:37:51','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-04 22:08:35','admin_albert',1,'::1','Asia/Karachi',34,1),
-(2,1,'2223334','PP2','Screen',NULL,35,41.67,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-01 11:07:26','admin_albert',1,'::1','Asia/Karachi',34,1),
-(54,1,'12345567','Pkg54','abc11','package_desc1',10,200,4,'4,51',NULL,10,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(55,1,'12345568','Pkg55','abc12','package_desc2',0,0,4,'4,3,6',NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,'2025-02-04 21:47:25','admin_albert',NULL,'::1',NULL,0,1),
-(56,1,'12345569','Pkg56','abc13','package_desc3',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(57,1,'12345570','Pkg57','abc14','package_desc4',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(58,1,'12345571','Pkg58','abc15','package_desc5',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(59,1,'12345572','Pkg59','abc16','package_desc6',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(60,1,'12345573','Pkg60','abc17','package_desc7',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(61,1,'12345574','Pkg61','abc18','package_desc8',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(62,1,'12345575','Pkg62','abc19','package_desc9',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(63,1,'12345576','Pkg63','abc20','package_desc10',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1),
-(64,1,'12345577','Pkg64','abc21','package_desc11',0,0,4,NULL,NULL,0,NULL,NULL,'2025-02-04 19:39:08','admin_albert',1,'::1','Asia/Karachi',19,NULL,NULL,NULL,NULL,NULL,0,1);
+(2,1,'2223334','PP2','Screen',NULL,35,41.67,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-01 11:07:26','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `packing_types` */
 
@@ -2163,7 +2179,7 @@ CREATE TABLE `product_categories` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_categories` */
 
@@ -2171,7 +2187,7 @@ insert  into `product_categories`(`id`,`subscriber_users_id`,`category_name`,`ca
 (1,1,'iPads - New Gen','Device','2024-08-30 07:39:13','admin_albert',NULL,'::1',NULL,0,'2024-11-22 12:44:49','admin_albert',1,'::1','America/New_York',14,1),
 (2,1,'iPads - Old Gen','Device','2024-08-30 07:40:10','admin_albert',NULL,'::1',NULL,0,'2024-11-22 12:44:47','admin_albert',1,'::1','America/New_York',14,1),
 (3,1,'iPad Pro','Device','2024-09-12 21:57:04','admin_albert',NULL,NULL,NULL,0,'2024-11-22 12:45:07','admin_albert',1,'::1','America/New_York',14,1),
-(4,1,'Charger','Parts','2024-10-25 09:15:44','admin_albert',NULL,'::1',NULL,0,'2024-11-07 03:49:38','admin_albert',1,'::1','America/New_York',14,1),
+(4,1,'Charger','Parts','2024-10-25 09:15:44','admin_albert',NULL,'::1',NULL,0,'2025-02-05 11:59:09','admin_albert',1,'::1','Asia/Karachi',14,1),
 (5,1,'RAM','Parts','2024-10-25 09:15:55','admin_albert',NULL,'::1',NULL,0,'2024-11-07 03:49:35','admin_albert',1,'::1','America/New_York',14,1),
 (6,1,'Battery','Parts','2024-11-06 04:52:43','admin_albert',NULL,'::1',NULL,0,'2024-11-07 03:49:29','admin_albert',1,'::1','America/New_York',14,1),
 (7,1,'Package','Package Material','2024-11-07 04:23:48','admin_albert',1,'::1','America/New_York',14,NULL,NULL,NULL,NULL,NULL,0,1),
@@ -2198,9 +2214,23 @@ insert  into `product_categories`(`id`,`subscriber_users_id`,`category_name`,`ca
 (28,1,'Computer','Device','2024-12-06 07:58:58','admin_albert',1,'223.123.115.11','America/New_York',11,NULL,NULL,NULL,NULL,NULL,0,1),
 (29,1,'Abc123','Device','2024-12-06 07:58:58','admin_albert',1,'223.123.115.11','America/New_York',11,NULL,NULL,NULL,NULL,NULL,0,1),
 (30,1,'iPads - New Gen','Device','2024-12-06 08:27:04','admin_albert',1,'72.76.174.244','America/New_York',11,NULL,NULL,NULL,NULL,NULL,0,1),
-(31,1,'iPad - New Gen',NULL,'2024-12-23 15:01:29','admin_albert Imported',NULL,'82.86.76.43','America/New_York',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(32,1,'iPad - Old Gen',NULL,'2024-12-23 15:01:29','admin_albert Imported',NULL,'82.86.76.43','America/New_York',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(33,1,'Ipads','Device','2025-01-14 12:45:52','admin_albert',1,'69.122.176.93','America/New_York',11,NULL,NULL,NULL,NULL,NULL,0,1);
+(31,1,'iPad - New Gen','Device','2024-12-23 15:01:29','admin_albert Imported',NULL,'82.86.76.43','America/New_York',0,'2025-02-05 11:58:44','admin_albert',1,'::1','Asia/Karachi',14,1),
+(32,1,'iPad - Old Gen','Device','2024-12-23 15:01:29','admin_albert Imported',NULL,'82.86.76.43','America/New_York',0,'2025-02-05 11:58:39','admin_albert',1,'::1','Asia/Karachi',14,1),
+(33,1,'Ipads','Device','2025-01-14 12:45:52','admin_albert',1,'69.122.176.93','America/New_York',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(35,1,'aaa','Device','2025-02-05 19:20:44','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(36,1,'aaaa','Device','2025-02-05 19:25:32','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(37,1,'abc','Device','2025-02-05 19:25:42','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(38,1,'No','Device','2025-02-05 21:25:44','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(39,1,'Yes','Device','2025-02-05 21:29:11','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(40,1,'Yes','Device','2025-02-05 21:29:11','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(41,1,'Yes','Device','2025-02-05 21:29:50','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(42,1,'Yes','Device','2025-02-05 21:29:50','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(43,1,'Yes','Device','2025-02-05 21:30:15','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(44,1,'Yes','Device','2025-02-05 21:30:15','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(45,1,'Yes','Device','2025-02-05 21:31:07','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(46,1,'Yes','Device','2025-02-05 21:33:31','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(47,1,'Yes','Device','2025-02-05 21:33:58','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1),
+(48,1,'Yes','Device','2025-02-05 21:33:58','admin_albert',1,'::1','Asia/Karachi',66,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `product_grades` */
 
@@ -2526,6 +2556,7 @@ CREATE TABLE `product_stock` (
   `subscriber_users_id` int(11) DEFAULT 0,
   `product_id` int(11) DEFAULT 0,
   `receive_id` int(11) DEFAULT 0,
+  `return_receive_id` int(11) DEFAULT 0,
   `serial_no` varchar(255) DEFAULT NULL,
   `stock_grade` varchar(100) DEFAULT NULL,
   `model_no` varchar(255) DEFAULT NULL,
@@ -2581,259 +2612,21 @@ CREATE TABLE `product_stock` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=197 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_stock` */
 
-insert  into `product_stock`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`serial_no`,`stock_grade`,`model_no`,`finale_product_unique_id`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`finale_location_id`,`productUrl`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`price_finale`,`distributed_amount`,`is_final_pricing`,`stock_product_uniqueid`,`is_processed`,`processed_by_user_id`,`processed_by`,`processed_date`,`processed_ip`,`package_id1`,`package_id2`,`package_id3`,`finale_condition`,`device_processing_labor`,`device_processing_parts_price`,`is_move_finale`,`bin_user_id`,`is_update_in_process`,`is_packed`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,51,10,'DMPWN06UJF8J','C','MR7F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(2,1,51,9,'DMPY3H7VJF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(3,1,51,8,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(4,1,51,7,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(5,1,51,6,'F9GTMK7THLF9','C','MP2F2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(6,1,51,5,'F9FTP6WBHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(7,1,51,4,'GCLVP6Z7HLF9','C','MP2F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(8,1,51,3,'F9FTP0AKHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(9,1,51,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(10,1,51,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(11,1,49,25,'S147','A','',NULL,NULL,'124','32GB','64GB','','',5,1,1737,0,NULL,'A','A','A','','','',472.03,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(12,1,49,24,'S146','A','',NULL,NULL,'123','32GB','64GB','','',5,1,1737,0,NULL,'A','A','A','','','',472.03,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(13,1,49,23,'S145','A','',NULL,NULL,'122','32GB','64GB','','',5,1,1737,0,NULL,'A','A','A','','','',472.03,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(14,1,49,22,'353205101786307','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(15,1,49,21,'353206105669283','B','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(16,1,49,20,'353205102184841','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(17,1,49,19,'353206101503023','B','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(18,1,49,18,'353204105245956','C','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(19,1,49,17,'353204105569306','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(20,1,49,16,'353206106069954','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',102.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(21,1,49,15,'353206105602722','C','MW702LL/A',NULL,NULL,'98','','128GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',302.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(22,1,49,14,'F9FPNK36FCM6','D','ME277LL/A',NULL,NULL,'89','','32GB','','',6,1,1737,0,NULL,'C','A','C','iPad mini 2','Apple','Space Gray',300.93,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(23,1,49,13,'F9FPNEZ9FCM6','D','ME277LL/A',NULL,NULL,'96','','32GB','','',6,1,1737,0,NULL,'C','A','C','iPad mini 2','Apple','Space Gray',300.93,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(24,1,49,12,'F9FPNLLMFCM6','D','ME277LL/A',NULL,NULL,'94','','32GB','','',19,1,1737,0,NULL,'C','A','C','iPad mini 2','Apple','Space Gray',200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(25,1,49,11,'DMPWM0FBJF8J','C','MR7F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-17 08:25:27','admin_albert',1,'202.47.32.158','America/New_York',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(27,1,36,36,'DMPM78LJFK11','','PG0L2LL/A',NULL,NULL,'86','','32GB','','',5,1,2311,0,NULL,'','','','iPad Air','Apple','Space Gray',54,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 03:19:04','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(28,1,36,37,'DMPM76X0FK11','','PG0L2LL/A',NULL,NULL,'67','','32GB','','',5,1,2311,0,NULL,'','','','iPad Air','Apple','Space Gray',54,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 03:19:04','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(35,1,36,54,'F9FRFN0HGHKH','D','MK9J2LL/A',NULL,NULL,'5','31GB','64GB','',' - Battery Health Data Not Found or Defected',6,1,1738,0,NULL,'A','A','A','iPad mini 4','Apple','Gold',54,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 04:53:58','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(36,1,36,55,'DMTPD5R1FK10','B','MD785LL/B',NULL,NULL,'98','31GB','16GB','',' - Battery Health Data Not Found or Defected',5,1,1738,0,NULL,'C','B','C','iPad Air','Apple','Space Gray',54,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 04:53:58','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(37,1,36,56,'DMPHV0NGDFHW','A','MC769LL/A',NULL,NULL,'95','31GB','16GB','',' - Battery Health Data Not Found or Defected',5,1,1738,0,NULL,'A','A','A','iPad 2','Apple','Black',54,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 04:53:58','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(38,1,36,57,'DMPQ2P74FK11','D','MD786LL/B',NULL,NULL,'98','','32GB','',' - Battery Health Data Not Found or Defected',22,1,0,0,NULL,'','','','iPad Air','Apple','Space Gray',60,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 11:10:32','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(39,1,36,60,'DMPQ2MN2FK11','D','MD786LL/B',NULL,NULL,'100','','32GB','',' - Battery Health Data Not Found or Defected',22,1,0,0,NULL,'','','','iPad Air','Apple','Space Gray',60,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 11:10:32','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(40,1,36,61,'DMPM7ACJFK11','D','PG0L2LL/A',NULL,NULL,'76','','32GB','',' - Battery Health Data Not Found or Defected',22,1,0,0,NULL,'','','','iPad Air','Apple','Space Gray',60,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 11:10:32','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(41,1,36,59,'DMPM78LJFK11','','PG0L2LL/A',NULL,NULL,'86','','32GB','','',5,1,0,0,NULL,'','','','iPad Air','Apple','Space Gray',105,0,45,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 11:10:32','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(42,1,36,58,'DMPM76X0FK11','','PG0L2LL/A',NULL,NULL,'67','','32GB','','',5,1,0,0,NULL,'','','','iPad Air','Apple','Space Gray',105,0,45,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 11:10:32','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(48,1,51,67,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(49,1,51,68,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(50,1,51,69,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(51,1,51,70,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(52,1,51,71,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(53,1,51,72,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(54,1,51,73,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(55,1,51,74,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(56,1,49,75,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(57,1,49,76,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(58,1,49,77,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(59,1,49,78,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(60,1,49,79,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(61,1,49,80,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(62,1,49,81,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(63,1,49,82,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(64,1,49,83,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(65,1,49,84,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(66,1,49,85,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(67,1,49,86,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(68,1,49,87,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(69,1,49,88,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(70,1,49,89,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,0,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-23 16:05:17','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(71,1,49,100,'GEN100','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(72,1,49,101,'GEN101','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(73,1,49,102,'GEN102','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(74,1,49,103,'GEN103','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(75,1,49,104,'GEN104','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(76,1,49,105,'GEN105','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(77,1,49,106,'GEN106','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(78,1,49,107,'GEN107','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(79,1,49,108,'GEN108','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(80,1,49,109,'GEN109','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(81,1,49,110,'GEN110','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(82,1,49,111,'GEN111','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(83,1,49,112,'GEN112','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(84,1,49,113,'GEN113','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(85,1,49,114,'GEN114','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(86,1,49,115,'GEN115','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(87,1,49,116,'GEN116','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(88,1,49,117,'GEN117','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(89,1,49,118,'GEN118','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(90,1,49,119,'GEN119','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(91,1,49,120,'GEN120','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(92,1,49,121,'GEN121','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(93,1,49,122,'GEN122','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(94,1,49,123,'GEN123','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(95,1,49,124,'GEN124','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(96,1,49,125,'GEN125','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(97,1,49,126,'GEN126','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(98,1,49,127,'GEN127','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(99,1,49,128,'GEN128','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(100,1,49,129,'GEN129','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(101,1,49,130,'GEN130','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(102,1,49,131,'GEN131','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(103,1,49,132,'GEN132','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(104,1,49,133,'GEN133','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(105,1,49,134,'GEN134','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(106,1,49,135,'GEN135','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(107,1,49,136,'GEN136','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(108,1,49,137,'GEN137','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(109,1,49,138,'GEN138','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(110,1,49,139,'GEN139','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(111,1,49,140,'GEN140','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(112,1,49,141,'GEN141','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(113,1,49,142,'GEN142','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(114,1,49,143,'GEN143','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(115,1,49,144,'GEN144','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(116,1,49,145,'GEN145','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(117,1,49,146,'GEN146','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(118,1,49,147,'GEN147','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(119,1,49,148,'GEN148','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(120,1,49,149,'GEN149','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(121,1,49,150,'GEN150','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(122,1,49,151,'GEN151','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(123,1,49,152,'GEN152','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(124,1,49,153,'GEN153','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(125,1,49,154,'GEN154','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(126,1,49,155,'GEN155','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(127,1,49,156,'GEN156','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(128,1,49,157,'GEN157','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(129,1,49,158,'GEN158','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(130,1,49,159,'GEN159','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(131,1,49,160,'GEN160','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(132,1,49,161,'GEN161','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(133,1,49,162,'GEN162','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(134,1,49,163,'GEN163','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(135,1,49,164,'GEN164','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(136,1,49,165,'GEN165','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(137,1,49,166,'GEN166','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(138,1,49,167,'GEN167','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(139,1,49,168,'GEN168','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(140,1,49,169,'GEN169','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(141,1,49,170,'GEN170','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(142,1,49,171,'GEN171','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(143,1,49,172,'GEN172','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(144,1,49,173,'GEN173','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(145,1,49,174,'GEN174','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(146,1,49,175,'GEN175','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(147,1,49,176,'GEN176','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(148,1,49,177,'GEN177','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(149,1,49,178,'GEN178','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(150,1,49,179,'GEN179','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 11:22:54','admin_albert',1,'69.122.176.93','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(151,1,36,725,'DMPY61PGJF8J','C','MR7F2LL/A',NULL,NULL,'80','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',62.5,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-24 13:29:00','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,0,NULL,NULL,0,1),
-(152,1,212,40,'GEN40','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(153,1,212,41,'GEN41','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(154,1,212,42,'GEN42','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(155,1,212,43,'GEN43','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(156,1,212,44,'GEN44','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(157,1,212,45,'GEN45','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(158,1,212,46,'GEN46','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,100,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 14:57:13','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(159,1,29,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(160,1,29,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(161,1,29,3,'F9FTP0AKHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(162,1,29,4,'GCLVP6Z7HLF9','C','MP2F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(163,1,29,5,'F9FTP6WBHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(164,1,29,6,'F9GTMK7THLF9','C','MP2F2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:31','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(165,1,29,7,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:58','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(166,1,29,8,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:09:58','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(167,1,29,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(168,1,29,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(169,1,29,3,'F9FTP0AKHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(170,1,29,4,'GCLVP6Z7HLF9','C','MP2F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(171,1,29,5,'F9FTP6WBHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(172,1,29,6,'F9GTMK7THLF9','C','MP2F2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:18','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(173,1,29,7,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(174,1,29,8,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:12:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(175,1,29,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(176,1,29,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(177,1,29,3,'F9FTP0AKHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(178,1,29,4,'GCLVP6Z7HLF9','C','MP2F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(179,1,29,5,'F9FTP6WBHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(180,1,29,6,'F9GTMK7THLF9','C','MP2F2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:38','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(181,1,8,7,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(182,1,8,8,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',202.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(183,1,8,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:00','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(184,1,8,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:00','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(185,1,29,3,'F9FTP0AKHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(186,1,29,4,'GCLVP6Z7HLF9','C','MP2F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(187,1,29,5,'F9FTP6WBHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(188,1,29,6,'F9GTMK7THLF9','C','MP2F2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(189,1,29,7,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(190,1,29,8,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',126.35,0,5.42,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:01:13','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(191,1,8,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:02:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(192,1,8,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:02:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(193,1,8,1,'F9FTP0ENHLF9','C','MP2F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:07:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(194,1,8,2,'F9FTP08ZHLF9','C','MP2F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 5','Apple','Space Gray',122.75,0,5.42,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-01-30 16:07:54','admin_albert',1,'::1','Asia/Karachi',10,'2025-01-31 13:01:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(195,1,216,0,'2323','-','12121',NULL,NULL,'100','32GB','512 SSD','3 GHZ','-',27,10,2311,0,NULL,'A','A','-',NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-04 20:14:48','admin_albert',0,'::1','Asia/Karachi',18,NULL,NULL,0,NULL,NULL,0,1),
-(196,1,216,0,'55555','-','6666',NULL,NULL,'95','32GB','512 SSD','3 GHZ','-',27,5,2311,0,NULL,'B','B','-',NULL,NULL,NULL,0,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-04 20:14:48','admin_albert',0,'::1','Asia/Karachi',18,NULL,NULL,0,NULL,NULL,0,1);
-
-/*Table structure for table `product_stock_bk` */
-
-DROP TABLE IF EXISTS `product_stock_bk`;
-
-CREATE TABLE `product_stock_bk` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `subscriber_users_id` int(11) DEFAULT 0,
-  `product_id` int(11) DEFAULT 0,
-  `receive_id` int(11) DEFAULT 0,
-  `product_stock` int(11) DEFAULT 0,
-  `stock_product_uniqueid` varchar(255) DEFAULT NULL,
-  `model_no` varchar(255) DEFAULT NULL,
-  `serial_no` varchar(255) DEFAULT NULL,
-  `stock_grade` varchar(100) DEFAULT NULL,
-  `cosmetic_grade` varchar(100) DEFAULT NULL,
-  `battery_percentage` varchar(255) DEFAULT NULL,
-  `ram_size` varchar(255) DEFAULT NULL,
-  `storage_size` varchar(255) DEFAULT NULL,
-  `processor_size` varchar(255) DEFAULT NULL,
-  `defects_or_notes` text DEFAULT NULL,
-  `p_inventory_status` int(11) DEFAULT NULL,
-  `p_total_stock` double DEFAULT 0,
-  `sub_location` int(11) DEFAULT 0,
-  `body_grade` varchar(100) DEFAULT NULL,
-  `lcd_grade` varchar(100) DEFAULT NULL,
-  `digitizer_grade` varchar(100) DEFAULT NULL,
-  `model_name` varchar(255) DEFAULT NULL,
-  `make_name` varchar(100) DEFAULT NULL,
-  `color_name` varchar(100) DEFAULT NULL,
-  `price` double DEFAULT NULL,
-  `add_date` datetime DEFAULT NULL,
-  `add_by` varchar(255) DEFAULT NULL,
-  `add_by_user_id` int(11) DEFAULT 0,
-  `add_ip` varchar(15) DEFAULT NULL,
-  `add_timezone` varchar(255) DEFAULT NULL,
-  `added_from_module_id` int(11) DEFAULT 0,
-  `update_date` datetime DEFAULT NULL,
-  `update_by` varchar(255) DEFAULT NULL,
-  `update_by_user_id` int(11) DEFAULT 0,
-  `update_ip` varchar(15) DEFAULT NULL,
-  `update_timezone` varchar(255) DEFAULT NULL,
-  `update_from_module_id` int(11) DEFAULT 0,
-  `enabled` smallint(6) DEFAULT 1,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4015 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
-/*Data for the table `product_stock_bk` */
-
-insert  into `product_stock_bk`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`product_stock`,`stock_product_uniqueid`,`model_no`,`serial_no`,`stock_grade`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(4001,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963581','5000011','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4002,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963582','5000012','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4003,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963583','5000013','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4004,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963584','5000014','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4005,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963585','5000015','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4006,1,2001,0,0,'P2001E2OOPE2-AXA','AE8963586','5000016','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4007,1,2001,0,0,'P2001E2OOPE2-82','AE8963587','5000017','B Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4008,1,2001,0,0,'P2001E2OOPE2-82','AE8963588','5000018','B Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4009,1,2001,0,0,'P2001E2OOPE2-82','AE8963589','5000019','B Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4010,1,2001,0,0,'P2001E2OOPE2-27','AE8963590','5000020','C Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4011,1,2002,0,0,'P200234GHJI9L1-AXA','AE8963591','5000021','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4012,1,2002,0,0,'P200234GHJI9L1-AXA','AE8963592','5000022','A Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4013,1,2002,0,0,'P200234GHJI9L1-82','AE8963593','5000023','B Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1),
-(4014,1,2002,0,0,'P200234GHJI9L1-27','AE8963594','5000024','C Grade','A','100','16GB','512GB','3.4GH','No Defect',5,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,NULL,NULL,0,1);
+insert  into `product_stock`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`return_receive_id`,`serial_no`,`stock_grade`,`model_no`,`finale_product_unique_id`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`finale_location_id`,`productUrl`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`price_finale`,`distributed_amount`,`is_final_pricing`,`stock_product_uniqueid`,`is_processed`,`processed_by_user_id`,`processed_by`,`processed_date`,`processed_ip`,`package_id1`,`package_id2`,`package_id3`,`finale_condition`,`device_processing_labor`,`device_processing_parts_price`,`is_move_finale`,`bin_user_id`,`is_update_in_process`,`is_packed`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,212,6,0,'GEN6','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(2,1,212,7,0,'GEN7','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(3,1,212,8,0,'GEN8','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(4,1,212,9,0,'GEN9','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(5,1,212,10,0,'GEN10','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(6,1,213,1,0,'GEN1','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(7,1,213,2,0,'GEN2','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(8,1,213,3,0,'GEN3','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(9,1,213,4,0,'GEN4','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(10,1,213,5,0,'GEN5','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1);
 
 /*Table structure for table `products` */
 
@@ -3128,8 +2921,8 @@ CREATE TABLE `purchase_order_detail` (
 /*Data for the table `purchase_order_detail` */
 
 insert  into `purchase_order_detail`(`id`,`po_id`,`offer_detail_id`,`product_id`,`order_qty`,`order_price`,`package_id`,`package_material_qty`,`package_material_qty_received`,`is_tested`,`is_wiped`,`is_imaged`,`product_po_desc`,`order_product_status`,`product_condition`,`expected_status`,`is_fk_serial_generated`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,0,213,5,0,0,0,0,NULL,NULL,NULL,NULL,12,'A',5,0,0,'2025-02-04 16:45:19','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-04 16:45:56','admin_albert',1,'::1','Asia/Karachi',0,1),
-(2,1,0,212,10,0,0,0,0,NULL,NULL,NULL,NULL,12,'A',5,0,0,'2025-02-04 16:45:19','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-04 16:45:56','admin_albert',1,'::1','Asia/Karachi',0,1);
+(1,1,0,212,5,200,0,0,0,NULL,NULL,NULL,NULL,5,'A',5,1,0,'2025-02-05 13:49:04','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:52','admin_albert',1,'::1','Asia/Karachi',10,1),
+(2,1,0,213,10,300,0,0,0,NULL,NULL,NULL,NULL,5,'A',5,1,0,'2025-02-05 13:49:04','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:52','admin_albert',1,'::1','Asia/Karachi',10,1);
 
 /*Table structure for table `purchase_order_detail_logistics` */
 
@@ -3166,13 +2959,12 @@ CREATE TABLE `purchase_order_detail_logistics` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail_logistics` */
 
 insert  into `purchase_order_detail_logistics`(`id`,`po_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`no_of_boxes`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'','20250204164520','0000-00-00','0000-00-00',NULL,12,'','2025-02-04',NULL,1737,NULL,1,1,0,'2025-02-04 16:45:26','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-04 16:45:56','admin_albert',NULL,'::1','Asia/Karachi',0,1),
-(2,1,'','20250204164542','0000-00-00','0000-00-00',NULL,12,'','2025-02-04',NULL,1737,NULL,2,1,0,'2025-02-04 16:45:49','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-04 16:45:56','admin_albert',NULL,'::1','Asia/Karachi',0,1);
+(1,1,'','20250205134904','0000-00-00','0000-00-00',NULL,12,'','2025-02-05',NULL,1737,NULL,1,1,0,'2025-02-05 13:49:06','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-05 13:49:13','admin_albert',NULL,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `purchase_order_detail_receive` */
 
@@ -3248,9 +3040,21 @@ CREATE TABLE `purchase_order_detail_receive` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail_receive` */
+
+insert  into `purchase_order_detail_receive`(`id`,`po_id`,`recevied_product_category`,`po_detail_id`,`receive_type`,`edit_lock`,`serial_no_barcode`,`sub_location_id`,`sub_location_id_after_diagnostic`,`base_product_id`,`sub_product_id`,`logistic_id`,`model_name`,`model_no`,`make_name`,`carrier_name`,`color_name`,`battery`,`body_grade`,`lcd_grade`,`digitizer_grade`,`etching`,`overall_grade`,`ram`,`storage`,`processor`,`camera_status`,`speaker_status`,`mic_status`,`keyboard_status`,`keyboardTest_LeftKeys`,`battery_status`,`battery_percentage`,`charging_time`,`warranty`,`price`,`defects_or_notes`,`inventory_status`,`sku_code`,`phone_check_api_data`,`is_diagnost`,`is_rma_processed`,`is_rma_added`,`is_import_diagnostic_data`,`logistic_cost`,`receiving_labor`,`diagnostic_labor`,`is_diagnostic_bypass`,`duplication_check_token`,`duplication_check_token2`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
+(1,1,1,2,'CateogryReceived',1,'GEN1',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(2,1,1,2,'CateogryReceived',1,'GEN2',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(3,1,1,2,'CateogryReceived',1,'GEN3',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(4,1,1,2,'CateogryReceived',1,'GEN4',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(5,1,1,2,'CateogryReceived',1,'GEN5',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(6,1,2,1,'CateogryReceived',1,'GEN6',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(7,1,2,1,'CateogryReceived',1,'GEN7',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(8,1,2,1,'CateogryReceived',1,'GEN8',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(9,1,2,1,'CateogryReceived',1,'GEN9',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(10,1,2,1,'CateogryReceived',1,'GEN10',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `purchase_order_detail_receive_package_material` */
 
@@ -3474,7 +3278,7 @@ CREATE TABLE `purchase_orders` (
 /*Data for the table `purchase_orders` */
 
 insert  into `purchase_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`po_desc`,`po_desc_public`,`order_status`,`logistics_cost`,`sub_user_id`,`is_tested_po`,`is_wiped_po`,`is_imaged_po`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PO1','20250204164317',1,0,'2025-02-04','purchase order desc : 20250204164318','',12,20.5,0,'Yes','Yes','Yes',0,0,'2025-02-04 16:43:18','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-04 16:45:56','admin_albert',1,'::1','Asia/Karachi',0,1);
+(1,1,'PO1','20250205134859',1,0,'2025-02-05','purchase order desc : 20250205134901','',5,20.5,0,'Yes','Yes','Yes',1,0,'2025-02-05 13:49:01','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:52','admin_albert',1,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `qty_and_estimated_time_for_processing` */
 
@@ -3606,8 +3410,11 @@ CREATE TABLE `return_items_detail` (
   `return_id` int(11) DEFAULT 0,
   `return_qty` int(10) DEFAULT 0,
   `product_id` int(11) DEFAULT 0,
+  `order_price` double DEFAULT NULL,
   `return_status_item` int(11) DEFAULT 1,
+  `product_condition` varchar(50) DEFAULT '0',
   `expected_status` int(11) DEFAULT 0,
+  `is_fk_serial_generated` smallint(1) DEFAULT 0,
   `edit_lock` smallint(1) DEFAULT 0,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
@@ -3623,9 +3430,204 @@ CREATE TABLE `return_items_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `return_items_detail` */
+
+/*Table structure for table `return_items_detail_receive` */
+
+DROP TABLE IF EXISTS `return_items_detail_receive`;
+
+CREATE TABLE `return_items_detail_receive` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `return_id` int(11) DEFAULT 0,
+  `recevied_product_category` int(11) DEFAULT 0,
+  `ro_detail_id` int(11) DEFAULT 0,
+  `receive_type` varchar(100) DEFAULT 'ProductReceived',
+  `edit_lock` smallint(1) DEFAULT 0,
+  `serial_no_barcode` varchar(255) DEFAULT NULL,
+  `sub_location_id` int(11) DEFAULT 0,
+  `sub_location_id_after_diagnostic` int(11) DEFAULT 0,
+  `base_product_id` varchar(255) DEFAULT NULL,
+  `sub_product_id` varchar(255) DEFAULT NULL,
+  `logistic_id` int(11) DEFAULT 0,
+  `model_name` varchar(255) DEFAULT NULL,
+  `model_no` varchar(100) DEFAULT NULL,
+  `make_name` varchar(100) DEFAULT NULL,
+  `carrier_name` varchar(100) DEFAULT NULL,
+  `color_name` varchar(100) DEFAULT NULL,
+  `battery` int(10) DEFAULT NULL,
+  `body_grade` varchar(50) DEFAULT NULL,
+  `lcd_grade` varchar(50) DEFAULT NULL,
+  `digitizer_grade` varchar(50) DEFAULT NULL,
+  `etching` varchar(50) DEFAULT NULL,
+  `overall_grade` varchar(255) DEFAULT NULL,
+  `ram` varchar(100) DEFAULT NULL,
+  `storage` varchar(100) DEFAULT NULL,
+  `processor` varchar(100) DEFAULT NULL,
+  `camera_status` varchar(255) DEFAULT NULL,
+  `speaker_status` varchar(255) DEFAULT NULL,
+  `mic_status` varchar(255) DEFAULT NULL,
+  `keyboard_status` varchar(255) DEFAULT NULL,
+  `keyboardTest_LeftKeys` varchar(255) DEFAULT NULL,
+  `battery_status` varchar(255) DEFAULT NULL,
+  `battery_percentage` varchar(255) DEFAULT NULL,
+  `charging_time` varchar(255) DEFAULT NULL,
+  `warranty` int(10) DEFAULT 30,
+  `price` double DEFAULT NULL,
+  `defects_or_notes` text DEFAULT NULL,
+  `inventory_status` int(11) DEFAULT NULL,
+  `sku_code` varchar(255) DEFAULT NULL,
+  `phone_check_api_data` text DEFAULT NULL,
+  `is_diagnost` smallint(1) DEFAULT 0,
+  `is_rma_processed` smallint(1) DEFAULT 0,
+  `is_rma_added` smallint(1) DEFAULT 0,
+  `is_import_diagnostic_data` smallint(1) DEFAULT 0,
+  `logistic_cost` double DEFAULT 0,
+  `receiving_labor` double DEFAULT 0,
+  `diagnostic_labor` double DEFAULT 0,
+  `is_diagnostic_bypass` smallint(1) DEFAULT 0,
+  `duplication_check_token` text DEFAULT NULL,
+  `duplication_check_token2` text DEFAULT NULL,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT 0,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT 0,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `diagnose_by_user` varchar(255) DEFAULT NULL,
+  `diagnose_by_user_id` int(11) DEFAULT 0,
+  `diagnose_ip` varchar(15) DEFAULT NULL,
+  `diagnose_timezone` varchar(255) DEFAULT NULL,
+  `diagnose_date` datetime DEFAULT NULL,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `return_items_detail_receive` */
+
+/*Table structure for table `return_order_detail_logistics` */
+
+DROP TABLE IF EXISTS `return_order_detail_logistics`;
+
+CREATE TABLE `return_order_detail_logistics` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `return_id` int(11) DEFAULT 0,
+  `courier_name` varchar(255) DEFAULT NULL,
+  `tracking_no` varchar(255) DEFAULT NULL,
+  `shipment_date` date DEFAULT NULL,
+  `expected_arrival_date` date DEFAULT NULL,
+  `logistics_desc` text DEFAULT NULL,
+  `logistics_status` int(1) DEFAULT 1,
+  `bill_of_landing` varchar(255) DEFAULT NULL,
+  `arrived_date` date DEFAULT NULL,
+  `arrived_date_time` datetime DEFAULT NULL,
+  `sub_location_id` int(11) DEFAULT NULL,
+  `logistics_cost` double DEFAULT NULL,
+  `arrival_no` int(10) DEFAULT 0,
+  `no_of_boxes` int(10) DEFAULT 1,
+  `edit_lock` smallint(1) DEFAULT 0,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT NULL,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT NULL,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `return_order_detail_logistics` */
+
+/*Table structure for table `return_purchase_order_detail_receive` */
+
+DROP TABLE IF EXISTS `return_purchase_order_detail_receive`;
+
+CREATE TABLE `return_purchase_order_detail_receive` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_id` int(11) DEFAULT 0,
+  `recevied_product_category` int(11) DEFAULT 0,
+  `po_detail_id` int(11) DEFAULT 0,
+  `receive_type` varchar(100) DEFAULT 'ProductReceived',
+  `edit_lock` smallint(1) DEFAULT 0,
+  `serial_no_barcode` varchar(255) DEFAULT NULL,
+  `sub_location_id` int(11) DEFAULT 0,
+  `sub_location_id_after_diagnostic` int(11) DEFAULT 0,
+  `base_product_id` varchar(255) DEFAULT NULL,
+  `sub_product_id` varchar(255) DEFAULT NULL,
+  `logistic_id` int(11) DEFAULT 0,
+  `model_name` varchar(255) DEFAULT NULL,
+  `model_no` varchar(100) DEFAULT NULL,
+  `make_name` varchar(100) DEFAULT NULL,
+  `carrier_name` varchar(100) DEFAULT NULL,
+  `color_name` varchar(100) DEFAULT NULL,
+  `battery` int(10) DEFAULT NULL,
+  `body_grade` varchar(50) DEFAULT NULL,
+  `lcd_grade` varchar(50) DEFAULT NULL,
+  `digitizer_grade` varchar(50) DEFAULT NULL,
+  `etching` varchar(50) DEFAULT NULL,
+  `overall_grade` varchar(255) DEFAULT NULL,
+  `ram` varchar(100) DEFAULT NULL,
+  `storage` varchar(100) DEFAULT NULL,
+  `processor` varchar(100) DEFAULT NULL,
+  `camera_status` varchar(255) DEFAULT NULL,
+  `speaker_status` varchar(255) DEFAULT NULL,
+  `mic_status` varchar(255) DEFAULT NULL,
+  `keyboard_status` varchar(255) DEFAULT NULL,
+  `keyboardTest_LeftKeys` varchar(255) DEFAULT NULL,
+  `battery_status` varchar(255) DEFAULT NULL,
+  `battery_percentage` varchar(255) DEFAULT NULL,
+  `charging_time` varchar(255) DEFAULT NULL,
+  `warranty` int(10) DEFAULT 30,
+  `price` double DEFAULT NULL,
+  `defects_or_notes` text DEFAULT NULL,
+  `inventory_status` int(11) DEFAULT NULL,
+  `sku_code` varchar(255) DEFAULT NULL,
+  `phone_check_api_data` text DEFAULT NULL,
+  `is_diagnost` smallint(1) DEFAULT 0,
+  `is_rma_processed` smallint(1) DEFAULT 0,
+  `is_rma_added` smallint(1) DEFAULT 0,
+  `is_import_diagnostic_data` smallint(1) DEFAULT 0,
+  `logistic_cost` double DEFAULT 0,
+  `receiving_labor` double DEFAULT 0,
+  `diagnostic_labor` double DEFAULT 0,
+  `is_diagnostic_bypass` smallint(1) DEFAULT 0,
+  `duplication_check_token` text DEFAULT NULL,
+  `duplication_check_token2` text DEFAULT NULL,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT 0,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT 0,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `diagnose_by_user` varchar(255) DEFAULT NULL,
+  `diagnose_by_user_id` int(11) DEFAULT 0,
+  `diagnose_ip` varchar(15) DEFAULT NULL,
+  `diagnose_timezone` varchar(255) DEFAULT NULL,
+  `diagnose_date` datetime DEFAULT NULL,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `return_purchase_order_detail_receive` */
 
 /*Table structure for table `returns` */
 
@@ -3634,7 +3636,7 @@ DROP TABLE IF EXISTS `returns`;
 CREATE TABLE `returns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `subscriber_users_id` int(11) DEFAULT 0,
-  `ro_no` varchar(50) DEFAULT NULL,
+  `return_no` varchar(50) DEFAULT NULL,
   `return_type` varchar(50) DEFAULT NULL,
   `removal_order_id` varchar(255) DEFAULT NULL,
   `return_date` date DEFAULT NULL,
@@ -3642,6 +3644,8 @@ CREATE TABLE `returns` (
   `public_note` text DEFAULT NULL,
   `internal_note` text DEFAULT NULL,
   `return_status` int(11) DEFAULT 1,
+  `logistics_cost` double DEFAULT NULL,
+  `is_pricing_done` smallint(1) DEFAULT 0,
   `edit_lock` smallint(1) DEFAULT 0,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
@@ -3657,12 +3661,9 @@ CREATE TABLE `returns` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `returns` */
-
-insert  into `returns`(`id`,`subscriber_users_id`,`ro_no`,`return_type`,`removal_order_id`,`return_date`,`store_id`,`public_note`,`internal_note`,`return_status`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(2,1,'RO2','Shipstation','20250204232312','2025-02-04',2,NULL,NULL,1,0,'2025-02-04 23:23:14','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `rma_order_detail` */
 
@@ -3764,72 +3765,73 @@ CREATE TABLE `role_permissions` (
   PRIMARY KEY (`id`),
   KEY `main_category_NewIndex1` (`role_id`),
   KEY `main_category_NewIndex2` (`role_id`,`enabled`)
-) ENGINE=InnoDB AUTO_INCREMENT=1921 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1983 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `role_permissions` */
 
 insert  into `role_permissions`(`id`,`role_id`,`menu_id`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1860,1,3,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1861,1,4,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1862,1,5,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1863,1,38,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1864,1,39,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1865,1,6,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1866,1,17,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1867,1,11,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1868,1,18,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1869,1,19,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1870,1,12,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1871,1,59,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1872,1,14,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1873,1,20,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1874,1,13,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1875,1,52,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1876,1,53,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1877,1,54,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1878,1,55,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1879,1,56,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1880,1,57,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1881,1,58,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1882,1,15,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1883,1,32,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1884,1,10,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1885,1,51,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1886,1,30,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1887,1,33,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1888,1,34,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1889,1,63,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1890,1,8,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1891,1,44,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1892,1,45,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1893,1,46,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1894,1,47,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1895,1,48,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1896,1,49,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1897,1,42,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1898,1,43,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1899,1,50,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1900,1,35,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1901,1,36,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1902,1,37,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1903,1,31,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1904,1,40,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1905,1,41,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1906,1,61,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1907,1,62,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1908,1,64,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1909,1,65,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1910,1,21,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1911,1,22,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1912,1,23,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1913,1,24,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1914,1,25,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1915,1,26,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1916,1,27,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1917,1,28,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1918,1,29,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1919,1,2,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(1920,1,1,'2025-02-04 13:47:43','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(1921,1,3,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1922,1,4,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1923,1,5,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1924,1,38,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1925,1,39,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1926,1,66,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1927,1,6,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1928,1,17,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1929,1,11,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1930,1,18,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1931,1,19,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1932,1,12,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1933,1,59,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1934,1,14,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1935,1,20,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1936,1,13,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1937,1,52,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1938,1,53,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1939,1,54,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1940,1,55,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1941,1,56,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1942,1,57,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1943,1,58,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1944,1,15,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1945,1,32,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1946,1,10,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1947,1,51,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1948,1,30,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1949,1,33,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1950,1,34,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1951,1,63,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1952,1,8,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1953,1,44,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1954,1,45,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1955,1,46,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1956,1,47,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1957,1,48,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1958,1,49,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1959,1,42,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1960,1,43,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1961,1,50,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1962,1,35,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1963,1,36,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1964,1,37,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1965,1,31,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1966,1,40,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1967,1,41,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1968,1,61,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1969,1,62,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1970,1,64,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1971,1,65,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1972,1,21,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1973,1,22,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1974,1,23,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1975,1,24,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1976,1,25,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1977,1,26,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1978,1,27,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1979,1,28,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1980,1,29,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1981,1,2,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(1982,1,1,'2025-02-05 18:59:42','superAdmin',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `roles` */
 
@@ -10596,6 +10598,7 @@ CREATE TABLE `temp_po_pricing` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniq_session_id` text DEFAULT NULL,
   `po_id` int(11) DEFAULT 0,
+  `po_detail_id` int(11) DEFAULT 0,
   `po_product_uniq_id` varchar(255) DEFAULT NULL,
   `price_grade` varchar(25) DEFAULT NULL,
   `suggested_price` double DEFAULT 0,
@@ -10622,53 +10625,55 @@ CREATE TABLE `temp_po_pricing` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1229 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1281 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `temp_po_pricing` */
 
-insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_product_uniq_id`,`price_grade`,`suggested_price`,`logistic_percentage_per_item`,`receiving_percentage_per_item`,`diagnostic_percentage_per_item`,`distributed_percentage_per_item`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
-(119,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(120,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(121,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(125,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(126,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(127,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(137,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(138,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(139,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(143,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(144,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(145,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(146,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(147,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(148,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(149,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(150,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(151,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(152,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(153,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(154,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(158,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(159,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(160,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(170,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(171,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(172,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(173,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(174,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(175,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(338,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,'IPAD1-64C-GY','A',222,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(339,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,'IPAD5-32W-GY','A',121.38,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(340,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,'IPAD5-32W-GY','B',110.34,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1060,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,'32C-GY','B',101.63,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1061,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,'32C-GY','C',91.46,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1062,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,'32W-GY','C',204.53,0.45470102185498,0,0,1.7601329878257,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1063,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,'IPAD5-32W-GY','C',124.53,0.74680799807275,0,0,2.890869669959,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1064,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,'IPADM2-W-32GY','C',304.53,0.30538863166191,0,0,1.1821495419171,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1221,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,'32C-GY','B',685.83,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1222,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,'32C-GY','C',617.24,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1223,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,'32W-GY','C',805.42,0,0,0,0.6729408259045,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1224,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,'IPAD5-32W-GY','C',755.42,0,0,0,0.71748166582828,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
+insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_detail_id`,`po_product_uniq_id`,`price_grade`,`suggested_price`,`logistic_percentage_per_item`,`receiving_percentage_per_item`,`diagnostic_percentage_per_item`,`distributed_percentage_per_item`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
+(119,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(120,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(121,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(125,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(126,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(127,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(137,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(138,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(139,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(143,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(144,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(145,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(146,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(147,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(148,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(149,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(150,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(151,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(152,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(153,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(154,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(158,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(159,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(160,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(170,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(171,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(172,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(173,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(174,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(175,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(338,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD1-64C-GY','A',222,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(339,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD5-32W-GY','A',121.38,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(340,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD5-32W-GY','B',110.34,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1060,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32C-GY','B',101.63,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1061,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32C-GY','C',91.46,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1062,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32W-GY','C',204.53,0.45470102185498,0,0,1.7601329878257,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1063,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'IPAD5-32W-GY','C',124.53,0.74680799807275,0,0,2.890869669959,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1064,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'IPADM2-W-32GY','C',304.53,0.30538863166191,0,0,1.1821495419171,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1221,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32C-GY','B',685.83,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1222,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32C-GY','C',617.24,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1223,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32W-GY','C',805.42,0,0,0,0.6729408259045,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1224,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'IPAD5-32W-GY','C',755.42,0,0,0,0.71748166582828,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1279,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,1,'32C-GY','A',200,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1280,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `terms` */
 

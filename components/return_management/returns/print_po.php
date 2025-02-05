@@ -142,7 +142,7 @@ if ($counter_ee1 > 0) {
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
 }
-$sql_ee1 = "SELECT  a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, d.address, d.phone_no
+$sql_ee1 = "SELECT  a.*, c.return_no,c.po_date, c.removal_order_id, d.vender_name, d.address, d.phone_no
 			FROM  purchase_order_detail a
 			INNER JOIN purchase_orders c ON c.id = a.po_id
 			INNER JOIN venders d ON d.id = c.vender_id 
@@ -152,13 +152,13 @@ $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
 	$row_ee11			= $db->fetch($result_ee11);
-	$po_no				= $row_ee11[0]['po_no'];
+	$return_no				= $row_ee11[0]['return_no'];
 	$po_date			= $row_ee11[0]['po_date'];
 	$vender_name		= $row_ee11[0]['vender_name'];
 	$phone_no			= $row_ee11[0]['phone_no'];
 	$address			= $row_ee11[0]['address'];
 	$po_id				= $row_ee11[0]['po_id'];
-	$vender_invoice_no	= $row_ee11[0]['vender_invoice_no'];
+	$removal_order_id	= $row_ee11[0]['removal_order_id'];
 
 	$report_data = '<div class="">
 						<div class="header">
@@ -178,8 +178,8 @@ if ($counter_ee11 > 0) {
 										<table border="0"> 
 											<tbody>
 												<tr>
-													<td><strong>PO#: </strong></td>
-													<td><p>' . $po_no . '</p></td>
+													<td><strong>Return#: </strong></td>
+													<td><p>' . $return_no . '</p></td>
 												</tr> 
 												<tr>
 													<td><strong>PO Date: </strong></td>
@@ -187,7 +187,7 @@ if ($counter_ee11 > 0) {
 												</tr> 
 												<tr>
 													<td><strong>Vendor Invoice#: </strong></td>
-													<td><p>' . ($vender_invoice_no) . '</p></td>
+													<td><p>' . ($removal_order_id) . '</p></td>
 												</tr> 
 											</tbody>
 										</table>
@@ -347,8 +347,8 @@ if ($counter_ee11 > 0) {
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
-	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $po_no);
-	$file_name = "Purchase _Order_Invoice_Pre_" . $po_no . "_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $return_no);
+	$file_name = "Purchase _Order_Invoice_Pre_" . $return_no . "_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
@@ -356,7 +356,7 @@ if ($counter_ee11 > 0) {
 	$report_data = $report_data . $css;
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
-	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $po_no);
-	$file_name = "Purchase _Order_Invoice_Pre_" . $po_no . "_" . date('YmdHis') . ".pdf";
+	$mpdf->SetTitle('Purchase  Order Invoice Pre - ' . $return_no);
+	$file_name = "Purchase _Order_Invoice_Pre_" . $return_no . "_" . date('YmdHis') . ".pdf";
 	$mpdf->output($file_name, 'I');
 }

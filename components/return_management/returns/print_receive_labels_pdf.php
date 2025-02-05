@@ -75,9 +75,9 @@ $total_boxes 		= 3;
 $box_arrival_no 	= 1;
 
 
-$sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
+$sql_ee1 = " SELECT return_no, vender_name, sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
 				FROM (
-				SELECT b1.po_no, f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
+				SELECT b1.return_no, f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
 				FROM purchase_order_detail b 
 				INNER JOIN purchase_orders b1 ON b1.id = b.po_id
 				INNER JOIN products c ON c.id = b.product_id
@@ -92,7 +92,7 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 
 				UNION ALL 
 
-				SELECT b1.po_no,  f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
+				SELECT b1.return_no,  f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
 				FROM purchase_order_detail_receive a 
 				INNER JOIN purchase_orders b1 ON b1.id = a.po_id
 				INNER JOIN product_categories d ON d.id = a.recevied_product_category  
@@ -113,7 +113,7 @@ if ($counter_ee1 > 0) {
 	$row_ee1				= $db->fetch($result_ee1);
 	foreach ($row_ee1 as $data) {
 		$vender_name			= $data['vender_name'];
-		$po_no					= $data['po_no'];
+		$return_no					= $data['return_no'];
 		$sub_location_name		= $data['sub_location_name'];
 		$sub_location_type		= $data['sub_location_type'];
 		$total_products			= $data['total_products'];
@@ -126,9 +126,9 @@ if ($counter_ee1 > 0) {
 		$report_data = '
 			<div class="text_align_center main_font">
 				<br>
-				PO#: ' . $po_no . '
+				Return#: ' . $return_no . '
 				<br>
-				<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
+				<barcode code="' . $return_no . '" type="C39" size="1" height="1" />
 				<br><br>
 				Vendor: ' . $vender_name . '
 				<br><br>
@@ -146,8 +146,8 @@ if ($counter_ee1 > 0) {
 		$k++;
 	}
 
-	$mpdf->SetTitle('Receive Label PO#: ' . $po_no);
-	$file_name = "Receive Label " . $po_no . ".pdf";
+	$mpdf->SetTitle('Receive Label Return#: ' . $return_no);
+	$file_name = "Receive Label " . $return_no . ".pdf";
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '

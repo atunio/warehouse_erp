@@ -15,13 +15,13 @@
             </div>
         </div>
         <?php
-        if (isset($id) && isset($po_no)) {  ?>
+        if (isset($id) && isset($return_no)) {  ?>
             <div class="row">
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Return#:</b>" . $return_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                    <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $removal_order_id; ?></span></h6>
                 </div>
             </div>
         <?php }  ?>
@@ -52,7 +52,7 @@
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2_1=edit&detail_id=" . $detail_id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_1" value="Y" />
                 <input type="hidden" name="detail_id" value="<?php if (isset($detail_id)) echo $detail_id; ?>" />
-                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+                <input type="hidden" name="return_id" value="<?php if (isset($return_id)) echo $return_id; ?>" />
                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
@@ -234,17 +234,17 @@
 
     if (isset($id)) {
         $sql             = " SELECT a.*, c.status_name, d.logistics_cost
-                            FROM purchase_order_detail_logistics a
+                            FROM return_order_detail_logistics a
  						    LEFT JOIN inventory_status c ON c.id = a.logistics_status
- 						    INNER JOIN purchase_orders d ON d.id = a.po_id
-                            WHERE a.po_id = '" . $id . "'
+ 						    INNER JOIN returns d ON d.id = a.return_id
+                            WHERE a.return_id = '" . $id . "'
                             ORDER BY a.tracking_no";
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
         if ($count_log > 0) { ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+                <input type="hidden" name="return_id" value="<?php if (isset($return_id)) echo $return_id; ?>" />
                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
@@ -381,7 +381,7 @@
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>" method="post">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab2" value="Y" />
-                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
+                <input type="hidden" name="return_id" value="<?php if (isset($return_id)) echo $return_id; ?>" />
                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">

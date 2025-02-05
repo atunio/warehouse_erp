@@ -10,8 +10,8 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
 }
 if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	$sql_ee1 = "SELECT b.*, d.logistics_cost
-				FROM purchase_order_detail_logistics b 
-				INNER JOIN purchase_orders d ON d.id = b.po_id
+				FROM return_order_detail_logistics b 
+				INNER JOIN returns d ON d.id = b.return_id
 				WHERE b.id = '" . $detail_id . "'";
 	// echo $sql_ee1;
 	$result_ee1 	= $db->query($conn, $sql_ee1);
@@ -34,15 +34,15 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Logistics") == 0) {
 		$error2['msg'] = "You do not have add permissions.";
 	} else {
-		$sql_ee1 = " DELETE FROM purchase_order_detail_logistics WHERE id = '" . $detail_id . "'";
+		$sql_ee1 = " DELETE FROM return_order_detail_logistics WHERE id = '" . $detail_id . "'";
 		$ok = $db->query($conn, $sql_ee1);
 		if ($ok) {
-			$sql_ee1 = " SELECT b.* FROM purchase_order_detail_logistics b WHERE b.po_id = '" . $id . "'";
+			$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
 			// echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
 			if ($counter_ee1 == 0) {
-				$sql_c_up = "UPDATE  purchase_order_detail
+				$sql_c_up = "UPDATE  return_items_detail
 												SET 	
 													return_status_item	= '" . $before_logistic_status_dynamic . "',
 
@@ -50,10 +50,10 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 													update_date				= '" . $add_date . "',
 													update_by				= '" . $_SESSION['username'] . "',
 													update_ip				= '" . $add_ip . "'
-						WHERE po_id = '" . $id . "' ";
+						WHERE return_id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
-				$sql_c_up = "UPDATE  purchase_orders
+				$sql_c_up = "UPDATE  returns
 												SET 	
 													return_status		= '" . $before_logistic_status_dynamic . "',
 
@@ -91,7 +91,7 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	if (isset($tracking_no) && $tracking_no == "") {
 		$error2['tracking_no'] = "Required";
 	} else {
-		$sql_dup	= " SELECT a.* FROM purchase_order_detail_logistics a 
+		$sql_dup	= " SELECT a.* FROM return_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no . "' "; //echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
@@ -122,18 +122,18 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				if (access("add_perm") == 0) {
 					$error2['msg'] = "You do not have add permissions.";
 				} else {
-					$sql6 = "INSERT INTO purchase_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
+					$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
 							 VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$tracking_no	= "";
 						$no_of_boxes 	= 1;
-						$sql_c_up = "UPDATE  purchase_order_detail SET return_status_item	= '" . $status_id . "',
+						$sql_c_up = "UPDATE  return_items_detail SET return_status_item		= '" . $status_id . "',
 																		update_timezone		= '" . $timezone . "',
 																		update_date			= '" . $add_date . "',
 																		update_by			= '" . $_SESSION['username'] . "',
 																		update_ip			= '" . $add_ip . "'
-									WHERE po_id = '" . $id . "' ";
+									WHERE return_id = '" . $id . "' ";
 						$db->query($conn, $sql_c_up);
 						$k++;
 						if (isset($error2['msg'])) unset($error2['msg']);
@@ -145,12 +145,12 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 			if ($k > 0) {
 
-				$sql_c_up = "UPDATE  purchase_orders SET 	return_status	= '" . $logistic_status_dynamic . "',
-															logistics_cost	= '" . $logistics_cost . "',
-															update_timezone	= '" . $timezone . "',
-															update_date		= '" . $add_date . "',
-															update_by		= '" . $_SESSION['username'] . "',
-															update_ip		= '" . $add_ip . "'
+				$sql_c_up = "UPDATE  returns SET 	return_status	= '" . $logistic_status_dynamic . "',
+													logistics_cost	= '" . $logistics_cost . "',
+													update_timezone	= '" . $timezone . "',
+													update_date		= '" . $add_date . "',
+													update_by		= '" . $_SESSION['username'] . "',
+													update_ip		= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
@@ -189,7 +189,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	if (isset($tracking_no_update) && $tracking_no_update == "") {
 		$error2['tracking_no_update'] = "Required";
 	} else {
-		$sql_dup	= " SELECT a.* FROM purchase_order_detail_logistics a 
+		$sql_dup	= " SELECT a.* FROM return_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no_update . "'
 						AND id != '" . $detail_id . "' ";
 		//echo $sql_dup;
@@ -215,7 +215,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		if (po_permisions("Logistics") == 0) {
 			$error2['msg'] = "You do not have add permissions.";
 		} else {
-			$sql_c_up = "UPDATE  purchase_order_detail_logistics 
+			$sql_c_up = "UPDATE  return_order_detail_logistics 
 										SET 
 											courier_name 			= '" . $courier_name_update . "',
 											tracking_no 			= '" . $tracking_no_update . "',
@@ -233,7 +233,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 			$ok = $db->query($conn, $sql_c_up);
 			if ($ok) {
 
-				$sql_c_up = "UPDATE  purchase_orders
+				$sql_c_up = "UPDATE  returns
 											SET 	
 												logistics_cost		= '" . $logistics_cost_update . "',
 
@@ -244,12 +244,12 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 							WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
-				$sql_ee1 = " SELECT b.* FROM purchase_order_detail_logistics b WHERE b.po_id = '" . $id . "'";
+				$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
 				// echo $sql_ee1;
 				$result_ee1 	= $db->query($conn, $sql_ee1);
 				$counter_ee1	= $db->counter($result_ee1);
 				if ($counter_ee1 == 0) {
-					$sql_c_up = "UPDATE  purchase_order_detail
+					$sql_c_up = "UPDATE  return_items_detail
 											SET 	
 												return_status_item	= '" . $logistic_status_dynamic . "',
 
@@ -257,10 +257,10 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 												update_date				= '" . $add_date . "',
 												update_by				= '" . $_SESSION['username'] . "',
 												update_ip				= '" . $add_ip . "'
-					WHERE po_id = '" . $id . "' ";
+					WHERE return_id = '" . $id . "' ";
 					$db->query($conn, $sql_c_up);
 
-					$sql_c_up = "UPDATE  purchase_orders
+					$sql_c_up = "UPDATE  returns
 											SET 	
 												return_status		= '" . $logistic_status_dynamic . "',
 
@@ -300,7 +300,7 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 			if (isset($logistics_ids) && sizeof($logistics_ids) > 0) {
 				$k = 0;
 				foreach ($logistics_ids as $logistics_id) {
-					$sql_c_up = "UPDATE  purchase_order_detail_logistics SET 	logistics_status	= '" . $logistics_status . "',
+					$sql_c_up = "UPDATE  return_order_detail_logistics SET 	logistics_status	= '" . $logistics_status . "',
 																				update_timezone		= '" . $timezone . "',
 																				update_date			= '" . $add_date . "',
 																				update_by			= '" . $_SESSION['username'] . "',
@@ -309,12 +309,12 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
 
-						$sql_ee1 = " SELECT b.* FROM purchase_order_detail_logistics b WHERE b.po_id = '" . $id . "'";
+						$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
 						// echo $sql_ee1;
 						$result_ee1 	= $db->query($conn, $sql_ee1);
 						$counter_ee1	= $db->counter($result_ee1);
 						if ($counter_ee1 == 0) {
-							$sql_c_up = "UPDATE  purchase_order_detail
+							$sql_c_up = "UPDATE  return_items_detail
 													SET 	
 														return_status_item	= '" . $logistics_status . "',
 
@@ -322,10 +322,10 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
 														update_ip				= '" . $add_ip . "'
-							WHERE po_id = '" . $id . "' ";
+							WHERE return_id = '" . $id . "' ";
 							$db->query($conn, $sql_c_up);
 
-							$sql_c_up = "UPDATE  purchase_orders
+							$sql_c_up = "UPDATE  returns
 													SET 	
 														return_status		= '" . $logistics_status . "',
 

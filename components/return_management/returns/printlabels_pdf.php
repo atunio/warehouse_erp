@@ -1,4 +1,5 @@
 <?php
+
 include('path.php');
 include($directory_path . "conf/session_start.php");
 include($directory_path . "conf/connection.php");
@@ -69,11 +70,9 @@ $total_boxes 		= 3;
 $box_arrival_no 	= 1;
 
 
-$sql_ee1 = " SELECT a.*, b.po_no, c.vender_name
-			FROM purchase_order_detail_logistics a
-			INNER JOIN purchase_orders b ON b.id = a.po_id
-			LEFT JOIN venders c ON c.id = b.vender_id
-			WHERE a.po_id = '" . $id . "'
+$sql_ee1 = " SELECT  a.*, b.return_no, c.store_name
+FROM return_order_detail_logistics a  INNER JOIN RETURNS b ON b.id = a.return_id LEFT JOIN `stores` c  ON c.id = b.store_id
+WHERE a.return_id ='" . $id . "'
 			ORDER BY date_format(a.arrived_date, '%Y%m%d') "; //echo $sql_ee1;die;
 $k = 1;
 $result_ee1 	= $db->query($conn, $sql_ee1);
@@ -83,15 +82,15 @@ if ($counter_ee1 > 0) {
 	foreach ($row_ee1 as $data) {
 
 		$logistic_id			= $data['id'];
-		$vender_name			= $data['vender_name'];
-		$po_no					= $data['po_no'];
+		$store_name				= $data['store_name'];
+		$return_no				= $data['return_no'];
 		$arrived_date			= dateformat2($data['arrived_date']);
 		$arrival_no				= $data['arrival_no'];
 		$no_of_boxes			= $data['no_of_boxes'];
 
 		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
-							FROM purchase_order_detail_logistics a
-							WHERE a.po_id = '" . $id . "' ";
+							FROM return_order_detail_logistics a
+							WHERE a.return_id = '" . $id . "' ";
 		$result_ee12 	= $db->query($conn, $sql_ee12);
 		$counter_ee12	= $db->counter($result_ee12);
 		$total_boxes 	= 0;
@@ -103,11 +102,11 @@ if ($counter_ee1 > 0) {
 			$report_data = '
 				<div class="text_align_center main_font">
 					<br>
-					PO#: ' . $po_no . '
+					Return#: ' . $return_no . '
 					<br>
-					<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
+					<barcode code="' . $return_no . '" type="C39" size="1" height="1" />
 					<br><br>
-					Vendor Name: ' . $vender_name . '
+					Store Name: ' . $store_name . '
 					<br><br>
 					Box/Pallet # ' . $k . ' out ' . $total_boxes . '
 					<br><br>
@@ -120,8 +119,8 @@ if ($counter_ee1 > 0) {
 		}
 	}
 
-	$mpdf->SetTitle('Arrival Label PO_NO ' . $po_no);
-	$file_name = "Arrival Label " . $po_no . ".pdf";
+	$mpdf->SetTitle('Arrival Label PO_NO ' . $return_no);
+	$file_name = "Arrival Label " . $return_no . ".pdf";
 	$mpdf->output($file_name, 'I');
 } else {
 	$report_data = '
@@ -130,7 +129,7 @@ if ($counter_ee1 > 0) {
 	$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 	$mpdf->writeHTML($report_data);
 
-	$mpdf->SetTitle('Arrival Label PO_NO ' . $po_no);
-	$file_name = "Arrival Label " . $po_no . ".pdf";
+	$mpdf->SetTitle('Arrival Label PO_NO ' . $return_no);
+	$file_name = "Arrival Label " . $return_no . ".pdf";
 	$mpdf->output($file_name, 'I');
 }

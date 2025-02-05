@@ -1884,3 +1884,15 @@ function update_so_status($db, $conn, $so_id, $module_id, $order_status)
 		$db->query($conn, $sql_c_up);
 	}
 }
+function get_status_name($db, $conn, $status_id)
+{
+	$status_name 	= "";
+	$sql_pd01 		= "	SELECT a.*  FROM inventory_status a WHERE a.id	= '" . $status_id . "'  ";
+	$result_pd01	= $db->query($conn, $sql_pd01);
+	$count_pd01		= $db->counter($result_pd01);
+	if ($count_pd01 > 0) { // 
+		$row_ee1		= $db->fetch($result_pd01);
+		$status_name	= $row_ee1[0]['status_name'];
+	}
+	return $status_name;
+}

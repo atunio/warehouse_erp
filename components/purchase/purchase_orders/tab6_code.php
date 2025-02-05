@@ -137,6 +137,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 					$db->query($conn, $sql_c_up);
 					update_po_detail_status($db, $conn, $inv_po_detail_id, $tested_or_graded_status);
 					update_po_status($db, $conn, $id, $tested_or_graded_status);
+					$disp_status_name = get_status_name($db, $conn, $tested_or_graded_status);
 
 					$k++;
 				}
@@ -347,6 +348,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 
 											update_po_detail_status($db, $conn, $diagnostic_fetch_product_id, $diagnost_status_dynamic);
 											update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+											$disp_status_name = get_status_name($db, $conn, $diagnost_status_dynamic);
 										}
 										$msg6['msg_success'] = "Serial# has been assigned to product id.";
 									}
@@ -441,6 +443,7 @@ if (isset($_POST['is_Submit_tab6_5']) && $_POST['is_Submit_tab6_5'] == 'Y') {
 					if ($k > 0) {
 
 						update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+						$disp_status_name = get_status_name($db, $conn, $diagnost_status_dynamic);
 
 						$msg6['msg_success'] = "Totl " . $k . " Serial No has been updated successfully.";
 						unset($serial_no_manual_diagnostic);
@@ -618,6 +621,7 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 
 						update_po_detail_status($db, $conn, $product_id_barcode_diagnostic, $diagnost_status_dynamic);
 						update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+						$disp_status_name = get_status_name($db, $conn, $diagnost_status_dynamic);
 
 						$serial_no_barcode_diagnostic = $product_id_barcode_diagnostic = "";
 						$msg6['msg_success']	= "Serial No has been updated successfully.";
@@ -736,6 +740,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 
 					update_po_detail_status($db, $conn, $product_id_boken_device, $diagnost_status_dynamic);
 					update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+					$disp_status_name = get_status_name($db, $conn, $diagnost_status_dynamic);
 
 					$serial_no_boken_device =  $sub_location_id_boken_device = $battery_boken_device = $body_grade_boken_device = $inventory_status_boken_device = $processor_boken_device = $storage_boken_device = $overall_grade_boken_device = $ram_boken_device = $lcd_grade_boken_device = $digitizer_grade_boken_device = "";
 					$msg6['msg_success']	= "Serial No has been updated successfully.";

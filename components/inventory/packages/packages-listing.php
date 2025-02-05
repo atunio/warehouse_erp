@@ -304,6 +304,17 @@ $page_heading 	= "List of Packages / Parts";
 																if ($count_cl2 > 0) {
 																	$row_cl2 = $db->fetch($result_cl2);
 																	echo $row_cl2[0]['compatible_optional'];
+																} else {
+																	$sql_cl		= " SELECT  GROUP_CONCAT(b.product_uniqueid, '<br>') AS compatible_produccts
+																					FROM packages c
+																					INNER JOIN products b ON FIND_IN_SET(b.id, c.product_ids)
+																					WHERE c.id = '" . $id . "' ";
+																	$result_cl2	= $db->query($conn, $sql_cl);
+																	$count_cl2	= $db->counter($result_cl2);
+																	if ($count_cl2 > 0) {
+																		$row_cl2 = $db->fetch($result_cl2);
+																		echo "Compatible:<br>" . $row_cl2[0]['compatible_produccts'];
+																	}
 																} ?>
 															</td>
 															<td class="text-align-center">

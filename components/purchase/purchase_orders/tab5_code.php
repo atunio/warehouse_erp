@@ -46,7 +46,7 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 					$row_cl_rc3 = $db->fetch($result_rc3);
 					foreach ($row_cl_rc3 as $data_rc3) {
 						$po_detail_id1 = $data_rc3['po_detail_id'];
-						if($po_detail_id1 > 0){
+						if ($po_detail_id1 > 0) {
 							$sql_c_up = "UPDATE purchase_order_detail SET is_fk_serial_generated = 0 WHERE id = '" . $po_detail_id1 . "'";
 							$db->query($conn, $sql_c_up);
 						}
@@ -445,6 +445,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
 						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
 						update_po_status($db, $conn, $id, $receive_status_dynamic);
+						$disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
 
 						/////////////////////////// Create Stock  END /////////////////////////////
 						$msg5['msg_success']	= "Product with barcode has been received successfully.";
@@ -585,6 +586,7 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 				}
 				if ($k > 0) {
 					update_po_status($db, $conn, $id, $receive_status_dynamic);
+					$disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
 
 					$msg5['msg_success'] = "Receiving has been processed successfully.";
 					unset($receiving_qties);

@@ -21,10 +21,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("po_no", "po_date", "vender", "vender_invoice_no",  "po_desc",  "estimated_receive_date", "po_status", "product_id", "product_desc", "product_category", "detail_desc", "order_qty", "order_price", "is_tested", "is_wiped", "is_imaged", "product_condition", "warranty_period_in_days", "product_po_desc");
-$master_columns 			= array("po_no", "po_date", "vender", "vender_invoice_no", "po_desc", "estimated_receive_date", "po_status");  // db fields
-$duplication_columns 		= array("po_no");
-$required_columns 			= array("po_no", "vender", "product_id", "product_category", "order_qty", "order_price");
+$supported_column_titles	= array("return_no", "po_date", "vender", "removal_order_id",  "po_desc",  "estimated_receive_date", "po_status", "product_id", "product_desc", "product_category", "detail_desc", "order_qty", "order_price", "is_tested", "is_wiped", "is_imaged", "product_condition", "warranty_period_in_days", "product_po_desc");
+$master_columns 			= array("return_no", "po_date", "vender", "removal_order_id", "po_desc", "estimated_receive_date", "po_status");  // db fields
+$duplication_columns 		= array("return_no");
+$required_columns 			= array("return_no", "vender", "product_id", "product_category", "order_qty", "order_price");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -162,7 +162,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$key = "return_status";
 									}
 
-									if ($key == 'po_no' && $data != "") {
+									if ($key == 'return_no' && $data != "") {
 										$insert_db_field_id	= "po_id";
 										$sql1 				= "SELECT * FROM " . $master_table . " WHERE " . $key . " = '" . $data . "' ";
 										$result1 			= $db->query($conn, $sql1);

@@ -22,7 +22,7 @@ if (isset($test_on_local) && $test_on_local == 1 && isset($cmd2) &&  $cmd2 == 'a
 	$is_imaged					= "Yes";
 	$product_condition			= "A Grade";
 	$warranty_period_in_days	= "15";
-	$vender_invoice_no			= date('YmdHis');
+	$removal_order_id			= date('YmdHis');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -83,7 +83,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$row_ee					= $db->fetch($result_ee);
 	$vender_id				=  $row_ee[0]['vender_id'];
 	$po_desc				= $row_ee[0]['po_desc'];
-	$vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
+	$removal_order_id		= $row_ee[0]['removal_order_id'];
 	$is_tested_po			= $row_ee[0]['is_tested_po'];
 	$is_wiped_po			= $row_ee[0]['is_wiped_po'];
 	$is_imaged_po			= $row_ee[0]['is_imaged_po'];
@@ -171,19 +171,19 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, vender_invoice_no, po_date, estimated_receive_date, po_desc,is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
-							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $estimated_receive_date1  . "', '" . $po_desc  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, removal_order_id, po_date, estimated_receive_date, po_desc,is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $removal_order_id. "', '" . $po_date1  . "', '" . $estimated_receive_date1  . "', '" . $po_desc  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id			= mysqli_insert_id($conn);
-						$po_no		= "PO" . $id;
+						$return_no		= "PO" . $id;
 
-						$sql6		= " UPDATE purchase_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
+						$sql6		= " UPDATE purchase_orders SET return_no = '" . $return_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 
 						$msg['msg_success'] = "Purchase Order has been created successfully.";
 						echo redirect_to_page("?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id . "&msg_success=" . $msg['msg_success']));
-						$vender_id = $po_desc =  $po_date = $vender_invoice_no = $estimated_receive_date = $is_tested_po = $is_wiped_po = $is_imaged_po = "";
+						$vender_id = $po_desc =  $po_date = $removal_order_id= $estimated_receive_date = $is_tested_po = $is_wiped_po = $is_imaged_po = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -207,7 +207,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 															po_date					= '" . $po_date1 . "',
 															estimated_receive_date 	= '" . $estimated_receive_date1 . "', 
 															po_desc					= '" . $po_desc . "', 
-															vender_invoice_no		= '" . $vender_invoice_no . "', 
+															removal_order_id		= '" . $removal_order_id. "', 
 															is_tested_po			= '" . $is_tested_po . "', 
 															is_wiped_po				= '" . $is_wiped_po . "', 
 															is_imaged_po			= '" . $is_imaged_po . "', 
@@ -445,7 +445,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								</label>
 							</div>
 							<?php
-							$field_name 	= "vender_invoice_no";
+							$field_name 	= "removal_order_id";
 							$field_label 	= "Vendor Invoice #";
 							?>
 							<div class="input-field col m2 s12">

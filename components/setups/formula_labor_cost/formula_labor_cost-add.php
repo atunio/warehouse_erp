@@ -4,11 +4,9 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
-	$product_desc		= "xyz " . date('Ymd');
-	$address			= "address " . date('Ymd');
+	$formula_type		= "Receive";
 	$product_category	= "1";
-	$product_uniqueid	= uniqid();
-	$detail_desc		= "detail_desc " . date('Ymd');
+	$labor_cost			= 1.5;
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -24,17 +22,13 @@ if ($cmd == 'add') {
 	$button_val 	= "Add";
 	$id 			= "";
 }
-
 if ($cmd == 'edit' && isset($id) && $id > 0) {
-
-	$sql_ee						= "SELECT a.* FROM formula_category a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee					= $db->query($conn, $sql_ee);
-	$row_ee						= $db->fetch($result_ee);
-
-	$formula_type				= $row_ee[0]['formula_type'];
-	$product_category			=  $row_ee[0]['product_category'];
-	$devices_per_user_per_day	= $row_ee[0]['devices_per_user_per_day'];
-	$no_of_employees			= $row_ee[0]['no_of_employees'];
+	$sql_ee				= "SELECT a.* FROM formula_labor_cost a WHERE a.id = '" . $id . "' ";
+	$result_ee			= $db->query($conn, $sql_ee);
+	$row_ee				= $db->fetch($result_ee);
+	$formula_type		= $row_ee[0]['formula_type'];
+	$product_category	= $row_ee[0]['product_category'];
+	$labor_cost			= $row_ee[0]['labor_cost'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -44,9 +38,7 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-
-
-	$field_name = "devices_per_user_per_day";
+	$field_name = "labor_cost";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
@@ -67,18 +59,18 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
 				$sql_dup	= " SELECT a.* 
-								FROM formula_category a 
+								FROM formula_labor_cost a 
 								WHERE  a.formula_type		= '" . $formula_type . "'
 								AND  a.product_category		= '" . $product_category . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_category(subscriber_users_id, formula_type, product_category, devices_per_user_per_day,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $product_category . "',  '" . $devices_per_user_per_day  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_labor_cost(subscriber_users_id, formula_type, product_category, labor_cost,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $product_category . "',  '" . $labor_cost  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$msg['msg_success'] = "Record has been added successfully.";
-						$formula_type = $product_category = $devices_per_user_per_day = $no_of_employees = "";
+						$formula_type = $product_category = $labor_cost = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -90,16 +82,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			if (access("edit_perm") == 0) {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM formula_category a 
+				$sql_dup	= " SELECT a.* FROM formula_labor_cost a 
 								WHERE  a.formula_type		= '" . $formula_type . "'
 								AND  a.product_category		= '" . $product_category . "'
 								AND a.id		  		   != '" . $id . "'";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE formula_category SET 	formula_type				= '" . $formula_type . "', 
+					$sql_c_up = "UPDATE formula_labor_cost SET 	formula_type				= '" . $formula_type . "', 
 																product_category			= '" . $product_category . "',
-																devices_per_user_per_day	= '" . $devices_per_user_per_day . "', 
+																labor_cost					= '" . $labor_cost . "', 
 																
 																update_date					= '" . $add_date . "',
 																update_by					= '" . $_SESSION['username'] . "',
@@ -183,9 +175,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 																																										echo ${$field_name . "_valid"};
 																																									} ?>">
 										<option value="">Select</option>
-										<option value="Processing" <?php if (isset(${$field_name}) && ${$field_name} == 'Processing') { ?> selected="selected" <?php } ?>>Processing</option>
-										<option value="Repair" <?php if (isset(${$field_name}) && ${$field_name} == 'Repair') { ?> selected="selected" <?php } ?>>Repair</option>
+										<option value="Receive" <?php if (isset(${$field_name}) && ${$field_name} == 'Receive') { ?> selected="selected" <?php } ?>>Receive</option>
 										<option value="Diagnostic" <?php if (isset(${$field_name}) && ${$field_name} == 'Diagnostic') { ?> selected="selected" <?php } ?>>Diagnostic</option>
+										<option value="Repair" <?php if (isset(${$field_name}) && ${$field_name} == 'Repair') { ?> selected="selected" <?php } ?>>Repair</option>
+										<option value="Process" <?php if (isset(${$field_name}) && ${$field_name} == 'Process') { ?> selected="selected" <?php } ?>>Process</option>
 									</select>
 									<label for="<?= $field_name; ?>">
 										<?= $field_label; ?>
@@ -197,7 +190,27 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m3 s12">
+							<div class="input-field col m2 s12">
+								<?php
+								$field_name 	= "labor_cost";
+								$field_label 	= "Labor Cost Per Device";
+								?>
+								<i class="material-icons prefix">description</i>
+								<input id="<?= $field_name; ?>" type="text" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																																echo ${$field_name};
+																															} ?>" class="twoDecimalNumber  validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red"> * <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "product_category";
 								$field_id 		= "product_category2";
@@ -230,27 +243,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m4 s12">
-								<?php
-								$field_name 	= "devices_per_user_per_day";
-								$field_label 	= "No of Devices Per User Per Day";
-								?>
-								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="number" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																						echo ${$field_name . "_valid"};
-																																					} ?>">
-								<label for="<?= $field_name; ?>">
-									<?= $field_label; ?>
-									<span class="color-red"> * <?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
-									</span>
-								</label>
+							<div class="input-field col m2 s12 custom_margin_bottom_col"><br>
+								<a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#category_add_modal">Add New Category</a>
 							</div>
-
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">
@@ -267,5 +262,13 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		</div>
 	</div>
 </div>
+<?php include("sub_files/add_category_modal.php") ?>
+<?php include("sub_files/add_productid_modal.php") ?>
+</div>
 <br><br><br><br>
 <!-- END: Page Main-->
+<!-- END: Page Main-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<?php include("sub_files/add_category_js_code.php") ?>
+<?php include("sub_files/add_productid_js_code.php") ?>

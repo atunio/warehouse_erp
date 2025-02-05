@@ -27,8 +27,15 @@
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
                 </div>
                 <div class="input-field col m4 s12">
-                    <?php
-                    /*
+                    <span class="chip green lighten-5">
+                        <span class="green-text">
+                            <?php echo $disp_status_name; ?>
+                        </span>
+                    </span>
+                </div>
+                <?php
+                /*
+                <div class="input-field col m4 s12">
                     $entry_type = "diagnostic";  ?>
                     <a class="btn gradient-45deg-light-blue-cyan timer_<?= $entry_type; ?>" title="Timer" href="javascript:void(0)" id="timer_<?= $entry_type; ?>_<?= $id ?>"
                         <?php
@@ -66,10 +73,10 @@
                                                                                                                                                                                                                                                                             } ?> ">Resume <?php //echo $_SESSION[$entry_type]; 
                                                                                                                                                                                                                                                                                             ?>
                     </a>&nbsp;
-                    <?php 
-                    */ ?>
-                    <input type="hidden" name="d_total_pause_duration" id="d_total_pause_duration" value="0">
                 </div>
+                <?php 
+                */ ?>
+                <input type="hidden" name="d_total_pause_duration" id="d_total_pause_duration" value="0">
             </div>
             <?php
             if (isset($cmd6) &&  $cmd6 == "add" && isset($detail_id) && $detail_id != "") {  ?>

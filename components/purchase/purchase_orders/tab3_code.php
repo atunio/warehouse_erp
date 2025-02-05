@@ -50,6 +50,7 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 								update_ip			= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
+				$disp_status_name = get_status_name($db, $conn, $logistic_status_dynamic);
 			}
 			$msg3['msg_success'] = "Arrival record has been deleted successfully.";
 		}
@@ -157,6 +158,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 			if ($k > 0) {
 				update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic);
 				update_po_status($db, $conn, $id, $arrival_status_dynamic);
+				$disp_status_name = get_status_name($db, $conn, $arrival_status_dynamic);
 
 				if (isset($msg2['msg_success'])) {
 					$msg3['msg_success'] .= "<br>Arrival has been processed successfully.";

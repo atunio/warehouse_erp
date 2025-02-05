@@ -11,7 +11,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$is_wiped_po				= "Yes";
 	$is_imaged_po				= "Yes";
 	$vender_invoice_no			= date('YmdHis');
-	$order_status = 1;
+	$order_status 				= 1;
 }
 
 $db 					= new mySqlDB;
@@ -35,13 +35,16 @@ if (isset($cmd2) &&  $cmd2 == 'edit') {
 	$title_heading2  = "Update Order Product";
 	$button_val2 	= "Save";
 }
+$disp_status_name  = "In Process";
 if ($cmd == 'edit' && isset($id) && $id > 0) {
-	$sql_ee		= " SELECT a.* 
-					FROM purchase_orders a  
- 					WHERE a.id = '" . $id . "'"; // echo $sql_ee;
+	$sql_ee					= " SELECT a.*, b.status_name
+								FROM purchase_orders a
+								LEFT JOIN inventory_status b ON b.id = a.order_status
+								WHERE a.id = '" . $id . "'"; // echo $sql_ee;
 	$result_ee				= $db->query($conn, $sql_ee);
 	$row_ee					= $db->fetch($result_ee);
 	$vender_id				=  $row_ee[0]['vender_id'];
+	$disp_status_name		=  $row_ee[0]['status_name'];
 	$po_desc				= $row_ee[0]['po_desc'];
 	$po_no					= $row_ee[0]['po_no'];
 	$po_desc_public			= $row_ee[0]['po_desc_public'];
@@ -57,6 +60,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_qty 				= [];
 	$expected_status		= [];
 	$product_ids			= [];
+
 	$sql_ee1	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
 	$result_ee1	= $db->query($conn, $sql_ee1);
 	$count_ee1  = $db->counter($result_ee1);
@@ -76,7 +80,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_part_qty 			= [];
 	$order_part_price			= [];
 	$case_pack					= [];
-	$sql_ee1		= "SELECT a.*,b.case_pack 
+	$sql_ee1		= " SELECT a.*,b.case_pack 
 						FROM package_materials_order_detail a
 						INNER JOIN packages b ON b.id = a.package_id WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
 	$result_ee1		= $db->query($conn, $sql_ee1);

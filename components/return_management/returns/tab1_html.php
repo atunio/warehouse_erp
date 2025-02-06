@@ -30,12 +30,7 @@
                             <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                                 Save changes
                             </button>
-                            <?php
-                            if (isset($return_status) && ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
-                                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
-                                    Import Products
-                                </a>
-                    <?php }
+                    <?php
                         }
                     }
                     include("tab_action_btns.php"); ?>
@@ -302,9 +297,6 @@
                                         $pkg_stock_of_product_needed = $return_qty_val - $pkg_stock_in_hand;
                                         if ((isset($return_status) && $return_status != 1 && $return_status != 4 && $return_status != 10 && $return_status != 12 && isset(${$field_name}[$i - 1])) || ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
                                             <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
-                                         
-                                            
-                                            
                                             <td>
                                                     <select <?php echo $disabled;
                                                             echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product-select <?= $field_name ?>_<?= $i ?>">
@@ -327,7 +319,7 @@
                                                     $sql_status     = "SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
-                                                                        AND id IN(5, 13, 27)";
+                                                                        AND id IN(6, 8 ,9 ,16 ,17 , 18 , 19 ,20)";
                                                     $result_status  = $db->query($conn, $sql_status);
                                                     $count_status   = $db->counter($result_status);
                                                     ?>

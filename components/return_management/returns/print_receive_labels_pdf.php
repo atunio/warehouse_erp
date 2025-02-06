@@ -1,4 +1,5 @@
 <?php
+
 include('path.php');
 include($directory_path . "conf/session_start.php");
 include($directory_path . "conf/connection.php");
@@ -75,30 +76,30 @@ $total_boxes 		= 3;
 $box_arrival_no 	= 1;
 
 
-$sql_ee1 = " SELECT return_no, vender_name, sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
+$sql_ee1 = " SELECT return_no, store_name, sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
 				FROM (
-				SELECT b1.return_no, f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
-				FROM purchase_order_detail b 
-				INNER JOIN purchase_orders b1 ON b1.id = b.po_id
+				SELECT b1.return_no, f.store_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
+				FROM return_items_detail b 
+				INNER JOIN returns b1 ON b1.id = b.return_id
 				INNER JOIN products c ON c.id = b.product_id
-				INNER JOIN purchase_order_detail_receive a ON a.`po_detail_id` = b.id
+				INNER JOIN return_items_detail_receive a ON a.`ro_detail_id` = b.id
 				LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
 				INNER JOIN product_categories d ON d.id = c.product_category  
-				LEFT JOIN venders f ON f.id = b1.vender_id
+				LEFT JOIN stores f ON f.id = b1.store_id
 				WHERE a.enabled = 1 
-				AND b.po_id = '" . $id . "'
+				AND b.return_id = '" . $id . "'
 				AND a.`receive_type` != 'CateogryReceived'
 				GROUP BY c.product_category
 
 				UNION ALL 
 
-				SELECT b1.return_no,  f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
-				FROM purchase_order_detail_receive a 
-				INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+				SELECT b1.return_no,  f.store_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
+				FROM return_items_detail_receive a 
+				INNER JOIN returns b1 ON b1.id = a.return_id
 				INNER JOIN product_categories d ON d.id = a.recevied_product_category  
 				LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
-				LEFT JOIN venders f ON f.id = b1.vender_id
-				WHERE a.po_id = '" . $id . "'
+				LEFT JOIN stores f ON f.id = b1.store_id
+				WHERE a.return_id = '" . $id . "'
 				GROUP BY a.recevied_product_category
 			) AS t1
 			WHERE sub_location_id 	=  '" . $sub_location_id . "'
@@ -112,7 +113,7 @@ $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
 	$row_ee1				= $db->fetch($result_ee1);
 	foreach ($row_ee1 as $data) {
-		$vender_name			= $data['vender_name'];
+		$store_name			= $data['store_name'];
 		$return_no					= $data['return_no'];
 		$sub_location_name		= $data['sub_location_name'];
 		$sub_location_type		= $data['sub_location_type'];
@@ -130,7 +131,7 @@ if ($counter_ee1 > 0) {
 				<br>
 				<barcode code="' . $return_no . '" type="C39" size="1" height="1" />
 				<br><br>
-				Vendor: ' . $vender_name . '
+				Store: ' . $store_name . '
 				<br><br>
 				Category: ' . $category_name . '
 				<br>

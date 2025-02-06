@@ -68,12 +68,12 @@ $page_heading 	= "List of stores";
 													New
 												</a>
 											<?php }?>
-											<?php  
+											<?php /*  
 											if (access("add_perm") == 1) { ?>
 												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 													Import
 												</a>
-											<?php }?>
+											<?php } */?>
 
 									
 										</div>

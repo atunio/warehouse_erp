@@ -36,22 +36,24 @@ if (isset($cmd2) &&  $cmd2 == 'edit') {
 if ($cmd == 'edit' && isset($id) && $id > 0) {
 	
 
-	$sql_ee					= " SELECT a.*, b.store_name , a.return_type , a.removal_order_id , a.return_date  , a.public_note  , a.internal_note
-								FROM `returns` a  JOIN `stores` b ON b.`id`= a.`store_id`   WHERE a.id = '" . $id . "'"; // echo $sql_ee;
-	$result_ee				= $db->query($conn, $sql_ee);
-	$row_ee					= $db->fetch($result_ee);
-
-	$store_id				=  $row_ee[0]['store_id'];
-	$store_name				= $row_ee[0]['store_name'];
-	$return_no				= $row_ee[0]['return_no']; 
-	$return_status			= $row_ee[0]['return_status'];   
-	$return_type			= $row_ee[0]['return_type'];   
-	$removal_order_id		= $row_ee[0]['removal_order_id'];   
-	$return_date			= $row_ee[0]['return_date'];   
-	$internal_note			= $row_ee[0]['internal_note'];   
-	$public_note			= $row_ee[0]['public_note'];   
-	
-	$return_date			= str_replace("-", "/", convert_date_display($row_ee[0]['return_date']));
+	$sql_ee		= " SELECT a.*, b.store_name , a.return_type , a.removal_order_id , a.return_date  , a.public_note  , a.internal_note
+					FROM `returns` a  JOIN `stores` b ON b.`id`= a.`store_id`   WHERE a.id = '" . $id . "'"; // echo $sql_ee;
+	$result_ee	= $db->query($conn, $sql_ee);
+	$count_ee1  = $db->counter($result_ee);
+	if ($count_ee1 > 0) {
+		$row_ee					= $db->fetch($result_ee);
+		$store_id				=  $row_ee[0]['store_id'];
+		$store_name				= $row_ee[0]['store_name'];
+		$return_no				= $row_ee[0]['return_no']; 
+		$return_status			= $row_ee[0]['return_status'];   
+		$return_type			= $row_ee[0]['return_type'];   
+		$removal_order_id		= $row_ee[0]['removal_order_id'];   
+		$return_date			= $row_ee[0]['return_date'];   
+		$internal_note			= $row_ee[0]['internal_note'];   
+		$public_note			= $row_ee[0]['public_note'];   
+		
+		$return_date			= str_replace("-", "/", convert_date_display($row_ee[0]['return_date']));
+	}
 
 	$return_qty				= [];
 	$expected_status		= [];

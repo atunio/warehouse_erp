@@ -11,15 +11,15 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-$title_heading			= "Import Products in PO";
+$title_heading			= "Import Products in Return";
 $button_val				= "Preview";
 
-$return_no = $removal_order_id= $vender_name = "";
+$return_no = $removal_order_id= $store_name = "";
 
 if (isset($id) && $id > 0) {
-	$sql_ee 		= " SELECT a.*, b.vender_name
-						FROM purchase_orders a 
-						LEFT JOIN venders b ON b.id = a.vender_id
+	$sql_ee 		= " SELECT a.*, b.store_name
+						FROM `returns` a 
+						LEFT JOIN `stores` b ON b.id = a.store_id
 						WHERE a.id = '" . $id . "' ";
 	$result_ee		= $db->query($conn, $sql_ee);
 	$counter_ee1	= $db->counter($result_ee);
@@ -27,7 +27,7 @@ if (isset($id) && $id > 0) {
 		$row_ee				= $db->fetch($result_ee);
 		$return_no				= $row_ee[0]['return_no'];
 		$removal_order_id	= $row_ee[0]['removal_order_id'];
-		$vender_name		= $row_ee[0]['vender_name'];
+		$store_name		= $row_ee[0]['store_name'];
 	} else {
 		$error['msg'] = "No record found";
 	}
@@ -40,10 +40,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
-$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "product_status"); 
+$supported_column_titles	= array("product_id", "return_qty", "product_status");
+$master_columns				= array("product_id", "return_qty", "product_status"); 
 $duplication_columns 		= array("product_id");
-$required_columns			= array("product_id", "order_qty", "order_price");
+$required_columns			= array("product_id", "return_qty");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -87,7 +87,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 
-$master_table	= "purchase_order_detail";
+$master_table	= "return_items_detail";
 $added 			= 0;
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
@@ -144,9 +144,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$db_column = $dup_data;
 				if ($dup_data == 'product_id') {
 					$db_column = "product_uniqueid";
-					$sql1		= " SELECT * FROM purchase_order_detail a
+					$sql1		= " SELECT * FROM return_items_detail a
 									INNER JOIN products b ON b.id = a.product_id
-									WHERE a.po_id = '" . $id . "'
+									WHERE a.return_id = '" . $id . "'
 									AND " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
@@ -213,7 +213,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 							}
 						} 
-						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(po_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(return_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 								VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
@@ -256,10 +256,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-									PO List
+									Return List
 								</a> 
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-									PO Profile
+									Return Profile
 								</a> 
 							</div>
 						</div>
@@ -282,10 +282,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								<h6 class="media-heading"><span class=""><?php echo "<b>Return#:</b>" . $return_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Name: </b>" . $vender_name; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Store Name: </b>" . $store_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $removal_order_id; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Order / Removal ID#: </b>" . $removal_order_id; ?></span></h6>
 							</div>
 						</div>
 					<?php } ?>
@@ -371,7 +371,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if (strtolower($s_heading) == 'is_tested' || strtolower($s_heading) == 'is_wiped' || strtolower($s_heading) == 'is_imaged') {
 											$cell_format = "Yes / No";
 										}
-										if (strtolower($s_heading) == 'order_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
+										if (strtolower($s_heading) == 'return_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
 											$cell_format = "Number";
 										}  
 										echo " <tr>
@@ -535,9 +535,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																$db_column = "product_uniqueid";
 															}
 
-															$sql_dup 	= "  SELECT * FROM purchase_order_detail a
+															$sql_dup 	= "  SELECT * FROM return_items_detail a
 																			INNER JOIN products b ON b.id = a.product_id
-																			WHERE a.po_id = '" . $id . "'
+																			WHERE a.return_id = '" . $id . "'
 																			AND " . $db_column . " = '" . htmlspecialchars($cell) . "' ";  //echo "<br>" . $sql_dup;
 															$result_dup	= $db->query($conn, $sql_dup);
 															$count_dup	= $db->counter($result_dup);

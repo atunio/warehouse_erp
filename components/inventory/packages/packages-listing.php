@@ -249,9 +249,7 @@ $page_heading 	= "List of Packages / Parts";
 																<th>Package Name</br> Description</th>
 																<th>Case Pack</th>
 																<th>Avg Price</th>
- 																<th>Stock In Hand</th>
-																<th>Compatible Mandatory Products</th>
-																<th>Compatible Optional Products</th>
+ 																<th>Stock In Hand</th> 
 																<th>Action</th>';
 													echo $headings;
 													?>
@@ -272,51 +270,6 @@ $page_heading 	= "List of Packages / Parts";
 															<td><?php echo $data['case_pack']; ?></td>
 															<td><?php echo $data['avg_price']; ?></td>
 															<td><?php echo $data['stock_in_hand']; ?></td>
-															<td>
-																<?php
-																$sql_cl		= " SELECT GROUP_CONCAT('<br>', b.product_uniqueid) AS compatible_mandatory
-																				FROM product_packages a
-																				INNER JOIN products  b ON b.id = a.product_id
-																				INNER JOIN packages  c ON c.id = a.package_id
-																				WHERE a.package_id = '" . $id . "'
-																				AND FIND_IN_SET(a.product_id, c.product_ids)
-																				AND a.is_mandatory = 'Yes'
-																				GROUP BY a.is_mandatory ";
-																$result_cl2	= $db->query($conn, $sql_cl);
-																$count_cl2	= $db->counter($result_cl2);
-																if ($count_cl2 > 0) {
-																	$row_cl2 = $db->fetch($result_cl2);
-																	echo $row_cl2[0]['compatible_mandatory'];
-																} ?>
-															</td>
-															<td>
-																<?php
-																$sql_cl		= " SELECT GROUP_CONCAT('<br>', b.product_uniqueid) AS compatible_optional
-																				FROM product_packages a
-																				INNER JOIN products  b ON b.id = a.product_id
-																				INNER JOIN packages  c ON c.id = a.package_id
-																				WHERE a.package_id = '" . $id . "'
-																				AND FIND_IN_SET(a.product_id, c.product_ids)
-																				AND a.is_mandatory = 'No'
-																				GROUP BY a.is_mandatory ";
-																$result_cl2	= $db->query($conn, $sql_cl);
-																$count_cl2	= $db->counter($result_cl2);
-																if ($count_cl2 > 0) {
-																	$row_cl2 = $db->fetch($result_cl2);
-																	echo $row_cl2[0]['compatible_optional'];
-																} else {
-																	$sql_cl		= " SELECT  GROUP_CONCAT(b.product_uniqueid, '<br>') AS compatible_produccts
-																					FROM packages c
-																					INNER JOIN products b ON FIND_IN_SET(b.id, c.product_ids)
-																					WHERE c.id = '" . $id . "' ";
-																	$result_cl2	= $db->query($conn, $sql_cl);
-																	$count_cl2	= $db->counter($result_cl2);
-																	if ($count_cl2 > 0) {
-																		$row_cl2 = $db->fetch($result_cl2);
-																		echo "Compatible:<br>" . $row_cl2[0]['compatible_produccts'];
-																	}
-																} ?>
-															</td>
 															<td class="text-align-center">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>

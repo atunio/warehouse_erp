@@ -51,6 +51,9 @@ if (isset($flt_product_desc) && $flt_product_desc != "") {
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
 }
+if (isset($flt_product_model_no) && $flt_product_model_no != "") {
+	$sql_cl 	.= " AND a.product_model_no = '" . trim($flt_product_model_no) . "' ";
+}
 $sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
 $count_cl	= $db->counter($result_cl);
@@ -227,10 +230,40 @@ $page_heading 	= "List of Products";
 												</label>
 											</div>
 										</div>
-										<div class="input-field col m1 s12">
-											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
+										<div class="input-field col m2 s12 custom_margin_bottom_col">
+											<?php
+											$field_name 	= "flt_product_model_no";
+											$field_label 	= "Model#";
+											$sql1			= "SELECT DISTINCT product_model_no FROM products WHERE 1=1 AND product_model_no != '' ";
+											$result1		= $db->query($conn, $sql1);
+											$count1         = $db->counter($result1);
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">All</option>
+													<?php
+													if ($count1 > 0) {
+														$row1    = $db->fetch($result1);
+														foreach ($row1 as $data2) { ?>
+															<option value="<?php echo $data2['product_model_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_model_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_model_no']; ?></option>
+													<?php }
+													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"><?php
+																			if (isset($error[$field_name])) {
+																				echo $error[$field_name];
+																			} ?>
+													</span>
+												</label>
+											</div>
 										</div>
-										<div class="input-field col m1 s12">
+										<div class="input-field col m2 s12">
+											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
 											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
 										</div>
 									</div>

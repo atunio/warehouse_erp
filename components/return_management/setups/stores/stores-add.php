@@ -106,12 +106,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
 								</a> 
-								<?php  
+								<?php /*  
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } */?>
 							</div>
 						</div>
 					</div>

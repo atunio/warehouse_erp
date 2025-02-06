@@ -302,7 +302,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</div>
 						</div>
 						<div class="row">
-
 							<?php
 							$field_name 	= "package_desc";
 							$field_label 	= "Description";
@@ -353,6 +352,60 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								<?php } ?>
 							</div>
 						</div>
+						<?php
+						$sql_cl		= " SELECT b.product_uniqueid 
+											FROM product_packages a
+											INNER JOIN products  b ON b.id = a.product_id
+											INNER JOIN packages  c ON c.id = a.package_id
+											WHERE a.package_id = '" . $id . "'
+											AND FIND_IN_SET(a.product_id, c.product_ids)
+											AND a.is_mandatory = 'Yes'  ";
+						$result_cl2	= $db->query($conn, $sql_cl);
+						$count_cl2	= $db->counter($result_cl2);
+						if ($count_cl2 > 0) { ?>
+							<div class="row">
+								<?php
+								$row_cl2 = $db->fetch($result_cl2);
+								foreach ($row_cl2 as $data3) {
+									$compatible_mandatory = $data3['product_uniqueid']; ?>
+									<div class="input-field col m2 s12">
+										<i class="material-icons prefix">question_answer</i>
+										<input disabled type="text" value="<?php echo $compatible_mandatory; ?>">
+										<label>Compatible Mandatory </label>
+									</div>
+								<?php } ?>
+							</div>
+							<div class="row">
+								<div class="input-field col m2 s12"></div>
+							</div>
+						<?php }
+
+						$sql_cl		= " SELECT b.product_uniqueid 
+											FROM product_packages a
+											INNER JOIN products  b ON b.id = a.product_id
+											INNER JOIN packages  c ON c.id = a.package_id
+											WHERE a.package_id = '" . $id . "'
+											AND FIND_IN_SET(a.product_id, c.product_ids)
+											AND a.is_mandatory = 'No'  ";
+						$result_cl2	= $db->query($conn, $sql_cl);
+						$count_cl2	= $db->counter($result_cl2);
+						if ($count_cl2 > 0) { ?>
+							<div class="row">
+								<?php
+								$row_cl2 = $db->fetch($result_cl2);
+								foreach ($row_cl2 as $data3) {
+									$compatible_optional = $data3['product_uniqueid']; ?>
+									<div class="input-field col m2 s12">
+										<i class="material-icons prefix">question_answer</i>
+										<input disabled type="text" value="<?php echo $compatible_optional; ?>">
+										<label>Optional Mandatory </label>
+									</div>
+								<?php } ?>
+							</div>
+							<div class="row">
+								<div class="input-field col m2 s12"></div>
+							</div>
+						<?php } ?>
 
 						<div class="row">
 							<?php

@@ -142,27 +142,26 @@ if ($counter_ee1 > 0) {
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['phone_no'];
 }
-$sql_ee1 = "SELECT  a.*, c.return_no,c.po_date, c.removal_order_id, d.vender_name, d.address, d.phone_no
-			FROM  purchase_order_detail a
-			INNER JOIN purchase_orders c ON c.id = a.po_id
-			INNER JOIN venders d ON d.id = c.vender_id 
-			WHERE a.po_id = '" . $id . "'
-			GROUP BY a.po_id ";
+ $sql_ee1 = "SELECT  a.*, c.return_no,c.return_date, c.removal_order_id, d.store_name
+			FROM  return_items_detail a
+			INNER JOIN returns c ON c.id = a.return_id
+			INNER JOIN stores d ON d.id = c.store_id 
+			WHERE a.return_id = '" . $id . "'
+			GROUP BY a.id ";
+			
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
 	$row_ee11			= $db->fetch($result_ee11);
 	$return_no				= $row_ee11[0]['return_no'];
-	$po_date			= $row_ee11[0]['po_date'];
-	$vender_name		= $row_ee11[0]['vender_name'];
-	$phone_no			= $row_ee11[0]['phone_no'];
-	$address			= $row_ee11[0]['address'];
-	$po_id				= $row_ee11[0]['po_id'];
+	$po_date			= $row_ee11[0]['return_date'];
+	$store_name		= $row_ee11[0]['store_name'];
+	$return_id				= $row_ee11[0]['return_id'];
 	$removal_order_id	= $row_ee11[0]['removal_order_id'];
 
 	$report_data = '<div class="">
 						<div class="header">
-							<h1>PURCHASE ORDER DETAIL</h1><hr>
+							<h1>RETURN PURCHASE ORDER DETAIL</h1><hr>
 						</div>
 						<table border="0"> 
 							<tbody>
@@ -170,9 +169,7 @@ if ($counter_ee11 > 0) {
 									<td>
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
 									</td>
-									<td>
-										<p>' . $s_address . ', Phone: ' . $compnay_phone_no . '</p>
-									</td>
+									
 									<td width="2%"></td>
  									<td width="40%">
 										<table border="0"> 
@@ -182,11 +179,11 @@ if ($counter_ee11 > 0) {
 													<td><p>' . $return_no . '</p></td>
 												</tr> 
 												<tr>
-													<td><strong>PO Date: </strong></td>
+													<td><strong>Return Date: </strong></td>
 													<td><p>' . dateformat2($po_date) . '</p></td>
 												</tr> 
 												<tr>
-													<td><strong>Vendor Invoice#: </strong></td>
+													<td><strong>Order / Removal ID#: </strong></td>
 													<td><p>' . ($removal_order_id) . '</p></td>
 												</tr> 
 											</tbody>
@@ -199,7 +196,7 @@ if ($counter_ee11 > 0) {
 							<thead>
 								<tr>
 									<th>Bill To</th>
-									<th>Ship From</th>
+									<th>Store From</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -210,9 +207,7 @@ if ($counter_ee11 > 0) {
 									</td>
 									<td>
 										<h3></h3>
-										<p>Name : ' . $vender_name . '</p>
-										<p>Phone : ' . $phone_no . '</p>
-										<p>Address : ' . $address . '</p>
+										<p>Name : ' . $store_name . '</p>
 									</td>
 								</tr> 
 							</tbody>
@@ -231,18 +226,18 @@ if ($counter_ee11 > 0) {
 							</thead>
 							<tbody>';
 
-	$sql_sub 		= "SELECT  b1.product_id, b1.order_price, b1.product_po_desc, b1.order_qty, b1.product_condition,
+	$sql_sub 		= "SELECT  b1.product_id, b1.order_price, b1.product_po_desc, b1.return_qty, b1.product_condition,
 								c.product_uniqueid, c.product_desc, b.return_status, d.category_name, e.status_name
-						FROM purchase_orders b 
-						INNER JOIN `purchase_order_detail` b1 ON b1.po_id = b.id 
+						FROM returns b 
+						INNER JOIN `return_items_detail` b1 ON b1.return_id = b.id 
 						INNER JOIN products c ON c.id = b1.product_id
 						LEFT JOIN product_categories d ON d.id = c.product_category
 						LEFT JOIN inventory_status e ON e.id = b1.expected_status
-						WHERE b.id = '" . $po_id . "'
+						WHERE b.id = '" . $return_id . "'
 						ORDER BY b1.id"; //echo $sql_sub;die;
 	$result_sub 	= $db->query($conn, $sql_sub);
 	$counter_sub	= $db->counter($result_sub);
-	$sub_total = $total = $sum_order_qty = $sum_value = 0;
+	$sub_total = $total = $sum_return_qty = $sum_value = 0;
 	if ($counter_sub > 0) {
 		$row_sub				= $db->fetch($result_sub);
 		foreach ($row_sub as $data_sub) {
@@ -250,12 +245,12 @@ if ($counter_ee11 > 0) {
 			$product_desc			= remove_special_character($data_sub['product_desc']);
 			$category_name			= $data_sub['category_name'];
 			$order_price			= $data_sub['order_price'];
-			$order_qty				= $data_sub['order_qty'];
+			$return_qty				= $data_sub['return_qty'];
 			$status_name			= $data_sub['status_name'];
 			$product_condition		= $data_sub['product_condition'];
 			$serial_no				= "";
-			$sum_order_qty			+= $order_qty;
-			$value 					= $order_qty * $order_price;
+			$sum_return_qty			+= $return_qty;
+			$value 					= $return_qty * $order_price;
 			$sum_value			   += $value;
 			$report_data .= '
 								<tr>
@@ -264,7 +259,7 @@ if ($counter_ee11 > 0) {
 									<td>' . $product_condition . ' </td>
 									<td>' . $status_name . ' </td>
 									<td>' . number_format($order_price, 2) . '</td>
-									<td>' . $order_qty . ' </td>
+									<td>' . $return_qty . ' </td>
 									<td>' . number_format($value, 2) . '</td>
 								</tr>';
 		}
@@ -272,75 +267,12 @@ if ($counter_ee11 > 0) {
 	$report_data .= '
 									<tr> 
 										<td colspan="5"></td>
-										<td>' . $sum_order_qty . '</td>
+										<td>' . $sum_return_qty . '</td>
 										<td><b>' . number_format($sum_value, 2) . '</b></td>
 									</tr>';
 
 	$report_data .= '	</tbody>
-						</table> ';
-
-
-	
-
-	$sql_sub1 		= "	SELECT b.package_name , c.category_name , a.order_price,a.order_qty,b.case_pack
-						FROM purchase_order_packages_detail a
-						LEFT JOIN packages b ON b.id = a.package_id
-						LEFT JOIN product_categories c ON c.id = b.product_category
-						WHERE a.enabled = 1 
-						AND a.po_id = '". $po_id ."'
-						ORDER BY b.package_name, c.category_name"; //echo $sql_sub1;die;
-	$result_sub1 	= $db->query($conn, $sql_sub1);
-	$counter_sub1	= $db->counter($result_sub1);
-	$sub_total = $total = $sum_order_qty = $sum_value = 0;
-	if ($counter_sub1 > 0) {
-		$report_data .= '<table class="table1">
-						<thead>
-							<tr>
-								<th>Package / Part</th>
-								<th>Case Pack</th>
-								<th>Total Case Pack</th>
-								<th>Qty</th>
-								<th>Price</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody>';
-		$row_sub1				= $db->fetch($result_sub1);
-		foreach ($row_sub1 as $data_sub1) {
-			$package_name			= $data_sub1['package_name'];
-			$category_name			= $data_sub1['category_name'];
-			$order_price			= $data_sub1['order_price'];
-			$order_qty				= $data_sub1['order_qty'];
-			$case_pack				= $data_sub1['case_pack'];
-			$tota_case_pack         = 0;
-			if($order_qty > 0 && $case_pack > 0){
-				$tota_case_pack   = ($order_qty / $case_pack);
-			}
-			$sum_order_qty			+= $order_qty;
-			$value 					= $order_qty * $order_price;
-			$sum_value			   += $value;
-			$report_data .= '
-								<tr>
-									<td>' . $package_name . ' (' . $category_name . ') </td>
-									<td>' . ($case_pack) . '</td>
-									<td>' . ceil($tota_case_pack) . '</td>
-									<td>' . $order_qty . ' </td>
-									<td>' . number_format($order_price, 2) . '</td>
-									<td>' . number_format($value, 2) . '</td>
-								</tr>';
-		}
-		$report_data .= '
-									<tr> 
-										<td colspan="3"></td> 
-										<td>' . $sum_order_qty . '</td>
-										<td></td>
-										<td><b>' . number_format($sum_value, 2) . '</b></td>
-									</tr>
-									</tbody>
-								</table>';
-	}
-	
-
+					</table> '; 
 	$report_data .= '
 					</div>';
 	$report_data = $report_data . $css;

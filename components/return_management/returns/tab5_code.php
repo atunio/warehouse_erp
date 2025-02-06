@@ -156,6 +156,8 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 }
 
 if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
+
+
 	extract($_POST);
 
 	if (!isset($serial_no_barcode) || (isset($serial_no_barcode)  && ($serial_no_barcode == "0" || $serial_no_barcode == ""))) {
@@ -195,7 +197,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$product_uniqueid_main1 = "";
 				$package_id1 = $package_material_qty1 = $package_material_qty_received1 = 0;
 
-				$sql_pd3		= "	SELECT a.product_id, a.product_condition, c.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,a.expected_status
+				$sql_pd3		= "	SELECT a.product_id, a.product_condition, c.product_uniqueid, a.order_price,a.expected_status
 									FROM return_items_detail a 
 									INNER JOIN products c ON c.id = a.product_id
 									INNER JOIN returns a2 ON a2.id = a.return_id
@@ -210,7 +212,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 					$c_product_id2 					= $row_pd3[0]['product_id'];
 					$c_product_condition2 			= $row_pd3[0]['product_condition'];
 					$c_expected_status2     		= $row_pd3[0]['expected_status'];
-
+//a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, 
 					$sql6 = "INSERT INTO return_items_detail_receive(base_product_id, ro_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
 							VALUES('" . $product_uniqueid_main1 . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
@@ -219,7 +221,6 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						$receive_id = mysqli_insert_id($conn);
 						/////////////////////////// Create Stock  START /////////////////////////////
 
-						if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
 							$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
 									 VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 							$db->query($conn, $sql6);
@@ -244,13 +245,13 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 																					update_from_module_id	= '" . $module_id . "'
 										WHERE id = '" . $receive_id . "' ";
 							$db->query($conn, $sql_c_up);
-						}
+						
 
 						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
 						update_po_status($db, $conn, $id, $receive_status_dynamic);
 
 						/////////////////////////// Create Stock  END /////////////////////////////
-						$msg5['msg_success']	= "Product with barcode has been received successfully.";
+						$msg5['msg_success']	= "Return Product with barcode has been received successfully.";
 						$serial_no_barcode		=  "";
 						// $serial_no_barcode	= $sub_location_id_barcode = "";
 					}

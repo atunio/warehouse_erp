@@ -650,7 +650,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								</button>
 							</div>
 						<?php } ?>
-						<h4 class="card-title">Update Info</h4><br>
+						<h4 class="card-title">Update Info if Defective</h4><br>
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2" value="Y" />
 							<div class="row">
@@ -837,9 +837,10 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
- 														WHERE a.enabled = 1 
+ 														WHERE a.enabled = 1
 														AND a1.p_total_stock > 0
-														AND a1.sub_location = '" . $id . "' 
+														AND a1.p_inventory_status = 5
+														AND a1.sub_location = '" . $id . "'
 														AND a1.is_move_finale = 0
 														ORDER BY b.category_name, a.product_uniqueid  "; //echo $sql1;
 									// AND a1.is_processed = 0
@@ -941,7 +942,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 									<div class="input-field col m4 s12">
 										<?php
 										$field_name 	= "package_id" . $k;
-										$field_label	= "Packaging Material / Part "  . $k;
+										$field_label	= "Packaging Material / Part  "  . $k;
 										?>
 										<i class="material-icons prefix">subtitles</i>
 										<div class="select2div">
@@ -957,7 +958,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																		INNER JOIN packages d ON d.id = a.package_id
 																		INNER JOIN product_categories e ON e.id = d.product_category
 																		WHERE c.id = '" . $stock_id . "'
-																		AND d.stock_in_hand >0
+																		AND d.stock_in_hand > 0
 																		ORDER BY a.is_mandatory DESC, d.package_name ";
 													$result1 		= $db->query($conn, $sql1);
 													$count1 		= $db->counter($result1);

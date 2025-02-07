@@ -28,15 +28,15 @@
                 <span> Arrival
                     <?php
                     $sql2                = "SELECT a.*
-                                            FROM purchase_order_detail_logistics a
-                                            WHERE a.po_id = '" . $id . "'";
+                                            FROM return_order_detail_logistics a
+                                            WHERE a.return_id = '" . $id . "'";
                     $result2            = $db->query($conn, $sql2);
                     $total_logistics    = $db->counter($result2);
 
                     $j              = 0;
                     $sql3           = " SELECT a.*
-                                        FROM purchase_order_detail_logistics a
-                                        WHERE a.po_id = '" . $id . "'
+                                        FROM return_order_detail_logistics a
+                                        WHERE a.return_id = '" . $id . "'
                                         AND arrived_date IS NOT NULL ";
                     $result3        = $db->query($conn, $sql3);
                     $total_arrived  = $db->counter($result3);
@@ -60,9 +60,9 @@
                 <span>Receive
                     <?php
                     $total_items_ordered = 0;
-                    $sql2       = " SELECT sum(a.order_qty) as order_qty
-                                    FROM purchase_order_detail a
-                                    WHERE a.po_id = '" . $id . "'
+                    $sql2       = " SELECT sum(a.return_qty) as order_qty
+                                    FROM return_items_detail a
+                                    WHERE a.return_id = '" . $id . "'
                                     AND a.enabled = 1 ";
                     $result_r2    = $db->query($conn, $sql2);
                     $count2     = $db->counter($result_r2);
@@ -73,9 +73,9 @@
 
                     $j = 0;
                     $sql3               = "SELECT a.id
-                                            FROM purchase_order_detail_receive a
-                                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-                                            WHERE b.po_id = '" . $id . "'
+                                            FROM return_items_detail_receive a
+                                            INNER JOIN return_items_detail b ON b.id = a.ro_detail_id 
+                                            WHERE b.return_id = '" . $id . "'
                                             AND a.enabled = 1 ";
                     $result3            = $db->query($conn, $sql3);
                     $total_received     = $db->counter($result3);
@@ -100,9 +100,9 @@
                     <?php
                     $j = 0;
                     $sql3               = "SELECT a.id
-                                            FROM purchase_order_detail_receive a
-                                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-                                            WHERE b.po_id = '" . $id . "'
+                                            FROM return_items_detail_receive a
+                                            INNER JOIN return_items_detail b ON b.id = a.ro_detail_id 
+                                            WHERE b.return_id = '" . $id . "'
                                             AND a.serial_no_barcode IS NOT NULL
                                             AND a.serial_no_barcode !=''
                                             AND a.is_diagnost = 1

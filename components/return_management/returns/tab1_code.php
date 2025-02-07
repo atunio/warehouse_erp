@@ -6,7 +6,7 @@ if (!isset($module)) {
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$store_id					= "1";
 	$return_date				= date('d/m/Y');
-	$po_desc					= "purchase order desc : " . date('YmdHis');
+	$internal_note					= "purchase order desc : " . date('YmdHis');
 	$removal_order_id			= date('YmdHis');
 	$return_type				= "Shipstation";
 	$return_status = 1;
@@ -177,8 +177,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												return_date					= '" . $return_date1 . "',
 												removal_order_id			= '" . $removal_order_id . "', 
 												return_type					= '" . $return_type . "',  
-												internal_note					= '" . $po_desc . "',  
-												public_note					= '" . $po_desc_public . "',  
+												internal_note					= '" . $internal_note . "',  
+												public_note					= '" . $public_note . "',  
 
   												update_date					= '" . $add_date . "',
 												update_by					= '" . $_SESSION['username'] . "',

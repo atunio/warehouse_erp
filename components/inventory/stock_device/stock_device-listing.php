@@ -256,7 +256,7 @@ $page_heading 	= "Stock Summary";
 											<?php
 											$field_name 	= "flt_product_category";
 											$field_label 	= "Category";
-											$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
+											$sql1 			= "SELECT id, category_name FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
 											$result1 		= $db->query($conn, $sql1);
 											$count1 		= $db->counter($result1);
 											?>

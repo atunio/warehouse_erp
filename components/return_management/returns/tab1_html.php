@@ -378,7 +378,7 @@
                             <div class="row">
                                 <div class="input-field col m6 s12">
                                     <?php
-                                    $field_name     = "po_desc";
+                                    $field_name     = "internal_note";
                                     $field_label     = "Private Note";
                                     ?>
                                     <i class="material-icons prefix">description</i>
@@ -397,7 +397,7 @@
                                 </div>
                                 <div class="input-field col m6 s12">
                                     <?php
-                                    $field_name     = "po_desc_public";
+                                    $field_name     = "public_note";
                                     $field_label     = "Public Note";
                                     ?>
                                     <i class="material-icons prefix">description</i>

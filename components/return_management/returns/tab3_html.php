@@ -79,7 +79,7 @@
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m4 s12">
-                            <h5> Return Logistics Detail</h5>
+                            <h5>Logistics Detail</h5>
                         </div>
                         <?php
                         if (isset($cmd3) &&  $cmd3 == "add" && isset($detail_id) && $detail_id != "") {  ?>
@@ -104,8 +104,8 @@
                                                                 <span></span>
                                                             </label>
                                                         </th> 
-                                                        <th>Return Tracking#</th>
-                                                        <th>TotalReturn Boxes</th>
+                                                        <th>Tracking#</th>
+                                                        <th>Total Boxes</th>
                                                         <th>Courier</th>
                                                         <th>Return Status</th>
                                                         <th>Return Arrived Date</th>
@@ -124,14 +124,14 @@
                                             $detail_id2 = $data['id'];
 
                                             $sql_pd1                = "	SELECT a.*
-                                                                        FROM purchase_order_detail_receive a
+                                                                        FROM return_items_detail_receive a
                                                                         WHERE a.logistic_id = '" . $detail_id2 . "' ";
                                             $result_pd1             = $db->query($conn, $sql_pd1);
                                             $is_logistic_received   = $db->counter($result_pd1);
 
                                             $sql_pd1                = "	SELECT a.*
-                                                                        FROM purchase_order_detail_receive a
-                                                                        INNER JOIN return_items_detail b ON b.id = a.po_detail_id
+                                                                        FROM return_items_detail_receive a
+                                                                        INNER JOIN return_items_detail b ON b.id = a.ro_detail_id
                                                                         WHERE b.return_id = '" . $id . "' ";
                                             $result_pd1             = $db->query($conn, $sql_pd1);
                                             $is_po_item_received    = $db->counter($result_pd1); ?>

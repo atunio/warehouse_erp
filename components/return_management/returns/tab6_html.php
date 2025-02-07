@@ -60,7 +60,8 @@
             </div>
         </div>
         <?php
-    } else {
+    }
+     else {
         $td_padding = "padding:5px 15px !important;";
 
         $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
@@ -951,7 +952,7 @@
                                             i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
                                             b.order_price, h.status_name, c.product_category 
                                     FROM return_items_detail_receive a
-                                    INNER JOIN return_items_detail b ON b.id = a.return_id
+                                    INNER JOIN return_items_detail b ON b.id = a.ro_detail_id
                                     INNER JOIN returns b1 ON b1.id = b.return_id
                                     INNER JOIN products c ON c.id = b.product_id
                                     LEFT JOIN product_categories d ON d.id =c.product_category
@@ -962,26 +963,8 @@
                                     WHERE a.enabled = 1
                                     AND b.return_id = '" . $id . "'
                                     AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
-
-                                    UNION ALL
-
-                                    SELECT 'CateogryReceived' AS record_type, COUNT(a.id) AS total_qty_received, 
-                                        a.*, '' AS product_uniqueid, '' AS product_desc, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
-                                        i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
-                                        '' as order_price, h.status_name, a.recevied_product_category as product_category
-                                    FROM return_items_detail_receive a 
-                                    INNER JOIN returns b1 ON b1.id = a.return_id
-                                    INNER JOIN product_categories d ON d.id = a.recevied_product_category  
-                                    LEFT JOIN users e ON e.id = a.add_by_user_id
-                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
-                                    LEFT JOIN inventory_status h ON h.id = a.inventory_status
-                                    LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
-                                    WHERE a.return_id = '" . $id . "'
-                                    AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
-                                    GROUP BY a.recevied_product_category
                                 ) AS t1
-                                ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
+                                ORDER BY record_type, product_category, sub_location_id, serial_no_barcode "; //echo $sql;
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
             if ($count_log > 0) { ?>
@@ -1025,7 +1008,6 @@
                                                 $headings = '<th class="sno_width_60">S.No</th>
                                                             <th class="sno_width_60"></th>
                                                             <th>Product Detail</th>
-                                                            <th>Qty</th>
                                                             <th>Serial#</th>   
                                                             <th>Specification</th>
                                                              <th>Grading</th> 
@@ -1094,7 +1076,6 @@
                                                                 echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>"><?php echo "" . $data['total_qty_received']; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
                                                             $color          = "purple";

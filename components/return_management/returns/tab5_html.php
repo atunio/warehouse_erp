@@ -132,15 +132,14 @@
                                  <div class="input-field col m12 s12"> </div>
                              </div>
                              <?php
-                                $sql_r1     = "	SELECT c.product_category, d.category_name, sum(a.return_qty) as order_qty
+                                $sql_r1     = "	SELECT a.id, c.product_uniqueid, c.product_desc, c.product_category, d.category_name, a.return_qty AS order_qty
                                                 FROM return_items_detail a 
                                                 INNER JOIN returns b ON b.id = a.return_id
                                                 INNER JOIN products c ON c.id = a.product_id
                                                 INNER JOIN product_categories d ON d.id = c.product_category
                                                 WHERE 1=1 
                                                 AND a.return_id = '" . $id . "' 
-                                                GROUP BY d.category_name
-                                                ORDER BY d.category_name"; //echo $sql_cl;
+                                                 ORDER BY d.category_name, c.product_uniqueid"; //echo $sql_cl; die;
                                 $result_r1  = $db->query($conn, $sql_r1);
                                 $count_r1   = $db->counter($result_r1);
                                 if ($count_r1 > 0) { ?>
@@ -150,10 +149,12 @@
                                              <thead>
                                                  <tr>
                                                      <?php
-                                                        $headings = '<th>Retrun Product Category</th>
+                                                        $headings = '<th>Category</th>
+                                                                    <th>Product ID</th>
+                                                                    <th>Description</th>
                                                                     <th>Expected Receive</th>
                                                                     <th>Total Received Yet</th>
-                                                                    <th>Return Receiving Qty <span class="color-red">*</span> </th>
+                                                                    <th>Receiving Qty <span class="color-red">*</span> </th>
                                                                     <th>Location <span class="color-red">*</span></th>';
                                                         echo $headings; ?>
                                                  </tr>
@@ -164,27 +165,29 @@
                                                     if ($count_r1 > 0) {
                                                         $row_cl_r1 = $db->fetch($result_r1);
                                                         foreach ($row_cl_r1 as $data_r1) {
-                                                            $detail_id_r1       = $data_r1['product_category'];
+                                                            $detail_id_r1       = $data_r1['id'];
                                                             $order_qty          = $data_r1['order_qty'];
                                                             $sql_rc1            = "	SELECT a.*
                                                                                     FROM return_items_detail_receive a 
                                                                                     INNER JOIN  return_items_detail b  ON a.ro_detail_id = b.id
                                                                                     INNER JOIN products c ON c.id = b.product_id
                                                                                     WHERE 1=1 
-                                                                                    AND c.product_category =  '" . $detail_id_r1 . "'
+                                                                                    AND a.ro_detail_id =  '" . $detail_id_r1 . "'
                                                                                     AND b.return_id = '" . $id . "' 
                                                                                     AND a.enabled = 1 "; //echo $sql_rc1;
                                                             $result_rc1         = $db->query($conn, $sql_rc1);
                                                             $total_received_qty = $db->counter($result_rc1);  ?>
                                                          <tr>
                                                              <td style="width: 400px;">
-                                                                 <?php
-                                                                    if ($data_r1['category_name'] != '') {
-                                                                        echo "" . $data_r1['category_name'] . "";
-                                                                    } else {
-                                                                        echo "No Category";
-                                                                    } ?>
+                                                                <?php
+                                                                if ($data_r1['category_name'] != '') {
+                                                                    echo "" . $data_r1['category_name'] . "";
+                                                                } else {
+                                                                    echo "No Category";
+                                                                } ?>
                                                              </td>
+                                                             <td style="width: 400px;"><?php echo $data_r1['product_uniqueid'];?></td>
+                                                             <td style="width: 400px;"><?php echo $data_r1['product_desc'];?></td>
                                                              <td style="width: 150px; text-align: center;"><?php echo $order_qty; ?></td>
                                                              <td style="width: 180px; text-align: center;"><?php echo $total_received_qty; ?></td>
                                                              <td style="width: 150px;">
@@ -488,9 +491,9 @@
                      <div class="row">
                          <table class="bordered">
                              <tr>
-                                 <th>Return Category</th>
-                                 <th>Retun Location</th>
-                                 <th>Return Qty</th>
+                                 <th> Category</th>
+                                 <th> Location</th>
+                                 <th> Qty</th>
                                  <th>Actions</th>
                              </tr>
                              <?php

@@ -18,7 +18,7 @@ $return_no = $removal_order_id= $vender_name = "";
 
 if (isset($id) && $id > 0) {
 	$sql_ee 		= " SELECT a.*, b.vender_name
-						FROM purchase_orders a 
+						FROM returns a 
 						LEFT JOIN venders b ON b.id = a.vender_id
 						WHERE a.id = '" . $id . "' ";
 	$result_ee		= $db->query($conn, $sql_ee);
@@ -87,7 +87,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 
-$master_table	= "purchase_order_detail_receive";
+$master_table	= "return_items_detail_receive";
 $added 			= 0;
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
@@ -183,7 +183,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if (isset($receive_id_1) && $receive_id_1 > 0) {
 								if ($data1['serial'] != '' && $data1['serial'] != NULL && $data1['serial'] != '-' && $data1['serial'] != 'blank') {
 									$sql_pd04 		= "	SELECT a.* 
-														FROM purchase_order_detail_receive a 
+														FROM return_items_detail_receive a 
 														WHERE a.enabled = 1
 														AND a.serial_no_barcode = '" . $data1['serial'] . "'
 														AND id != '" . $receive_id_1 . "' ";
@@ -250,7 +250,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												} else if ($key == 'serial_no_barcode') {
 													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 														$sql_pd04 		= "	SELECT a.* 
-																				FROM purchase_order_detail_receive a 
+																				FROM return_items_detail_receive a 
 																				WHERE a.enabled = 1 
 																				AND a.serial_no_barcode = '" . ${$insert_db_field_id} . "' ";
 														$result_pd04	= $db->query($conn, $sql_pd04);

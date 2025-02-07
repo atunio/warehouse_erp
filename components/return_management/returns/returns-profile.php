@@ -41,7 +41,7 @@ $user_id 				= $_SESSION["user_id"];
 // 	echo redirect_to_page("?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id));
 // }
 if (isset($cmd3) && $cmd3 == 'disabled') {
-	$sql_c_upd = "UPDATE purchase_order_detail set 	enabled = 0,
+	$sql_c_upd = "UPDATE return_items_detail set 	enabled = 0,
 													update_date = '" . $add_date . "' ,
 													update_by 	= '" . $_SESSION['username'] . "' ,
 													update_ip 	= '" . $add_ip . "'
@@ -54,7 +54,7 @@ if (isset($cmd3) && $cmd3 == 'disabled') {
 	}
 }
 if (isset($cmd3) && $cmd3 == 'enabled') {
-	$sql_c_upd = "UPDATE purchase_order_detail set 	enabled 	= 1,
+	$sql_c_upd = "UPDATE return_items_detail set 	enabled 	= 1,
 													update_date = '" . $add_date . "' ,
 													update_by 	= '" . $_SESSION['username'] . "' ,
 													update_ip 	= '" . $add_ip . "'
@@ -555,9 +555,8 @@ $general_heading = "Return"; ?>
 							include('tab1_html.php'); 
 							include('tab2_html.php');
 							include('tab3_html.php');
-							include('tab4_html.php');
 							include('tab5_html.php'); 
-							 include('tab6_html.php'); ?>
+							include('tab6_html.php'); ?>
 						</div>
 					</div>
 				</section>

@@ -122,9 +122,10 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				if (access("add_perm") == 0) {
 					$error2['msg'] = "You do not have add permissions.";
 				} else {
-					$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-					$ok = $db->query($conn, $sql6);
+				 	$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, logistics_cost , tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
+							 VALUES('" . $id . "', '" . $courier_name . "', '" . $logistics_cost . "',  '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					
+					 $ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$tracking_no	= "";
 						$no_of_boxes 	= 1;
@@ -145,13 +146,14 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 			if ($k > 0) {
 
-				$sql_c_up = "UPDATE  returns SET 	return_status	= '" . $logistic_status_dynamic . "',
+		 		$sql_c_up = "UPDATE  returns SET 	return_status	= '" . $logistic_status_dynamic . "',
 													logistics_cost	= '" . $logistics_cost . "',
 													update_timezone	= '" . $timezone . "',
 													update_date		= '" . $add_date . "',
 													update_by		= '" . $_SESSION['username'] . "',
 													update_ip		= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
+					
 				$db->query($conn, $sql_c_up);
 
 				if (isset($msg2['msg_success'])) {

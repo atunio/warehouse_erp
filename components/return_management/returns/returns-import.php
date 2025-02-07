@@ -67,8 +67,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 
-$master_table	= "purchase_orders";
-$detail_table	= "purchase_order_detail";
+$master_table	= "returns";
+$detail_table	= "return_items_detail";
 $added 			= 0;
 
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {

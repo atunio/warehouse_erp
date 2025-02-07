@@ -59,101 +59,6 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 		}
 	}
 }
-if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
-	extract($_POST);
-	if (!isset($receiving_location2) || (isset($receiving_location2)  && sizeof($receiving_location2) == "0")) {
-		$error5['receiving_location2'] = "Required";
-	} else {
-		$receiving_location_error = 1;
-		foreach ($receiving_location2 as $data_r1) {
-			if ($data_r1 > 0) {
-				$receiving_location_error = 0;
-			}
-		}
-		if ($receiving_location_error == 1) {
-			$error5['receiving_location2'] = "Required";
-		}
-	}
-	if (!isset($receiving_qties2) || (isset($receiving_qties2)  && sizeof($receiving_qties2) == "0")) {
-		$error5['receiving_qties2'] = "Required";
-	} else {
-		$receiving_qty_error = 1;
-		foreach ($receiving_qties2 as $data_r1) {
-			if ($data_r1 > 0) {
-				$receiving_qty_error = 0;
-			}
-		}
-		if ($receiving_qty_error == 1) {
-			$error5['receiving_qties2'] = "Required";
-		}
-	}
-	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
-		$error5['msg'] = "Please add master record first";
-	}
-	if (empty($error5)) {
-		if (po_permisions("Receive") == 0) {
-			$error5['msg'] = "You do not have add permissions.";
-		} else {
-			$k = 0;
-
-			$sql_ee1 = " SELECT a.* FROM return_items_detail_receive_package_material a 
-						 WHERE a.duplication_check_token = '" . $duplication_check_token . "' ";
-			// echo $sql_ee1;
-			$result_ee1 	= $db->query($conn, $sql_ee1);
-			$counter_ee1	= $db->counter($result_ee1);
-			if ($counter_ee1 == 0) {
-				foreach ($receiving_qties2 as $key => $receiving_qty) {
-					if ($receiving_qty > 0) {
-
-						$sql_ee12 = " SELECT a.* FROM return_items_detail_receive_package_material a 
-									WHERE a.ro_detail_id = '" . $key . "' ";
-						// echo $sql_ee1;
-						$result_ee12 	= $db->query($conn, $sql_ee12);
-						$counter_ee12	= $db->counter($result_ee12);
-						if ($counter_ee12 > 0) {
-							$sql_c_del = "DELETE FROM return_items_detail_receive_package_material WHERE ro_detail_id = '" . $key . "' ";
-							$db->query($conn, $sql_c_del);
-
-							$sql_c_up = "	UPDATE purchase_order_packages_detail a
-											INNER JOIN packages b ON b.id = a.package_id
-											SET b.stock_in_hand = (b.stock_in_hand-" . $previous_receiving_qties2[$key] . "),
-												b.avg_price = (b.stock_in_hand*b.avg_price - $previous_receiving_qties2[$key]*a.order_price)/(b.stock_in_hand-$previous_receiving_qties2[$key])
-											WHERE a.id = '" . $key . "' ";
-							$db->query($conn, $sql_c_up);
-						}
-
-						for ($m = 0; $m < $receiving_qty; $m++) {
-							$receiving_location_add = $receiving_location2[$key];
-							$sql6 = "INSERT INTO return_items_detail_receive_package_material(ro_detail_id, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-									VALUES('" . $key . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-							$ok = $db->query($conn, $sql6);
-							if ($ok) {
-								$k++;
-
-								$sql_c_up = "	UPDATE purchase_order_packages_detail a
-												INNER JOIN packages b ON b.id = a.package_id
-
-												SET b.stock_in_hand = (b.stock_in_hand+1),
-													b.avg_price = ((b.stock_in_hand*b.avg_price)+(a.order_price))/(b.stock_in_hand+1)
-												WHERE a.id = '" . $key . "' ";
-								$db->query($conn, $sql_c_up);
-							}
-						}
-					}
-				}
-				if ($k > 0) {
-					$msg5['msg_success'] = "Package Materials have been received successfully.";
-					unset($receiving_qties2);
-					unset($receiving_location2);
-				}
-			} else {
-				$error5['msg'] = "The record is already exist";
-			}
-		}
-	} else {
-		$error5['msg'] = "Please check Error in form.";
-	}
-}
 
 if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
@@ -174,21 +79,13 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 			$error5['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
-		/* 	$sql_ee1 = "SELECT a.* FROM return_items_detail_receive a 
+			$sql_ee1 = "SELECT a.* FROM return_items_detail_receive a 
 						INNER JOIN return_items_detail b ON b.id = a.ro_detail_id
 						WHERE a.enabled = 1 
 						AND ( 
 								b.return_id = '" . $id . "'
 								AND a.serial_no_barcode = '" . $serial_no_barcode . "'
-							) "; */
-
-							$sql_ee1 = "SELECT a.* FROM return_items_detail_receive a 
-							INNER JOIN return_items_detail b ON b.id = a.ro_detail_id
-							WHERE a.enabled = 1 
-							AND ( 
-									b.return_id = '" . $id . "'
-									AND a.serial_no_barcode = '" . $serial_no_barcode . "'
-								) ";
+							) ";
 			// echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
@@ -212,8 +109,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 					$c_product_id2 					= $row_pd3[0]['product_id'];
 					$c_product_condition2 			= $row_pd3[0]['product_condition'];
 					$c_expected_status2     		= $row_pd3[0]['expected_status'];
-//a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, 
-					$sql6 = "INSERT INTO return_items_detail_receive(base_product_id, ro_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+ 					$sql6 = "INSERT INTO return_items_detail_receive(base_product_id, ro_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
 							VALUES('" . $product_uniqueid_main1 . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
@@ -322,8 +218,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 												FROM return_items_detail a
 												INNER JOIN products b ON b.id = a.product_id
 												INNER JOIN returns a2 ON a2.id = a.return_id
-												WHERE b.product_category 	= '" . $recevied_product_category . "' 
-												AND a.return_id 				= '" . $id . "' ";
+												WHERE a.id				= '" . $recevied_product_category . "' 
+												AND a.return_id			= '" . $id . "' ";
 						$result_pd3		= $db->query($conn, $sql_pd3);
 						$count_pd3		= $db->counter($result_pd3);
 						if ($count_pd3 > 0) {
@@ -348,8 +244,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 								for ($m = 0; $m < $allocated_qty; $m++) {
 									$receiving_location_add = $receiving_location[$key];
-									$sql6 = "INSERT INTO return_items_detail_receive(return_id, base_product_id, recevied_product_category, ro_detail_id, receive_type, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-											 VALUES('" . $id . "', '" . $product_uniqueid_main1 . "', '" . $recevied_product_category . "',  '" . $ro_detail_id . "', 'CateogryReceived', '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+									$sql6 = "INSERT INTO return_items_detail_receive(return_id, base_product_id, ro_detail_id, receive_type, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+											 VALUES('" . $id . "', '" . $product_uniqueid_main1 . "',  '" . $ro_detail_id . "', 'ProductReceived', '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 										$receive_id = mysqli_insert_id($conn);

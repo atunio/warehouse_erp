@@ -1896,3 +1896,32 @@ function get_status_name($db, $conn, $status_id)
 	}
 	return $status_name;
 }
+
+function update_ro_status($db, $conn, $po_id, $order_status)
+{
+	$add_ip		= $_SERVER['REMOTE_ADDR'];
+	$add_date	= date("Y-m-d H:i:s");
+	$timezone	= TIME_ZONE;
+	$sql_c_up 	= "UPDATE  returns SET	return_status		= '" . $order_status . "',
+										update_timezone		= '" . $timezone . "',
+										update_date			= '" . $add_date . "',
+										update_by_user_id	= '" . $_SESSION['user_id'] . "',
+										update_by			= '" . $_SESSION['username'] . "',
+										update_ip			= '" . $add_ip . "'
+					WHERE id = '" . $po_id . "' ";
+	$db->query($conn, $sql_c_up);
+}
+function update_ro_detail_status($db, $conn, $po_detail_id, $order_product_status)
+{
+	$add_ip		= $_SERVER['REMOTE_ADDR'];
+	$add_date	= date("Y-m-d H:i:s");
+	$timezone	= TIME_ZONE;
+	$sql_c_up = "UPDATE  return_items_detail SET 	return_status_item		= '" . $order_product_status . "',
+													update_timezone			= '" . $timezone . "',
+													update_date				= '" . $add_date . "',
+													update_by				= '" . $_SESSION['username'] . "',
+													update_by_user_id		= '" . $_SESSION['user_id'] . "',
+													update_ip				= '" . $add_ip . "'
+				WHERE id = '" . $po_detail_id . "' ";
+	$db->query($conn, $sql_c_up);
+}

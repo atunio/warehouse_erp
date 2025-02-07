@@ -161,7 +161,7 @@ if ($counter_ee11 > 0) {
 
 	$report_data = '<div class="">
 						<div class="header">
-							<h1>RETURN PURCHASE ORDER DETAIL</h1><hr>
+							<h1>RETURN ORDER DETAIL</h1><hr>
 						</div>
 						<table border="0"> 
 							<tbody>
@@ -195,7 +195,7 @@ if ($counter_ee11 > 0) {
 						<table class="table"> 
 							<thead>
 								<tr>
-									<th>Bill To</th>
+									<th>To</th>
 									<th>Store From</th>
 								</tr>
 							</thead>
@@ -217,11 +217,9 @@ if ($counter_ee11 > 0) {
 								<tr>
 									<th>Product ID</th>
 									<th>Description</th>
-									<th>Condition</th>
 									<th>Status</th>
-									<th>Price</th>
+								
 									<th>Qty</th>
-									<th>Value</th>
 								</tr>
 							</thead>
 							<tbody>';
@@ -256,19 +254,16 @@ if ($counter_ee11 > 0) {
 								<tr>
 									<td>' . $product_uniqueid . '</td>
 									<td>' . $product_desc . ' (' . $category_name . ') </td>
-									<td>' . $product_condition . ' </td>
 									<td>' . $status_name . ' </td>
-									<td>' . number_format($order_price, 2) . '</td>
 									<td>' . $return_qty . ' </td>
-									<td>' . number_format($value, 2) . '</td>
 								</tr>';
 		}
 	}
 	$report_data .= '
 									<tr> 
-										<td colspan="5"></td>
+										<td colspan="3"></td>
 										<td>' . $sum_return_qty . '</td>
-										<td><b>' . number_format($sum_value, 2) . '</b></td>
+									
 									</tr>';
 
 	$report_data .= '	</tbody>

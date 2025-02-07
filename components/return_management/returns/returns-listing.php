@@ -16,7 +16,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 
 else {
 	if (isset($cmd) && $cmd == 'disabled') {
-		$sql_c_upd = "UPDATE purchase_orders set enabled = 0,
+		$sql_c_upd = "UPDATE returns set enabled = 0,
 												update_date = '" . $add_date . "' ,
 												update_by 	= '" . $_SESSION['username'] . "' ,
 												update_ip 	= '" . $add_ip . "'
@@ -30,7 +30,7 @@ else {
 	}
 	
 	if (isset($cmd) && $cmd == 'enabled') {
-		$sql_c_upd = "UPDATE purchase_orders set 	enabled 	= 1,
+		$sql_c_upd = "UPDATE returns set 	enabled 	= 1,
 											update_date = '" . $add_date . "' ,
 											update_by 	= '" . $_SESSION['username'] . "' ,
 											update_ip 	= '" . $add_ip . "'

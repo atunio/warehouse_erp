@@ -233,7 +233,7 @@
     $td_padding = "padding:5px 15px !important;";
 
     if (isset($id)) {
-        $sql             = " SELECT a.*, c.status_name, d.logistics_cost
+        $sql             = " SELECT a.*, c.status_name, a.logistics_cost
                             FROM return_order_detail_logistics a
  						    LEFT JOIN inventory_status c ON c.id = a.logistics_status
  						    INNER JOIN returns d ON d.id = a.return_id
@@ -299,7 +299,7 @@
                                                             <span></span>
                                                         </label>
                                                     <?php
-                                                    } ?>
+                                                    } ?>  
                                                 </td>
                                                 <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
                                                 <td style="text-align: right;<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>

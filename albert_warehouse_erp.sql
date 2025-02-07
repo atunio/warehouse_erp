@@ -1754,8 +1754,9 @@ CREATE TABLE `package_materials_order_detail` (
   `po_id` int(11) DEFAULT 0,
   `offer_detail_id` int(11) DEFAULT 0,
   `package_id` int(11) DEFAULT 0,
-  `order_qty` int(11) DEFAULT NULL,
+  `order_qty` int(10) DEFAULT 0,
   `order_price` double DEFAULT NULL,
+  `order_case_pack` int(10) DEFAULT 0,
   `product_po_desc` text DEFAULT NULL,
   `order_product_status` int(11) DEFAULT 1,
   `edit_lock` smallint(1) DEFAULT 0,
@@ -1773,9 +1774,16 @@ CREATE TABLE `package_materials_order_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail` */
+
+insert  into `package_materials_order_detail`(`id`,`po_id`,`offer_detail_id`,`package_id`,`order_qty`,`order_price`,`order_case_pack`,`product_po_desc`,`order_product_status`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(2,1,0,2,5,10,0,'',10,0,'2025-02-07 20:41:43','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 20:41:48','admin_albert',1,'::1','Asia/Karachi',34,1),
+(3,1,0,1,2,51,0,'',10,0,'2025-02-07 20:41:43','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 20:41:48','admin_albert',1,'::1','Asia/Karachi',34,1),
+(7,2,0,1,100,100,50,'',10,0,'2025-02-07 22:29:36','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 22:47:09','admin_albert',1,'::1','Asia/Karachi',34,1),
+(8,2,0,2,1000,0,20,'',1,0,'2025-02-07 22:29:36','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 22:47:05','admin_albert',1,'::1','Asia/Karachi',34,1),
+(9,2,0,65,10,100,2,'',1,0,'2025-02-07 22:29:36','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 22:47:05','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_materials_order_detail_logistics` */
 
@@ -1784,6 +1792,7 @@ DROP TABLE IF EXISTS `package_materials_order_detail_logistics`;
 CREATE TABLE `package_materials_order_detail_logistics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `po_id` int(11) DEFAULT 0,
+  `po_detail_id` int(11) DEFAULT 0,
   `courier_name` varchar(255) DEFAULT NULL,
   `tracking_no` varchar(255) DEFAULT NULL,
   `shipment_date` date DEFAULT NULL,
@@ -1812,9 +1821,12 @@ CREATE TABLE `package_materials_order_detail_logistics` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail_logistics` */
+
+insert  into `package_materials_order_detail_logistics`(`id`,`po_id`,`po_detail_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`no_of_boxes`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(8,2,7,'','20250207224705','0000-00-00','0000-00-00',NULL,10,NULL,NULL,NULL,NULL,50,0,1,0,'2025-02-07 22:47:09','admin_albert',NULL,'::1','Asia/Karachi',34,'2025-02-07 22:47:40','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_materials_order_detail_receive` */
 
@@ -1913,9 +1925,13 @@ CREATE TABLE `package_materials_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_orders` */
+
+insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`logistics_cost`,`sub_user_id`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'PPO1','20250207203755',1,0,'2025-02-07',NULL,'','',4,50,0,0,'2025-02-07 20:37:57','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 20:41:48','admin_albert',1,'::1','Asia/Karachi',34,1),
+(2,1,'PPO2','20250207205449',1,0,'2025-02-07',NULL,'','',4,50,0,0,'2025-02-07 20:54:50','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-07 22:47:40','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_stock` */
 
@@ -1998,13 +2014,14 @@ CREATE TABLE `packages` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `packages` */
 
 insert  into `packages`(`id`,`subscriber_users_id`,`sku_code`,`package_no`,`package_name`,`package_desc`,`stock_in_hand`,`avg_price`,`product_category`,`product_ids`,`product_sku`,`case_pack`,`pack_desc`,`inventory_status`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'12233','PP1','Charger','',1032,31.75,4,'212,3,1',NULL,10,NULL,NULL,'2025-01-14 11:37:51','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-04 22:08:35','admin_albert',1,'::1','Asia/Karachi',34,1),
-(2,1,'2223334','PP2','Screen',NULL,35,41.67,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-01 11:07:26','admin_albert',1,'::1','Asia/Karachi',34,1);
+(1,1,'12233','PP1','Charger','',1032,31.75,4,'212,3,1',NULL,11,NULL,NULL,'2025-01-14 11:37:51','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-07 21:00:04','admin_albert',1,'::1','Asia/Karachi',34,1),
+(2,1,'2223334','PP2','Screen',NULL,35,41.67,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-01 11:07:26','admin_albert',1,'::1','Asia/Karachi',34,1),
+(65,1,NULL,'Pkg65','battery',NULL,0,0,6,'213',NULL,0,NULL,NULL,'2025-02-07 22:29:17','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `packing_types` */
 
@@ -2121,6 +2138,50 @@ insert  into `phone_check_api_data`(`id`,`bin_id`,`po_id`,`imei_no`,`model_name`
 (36,0,1,'353205101786307','iPad 10.2 (7th Gen)','MW6W2LL/A','Apple','32C-GY','Unlocked','Space Gray','99','A','A','C','N','','32GB','','C','[{\"InfoID\":116823217,\"TransactionID\":\"252\",\"master_id\":1384,\"WareHouse\":\"\",\"MasterName\":\"Creative Technology Innovations LLC\",\"Model\":\"iPad 10.2\" (7th Gen)\",\"Memory\":\"32GB\",\"IMEI\":\"353205101786307\",\"Carrier\":\"Unlocked\",\"PCCarrier\":\"N/A\",\"Serial\":\"F9FCFFPKMDG1\",\"UDID\":\"4461d8fc4e4d2278864393a71ffd9279863e30a9\",\"LicenseIdentifier\":\"4883864193499174\",\"DeviceLock\":\"Off\",\"AppleID\":null,\"Rooted\":\"Off\",\"Color\":\"Space Gray\",\"Grade\":\"C\",\"Version\":\"18.2.1\",\"OS\":\"iOS\",\"Make\":\"Apple\",\"Firmware\":\"7.01.01\",\"Notes\":null,\"ESN\":\"Good\",\"LicenseID\":\"10038\",\"DeviceCreatedDate\":\"2025-01-27T21:36:19.000Z\",\"DeviceUpdatedDate\":\"2025-01-28T14:53:05.000Z\",\"BatteryPercentage\":\"4\",\"BatteryCycle\":\"76\",\"BatteryHealthPercentage\":\"99\",\"BatteryDesignMaxCapacity\":\"8557\",\"BatteryCurrentMaxCapacity\":\"8519\",\"BatterySerial\":\"C01011300GXLMKQBC\",\"BatteryModel\":\"0003-C\",\"BatterySource\":\"OM01\",\"Model#\":\"MW6W2LL/A\",\"UnlockStatus\":\"UNLK\",\"TesterName\":\"\",\"Cosmetics\":\"ET-N,L-A,B-A,D-C\",\"BuildNo\":\"3.11.0\",\"AppVersion\":\"3.1.249\",\"ManualEntry\":\"No\",\"ESNResponse\":\"[{\"chargeStatus\":\"Yes\",\"API\":\"S001\",\"Remarks\":\"Good\",\"FieldColor\":\"Green\",\"deviceid\":\"353205101786307\",\"Carrier\":\"Verizon\",\"RawResponse\":\"Description: IPAD 7TH GEN 32GB GRAY SO-EIMEI: 353205101786307EID: 89049032004008882600019065147443 ESN Status: CleanDevice Status: This device is eligible.Part Number: MW6W2LL/A-EProduct ID: DEV13160091Device Type: 4G TABLET Carrier: Verizon\",\"fallbackcall\":\"No\"},{\"chargeStatus\":\"Yes\",\"API\":\"S001\",\"Remarks\":\"Good\",\"FieldColor\":\"Green\",\"deviceid\":\"353205101786307\",\"Carrier\":\"T-Mobile\",\"RawResponse\":\"Model Name: iPad 7 10.2 32GB Grey - SprintModel Number: iPad 7 10.2 32GB Grey - SprintModel Brand: AppleIMEI: 353205101786307Operating System: iOSeSIM Supported: Yes ESN Status: Clean Carrier: T-Mobile\",\"fallbackcall\":\"No\"},{\"chargeStatus\":\"Yes\",\"API\":\"G001\",\"Remarks\":\"Good\",\"FieldColor\":\"Green\",\"deviceid\":\"353205101786307\",\"RawResponse\":{\"refcode\":\"27012025163548\",\"devicetype\":\"Tablet\",\"marketingname\":\"Apple iPad (A2200)\",\"brandname\":\"Apple\",\"manufacturer\":\"Apple Inc\",\"responsestatus\":\"success\",\"blackliststatus\":\"No\",\"imeihistory\":[{\"action\":\"NA\",\"reasoncode\":\"NA\",\"reasoncodedesc\":\"NA\",\"date\":\"NA\",\"by\":\"NA\",\"Country\":\"NA\"}],\"operatingsys\":\"iOS\",\"modelname\":\"iPad (A2200)\"},\"fallbackcall\":\"No\"},{\"Remarks\":\"Good\",\"FieldColor\":\"Green\"}]\",\"SimLockResponse\":\"{\"API\":\"S001SL\",\"Remarks\":\"Off\",\"FieldColor\":\"Green\",\"deviceid\":\"353205101786307\",\"RawResponse\":\"Description: IPAD WI-FI CL 32GB SPG-USAModel: iPad (7th Generation) Wi-Fi  Cellular 32GB Space Gray [A2200] [iPad7,12]IMEI: 353205101786307Serial Number: F9FCFFPKMDG1Warranty Status: Out Of WarrantyPurchase Date: 2020-04-28Replaced Device: NoSIM-Lock: Unlocked\",\"fallbackcall\":\"No\",\"chargeStatus\":\"Yes\"}\",\"LPN\":null,\"Custom1\":null,\"SKUCode\":\"32C-GY\",\"Platform\":\"Windows 10\",\"RegulatoryModelNumber\":\"A2200\",\"CosmeticsFailed\":\"\",\"CosmeticsPassed\":\"\",\"CosmeticsPending\":\"\",\"CosmeticsWorking\":\"\",\"Network\":\"Verizon\",\"Network1\":\"\",\"Network2\":\"\",\"SIM1MCC\":\"311\",\"SIM1MNC\":\"480\",\"SIM2MCC\":\"\",\"SIM2MNC\":\"\",\"SIM1Name\":\"\",\"SIM2Name\":\"\",\"IMEI2\":null,\"SimTechnology\":\"GSM\",\"BatteryTemperature\":\"0.0\",\"AvgBatteryTemperature\":null,\"MaxBatteryTemperature\":null,\"MinBatteryTemperature\":null,\"BatteryResistance\":\"2.7\",\"MEID\":\"35320510178630\",\"MEID2\":\"\",\"PESN\":\"8046DA73\",\"PESN2\":\"\",\"SIMSERIAL\":\"89148000005847498060\",\"SIMSERIAL2\":\"\",\"DecimalMEID\":\"089247054401541680\",\"DecimalMEID2\":\"\",\"SimErased\":\"Yes\",\"MDM\":\"Off\",\"ResolvedMake\":\"\",\"ResolvedModelNo\":\"\",\"ResolvedModel\":\"\",\"ResolvedCarrier\":\"\",\"ResolvedMemory\":\"\",\"ResolvedColor\":\"\",\"CountryOfOrigin\":\"US\",\"BatteryDrainDuration\":\"\",\"BatteryChargeStart\":\"\",\"BatterChargeEnd\":\"\",\"BatteryDrain\":\"\",\"WifiMacAddress\":\"28:77:f1:e1:78:24\",\"SimHistory\":null,\"iCloudInfo\":\"\",\"BatteryDrainInfo\":\"\",\"CompatibleSim\":\"\",\"NotCompatibleSim\":\"\",\"DeviceState\":\"Hello\",\"BatteryDrainType\":\"\",\"CocoCurrentCapacity\":\"0\",\"CocoDesignCapacity\":\"\",\"OEMBatteryHealth\":\"\",\"CocoBatteryHealth\":\"\",\"PortNumber\":\"6\",\"startHeat\":\"\",\"endHeat\":\"\",\"ProductCode\":\"\",\"device_shutdown\":\"BCG-null\",\"SimLock\":\"Unlocked\",\"BMic\":\"0.404\",\"VMic\":\"0.3411\",\"FMic\":\"0.0\",\"DefectsCode\":\"\",\"ManualFailure\":\"\",\"ErrorCode\":\"CTI\",\"ScreenTime\":\"\",\"testerDeviceTime\":\"\",\"gradePerformed\":0,\"isLabelPrint\":0,\"Knox\":\"\",\"guid\":\"c5430f13-dcf6-11ef-a56e-02e2205d89cb\",\"id\":93853337,\"Working\":\"No\",\"Passed\":\"ET-N,L-A,B-A,D-C,Accelerometer,Bluetooth,Bottom Mic Quality,Cosmetics,Digitizer,Fingerprint Sensor,Front Camera,Front Camera Quality,Glass Condition,Grading,Gyroscope,Home Button,LCD,Loud Speaker,Loudspeaker Quality,Microphone,Power Button,Rear Camera,Rear Camera Quality,Rear Mic Quality,Screen Rotation,Video Microphone,Volume Down Button,Volume Up Button,WiFi\",\"Failed\":\"BH-A\",\"Pending\":\"\",\"Pre_check_working\":null,\"Pre_check_Passed\":null,\"Pre_check_Failed\":null,\"Pre_check_Pending\":null,\"InfoIDqa\":null,\"TestPlanName\":\"\",\"created_at\":\"2025-01-28T14:53:35.000Z\",\"updated_at\":\"2025-01-28T14:53:35.000Z\",\"CarrierLockResponse\":null,\"Parts\":\"{\"Remarks\":\"Genuine\",\"Data\":[{\"Status\":\"Genuine\",\"name\":\"Serial Number\",\"FactorySerial\":\"F9FCFFPKMDG1\",\"checkSum\":\"null\",\"currentCheckSum\":\"\",\"notice\":\"\",\"CurrentSerial\":\"F9FCFFPKMDG1\"},{\"Status\":\"Genuine\",\"name\":\"Main Board\",\"FactorySerial\":\"F9F01260KDLLT9017\",\"checkSum\":\"null\",\"currentCheckSum\":\"TFQ5MA==\",\"notice\":\"\",\"CurrentSerial\":\"F9F01260KDLLT9017\"},{\"Status\":\"Genuine\",\"name\":\"Battery\",\"FactorySerial\":\"C01011300GXLMKQBC\",\"checkSum\":\"null\",\"currentCheckSum\":\"TE1LUQ==\",\"notice\":\"\",\"CurrentSerial\":\"C01011300GXLMKQBC\"},{\"Status\":\"Genuine\",\"name\":\"Front Camera\",\"FactorySerial\":\"DNM950103C6FNQW3J\",\"checkSum\":\"null\",\"currentCheckSum\":\"Rk5RVw==\",\"notice\":\"\",\"CurrentSerial\":\"DNM950103C6FNQW3J\"},{\"Status\":\"Genuine\",\"name\":\"Back Camera\",\"FactorySerial\":\"F6D00670K9GHXG4D0\",\"checkSum\":\"null\",\"currentCheckSum\":\"SFhHNA==\",\"notice\":\"\",\"CurrentSerial\":\"F6D00670K9GHXG4D0\"},{\"Status\":\"Genuine\",\"name\":\"LCD\",\"FactorySerial\":\"FP1950518GBL87WBWJBWFGFAC9DY9949608XJL9DHALBH2BBB2XXXXXXXXXXXXXXXXXAXX\",\"checkSum\":\"null\",\"currentCheckSum\":\"null\",\"notice\":\"\",\"CurrentSerial\":\"FP1950518GBL87WBWJBWFGFAC9DY9949608XJL9DHALBH2BBB2XXXXXXXXXXXXXXXXXAXX\"}]}\",\"Ram\":null,\"IFT_Codes\":null,\"GradingResults\":null,\"grade_profile_id\":null,\"grade_route_id\":null,\"transaction_type\":null,\"final_price\":null,\"deviceDisconnect\":null,\"CreatedAPITimeStamp\":null,\"UpdatedAPITimeStamp\":null,\"BatteryShutdown\":null,\"checkall\":0,\"MDMResponse\":\"{\"allowPairing\":false,\"cloudConfigurationUiComplete\":false,\"configurationWasApplied\":false,\"status\":\"Acknowledged\",\"configurationSource\":\"-1\",\"postSetupProfileWasInstalled\":true,\"mdmStatus\":\"NA\",\"removable\":true,\"supervised\":false,\"mandatory\":false}\",\"BatteryHealthGrade\":null,\"imei_set_by\":\"Desktop\",\"EID\":\"89049032004008882600019065147443\",\"esim_present\":\"Yes\",\"esim_erased\":\"No\",\"ebayRefurbished\":null,\"ebayRejection\":null,\"ebay_grade_id\":null,\"androidCarrierId\":null,\"amazonRenewed\":null,\"amazonRenewedRejection\":null,\"swappaQualified\":null,\"swappaRejection\":null,\"backMarketQualified\":null,\"backMarketRejection\":null,\"testingCompleted\":0,\"isMobileCosmetics\":null,\"start_battery_charge\":null,\"end_battery_charge\":null,\"total_battery_drain\":null,\"warranty\":\"Out Of Warranty\",\"data_verification\":\"\",\"color_code\":\"1\",\"erased\":\"Yes\",\"eraseType\":\"Secure Erase (NIST-800-88)\",\"eraseTime\":\"2025-01-28T14:50:54.000Z\"}]',1,'2025-01-29 21:23:11','admin_albert',1,'::1',10,'Asia/Karachi','2025-01-31 20:46:56','admin_albert',1,'::1',10,'Asia/Karachi',1),
 (37,0,1,'F9FTP6WBHLF9','iPad 5','MP2F2LL/A','Apple','IPAD5-32W-GY','WiFi','Space Gray','90','C','A','C','Y','','32GB','','C','[{\"InfoID\":116824259,\"TransactionID\":\"252\",\"master_id\":1384,\"WareHouse\":\"\",\"MasterName\":\"Creative Technology Innovations LLC\",\"Model\":\"iPad 5\",\"Memory\":\"32GB\",\"IMEI\":\"F9FTP6WBHLF9\",\"Carrier\":\"WiFi\",\"PCCarrier\":\"N/A\",\"Serial\":\"F9FTP6WBHLF9\",\"UDID\":\"858b16e863af45f5c7176d6e9023abec38827699\",\"LicenseIdentifier\":\"7208209201657\",\"DeviceLock\":\"Off\",\"AppleID\":null,\"Rooted\":\"Off\",\"Color\":\"Space Gray\",\"Grade\":\"C\",\"Version\":\"16.7.10\",\"OS\":\"iOS\",\"Make\":\"Apple\",\"Firmware\":null,\"Notes\":null,\"ESN\":null,\"LicenseID\":\"10038\",\"DeviceCreatedDate\":\"2025-01-27T21:49:11.000Z\",\"DeviceUpdatedDate\":\"2025-01-28T14:43:09.000Z\",\"BatteryPercentage\":\"7\",\"BatteryCycle\":\"231\",\"BatteryHealthPercentage\":\"90\",\"BatteryDesignMaxCapacity\":\"8557\",\"BatteryCurrentMaxCapacity\":\"7712\",\"BatterySerial\":\"C0171941676FFH7F7\",\"BatteryModel\":\"0003-C\",\"BatterySource\":\"OM01\",\"Model#\":\"MP2F2LL/A\",\"UnlockStatus\":\"\",\"TesterName\":\"\",\"Cosmetics\":\"L-A,B-C,ET-Y,D-C\",\"BuildNo\":\"3.11.0\",\"AppVersion\":\"3.1.249\",\"ManualEntry\":\"No\",\"ESNResponse\":null,\"SimLockResponse\":\"\",\"LPN\":null,\"Custom1\":null,\"SKUCode\":\"IPAD5-32W-GY\",\"Platform\":\"Windows 10\",\"RegulatoryModelNumber\":\"A1822\",\"CosmeticsFailed\":\"\",\"CosmeticsPassed\":\"\",\"CosmeticsPending\":\"\",\"CosmeticsWorking\":\"\",\"Network\":\"\",\"Network1\":\"\",\"Network2\":\"\",\"SIM1MCC\":\"\",\"SIM1MNC\":\"\",\"SIM2MCC\":\"\",\"SIM2MNC\":\"\",\"SIM1Name\":\"\",\"SIM2Name\":\"\",\"IMEI2\":null,\"SimTechnology\":\"WiFi\",\"BatteryTemperature\":\"0.0\",\"AvgBatteryTemperature\":null,\"MaxBatteryTemperature\":null,\"MinBatteryTemperature\":null,\"BatteryResistance\":\"2.8\",\"MEID\":\" -- \",\"MEID2\":\"\",\"PESN\":\" -- \",\"PESN2\":\"\",\"SIMSERIAL\":\"\",\"SIMSERIAL2\":\"\",\"DecimalMEID\":\" -- \",\"DecimalMEID2\":\"\",\"SimErased\":\"Yes\",\"MDM\":\"Off\",\"ResolvedMake\":\"\",\"ResolvedModelNo\":\"\",\"ResolvedModel\":\"\",\"ResolvedCarrier\":\"\",\"ResolvedMemory\":\"\",\"ResolvedColor\":\"\",\"CountryOfOrigin\":\"US\",\"BatteryDrainDuration\":\"\",\"BatteryChargeStart\":\"\",\"BatterChargeEnd\":\"\",\"BatteryDrain\":\"\",\"WifiMacAddress\":\"78:88:6d:99:0b:e2\",\"SimHistory\":null,\"iCloudInfo\":\"\",\"BatteryDrainInfo\":\"\",\"CompatibleSim\":\"\",\"NotCompatibleSim\":\"\",\"DeviceState\":\"Hello\",\"BatteryDrainType\":\"\",\"CocoCurrentCapacity\":\"0\",\"CocoDesignCapacity\":\"\",\"OEMBatteryHealth\":\"\",\"CocoBatteryHealth\":\"\",\"PortNumber\":\"11\",\"startHeat\":\"\",\"endHeat\":\"\",\"ProductCode\":\"\",\"device_shutdown\":\"BCG-A1822\",\"SimLock\":\"\",\"BMic\":\"0.182\",\"VMic\":\"0.2753\",\"FMic\":\"0.0\",\"DefectsCode\":\"\",\"ManualFailure\":\"\",\"ErrorCode\":\"CTI\",\"ScreenTime\":\"\",\"testerDeviceTime\":\"\",\"gradePerformed\":0,\"isLabelPrint\":0,\"Knox\":\"\",\"guid\":\"8b7fe6cb-dcf8-11ef-a56e-02e2205d89cb\",\"id\":93854371,\"Working\":\"No\",\"Passed\":\"L-A,B-C,ET-Y,D-C,Accelerometer,Bluetooth,Bottom Mic Quality,Cosmetics,Digitizer,Fingerprint Sensor,Front Camera,Front Camera Quality,Glass Condition,Grading,Gyroscope,Home Button,LCD,Loud Speaker,Loudspeaker Quality,Microphone,Power Button,Rear Camera,Rear Camera Quality,Rear Mic Quality,Screen Rotation,Video Microphone,Volume Down Button,Volume Up Button,WiFi\",\"Failed\":\"BH-A\",\"Pending\":\"\",\"Pre_check_working\":null,\"Pre_check_Passed\":null,\"Pre_check_Failed\":null,\"Pre_check_Pending\":null,\"InfoIDqa\":null,\"TestPlanName\":\"\",\"created_at\":\"2025-01-27T21:54:10.000Z\",\"updated_at\":\"2025-01-27T21:54:10.000Z\",\"CarrierLockResponse\":null,\"Parts\":\"{\"Remarks\":\"N/A\",\"Data\":[{\"Status\":\"Genuine\",\"name\":\"Serial Number\",\"FactorySerial\":\"F9FTP6WBHLF9\",\"checkSum\":\"null\",\"currentCheckSum\":\"\",\"notice\":\"\",\"CurrentSerial\":\"F9FTP6WBHLF9\"},{\"Status\":\"Genuine\",\"name\":\"Main Board\",\"FactorySerial\":\"F9F71530UFNHF28A4\",\"checkSum\":\"null\",\"currentCheckSum\":\"SEYyOA==\",\"notice\":\"\",\"CurrentSerial\":\"F9F71530UFNHF28A4\"},{\"Status\":\"Genuine\",\"name\":\"Battery\",\"FactorySerial\":\"C0171941676FFH7F7\",\"checkSum\":\"null\",\"currentCheckSum\":\"RkZINw==\",\"notice\":\"\",\"CurrentSerial\":\"C0171941676FFH7F7\"},{\"Status\":\"Genuine\",\"name\":\"Front Camera\",\"FactorySerial\":\"DNM71552U09G2DP5U\",\"checkSum\":\"null\",\"currentCheckSum\":\"RzJEUA==\",\"notice\":\"\",\"CurrentSerial\":\"DNM71552U09G2DP5U\"},{\"Status\":\"Genuine\",\"name\":\"Back Camera\",\"FactorySerial\":\"F6D71142Y7YFQPVD2\",\"checkSum\":\"null\",\"currentCheckSum\":\"RlFQVg==\",\"notice\":\"\",\"CurrentSerial\":\"F6D71142Y7YFQPVD2\"},{\"Status\":\"N/A\",\"name\":\"LCD\",\"FactorySerial\":\"F0Y71870H2MHKG3ABE3MRQNQR\",\"checkSum\":\"null\",\"currentCheckSum\":\"\",\"notice\":\"\",\"CurrentSerial\":\"N/A\"}]}\",\"Ram\":null,\"IFT_Codes\":null,\"GradingResults\":null,\"grade_profile_id\":null,\"grade_route_id\":null,\"transaction_type\":null,\"final_price\":null,\"deviceDisconnect\":null,\"CreatedAPITimeStamp\":null,\"UpdatedAPITimeStamp\":null,\"BatteryShutdown\":null,\"checkall\":0,\"MDMResponse\":\"{\"allowPairing\":false,\"cloudConfigurationUiComplete\":false,\"configurationWasApplied\":false,\"status\":\"Acknowledged\",\"configurationSource\":\"-1\",\"postSetupProfileWasInstalled\":true,\"mdmStatus\":\"NA\",\"removable\":true,\"supervised\":false,\"mandatory\":false}\",\"BatteryHealthGrade\":null,\"imei_set_by\":\"Desktop\",\"EID\":null,\"esim_present\":\"N/A\",\"esim_erased\":\"N/A\",\"ebayRefurbished\":null,\"ebayRejection\":null,\"ebay_grade_id\":null,\"androidCarrierId\":null,\"amazonRenewed\":null,\"amazonRenewedRejection\":null,\"swappaQualified\":null,\"swappaRejection\":null,\"backMarketQualified\":null,\"backMarketRejection\":null,\"testingCompleted\":0,\"isMobileCosmetics\":null,\"start_battery_charge\":null,\"end_battery_charge\":null,\"total_battery_drain\":null,\"warranty\":\"\",\"data_verification\":\"\",\"color_code\":\"1\",\"erased\":\"Yes\",\"eraseType\":\"Secure Erase (NIST-800-88)\",\"eraseTime\":\"2025-01-28T14:40:38.000Z\"}]',1,'2025-01-29 21:23:11','admin_albert',1,'::1',10,'Asia/Karachi','2025-01-31 20:46:56','admin_albert',1,'::1',10,'Asia/Karachi',1),
 (38,0,1,'F9GTMK7THLF9','iPad 5','MP2F2LL/A','Apple','IPAD5-32W-GY','WiFi','Space Gray','96','A','A','C','N','','32GB','','C','[{\"InfoID\":116866129,\"TransactionID\":\"252\",\"master_id\":1384,\"WareHouse\":\"\",\"MasterName\":\"Creative Technology Innovations LLC\",\"Model\":\"iPad 5\",\"Memory\":\"32GB\",\"IMEI\":\"F9GTMK7THLF9\",\"Carrier\":\"WiFi\",\"PCCarrier\":\"N/A\",\"Serial\":\"F9GTMK7THLF9\",\"UDID\":\"ea5d660bd891b8e6f7d1556724f409ef873b9565\",\"LicenseIdentifier\":\"5554104627448\",\"DeviceLock\":\"Off\",\"AppleID\":null,\"Rooted\":\"Off\",\"Color\":\"Space Gray\",\"Grade\":\"C\",\"Version\":\"16.7.10\",\"OS\":\"iOS\",\"Make\":\"Apple\",\"Firmware\":null,\"Notes\":null,\"ESN\":null,\"LicenseID\":\"10038\",\"DeviceCreatedDate\":\"2025-01-28T14:01:15.000Z\",\"DeviceUpdatedDate\":\"2025-01-28T14:35:14.000Z\",\"BatteryPercentage\":\"100\",\"BatteryCycle\":\"112\",\"BatteryHealthPercentage\":\"96\",\"BatteryDesignMaxCapacity\":\"8557\",\"BatteryCurrentMaxCapacity\":\"8236\",\"BatterySerial\":\"C01717506GLFFH8F7\",\"BatteryModel\":\"0003-C\",\"BatterySource\":\"OM01\",\"Model#\":\"MP2F2LL/A\",\"UnlockStatus\":\"\",\"TesterName\":\"\",\"Cosmetics\":\"D-C,L-A,ET-N,B-A\",\"BuildNo\":\"3.11.0\",\"AppVersion\":\"3.1.249\",\"ManualEntry\":\"No\",\"ESNResponse\":null,\"SimLockResponse\":\"\",\"LPN\":null,\"Custom1\":null,\"SKUCode\":\"IPAD5-32W-GY\",\"Platform\":\"Windows 10\",\"RegulatoryModelNumber\":\"A1822\",\"CosmeticsFailed\":\"\",\"CosmeticsPassed\":\"\",\"CosmeticsPending\":\"\",\"CosmeticsWorking\":\"\",\"Network\":\"\",\"Network1\":\"\",\"Network2\":\"\",\"SIM1MCC\":\"\",\"SIM1MNC\":\"\",\"SIM2MCC\":\"\",\"SIM2MNC\":\"\",\"SIM1Name\":\"\",\"SIM2Name\":\"\",\"IMEI2\":null,\"SimTechnology\":\"WiFi\",\"BatteryTemperature\":\"0.0\",\"AvgBatteryTemperature\":null,\"MaxBatteryTemperature\":null,\"MinBatteryTemperature\":null,\"BatteryResistance\":\"5.8\",\"MEID\":\" -- \",\"MEID2\":\"\",\"PESN\":\" -- \",\"PESN2\":\"\",\"SIMSERIAL\":\"\",\"SIMSERIAL2\":\"\",\"DecimalMEID\":\" -- \",\"DecimalMEID2\":\"\",\"SimErased\":\"Yes\",\"MDM\":\"Off\",\"ResolvedMake\":\"\",\"ResolvedModelNo\":\"\",\"ResolvedModel\":\"\",\"ResolvedCarrier\":\"\",\"ResolvedMemory\":\"\",\"ResolvedColor\":\"\",\"CountryOfOrigin\":\"US\",\"BatteryDrainDuration\":\"\",\"BatteryChargeStart\":\"\",\"BatterChargeEnd\":\"\",\"BatteryDrain\":\"\",\"WifiMacAddress\":\"dc:a9:04:4f:da:73\",\"SimHistory\":null,\"iCloudInfo\":\"\",\"BatteryDrainInfo\":\"\",\"CompatibleSim\":\"\",\"NotCompatibleSim\":\"\",\"DeviceState\":\"Hello\",\"BatteryDrainType\":\"\",\"CocoCurrentCapacity\":\"0\",\"CocoDesignCapacity\":\"\",\"OEMBatteryHealth\":\"\",\"CocoBatteryHealth\":\"\",\"PortNumber\":\"12\",\"startHeat\":\"\",\"endHeat\":\"\",\"ProductCode\":\"\",\"device_shutdown\":\"BCG-A1822\",\"SimLock\":\"\",\"BMic\":\"0.2414\",\"VMic\":\"0.1657\",\"FMic\":\"0.0\",\"DefectsCode\":\"\",\"ManualFailure\":\"\",\"ErrorCode\":\"CTI\",\"ScreenTime\":\"\",\"testerDeviceTime\":\"\",\"gradePerformed\":0,\"isLabelPrint\":0,\"Knox\":\"\",\"guid\":\"692cd0f8-dd80-11ef-a56e-02e2205d89cb\",\"id\":93895997,\"Working\":\"No\",\"Passed\":\"D-C,L-A,ET-N,B-A,Accelerometer,Bluetooth,Bottom Mic Quality,Cosmetics,Digitizer,Fingerprint Sensor,Front Camera,Front Camera Quality,Glass Condition,Grading,Gyroscope,Home Button,LCD,Loud Speaker,Loudspeaker Quality,Microphone,Power Button,Rear Camera,Rear Camera Quality,Rear Mic Quality,Screen Rotation,Video Microphone,Volume Down Button,Volume Up Button,WiFi\",\"Failed\":\"BH-A\",\"Pending\":\"\",\"Pre_check_working\":null,\"Pre_check_Passed\":null,\"Pre_check_Failed\":null,\"Pre_check_Pending\":null,\"InfoIDqa\":null,\"TestPlanName\":\"\",\"created_at\":\"2025-01-28T14:35:45.000Z\",\"updated_at\":\"2025-01-28T14:35:45.000Z\",\"CarrierLockResponse\":null,\"Parts\":\"{\"Remarks\":\"N/A\",\"Data\":[{\"Status\":\"Genuine\",\"name\":\"Serial Number\",\"FactorySerial\":\"F9GTMK7THLF9\",\"checkSum\":\"null\",\"currentCheckSum\":\"\",\"notice\":\"\",\"CurrentSerial\":\"F9GTMK7THLF9\"},{\"Status\":\"Genuine\",\"name\":\"Main Board\",\"FactorySerial\":\"F9F71820LG4HF28AK\",\"checkSum\":\"null\",\"currentCheckSum\":\"SEYyOA==\",\"notice\":\"\",\"CurrentSerial\":\"F9F71820LG4HF28AK\"},{\"Status\":\"Genuine\",\"name\":\"Battery\",\"FactorySerial\":\"C01717506GLFFH8F7\",\"checkSum\":\"null\",\"currentCheckSum\":\"RkZIOA==\",\"notice\":\"\",\"CurrentSerial\":\"C01717506GLFFH8F7\"},{\"Status\":\"Genuine\",\"name\":\"Front Camera\",\"FactorySerial\":\"DNM71230JCLG2DP58\",\"checkSum\":\"null\",\"currentCheckSum\":\"RzJEUA==\",\"notice\":\"\",\"CurrentSerial\":\"DNM71230JCLG2DP58\"},{\"Status\":\"Genuine\",\"name\":\"Back Camera\",\"FactorySerial\":\"F6D71313T46FQPVD2\",\"checkSum\":\"null\",\"currentCheckSum\":\"RlFQVg==\",\"notice\":\"\",\"CurrentSerial\":\"F6D71313T46FQPVD2\"},{\"Status\":\"N/A\",\"name\":\"LCD\",\"FactorySerial\":\"F0Y71760Y7LHKG36YDN8RGPPR\",\"checkSum\":\"null\",\"currentCheckSum\":\"\",\"notice\":\"\",\"CurrentSerial\":\"N/A\"}]}\",\"Ram\":null,\"IFT_Codes\":null,\"GradingResults\":null,\"grade_profile_id\":null,\"grade_route_id\":null,\"transaction_type\":null,\"final_price\":null,\"deviceDisconnect\":null,\"CreatedAPITimeStamp\":null,\"UpdatedAPITimeStamp\":null,\"BatteryShutdown\":null,\"checkall\":0,\"MDMResponse\":\"{\"allowPairing\":false,\"cloudConfigurationUiComplete\":false,\"configurationWasApplied\":false,\"status\":\"Acknowledged\",\"configurationSource\":\"-1\",\"postSetupProfileWasInstalled\":true,\"mdmStatus\":\"NA\",\"removable\":true,\"supervised\":false,\"mandatory\":false}\",\"BatteryHealthGrade\":null,\"imei_set_by\":\"Desktop\",\"EID\":null,\"esim_present\":\"N/A\",\"esim_erased\":\"N/A\",\"ebayRefurbished\":null,\"ebayRejection\":null,\"ebay_grade_id\":null,\"androidCarrierId\":null,\"amazonRenewed\":null,\"amazonRenewedRejection\":null,\"swappaQualified\":null,\"swappaRejection\":null,\"backMarketQualified\":null,\"backMarketRejection\":null,\"testingCompleted\":0,\"isMobileCosmetics\":null,\"start_battery_charge\":null,\"end_battery_charge\":null,\"total_battery_drain\":null,\"warranty\":\"\",\"data_verification\":\"\",\"color_code\":\"1\",\"erased\":\"Yes\",\"eraseType\":\"Secure Erase (NIST-800-88)\",\"eraseTime\":\"2025-01-28T14:32:56.000Z\"}]',1,'2025-01-29 21:23:11','admin_albert',1,'::1',10,'Asia/Karachi','2025-01-31 20:46:56','admin_albert',1,'::1',10,'Asia/Karachi',1);
+
+/*Table structure for table `phone_check_api_data_return` */
+
+DROP TABLE IF EXISTS `phone_check_api_data_return`;
+
+CREATE TABLE `phone_check_api_data_return` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `bin_id` int(11) DEFAULT 0,
+  `po_id` int(11) DEFAULT 0,
+  `imei_no` varchar(255) DEFAULT NULL,
+  `model_name` varchar(255) DEFAULT NULL,
+  `model_no` varchar(100) DEFAULT NULL,
+  `make_name` varchar(100) DEFAULT NULL,
+  `sku_code` varchar(255) DEFAULT NULL,
+  `carrier_name` varchar(50) DEFAULT NULL,
+  `color_name` varchar(50) DEFAULT NULL,
+  `battery` varchar(255) DEFAULT NULL,
+  `body_grade` varchar(50) DEFAULT NULL,
+  `lcd_grade` varchar(50) DEFAULT NULL,
+  `digitizer_grade` varchar(50) DEFAULT NULL,
+  `etching` varchar(50) DEFAULT NULL,
+  `ram` varchar(100) DEFAULT NULL,
+  `memory` varchar(100) DEFAULT NULL,
+  `defectsCode` text DEFAULT NULL,
+  `overall_grade` varchar(255) DEFAULT NULL,
+  `phone_check_api_data` text DEFAULT NULL,
+  `is_processed` smallint(1) DEFAULT 0,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(25) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT NULL,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `add_timezone` varchar(100) DEFAULT NULL,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(25) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT NULL,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `update_timezone` varchar(100) DEFAULT NULL,
+  `enabled` smallint(6) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `phone_check_api_data_return` */
 
 /*Table structure for table `phone_check_users` */
 
@@ -2612,21 +2673,26 @@ CREATE TABLE `product_stock` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_stock` */
 
 insert  into `product_stock`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`return_receive_id`,`serial_no`,`stock_grade`,`model_no`,`finale_product_unique_id`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`finale_location_id`,`productUrl`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`price_finale`,`distributed_amount`,`is_final_pricing`,`stock_product_uniqueid`,`is_processed`,`processed_by_user_id`,`processed_by`,`processed_date`,`processed_ip`,`package_id1`,`package_id2`,`package_id3`,`finale_condition`,`device_processing_labor`,`device_processing_parts_price`,`is_move_finale`,`bin_user_id`,`is_update_in_process`,`is_packed`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,212,6,0,'GEN6','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(2,1,212,7,0,'GEN7','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(3,1,212,8,0,'GEN8','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(4,1,212,9,0,'GEN9','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(5,1,212,10,0,'GEN10','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(6,1,213,1,0,'GEN1','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(7,1,213,2,0,'GEN2','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(8,1,213,3,0,'GEN3','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(9,1,213,4,0,'GEN4','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(10,1,213,5,0,'GEN5','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,300,0,0,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1);
+(1,1,212,11,0,'GEN11','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,214.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:23','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(2,1,212,12,0,'GEN12','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,214.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:23','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(3,1,212,13,0,'GEN13','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,214.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:23','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(4,1,212,14,0,'GEN14','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,214.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:23','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(5,1,212,15,0,'GEN15','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,214.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:23','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(6,1,213,1,0,'GEN1','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,19,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,7.14,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(7,1,213,2,0,'GEN2','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,19,1,2311,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(8,1,213,3,0,'GEN3','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(9,1,213,4,0,'GEN4','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(10,1,213,5,0,'GEN5','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(11,1,213,6,0,'GEN6','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(12,1,213,7,0,'GEN7','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(13,1,213,8,0,'GEN8','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(14,1,213,9,0,'GEN9','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(15,1,213,10,0,'GEN10','A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,5,1,1737,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,314.83,0,14.83,1,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-07 16:38:29','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1);
 
 /*Table structure for table `products` */
 
@@ -2920,14 +2986,13 @@ CREATE TABLE `purchase_order_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail` */
 
 insert  into `purchase_order_detail`(`id`,`po_id`,`offer_detail_id`,`product_id`,`order_qty`,`order_price`,`package_id`,`package_material_qty`,`package_material_qty_received`,`is_tested`,`is_wiped`,`is_imaged`,`product_po_desc`,`order_product_status`,`product_condition`,`expected_status`,`is_fk_serial_generated`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,0,212,5,200,0,0,0,NULL,NULL,NULL,NULL,5,'A',5,1,0,'2025-02-05 13:49:04','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:52','admin_albert',1,'::1','Asia/Karachi',10,1),
-(2,1,0,213,10,300,0,0,0,NULL,NULL,NULL,NULL,3,'A',5,1,0,'2025-02-05 13:49:04','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 23:14:53','admin_albert',1,'::1','Asia/Karachi',10,1),
-(3,2,0,213,5,200,0,0,0,NULL,NULL,NULL,NULL,1,'A',5,0,0,'2025-02-06 21:35:43','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
+(1,1,0,212,5,200,0,0,0,NULL,NULL,NULL,NULL,5,'A',5,1,0,'2025-02-07 16:35:58','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:41:11','admin_albert',1,'::1','Asia/Karachi',10,1),
+(2,1,0,213,10,300,0,0,0,NULL,NULL,NULL,NULL,5,'A',5,1,0,'2025-02-07 16:35:58','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:41:11','admin_albert',1,'::1','Asia/Karachi',10,1);
 
 /*Table structure for table `purchase_order_detail_logistics` */
 
@@ -2969,7 +3034,7 @@ CREATE TABLE `purchase_order_detail_logistics` (
 /*Data for the table `purchase_order_detail_logistics` */
 
 insert  into `purchase_order_detail_logistics`(`id`,`po_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`no_of_boxes`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'','20250205134904','0000-00-00','0000-00-00',NULL,12,'','2025-02-05',NULL,1737,NULL,1,1,0,'2025-02-05 13:49:06','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-05 13:49:13','admin_albert',NULL,'::1','Asia/Karachi',0,1);
+(1,1,'','20250207163558','0000-00-00','0000-00-00',NULL,12,'','2025-02-07',NULL,1737,NULL,1,1,0,'2025-02-07 16:36:01','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-07 16:36:04','admin_albert',NULL,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `purchase_order_detail_receive` */
 
@@ -3045,21 +3110,26 @@ CREATE TABLE `purchase_order_detail_receive` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail_receive` */
 
 insert  into `purchase_order_detail_receive`(`id`,`po_id`,`recevied_product_category`,`po_detail_id`,`receive_type`,`edit_lock`,`serial_no_barcode`,`sub_location_id`,`sub_location_id_after_diagnostic`,`base_product_id`,`sub_product_id`,`logistic_id`,`model_name`,`model_no`,`make_name`,`carrier_name`,`color_name`,`battery`,`body_grade`,`lcd_grade`,`digitizer_grade`,`etching`,`overall_grade`,`ram`,`storage`,`processor`,`camera_status`,`speaker_status`,`mic_status`,`keyboard_status`,`keyboardTest_LeftKeys`,`battery_status`,`battery_percentage`,`charging_time`,`warranty`,`price`,`defects_or_notes`,`inventory_status`,`sku_code`,`phone_check_api_data`,`is_diagnost`,`is_rma_processed`,`is_rma_added`,`is_import_diagnostic_data`,`logistic_cost`,`receiving_labor`,`diagnostic_labor`,`is_diagnostic_bypass`,`duplication_check_token`,`duplication_check_token2`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
-(1,1,1,2,'CateogryReceived',1,'GEN1',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(2,1,1,2,'CateogryReceived',1,'GEN2',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(3,1,1,2,'CateogryReceived',1,'GEN3',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(4,1,1,2,'CateogryReceived',1,'GEN4',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(5,1,1,2,'CateogryReceived',1,'GEN5',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453793ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:43','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(6,1,2,1,'CateogryReceived',1,'GEN6',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(7,1,2,1,'CateogryReceived',1,'GEN7',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(8,1,2,1,'CateogryReceived',1,'GEN8',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(9,1,2,1,'CateogryReceived',1,'GEN9',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
-(10,1,2,1,'CateogryReceived',1,'GEN10',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'A',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,NULL,5,NULL,NULL,1,0,0,1,0,0,0,1,'17387453543ks0pffjgdvhmfrbsmhbf30lo3','17387453753ks0pffjgdvhmfrbsmhbf30lo3','2025-02-05 13:49:22','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:38','admin_albert',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1);
+(1,1,1,2,'CateogryReceived',1,'GEN1',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',6,NULL,NULL,1,1,1,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(2,1,1,2,'CateogryReceived',1,'GEN2',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',6,NULL,NULL,1,1,1,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(3,1,1,2,'CateogryReceived',1,'GEN3',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(4,1,1,2,'CateogryReceived',1,'GEN4',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(5,1,1,2,'CateogryReceived',1,'GEN5',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(6,1,1,2,'CateogryReceived',1,'GEN6',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(7,1,1,2,'CateogryReceived',1,'GEN7',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(8,1,1,2,'CateogryReceived',1,'GEN8',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(9,1,1,2,'CateogryReceived',1,'GEN9',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(10,1,1,2,'CateogryReceived',1,'GEN10',1737,1737,'W-32GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,300,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928304mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(11,1,2,1,'CateogryReceived',1,'GEN11',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928176mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(12,1,2,1,'CateogryReceived',1,'GEN12',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928176mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(13,1,2,1,'CateogryReceived',1,'GEN13',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928176mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(14,1,2,1,'CateogryReceived',1,'GEN14',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928176mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1),
+(15,1,2,1,'CateogryReceived',1,'GEN15',1737,1737,'32C-GY',NULL,0,NULL,NULL,NULL,NULL,NULL,'','','','',NULL,'A','','','',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,30,200,'',5,NULL,NULL,1,0,0,1,0,0,0,1,'1738928165mlcutmr1aape3me1k89l7s62sg','1738928176mlcutmr1aape3me1k89l7s62sg','2025-02-07 16:36:15','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:39:10','admin_albert Imported',1,'::1','Asia/Karachi',10,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `purchase_order_detail_receive_package_material` */
 
@@ -3138,9 +3208,13 @@ CREATE TABLE `purchase_order_detail_receive_rma` (
   `repaire_by_user_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail_receive_rma` */
+
+insert  into `purchase_order_detail_receive_rma`(`id`,`receive_id`,`status_id`,`repaire_status_id`,`detail_comment`,`is_repaired`,`repair_cost`,`parts_cost`,`total_repair_cost`,`grade_after_repaire`,`parts_stock_ids`,`courier_name`,`tracking_no`,`shipment_date`,`expected_receiving_date`,`logistics_status`,`logistics_cost`,`new_value`,`reduced_price`,`repair_type`,`sub_location_id`,`credit_memo`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`repaire_by`,`repaire_by_user_id`,`enabled`) values 
+(1,2,19,0,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,200,100,1,2311,0,1,'2025-02-07 16:40:35','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(2,1,19,0,NULL,0,NULL,NULL,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,200,100,1,2311,0,1,'2025-02-07 16:40:53','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `purchase_order_detail_receive_rma_logistics` */
 
@@ -3208,9 +3282,38 @@ CREATE TABLE `purchase_order_detail_receive_rma_reduced_prices` (
   `repaire_by_user_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_order_detail_receive_rma_reduced_prices` */
+
+insert  into `purchase_order_detail_receive_rma_reduced_prices`(`id`,`subscriber_users_id`,`receive_rma_id`,`stock_id`,`reduced_amount`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`repaire_by`,`repaire_by_user_id`,`enabled`) values 
+(1,1,1,1,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(2,1,1,2,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(3,1,1,3,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(4,1,1,4,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(5,1,1,5,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(6,1,1,6,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(7,1,1,8,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(8,1,1,9,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(9,1,1,10,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(10,1,1,11,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(11,1,1,12,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(12,1,1,13,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(13,1,1,14,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(14,1,1,15,7.14,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(15,1,2,1,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(16,1,2,2,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(17,1,2,3,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(18,1,2,4,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(19,1,2,5,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(20,1,2,8,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(21,1,2,9,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(22,1,2,10,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(23,1,2,11,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(24,1,2,12,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(25,1,2,13,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(26,1,2,14,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
+(27,1,2,15,7.69,0,'2025-02-07 16:41:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `purchase_order_packages_detail` */
 
@@ -3278,13 +3381,12 @@ CREATE TABLE `purchase_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_orders` */
 
 insert  into `purchase_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`po_desc`,`po_desc_public`,`order_status`,`logistics_cost`,`sub_user_id`,`is_tested_po`,`is_wiped_po`,`is_imaged_po`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PO1','20250205134859',1,0,'2025-02-05','purchase order desc : 20250205134901','',5,20.5,0,'Yes','Yes','Yes',1,0,'2025-02-05 13:49:01','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-05 13:49:52','admin_albert',1,'::1','Asia/Karachi',0,1),
-(2,1,'PO2','20250206213531',1,0,'2025-02-06','purchase order desc : 20250206213533','',1,0,0,'Yes','Yes','Yes',0,0,'2025-02-06 21:35:33','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-06 21:35:43','admin_albert',1,'::1','Asia/Karachi',0,1);
+(1,1,'PO1','20250207163429',1,0,'2025-02-07','purchase order desc : 20250207163434','',5,20.5,0,'Yes','Yes','Yes',1,0,'2025-02-07 16:34:34','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 16:41:11','admin_albert',1,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `qty_and_estimated_time_for_processing` */
 
@@ -3437,9 +3539,12 @@ CREATE TABLE `return_items_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `return_items_detail` */
+
+insert  into `return_items_detail`(`id`,`subscriber_users_id`,`return_id`,`return_qty`,`product_id`,`order_price`,`return_status_item`,`product_condition`,`product_po_desc`,`expected_status`,`is_fk_serial_generated`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(3,0,2,10,217,NULL,10,'0',NULL,6,0,0,'2025-02-07 19:54:24','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 19:54:32','admin_albert',NULL,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `return_items_detail_receive` */
 
@@ -3515,7 +3620,7 @@ CREATE TABLE `return_items_detail_receive` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `return_items_detail_receive` */
 
@@ -3554,9 +3659,13 @@ CREATE TABLE `return_order_detail_logistics` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `return_order_detail_logistics` */
+
+insert  into `return_order_detail_logistics`(`id`,`return_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`no_of_boxes`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,2,'','20250207195424','0000-00-00','0000-00-00',NULL,10,NULL,NULL,NULL,NULL,20.5,0,1,0,'2025-02-07 19:54:26','admin_albert',NULL,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(2,2,'','20250207195426','0000-00-00','0000-00-00',NULL,10,NULL,NULL,NULL,NULL,22,0,1,0,'2025-02-07 19:54:32','admin_albert',NULL,'::1','Asia/Karachi',0,'2025-02-07 19:54:39','admin_albert',NULL,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `return_purchase_order_detail_receive` */
 
@@ -3668,9 +3777,12 @@ CREATE TABLE `returns` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `returns` */
+
+insert  into `returns`(`id`,`subscriber_users_id`,`return_no`,`return_type`,`removal_order_id`,`return_date`,`store_id`,`public_note`,`internal_note`,`return_status`,`logistics_cost`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(2,1,'RO2','Shipstation','20250207195414','2025-02-07',4,'','purchase order desc : 20250207195418',4,22,0,0,'2025-02-07 19:54:18','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-07 19:54:39','admin_albert',1,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `rma_order_detail` */
 
@@ -10634,7 +10746,7 @@ CREATE TABLE `temp_po_pricing` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1283 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1298 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `temp_po_pricing` */
 
@@ -10684,7 +10796,9 @@ insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_detail_id`,`po
 (1279,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,1,'32C-GY','A',200,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
 (1280,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
 (1281,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,1,'32C-GY','A',200,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1282,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
+(1282,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1296,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,1,'32C-GY','A',214.83,0,0,0,6.9031327095843,'2025-02-07 20:36:13','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1297,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,2,'W-32GY','A',314.83,0,0,0,4.7104786710288,'2025-02-07 20:36:13','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `terms` */
 
@@ -10781,7 +10895,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -10793,7 +10907,8 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (5,'Admin',1,'Login','2025-01-31 11:49:37',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (6,'Admin',1,'Login','2025-02-04 11:35:08',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (7,'Super Admin',1,'Super Admin Login','2025-02-04 13:37:48',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(8,'Admin',1,'Login','2025-02-06 13:19:14',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(8,'Admin',1,'Login','2025-02-06 13:19:14',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(9,'Admin',1,'Login','2025-02-07 13:32:22',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -10907,7 +11022,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-02-06 13:19:14','::1',1607869,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-02-07 13:32:22','::1',2929348,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Repair,Diagnostic',1,'2024-11-18 06:22:47','::1',9103992,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2024-12-17 11:42:47','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2024-12-17 11:13:50','admin_albert',1,'::1',0,1);
 
@@ -10972,14 +11087,12 @@ CREATE TABLE `users_bin_for_processing` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `users_bin_for_processing` */
 
 insert  into `users_bin_for_processing`(`id`,`subscriber_users_id`,`bin_user_id`,`location_id`,`estimated_time`,`is_processing_start`,`is_processing_done`,`order_by`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,12,1737,0,0,0,2,'2024-12-18 18:52:52','admin_albert',1,'::1',NULL,36,NULL,NULL,0,NULL,NULL,0,1),
-(2,1,12,1738,0,0,0,3,'2024-12-18 18:52:56','admin_albert',1,'::1',NULL,36,NULL,NULL,0,NULL,NULL,0,1),
-(4,1,12,2311,0,0,0,1,'2024-12-23 20:47:52','admin_albert',1,'::1',NULL,36,NULL,NULL,0,NULL,NULL,0,1);
+(1,1,12,1737,0,0,0,1,'2025-02-07 16:53:15','admin_albert',1,'::1',NULL,36,NULL,NULL,0,NULL,NULL,0,1);
 
 /*Table structure for table `users_bin_for_repair` */
 
@@ -11121,9 +11234,31 @@ CREATE TABLE `vender_po_data` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `vender_po_data` */
+
+insert  into `vender_po_data`(`id`,`subscriber_users_id`,`po_id`,`product_uniqueid`,`product_category`,`serial_no`,`overall_grade`,`storage`,`battery`,`memory`,`processor`,`warranty_days`,`price`,`defects_or_notes`,`status`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
+(1,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M1','B','32GB','Pass  OVER 50','Pass','Pass','10',55,'MULTIPLE LIGHT SCRATCHES IN DISPLAY MULTIPLE LIGHT SCUFFS IN EXTERIOR','Tested/Graded','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(2,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M2','B','32GB','Pass  OVER 50','Pass','Pass','10',82,'MULTIPLE LIGHT SCRATCHES ON SCREEN LIGHT SCUFFS ON BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(3,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M3','B','32GB','Pass  OVER 50','Pass','Pass','10',90,'MULTIPLE LIGHT SCRATCHES ON SCREEN LIGHT SCUFFS ON BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(4,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M4','A','32GB','Pass  OVER 50','Pass','Pass','10',78,'-','Tested/Graded','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(5,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M5','A','32GB','Pass  OVER 50','Pass','Pass','10',34,'-','Tested/Graded','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(6,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M6','A','32GB','Pass  OVER 50','Pass','Pass','10',55,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(7,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M7','A','32GB','Pass  OVER 50','Pass','Pass','11',56,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(8,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M8','A','32GB','Pass  OVER 50','Pass','Pass','12',57,'VERY LIGHT SCRATCHES IN BACK SIDE','Tested/Graded','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(9,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M9','A','32GB','Pass  OVER 50','Pass','Pass','13',58,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(10,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M10','A','32GB','Pass  OVER 50','Pass','Pass','14',59,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(11,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M11','A','32GB','Pass  OVER 50','Pass','Pass','15',60,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(12,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M12','A','32GB','Pass  OVER 50','Pass','Pass','16',61,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(13,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M13','A','32GB','Pass  OVER 50','Pass','Pass','17',62,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(14,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M14','A','32GB','Pass  OVER 50','Pass','Pass','18',63,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(15,1,1,'P2001E2OOPE2','Tablet','DMQD7TMFMF3M15','A','32GB','Pass  OVER 50','Pass','Pass','19',64,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(16,1,1,'P200234GHJI9L1','Tablet','DMQD7TMFMF3M16','A','32GB','Pass  OVER 50','Pass','Pass','20',65,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(17,1,1,'P200234GHJI9L1','Tablet','DMQD7TMFMF3M17','A','32GB','Pass  OVER 50','Pass','Pass','21',66,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(18,1,1,'P200234GHJI9L1','Tablet','DMQD7TMFMF3M18','A','32GB','Pass  OVER 50','Pass','Pass','22',67,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(19,1,1,'P200234GHJI9L1','Tablet','DMQD7TMFMF3M19','A','32GB','Pass  OVER 50','Pass','Pass','23',68,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(20,1,1,'P200234GHJI9L1','Tablet','DMQD7TMFMF3M20','A','32GB','Pass  OVER 50','Pass','Pass','24',69,'VERY LIGHT SCRATCHES IN BACK SIDE','Defective','2025-02-07 20:31:43','admin_albert',NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `vender_types` */
 

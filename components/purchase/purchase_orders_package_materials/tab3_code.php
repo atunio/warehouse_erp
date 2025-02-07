@@ -99,6 +99,7 @@ if (isset($_POST['is_Submit_tab3_4_2']) && $_POST['is_Submit_tab3_4_2'] == 'Y') 
 
 							update_po_status_package_materials($db, $conn, $id, $shipped_status_dynamic);
 							update_po_detail_status_package_materials($db, $conn, $key, $shipped_status_dynamic);
+							$disp_status_name 	= get_status_name($db, $conn, $shipped_status_dynamic);
 
 							$sql_c_up = "UPDATE  package_materials_order_detail_logistics SET 	edit_lock	            = '0',
                                                                                 
@@ -251,7 +252,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 				}
 				if ($k > 0) {
 					update_po_status_package_materials($db, $conn, $id, $receive_status_dynamic);
-
+					$disp_status_name 	= get_status_name($db, $conn, $receive_status_dynamic);
 					$msg3['msg_success'] = "Receiving has been processed successfully.";
 					unset($receiving_qties);
 					unset($receiving_location);

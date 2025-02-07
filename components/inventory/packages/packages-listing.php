@@ -37,7 +37,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "	SELECT a.*, b.category_name, c.status_name, GROUP_CONCAT('<br>', d.product_uniqueid) AS compatible_product_uniqueids
+$sql_cl		= "	SELECT a.*, b.category_name, c.status_name, GROUP_CONCAT('<br>', d.product_uniqueid) AS compatible_product_uniqueids, b.category_type
 				FROM packages a
 				INNER JOIN product_categories b ON b.id = a.product_category
 				LEFT JOIN inventory_status c ON c.id = a.inventory_status
@@ -244,12 +244,14 @@ $page_heading 	= "List of Packages / Parts";
 												<tr>
 													<?php
 													$headings = '<th class="sno_width_60">S.No</th>
-																<th>Category</th>
 																<th>SKU Code</th>
 																<th>Package Name</br> Description</th>
+																<th>Category</th>
+																<th>Category Type</th>
+																<th>Devices Compatible</th> 
+ 																<th>Quantity</th> 
+																<th>Avg Cost</th>
 																<th>Case Pack</th>
-																<th>Avg Price</th>
- 																<th>Stock In Hand</th> 
 																<th>Action</th>';
 													echo $headings;
 													?>
@@ -264,12 +266,14 @@ $page_heading 	= "List of Packages / Parts";
 														$id = $data['id'];  ?>
 														<tr>
 															<td style="text-align: center;"><?php echo $i + 1; ?></td>
-															<td><?php echo $data['category_name']; ?></td>
 															<td><?php echo $data['sku_code']; ?></td>
 															<td><?php echo $data['package_name']; ?></br><?php echo $data['package_desc']; ?></td>
-															<td><?php echo $data['case_pack']; ?></td>
-															<td><?php echo $data['avg_price']; ?></td>
+															<td><?php echo $data['category_name']; ?></td>
+															<td><?php echo $data['category_type']; ?></td>
+															<td><?php echo $data['compatible_product_uniqueids']; ?></td>
 															<td><?php echo $data['stock_in_hand']; ?></td>
+															<td><?php echo $data['avg_price']; ?></td>
+															<td><?php echo $data['case_pack']; ?></td>
 															<td class="text-align-center">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>

@@ -17,14 +17,21 @@
         <?php
         if (isset($id) && isset($po_no)) {  ?>
             <div class="row">
-                <div class=" col m4 s12">
+                <div class=" col m2 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
                 </div>
-                <div class=" col m4 s12">
+                <div class=" col m3 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Order Date: </b>" . $order_date_disp; ?></span></h6>
                 </div>
                 <div class=" col m4 s12">
                     <h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
+                </div>
+                <div class="input-field col m3 s12">
+                    <span class="chip green lighten-5">
+                        <span class="green-text">
+                            <?php echo $disp_status_name; ?>
+                        </span>
+                    </span>
                 </div>
             </div>
         <?php }  ?>

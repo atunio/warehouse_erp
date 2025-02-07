@@ -67,7 +67,10 @@ if (isset($cmd2) && $cmd2 == 'edit') {
 }
 
 if ($cmd == 'edit' && isset($id) && $id > 0) {
-	$sql_ee					= "SELECT a.* FROM package_materials_orders a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$sql_ee					= "SELECT a.*, b.status_name
+								FROM package_materials_orders a
+								LEFT JOIN inventory_status b ON b.id = a.order_status
+								WHERE a.id = '" . $id . "' "; // echo $sql_ee;
 	$result_ee				= $db->query($conn, $sql_ee);
 	$row_ee					= $db->fetch($result_ee);
 
@@ -79,16 +82,16 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
 	$order_date_disp		= dateformat2($row_ee[0]['po_date']);
 	$order_status    		= $row_ee[0]['order_status'];
+	$disp_status_name		=  $row_ee[0]['status_name'];
 
 	$package_id 				= [];
 	$order_qty 					= [];
 	$order_price 				= [];
 	$product_po_desc 			= [];
 	$case_pack					= [];
-	$sql_ee1		= "SELECT a.*,b.case_pack 
+	$sql_ee1		= " SELECT a.* 
 						FROM package_materials_order_detail a
-						INNER JOIN packages b ON b.id = a.package_id
-						WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+ 						WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
 	$result_ee1		= $db->query($conn, $sql_ee1);
 	$count_ee1  	= $db->counter($result_ee1);
 	if ($count_ee1 > 0) {
@@ -98,7 +101,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$order_qty[]				= $data2['order_qty'];
 			$order_price[]				= $data2['order_price'];
 			$product_po_desc[]			= $data2['product_po_desc'];
-			$case_pack[]				= $data2['case_pack'];
+			$case_pack[]				= $data2['order_case_pack'];
 		}
 	}
 }
@@ -263,8 +266,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail(po_id, package_id, product_po_desc, order_qty, order_price , add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $id . "', '" . $package_id . "', '" . $product_po_desc[$i]  . "', '" . $order_qty[$i]  . "', '" . $order_price[$i]  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail(po_id, package_id, product_po_desc, order_qty, order_price, order_case_pack,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "', '" . $package_id . "', '" . $product_po_desc[$i]  . "', '" . $order_qty[$i]  . "', '" . $order_price[$i]  . "', '" . $case_pack[$i]  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$k++; // Increment the counter only if the insertion is successful
@@ -275,6 +278,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$order_qty[$i] 			= "";
 					$order_price[$i]		= "";
 					$product_po_desc[$i]	= "";
+					$case_pack[$i]			= "";
 					$i++;
 				}
 			}

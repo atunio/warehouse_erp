@@ -42,10 +42,15 @@
                     <div class="card-content custom_padding_section ">
                         <?php
                         if (isset($po_no) && isset($id)) { ?>
-                            <h5 class="media-heading"><span class=""><?php echo "<b>PO#: </b>" . $po_no; ?></span></h5>
-                        <?php } else {
-                            echo "<br>";
-                        } ?>
+                            <h5 class="media-heading">
+                                <span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span>
+                                <span class="chip green lighten-5">
+                                    <span class="green-text">
+                                        <?php echo $disp_status_name; ?>
+                                    </span>
+                                </span>
+                            </h5>
+                        <?php } ?>
                         <?php
                         if (isset($cmd) && $cmd == 'add') { ?>
                             <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&cmd=edit&active_tab=tab1&cmd=' . $cmd . '&id=' . $id); ?>">
@@ -189,20 +194,19 @@
                                         unset($order_price);
                                         unset($product_po_desc);
                                         unset($case_pack);
-                                        $sql_ee1        = " SELECT a.*,b.case_pack 
-                                                        FROM package_materials_order_detail a
-                                                        INNER JOIN packages b ON b.id = a.package_id 
-                                                        WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+                                        $sql_ee1        = " SELECT a.*
+                                                            FROM package_materials_order_detail a
+                                                             WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
                                         $result_ee1        = $db->query($conn, $sql_ee1);
                                         $count_ee1      = $db->counter($result_ee1);
                                         if ($count_ee1 > 0) {
                                             $row_ee1    = $db->fetch($result_ee1);
                                             foreach ($row_ee1 as $data2) {
-                                                $package_ids[]            = $data2['package_id'];
-                                                $order_price[]            = $data2['order_price'];
+                                                $package_ids[]          = $data2['package_id'];
+                                                $order_price[]          = $data2['order_price'];
                                                 $order_qty[]            = $data2['order_qty'];
                                                 $product_po_desc[]      = $data2['product_po_desc'];
-                                                $case_pack[]            = $data2['case_pack'];
+                                                $case_pack[]            = $data2['order_case_pack'];
                                             }
                                         }
                                     } ?>
@@ -242,10 +246,10 @@
                                             }
                                         }
                                         $sql1             = "   SELECT a.*, b.category_name
-                                                            FROM packages a
-                                                            LEFT JOIN product_categories b ON b.id = a.product_category
-                                                            WHERE a.enabled = 1 
-                                                            ORDER BY a.package_name, b.category_name";
+                                                                FROM packages a
+                                                                LEFT JOIN product_categories b ON b.id = a.product_category
+                                                                WHERE a.enabled = 1 
+                                                                ORDER BY a.package_name, b.category_name";
                                         $result1         = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
                                     ?>
@@ -309,9 +313,14 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i - 1])) {
-                                                                                    echo $case_pack[$i - 1];
-                                                                                } ?></span>
+                                                <?php
+                                                $field_name     = "case_pack";
+                                                $field_id       = "casepack_" . $i;
+                                                ?>
+                                                <input <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                        echo ${$field_name}[$i - 1];
+                                                                                                                                                    } ?>" class="validate custom_input case_pack">
                                             </td>
                                             <td>
                                                 <span id="total_case_pack_<?= $i; ?>">

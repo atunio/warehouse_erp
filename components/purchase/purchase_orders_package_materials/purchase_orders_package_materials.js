@@ -52,7 +52,7 @@ $(document).on('click', '.add-more-btn', function(event) {
     $("#orderprice_"+next_row).val('').trigger('change'); 
     $("#productpodesc_"+next_row).val('').trigger('change'); 
     $("#value_"+next_row).text('').trigger('change');
-    $("#case_pack_" + next_row).text('').trigger('change');
+    $("#casepack_" + next_row).val('').trigger('change');
     $("#total_case_pack_" + next_row).text('').trigger('change');
     $("#row_"+next_row).show();
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
@@ -68,7 +68,7 @@ $(document).on('click', '.add-more-btn', function(event) {
 $(document).on('click', '.add-more-btn2', function(event) {
     $("#row_1").show();
     $(this).hide();
-    $("#case_pack_1").text('').trigger('change');
+    $("#casepack_1").val('').trigger('change');
     $("#total_case_pack_1").text('').trigger('change');
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
     var total_products_in_po = parseInt($("#total_products_in_po").val());
@@ -86,7 +86,7 @@ $(document).on('click', '.remove-row', function(event) {
     $("#orderprice_"+rowno).val('').trigger('change'); 
     $("#productpodesc_"+rowno).val('').trigger('change'); 
     $("#value_"+rowno).text('').trigger('change'); 
-    $("#case_pack_" + rowno).text('').trigger('change');
+    $("#casepack_" + rowno).val('').trigger('change');
     $("#total_case_pack_" + rowno).text('').trigger('change');
     $("#row_"+rowno).hide();
     updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
@@ -194,7 +194,7 @@ $(document).on('keyup', '.order_qty', function(event) {
         if(orderqty != '' && orderqty != null){
             total_qty += parseFloat(orderqty);
         }
-        var case_pack = parseFloat($("#case_pack_" + k).text());
+        var case_pack = parseFloat($("#casepack_" + k).val());
         var total_case_pack = 0;
         if(orderqty > 0 && case_pack > 0){
             total_case_pack = (orderqty / case_pack);
@@ -214,6 +214,35 @@ $(document).on('keyup', '.order_qty', function(event) {
     } 
     
     
+});
+
+$(document).on('keyup', '.case_pack', function(event) {
+ 
+    var case_pack   = parseInt($(this).val());
+    var id          = $(this).attr('id');
+    var parts       = id.split('_');
+    var rowno       = parseInt(parts[1]);  
+ 
+    var total_products_in_po = $("#total_products_in_po").val();
+    if(total_products_in_po == '' || total_products_in_po == 0 || total_products_in_po == null){
+        total_products_in_po = 1;
+    }
+    var p_value =  total_qty = 0;
+    for(var k = 1; k<= total_products_in_po; k++){
+        var orderqty = $("#orderqty_"+k).val();
+        
+        var case_pack = parseFloat($("#casepack_" + k).val());
+        var total_case_pack = 0;
+        if(orderqty > 0 && case_pack > 0){
+            total_case_pack = (orderqty / case_pack);
+            total_case_pack = Math.ceil(total_case_pack);
+        }
+        if(total_case_pack > 0){
+            $("#total_case_pack_" + k).text(total_case_pack);
+        }else{
+            $("#total_case_pack_" + k).text('');
+        }
+    }  
 });
 $(document).on('keyup', '.order_price', function(event) {
     var order_price     = parseInt($(this).val());
@@ -383,10 +412,10 @@ function get_case_pack(package_id, rowno) {
         success: function(response) {
             response = $.trim(response);
             if (response) {
-                $("#case_pack_" + rowno).text(response);
+                $("#casepack_" + rowno).val(response);
                 deferred.resolve(parseFloat(response));
             } else {
-                $("#case_pack_" + rowno).text('');
+                $("#casepack_" + rowno).val('');
                 deferred.resolve(0);
             }
         },

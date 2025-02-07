@@ -47,7 +47,6 @@
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
                         <?php
-
                         if (isset($po_no) && isset($id)) { ?>
                             <h5 class="media-heading">
                                 <span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span>

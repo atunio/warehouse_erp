@@ -86,18 +86,10 @@
                                 <tr>
                                     <?php
                                     $headings = '	<th class="sno_width_60">S.No</th>
-                                                        <th>Category</th>
                                                         <th>Product ID</th>
                                                         <th>Serial#</th>
                                                         <th>Overall Grade</th>
-                                                        <th>Storage</th>
-                                                        <th>Battery</th>
-                                                        <th>Memory</th>
-                                                        <th>Processor</th>
-                                                        <th>Warranty_days</th>
-                                                        <th>Price</th>
-                                                        <th>Defects Or Notes</th>
-                                                        <th>Status</th> ';
+                                                        <th>Defects Or Notes</th> ';
                                     echo $headings;
                                     $headings2 = ' '; ?>
                                 </tr>
@@ -111,18 +103,10 @@
                                         $detail_id2 = $data['id']; ?>
                                         <tr>
                                             <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?> </td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['product_category']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['product_uniqueid']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['serial_no']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['overall_grade']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['storage']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['battery']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['memory']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['processor']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['warranty_days']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['price']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['defects_or_notes']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['status']; ?></td>
                                         </tr>
                                 <?php
                                         $i++;

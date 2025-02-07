@@ -4,6 +4,17 @@ if ($_SERVER['HTTP_HOST'] == 'localhost') {
 	$tracking_no 			= date('YmdHis');
 	$status_id 				= 10;
 	$logistics_cost			= 50.0;
+
+	$sql_ee1 = "SELECT id
+				FROM package_materials_order_detail b 
+				WHERE b.po_id = '" . $id . "'
+				LIMIT 1";
+	$result_ee1 	= $db->query($conn, $sql_ee1);
+	$counter_ee1	= $db->counter($result_ee1);
+	if ($counter_ee1 > 0) {
+		$row_ee1111				= $db->fetch($result_ee1);
+		$package_id_logistic	= $row_ee1111[0]['id'];
+	}
 }
 if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	$sql_ee1 = "SELECT b.*, d.logistics_cost
@@ -16,6 +27,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	if ($counter_ee1 > 0) {
 		$row_ee1 							= $db->fetch($result_ee1);
 		$courier_name_update				= $row_ee1[0]['courier_name'];
+		$package_id_logistic_update			= $row_ee1[0]['po_detail_id'];
 		$tracking_no_update              	= $row_ee1[0]['tracking_no'];
 		$shipment_date_update				= $row_ee1[0]['shipment_date'];
 		$shipment_date_update				= str_replace("-", "/", convert_date_display($row_ee1[0]['shipment_date']));
@@ -42,6 +54,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 				$sql_c_up = "UPDATE  package_materials_order_detail
 												SET 	
 													order_product_status	= '" . $before_logistic_status_dynamic . "',
+													
 					
 													update_timezone			= '" . $timezone . "',
 													update_date				= '" . $add_date . "',
@@ -64,9 +77,10 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 													update_from_module_id	= '" . $module_id . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
-
-				$table		= "inventory_status";
-				$columns	= array("status_name");
+				$order_status 		= $before_logistic_status_dynamic;
+				$disp_status_name 	= get_status_name($db, $conn, $before_logistic_status_dynamic);
+				$table				= "inventory_status";
+				$columns			= array("status_name");
 				$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
 				foreach ($get_col_from_table as $array_key1 => $array_data1) {
 					${$array_key1} = $array_data1;
@@ -113,6 +127,12 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error3['msg'] = "Please add master record first";
 	}
+	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
+		$error3['status_id'] = "Required";
+	}
+	if (!isset($package_id_logistic) || (isset($package_id_logistic)  && ($package_id_logistic == "0" || $package_id_logistic == ""))) {
+		$error3['package_id_logistic'] = "Required";
+	}
 	if (empty($error3)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
 			$error3['msg'] = "You do not have add permissions.";
@@ -121,20 +141,20 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			if (access("add_perm") == 0) {
 				$error3['msg'] = "You do not have add permissions.";
 			} else {
-				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $id . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, po_detail_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "', '" . $package_id_logistic . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 				$ok = $db->query($conn, $sql6);
 				if ($ok) {
 					$tracking_no = "";
 					$sql_c_up = "UPDATE  package_materials_order_detail SET order_product_status	= '" . $status_id . "',
-
+ 
 																			update_timezone			= '" . $timezone . "',
 																			update_date				= '" . $add_date . "',
 																			update_by				= '" . $_SESSION['username'] . "',
 																			update_by_user_id		= '" . $_SESSION['user_id'] . "',
 																			update_ip				= '" . $add_ip . "',
 																			update_from_module_id	= '" . $module_id . "'
-								WHERE po_id = '" . $id . "' ";
+								WHERE id = '" . $package_id_logistic . "' ";
 					$db->query($conn, $sql_c_up);
 					$k++;
 					if (isset($error3['msg'])) unset($error3['msg']);
@@ -143,8 +163,11 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				}
 			}
 			if ($k > 0) {
-				$sql_c_up = "UPDATE  package_materials_orders SET 	order_status			= '" . $logistic_status_dynamic . "',
+				$disp_status_name 	= get_status_name($db, $conn, $logistic_status_dynamic);
+				$sql_c_up = "UPDATE  package_materials_orders SET 	 
+																	order_status			= '" . $logistic_status_dynamic . "',
 																	logistics_cost			= '" . $logistics_cost . "',
+
 																	update_timezone			= '" . $timezone . "',
 																	update_date				= '" . $add_date . "',
 																	update_by				= '" . $_SESSION['username'] . "',
@@ -281,6 +304,8 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 					WHERE id = '" . $id . "' ";
 					$db->query($conn, $sql_c_up);
 
+					$disp_status_name 	= get_status_name($db, $conn, $logistic_status_dynamic);
+
 					$table		= "inventory_status";
 					$columns	= array("status_name");
 					$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
@@ -351,6 +376,8 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 														update_from_module_id	= '" . $module_id . "'
 							WHERE id = '" . $id . "' ";
 							$db->query($conn, $sql_c_up);
+
+							$disp_status_name 	= get_status_name($db, $conn, $logistics_status);
 
 							$table		= "inventory_status";
 							$columns	= array("status_name");

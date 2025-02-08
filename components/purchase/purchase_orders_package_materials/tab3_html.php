@@ -56,31 +56,13 @@
         <?php
     } else {
         $td_padding = "padding:5px 15px !important;";
-
-        $sql            = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
+        $sql            = " SELECT a.*
                             FROM package_materials_order_detail_logistics a
-                            LEFT JOIN inventory_status c ON c.id = a.logistics_status
-                            LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
                             WHERE a.po_id = '" . $id . "' 
-                            ORDER BY a.tracking_no ";
-        // echo $sql; 
+                            ORDER BY a.tracking_no "; // echo $sql; 
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
-        if ($count_log > 0) {
-            $sql            = " SELECT a.*, c.package_name, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name
-                                FROM package_materials_order_detail_receive a
-                                INNER JOIN package_materials_order_detail b ON b.id = a.po_detail_id
-                                INNER JOIN packages c ON c.id = b.package_id
-                                LEFT JOIN product_categories d ON d.id =c.product_category
-                                LEFT JOIN users e ON e.id = a.add_by_user_id
-                                INNER JOIN package_materials_order_detail_logistics f ON f.id = a.logistic_id
-                                LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
-                                WHERE a.enabled = 1 
-                                AND b.po_id = '" . $id . "'
-                                ORDER BY a.serial_no_barcode DESC, g.sub_location_name, a.id DESC ";
-            $result_log2     = $db->query($conn, $sql);
-            $count_log2      = $db->counter($result_log2); ?>
+        if ($count_log > 0) { ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab3" value="Y" />
                 <input type="hidden" name="cmd3" value="<?php if (isset($cmd3)) echo $cmd3; ?>" />
@@ -123,35 +105,67 @@
                             <div class="input-field col m12 s12"> </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col m4 s12">
+                            <?php
+                            $field_name     = "package_order_detail_id";
+                            $field_label    = "Package";
+                            ?>
+                            <div class="input-field col m8 s12">
                                 <?php
-                                $field_name     = "logistic_id";
-                                $field_label    = "Tracking No";
-                                $count_r2     = $count_log;
-                                ?>
-                                <i class="material-icons prefix pt-1">location_on</i>
+                                $sql            = " SELECT a.*, e.tracking_no, c.package_name, d.category_name, c.sku_code, IFNULL(sum(f.enabled), 0) as total_received
+                                                    FROM package_materials_order_detail a 
+                                                    INNER JOIN package_materials_orders b ON b.id = a.po_id
+                                                    INNER JOIN packages c ON c.id = a.package_id
+                                                    INNER JOIN product_categories d ON d.id = c.product_category
+                                                    INNER JOIN package_materials_order_detail_logistics e ON e.po_detail_id = a.id
+                                                    LEFT JOIN package_materials_order_detail_receive f ON f.po_detail_id = a.id
+                                                    WHERE 1=1 
+                                                    AND a.po_id = '" . $id . "' 
+                                                    AND a.enabled = 1
+                                                    GROUP BY a.id
+                                                    ORDER BY c.package_name, d.category_name ";
+                                // echo $sql;
+                                $result_log2_2    = $db->query($conn, $sql);
+                                $count_r2_2       = $db->counter($result_log2_2); ?>
+                                <i class="material-icons prefix">add_shopping_cart</i>
                                 <div class="select2div">
                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                                                                     } ?>">
                                         <?php
-                                        if ($count_r2 > 1) { ?>
+                                        if ($count_r2_2 > 1) { ?>
                                             <option value="">Select</option>
                                             <?php
                                         }
-                                        if ($count_r2 > 0) {
-                                            $row_r2    = $db->fetch($result_log);
-                                            foreach ($row_r2 as $data_r2) { ?>
+                                        if ($count_r2_2 > 0) {
+                                            $row_r2_2    = $db->fetch($result_log2_2);
+                                            foreach ($row_r2_2 as $data_r2) {
+                                                $detail_id_r1       = $data_r2['id'];
+                                                $order_qty          = $data_r2['order_qty'];
+                                                $total_received     = $data_r2['total_received'];
+                                                $order_case_pack    = $data_r2['order_case_pack']; ?>
                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php echo $data_r2['tracking_no']; ?>
+                                                    <?php
+                                                    echo "Tracking#: " . $data_r2['tracking_no'] . " - ";
+                                                    echo "" . ucwords(strtolower($data_r2['package_name']));
+                                                    if ($data_r2['category_name'] != "") {
+                                                        echo " (" . $data_r2['category_name'] . ") ";
+                                                    }
+                                                    echo " - Expected Qty: " . $order_qty;
+                                                    if ($order_qty > 0 && $order_case_pack > 0) {
+                                                        echo " - Expected Case Packs: " . ceil($order_qty / $order_case_pack);
+                                                    }
+                                                    if ($total_received > 0 && $order_case_pack > 0) {
+                                                        echo " - Received Case Packs: " . ceil($total_received / $order_case_pack);
+                                                    }
+
+                                                    ?>
                                                 </option>
-                                        <?php
-                                            }
+                                        <?php }
                                         } ?>
                                     </select>
                                     <label for="<?= $field_name; ?>">
                                         <?= $field_label; ?>
-                                        <span class="color-red">* <?php
+                                        <span class="color-red"> * <?php
                                                                     if (isset($error3[$field_name])) {
                                                                         echo $error3[$field_name];
                                                                     } ?>
@@ -160,135 +174,44 @@
                                 </div>
                             </div>
                             <?php
-                            if ($count_log2 > 0) { ?>
-                                <div class="input-field col m1 s12"></div>
-                                <div class="input-field col m4 s12">
-                                    <a class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_packages_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id)  ?>" target="_blank">
-                                        <i class="material-icons dp48">print</i>
-                                    </a>
-                                </div>
-                            <?php } ?>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m12 s12"> </div>
-                        </div>
-                        <?php
-                        $sql_r1     = "	SELECT a.*, c.package_name, d.category_name
-                                            FROM package_materials_order_detail a 
-                                            INNER JOIN package_materials_orders b ON b.id = a.po_id
-                                            INNER JOIN packages c ON c.id = a.package_id
-                                            INNER JOIN product_categories d ON d.id = c.product_category
-                                            WHERE 1=1 
-                                            AND a.po_id = '" . $id . "' 
-                                            ORDER BY d.category_name, c.package_name"; //echo $sql_cl;
-                        $result_r1  = $db->query($conn, $sql_r1);
-                        $count_r1   = $db->counter($result_r1);
-                        if ($count_r1 > 0) { ?>
-                            <div class="row">
-                                <div class="col s12">
-                                    <table id="page-length-option1" class=" bordered">
-                                        <thead>
-                                            <tr>
-                                                <?php
-                                                $headings = '<th>Item Details</th>
-                                                            <th>Order Qty</th>
-                                                            <th>Total Received Yet</th>
-                                                            <th>Receiving Qty</th> 
-                                                            <th>Location</th>';
-                                                echo $headings; ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $i = 0;
-                                            if ($count_r1 > 0) {
-                                                $row_cl_r1 = $db->fetch($result_r1);
-                                                foreach ($row_cl_r1 as $data_r1) {
-                                                    $detail_id_r1   = $data_r1['id'];
-                                                    $order_qty      = $data_r1['order_qty'];
-
-                                                    $sql_rc1            = "	SELECT a.* 
-                                                                                FROM package_materials_order_detail_receive a 
-                                                                                WHERE 1=1 
-                                                                                AND a.po_detail_id = '" . $detail_id_r1 . "'
-                                                                                AND a.enabled = 1 "; //echo $sql_cl;
-                                                    $result_rc1         = $db->query($conn, $sql_rc1);
-                                                    $total_received_qty = $db->counter($result_rc1);  ?>
-                                                    <tr>
-                                                        <td style="width: 400px;">
-                                                            <?php
-                                                            echo $data_r1['package_name'];
-                                                            if ($data_r1['category_name'] != '') {
-                                                                echo "(" . $data_r1['category_name'] . ")";
-                                                            } ?>
-                                                        </td>
-                                                        <td style="width: 150px; text-align: center;"><?php echo $order_qty; ?></td>
-                                                        <td style="width: 180px; text-align: center;"><?php echo $total_received_qty; ?></td>
-                                                        <td style="width: 150px;">
-                                                            <?php
-                                                            $field_name             = "receiving_qties";
-                                                            $field_label            = "Receiving Qty";
-                                                            $receiving_qty_value    = "";
-
-                                                            if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
-                                                                $receiving_qty_value = ${$field_name}[$detail_id_r1];
-                                                            }
-
-                                                            if (isset($error3[$field_name])) { ?>
-                                                                <span class="color-red"><?php
-                                                                                        echo $error3[$field_name]; ?>
-                                                                </span>
-                                                            <?php
-                                                            } ?>
-
-                                                            <input type="number" placeholder="<?= $field_label; ?>" class="" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" value="<?= $receiving_qty_value; ?>" style=" text-align: center;" />
-                                                        </td>
-
-                                                        <td style="width: 200px;">
-                                                            <?php
-                                                            $field_name             = "receiving_location";
-                                                            $field_label            = "Location";
-                                                            $receiving_location_val = "";
-
-                                                            if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
-                                                                $receiving_location_val = ${$field_name}[$detail_id_r1];
-                                                            }
-
-                                                            $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-                                                            $result1        = $db->query($conn, $sql1);
-                                                            $count1         = $db->counter($result1);
-                                                            ?>
-                                                            <span class="color-red"><?php
-                                                                                    if (isset($error3[$field_name])) {
-                                                                                        echo $error3[$field_name];
-                                                                                    } ?>
-                                                            </span>
-                                                            <select id="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" name="<?= $field_name; ?>[<?= $detail_id_r1; ?>]" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                                                                                                                        } ?>">
-                                                                <option value="">Select</option>
-                                                                <?php
-                                                                if ($count1 > 0) {
-                                                                    $row1    = $db->fetch($result1);
-                                                                    foreach ($row1 as $data2) { ?>
-                                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset($receiving_location_val) && $receiving_location_val == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                                            <?php echo $data2['sub_location_name'];
-                                                                            if ($data2['sub_location_type'] != "") {
-                                                                                echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                                            } ?>
-                                                                        </option>
-                                                                <?php }
-                                                                } ?>
-                                                            </select>
-                                                        </td>
-                                                    </tr>
-                                            <?php $i++;
-                                                }
-                                            } ?>
-                                    </table>
+                            $field_name     = "receiving_location";
+                            $field_label    = "Location";
+                            ?>
+                            <div class="input-field col m4 s12">
+                                <?php
+                                $sql            = " SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name "; // echo $sql; 
+                                $result_log2_1  = $db->query($conn, $sql);
+                                $count_r2       = $db->counter($result_log2_1); ?>
+                                <i class="material-icons prefix">add_shopping_cart</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count_r2 > 0) {
+                                            $row_r2    = $db->fetch($result_log2_1);
+                                            foreach ($row_r2 as $data_r2) {  ?>
+                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset($receiving_location_val) && $receiving_location_val == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php echo $data_r2['sub_location_name'];
+                                                    if ($data_r2['sub_location_type'] != "") {
+                                                        echo " (" . ucwords(strtolower($data_r2['sub_location_type'])) . ")";
+                                                    } ?>
+                                                </option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red"> * <?php
+                                                                    if (isset($error3[$field_name])) {
+                                                                        echo $error3[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
                                 </div>
                             </div>
-                        <?php } ?>
+                        </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
                         </div>
@@ -304,6 +227,23 @@
             </form>
             <?php
             $td_padding = "padding:5px 10px !important;";
+            $sql            = " SELECT  c2.*, c.package_name, d.category_name, c.sku_code,
+                                        e.first_name, e.middle_name, e.last_name, e.username, f.tracking_no, g.sub_location_name, g.sub_location_type,
+                                        c2.po_detail_id, order_case_pack, b.order_qty AS total_qty, COUNT(c2.id) AS total_received_qty, 
+                                        CEIL(COUNT(c2.id)/b.order_case_pack) AS total_case_pack, f.id as package_logistic_id
+                                FROM package_materials_orders a
+                                INNER JOIN package_materials_order_detail b ON a.id = b.po_id
+                                INNER JOIN package_materials_order_detail_receive c2 ON c2.po_detail_id = b.id
+                                INNER JOIN packages c ON c.id = b.package_id
+                                LEFT JOIN product_categories d ON d.id =c.product_category
+                                LEFT JOIN users e ON e.id = a.add_by_user_id
+                                INNER JOIN package_materials_order_detail_logistics f ON f.po_detail_id = b.id
+                                LEFT JOIN warehouse_sub_locations g ON g.id = c2.sub_location_id
+                                WHERE a.id = '" . $id . "'  
+                                GROUP BY c2.po_detail_id, g.sub_location_name
+                                ORDER BY d.category_name, c.package_name, g.sub_location_name ";
+            $result_log2     = $db->query($conn, $sql);
+            $count_log2      = $db->counter($result_log2);
             if ($count_log2 > 0) { ?>
                 <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab3_4_2" value="Y" />
@@ -316,6 +256,9 @@
                         <div class="row">
                             <div class="col m12 s12">
                                 <h5>Received Items</h5>
+                                <a class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_packages_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id)  ?>" target="_blank">
+                                    <i class="material-icons dp48">print</i>
+                                </a>
                             </div>
                         </div>
                         <br>
@@ -339,11 +282,15 @@
                                                 $headings = '   <th class="sno_width_60 text_align_center" >S.No</th>
                                                                 <th></th>
                                                                 <th>Tracking#</th>
-                                                                <th>Package / Part Name</th>
-                                                                <th>Category</th>
+                                                                <th>Package / Part Detail</th>
+                                                                <th>SKU</th>
+                                                                <th>Received Qty</th>
+                                                                <th>Received Case Packs</th>
                                                                 <th>Location</th>
-                                                                <th>Received By</th>
-                                                                <th>Receiving Date/Time</th>';
+                                                                <th>
+                                                                    Received By</br>
+                                                                    Receiving Date/Time
+                                                                </th> ';
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
                                             </tr>
@@ -354,32 +301,42 @@
                                             if ($count_log2 > 0) {
                                                 $row_cl1 = $db->fetch($result_log2);
                                                 foreach ($row_cl1 as $data) {
-                                                    $detail_id2 = $data['id']; ?>
+                                                    $detail_id2             = $data['po_detail_id'];
+                                                    $package_logistic_id    = $data['package_logistic_id']; ?>
                                                     <tr>
                                                         <td class="text_align_center" style="<?= $td_padding; ?>;"><?php echo $i + 1; ?></td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
                                                             if (access("delete_perm") == 1 && $data['edit_lock'] == "0" && $data['is_diagnost'] == "0") { ?>
                                                                 <label style="margin-left: 25px;">
-                                                                    <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $detail_id2; ?>" class="checkbox6 filled-in" />
+                                                                    <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $detail_id2; ?>_<?= $data['sub_location_id']; ?>" class="checkbox6 filled-in" />
                                                                     <span></span>
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
-                                                        <td style="<?= $td_padding; ?>"><?php echo $data['package_name']; ?></td>
                                                         <td style="<?= $td_padding; ?>">
+                                                            <?php echo ucwords(strtolower($data['package_name'])); ?>
                                                             <?php
                                                             if ($data['category_name'] != "") {
-                                                                echo "" . $data['category_name'] . "";
+                                                                echo " (" . $data['category_name'] . ") ";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>"><?php echo $data['sub_location_name']; ?></td>
+                                                        <td style="<?= $td_padding; ?>"> <?php echo $data['sku_code']; ?></td>
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>"><?php echo $data['total_received_qty']; ?></td>
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>"><?php echo $data['total_case_pack']; ?></td>
+                                                        <td style="<?= $td_padding; ?>">
+
+                                                            <?php echo $data['sub_location_name']; ?>
+                                                            <?php
+                                                            if ($data['sub_location_type'] != "") {
+                                                                echo " (" . $data['sub_location_type'] . ") ";
+                                                            } ?>
+                                                        </td>
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php echo $data['first_name']; ?>
                                                             ( <?php echo $data['username']; ?> )
-                                                        </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                            <br>
                                                             <?php echo dateformat1_with_time($data['add_date']); ?>
                                                         </td>
                                                     </tr>

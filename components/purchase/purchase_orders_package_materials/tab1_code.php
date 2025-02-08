@@ -155,6 +155,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$po_date_disp		= dateformat2($po_date1);
 						$cmd 				= 'edit';
 						$order_status 		= 1;
+						$disp_status_name 	= get_status_name($db, $conn, $order_status);
 						$order_date_disp	= dateformat2($po_date1);
 
 						$sql6 = " UPDATE package_materials_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";

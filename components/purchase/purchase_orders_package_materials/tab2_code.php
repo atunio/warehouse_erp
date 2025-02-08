@@ -41,7 +41,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 }
 if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Pkg_Logistics") == 0) {
-		$error3['msg'] = "You do not have add permissions.";
+		$error2['msg'] = "You do not have add permissions.";
 	} else {
 		$sql_ee1 = " DELETE FROM package_materials_order_detail_logistics WHERE id = '" . $detail_id . "'";
 		$ok = $db->query($conn, $sql_ee1);
@@ -95,23 +95,23 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	extract($_POST);
 
 	if (!isset($no_of_boxes) || (isset($no_of_boxes)  && ($no_of_boxes == "0" || $no_of_boxes == ""))) {
-		$error3['no_of_boxes'] = "Required";
+		$error2['no_of_boxes'] = "Required";
 	}
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
-		$error3['status_id'] = "Required";
+		$error2['status_id'] = "Required";
 	}
 	if (!isset($logistics_cost) || (isset($logistics_cost)  && ($logistics_cost == ""))) {
-		$error3['logistics_cost'] = "Required";
+		$error2['logistics_cost'] = "Required";
 	}
 	if (isset($tracking_no) && $tracking_no == "") {
-		$error3['tracking_no'] = "Required";
+		$error2['tracking_no'] = "Required";
 	} else {
 		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no . "' "; //echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
-			$error3['tracking_no'] = "The tracking no is already exist.";
+			$error2['tracking_no'] = "The tracking no is already exist.";
 		}
 	}
 	if (isset($shipment_date) && $shipment_date == "") {
@@ -125,21 +125,21 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		$expected_arrival_date1 = convert_date_mysql_slash($expected_arrival_date);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
-		$error3['msg'] = "Please add master record first";
+		$error2['msg'] = "Please add master record first";
 	}
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
-		$error3['status_id'] = "Required";
+		$error2['status_id'] = "Required";
 	}
 	if (!isset($package_id_logistic) || (isset($package_id_logistic)  && ($package_id_logistic == "0" || $package_id_logistic == ""))) {
-		$error3['package_id_logistic'] = "Required";
+		$error2['package_id_logistic'] = "Required";
 	}
-	if (empty($error3)) {
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
 			if (access("add_perm") == 0) {
-				$error3['msg'] = "You do not have add permissions.";
+				$error2['msg'] = "You do not have add permissions.";
 			} else {
 				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, po_detail_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone, added_from_module_id)
 							VALUES('" . $id . "', '" . $package_id_logistic . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
@@ -157,9 +157,9 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 								WHERE id = '" . $package_id_logistic . "' ";
 					$db->query($conn, $sql_c_up);
 					$k++;
-					if (isset($error3['msg'])) unset($error3['msg']);
+					if (isset($error2['msg'])) unset($error2['msg']);
 				} else {
-					$error3['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
 				}
 			}
 			if ($k > 0) {
@@ -192,23 +192,23 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check Error in form.";
+		$error2['msg'] = "Please check Error in form.";
 	}
 }
 
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
 	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {
-		$error3['no_of_boxes_update'] = "Required";
+		$error2['no_of_boxes_update'] = "Required";
 	}
 	if (isset($logistics_cost_update) && $logistics_cost_update == "") {
-		$error3['logistics_cost_update'] = "Required";
+		$error2['logistics_cost_update'] = "Required";
 	}
 	if (!isset($status_id_update) || (isset($status_id_update)  && ($status_id_update == "0" || $status_id_update == ""))) {
-		$error3['status_id'] = "Required";
+		$error2['status_id_update'] = "Required";
 	}
 	if (isset($tracking_no_update) && $tracking_no_update == "") {
-		$error3['tracking_no_update'] = "Required";
+		$error2['tracking_no_update'] = "Required";
 	} else {
 		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no_update . "'
@@ -217,7 +217,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
-			$error3['tracking_no_update'] = "The tracking no is already exist.";
+			$error2['tracking_no_update'] = "The tracking no is already exist.";
 		}
 	}
 	if (isset($shipment_date_update) && $shipment_date_update == "") {
@@ -231,14 +231,14 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		$expected_arrival_date_update1 = convert_date_mysql_slash($expected_arrival_date_update);
 	}
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
-		$error3['msg'] = "Please add master record first";
+		$error2['msg'] = "Please add master record first";
 	}
 	if (!isset($detail_id) || (isset($detail_id)  && ($detail_id == "0" || $detail_id == ""))) {
-		$error3['msg'] = "Please click to edit anyone record";
+		$error2['msg'] = "Please click to edit anyone record";
 	}
-	if (empty($error3)) {
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$sql_c_up = "UPDATE  package_materials_order_detail_logistics 
 										SET 
@@ -315,21 +315,21 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 				}
 				$msg3['msg_success'] = "Record has been updated successfully.";
 			} else {
-				$error3['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+				$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check the error in form.";
+		$error2['msg'] = "Please check the error in form.";
 	}
 }
 if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 	extract($_POST);
 	if (!isset($logistics_status) || (isset($logistics_status)  && ($logistics_status == "0" || $logistics_status == ""))) {
-		$error3['logistics_status'] = "Required";
+		$error2['logistics_status'] = "Required";
 	}
-	if (empty($error3)) {
+	if (empty($error2)) {
 		if (po_permisions("Pkg_Logistics") == 0) {
-			$error3['msg'] = "You do not have add permissions.";
+			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			if (isset($logistics_ids) && sizeof($logistics_ids) > 0) {
 				$k = 0;
@@ -388,9 +388,9 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 						}
 
 						$k++;
-						if (isset($error3['msg'])) unset($error3['msg']);
+						if (isset($error2['msg'])) unset($error2['msg']);
 					} else {
-						$error3['msg'] = "There is Error, Please check it again OR contact Support Team.";
+						$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				}
 				if ($k > 0) {
@@ -402,10 +402,10 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 					$logistics_status = "";
 				}
 			} else {
-				$error3['msg'] = "Please select atleast one record.";
+				$error2['msg'] = "Please select atleast one record.";
 			}
 		}
 	} else {
-		$error3['msg'] = "Please check required fields in the form.";
+		$error2['msg'] = "Please check required fields in the form.";
 	}
 }

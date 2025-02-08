@@ -833,7 +833,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 									$field_name 	= "stock_id";
 									$field_label 	= "Product";
 									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
-																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
+																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade, a1.battery_percentage
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
@@ -858,7 +858,6 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 												$row1	= $db->fetch($result1);
 												foreach ($row1 as $data2) { ?>
 													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
-
 														<?php
 														if ($data2['category_name'] != "") {
 															echo " (" . $data2['category_name'] . ") ";
@@ -867,8 +866,11 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														LCD: <?php echo $data2['lcd_grade']; ?>,
 														Digitizer: <?php echo $data2['digitizer_grade']; ?>,
 														Overall Grade: <?php echo $data2['stock_grade']; ?>
-
-												<?php }
+												<?php
+													if ($data2['battery_percentage'] > '0') {
+														echo " - Battery: " . $data2['battery_percentage'] . "%";
+													}
+												}
 											} ?>
 										</select>
 										<label for="<?= $field_name; ?>">

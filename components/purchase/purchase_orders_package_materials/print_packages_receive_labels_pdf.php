@@ -63,47 +63,77 @@ $css = "
 	</style>";
 require_once $directory_path . 'mpdf/vendor/autoload.php';
 // $mpdf = new \Mpdf\Mpdf();
-$mpdf = new \Mpdf\Mpdf(['format' => [101.6, 152.4]]);
+$mpdf = new \Mpdf\Mpdf(['format' => [152.4, 101.6]]);
 
 $k 				= 1;
-$sql_ee1 		= "SELECT a.*, b.po_no, c.vender_name
+$sql_ee1 		= " SELECT a.*, b.po_no, b.po_date, c.vender_name, d.package_name, d.package_desc, e.category_name, d.sku_code, b1.order_case_pack
 					FROM package_materials_order_detail_logistics a
-					INNER JOIN package_materials_orders b ON b.id = a.po_id
+					INNER JOIN package_materials_order_detail b1 ON b1.id = a.po_detail_id
+					INNER JOIN package_materials_orders b ON b.id = b1.po_id
 					LEFT JOIN venders c ON c.id = b.vender_id
-					WHERE a.po_id = '" . $id . "' "; //echo $sql_ee1;die;
+					INNER JOIN packages d ON d.id = b1.package_id
+					LEFT JOIN product_categories e ON e.id = d.product_category
+					WHERE a.po_id	= '" . $id . "' "; //echo $sql_ee1;die;
 $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);
 if ($counter_ee1 > 0) {
 	$row_ee1 = $db->fetch($result_ee1);
 	foreach ($row_ee1 as $data) {
 
-		$logistic_id	= $data['id'];
-		$vender_name	= $data['vender_name'];
-		$po_no			= $data['po_no'];
-		$no_of_boxes	= $data['no_of_boxes'];
-		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
-							FROM package_materials_order_detail_logistics a
-							WHERE a.po_id = '" . $id . "' ";
-		$result_ee12 	= $db->query($conn, $sql_ee12);
-		$counter_ee12	= $db->counter($result_ee12);
-		$total_boxes 	= 0;
+		$vender_name		= $data['vender_name'];
+		$po_no				= $data['po_no'];
+		$po_date			= dateformat2($data['po_date']);
+		$sku_code			= $data['sku_code'];
+		$no_of_boxes		= $data['no_of_boxes'];
+		$order_case_pack	= $data['order_case_pack'];
+		$package_name		= $data['package_name'];
+		$category_name		= $data['category_name'];
+		$package_desc		= $data['package_desc'];
+
+		$sql_ee12 			= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
+								FROM package_materials_order_detail_logistics a
+								WHERE a.po_id = '" . $id . "' ";
+		$result_ee12 		= $db->query($conn, $sql_ee12);
+		$counter_ee12		= $db->counter($result_ee12);
+		$total_boxes 		= 0;
 		if ($counter_ee12 > 0) {
 			$row_ee12		= $db->fetch($result_ee12);
 			$total_boxes	= $row_ee12[0]['total_boxes'];
 		}
 		for ($i = 1; $i <= $no_of_boxes; $i++) {
 			$report_data = '
-				<div class="text_align_center main_font">
-					Packages
-					<br><br>
-					PO#: ' . $po_no . '
-					<br>
-					<barcode code="' . $po_no . '" type="C39" size="1" height="1" />
-					<br><br>
-					Vendor: ' . $vender_name . '
-					<br><br>
-					Box/Pallet # ' . $k . ' out ' . $total_boxes . ' 
-				</div>  ';  //echo $report_data;die;
+				<table style="border: 1px solid #eee; width: 100%;">
+					<tr>
+						<td style="border: 1px solid #eee; width: 40%; text-align: center;">Date: ' . $po_date . '</td>
+						<td style="border: 1px solid #eee; width: 60%;">
+							&nbsp;&nbsp;&nbsp;PO#: ' . $po_no . '
+							<br><barcode code="' . $po_no . '" type="C39" size="1" height=".6" />
+						</td>
+					</tr>
+					<tr>
+						<td style="border: 1px solid #eee; text-align: center;">
+							<span style="font-size: 40px;"><b>CTI</b></span>
+							<br>
+							</b>Case Pack:  ' . $order_case_pack . '</b>
+						</td>
+						<td style="border: 1px solid #eee;">
+							&nbsp;&nbsp;&nbsp;SKU: <span style="font-size: 20px; font-weight: bold;">' . $sku_code . '</span>
+							<br><barcode code="' . $sku_code . '" type="C39" size="1" height=".6" />
+						</td>
+					</tr>
+					<tr>
+						<td style="border: 1px solid #eee; text-align: center;">Package:</td>
+						<td style="border: 1px solid #eee;">' . $package_name . '</td>
+					</tr>
+					<tr>
+						<td style="border: 1px solid #eee; text-align: center;">Category:</td>
+						<td style="border: 1px solid #eee;">' . $category_name . '</td>
+					</tr>
+					<tr>
+						<td style="border: 1px solid #eee; text-align: center;">Description:</td>
+						<td style="border: 1px solid #eee;">' . $package_desc . '</td>
+					</tr>
+				</table>  ';  //echo $report_data;die;
 			$report_data = $report_data . $css;
 			$mpdf->AddPage('P', '', '', '', '', 10, 10, 15, 10, 0, 0);
 			$mpdf->writeHTML($report_data);

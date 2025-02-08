@@ -84,7 +84,7 @@
                                             )
                                             AND a.po_id = '" . $id . "' 
                                             AND a.enabled = 1
-                                            ORDER BY c.sku_code  "; // echo $sql; 
+                                            ORDER BY c.package_name, d.category_name "; // echo $sql; 
                         $result_log2    = $db->query($conn, $sql);
                         $count_r2       = $db->counter($result_log2); ?>
                         <i class="material-icons prefix pt-1">add_shopping_cart</i>
@@ -105,13 +105,15 @@
                                         $order_case_pack    = $data_r2['order_case_pack']; ?>
                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                             <?php
-                                            echo "" . $data_r2['package_name'];
+                                            echo "" . ucwords(strtolower($data_r2['package_name']));
                                             if ($data_r2['category_name'] != "") {
                                                 echo " (" . $data_r2['category_name'] . ") ";
                                             }
                                             echo " - QTY: " . $order_qty;
                                             echo " - Case Pack: " . $order_case_pack;
-                                            echo " - Total Case Packs: " . ceil($order_qty / $order_case_pack); ?>
+                                            if ($order_qty > 0 && $order_case_pack > 0) {
+                                                echo " - Total Case Packs: " . ceil($order_qty / $order_case_pack);
+                                            } ?>
                                         </option>
                                 <?php }
                                 } ?>
@@ -119,8 +121,8 @@
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
                                 <span class="color-red"> * <?php
-                                                            if (isset($error3[$field_name])) {
-                                                                echo $error3[$field_name];
+                                                            if (isset($error2[$field_name])) {
+                                                                echo $error2[$field_name];
                                                             } ?>
                                 </span>
                             </label>
@@ -142,8 +144,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -163,8 +165,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -216,8 +218,8 @@
                             <label for="<?= $field_name; ?>">
                                 <?= $field_label; ?>
                                 <span class="color-red">* <?php
-                                                            if (isset($error3[$field_name])) {
-                                                                echo $error3[$field_name];
+                                                            if (isset($error2[$field_name])) {
+                                                                echo $error2[$field_name];
                                                             } ?>
                                 </span>
                             </label>
@@ -239,8 +241,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -259,8 +261,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"><?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                             </span>
                         </label>
@@ -279,8 +281,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"><?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                             </span>
                         </label>
@@ -376,7 +378,7 @@
                                                     } ?>
                                                 </td>
                                                 <td style="<?= $td_padding; ?>">
-                                                    <?php echo $data['package_name']; ?> (<?php echo $data['category_name']; ?>)</br>
+                                                    <?php echo ucwords(strtolower($data['package_name'])); ?> (<?php echo $data['category_name']; ?>)</br>
                                                     SKU: <?php echo $data['sku_code']; ?>
                                                 </td>
                                                 <td style="<?= $td_padding; ?>">
@@ -440,8 +442,8 @@
                                 <label for="<?= $field_name; ?>">
                                     <?= $field_label; ?>
                                     <span class="color-red">* <?php
-                                                                if (isset($error3[$field_name])) {
-                                                                    echo $error3[$field_name];
+                                                                if (isset($error2[$field_name])) {
+                                                                    echo $error2[$field_name];
                                                                 } ?>
                                     </span>
                                 </label>
@@ -499,13 +501,15 @@
                                     $order_case_pack    = $data_r2['order_case_pack']; ?>
                                     <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                         <?php
-                                        echo "" . $data_r2['package_name'];
+                                        echo "" . ucwords(strtolower($data_r2['package_name']));
                                         if ($data_r2['category_name'] != "") {
                                             echo " (" . $data_r2['category_name'] . ") ";
                                         }
                                         echo " - QTY: " . $order_qty;
                                         echo " - Case Pack: " . $order_case_pack;
-                                        echo " - Total Case Packs: " . ceil($order_qty / $order_case_pack); ?>
+                                        if ($order_qty > 0 && $order_case_pack > 0) {
+                                            echo " - Total Case Packs: " . ceil($order_qty / $order_case_pack);
+                                        } ?>
                                     </option>
                             <?php }
                             } ?>
@@ -513,8 +517,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red"> * <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -536,8 +540,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"> * <?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                         </span>
                     </label>
@@ -556,8 +560,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"> * <?php
-                                                    if (isset($error3[$field_name])) {
-                                                        echo $error3[$field_name];
+                                                    if (isset($error2[$field_name])) {
+                                                        echo $error2[$field_name];
                                                     } ?>
                         </span>
                     </label>
@@ -611,8 +615,8 @@
                         <label for="<?= $field_name; ?>">
                             <?= $field_label; ?>
                             <span class="color-red">* <?php
-                                                        if (isset($error3[$field_name])) {
-                                                            echo $error3[$field_name];
+                                                        if (isset($error2[$field_name])) {
+                                                            echo $error2[$field_name];
                                                         } ?>
                             </span>
                         </label>
@@ -632,8 +636,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"><?php
-                                                if (isset($error3[$field_name])) {
-                                                    echo $error3[$field_name];
+                                                if (isset($error2[$field_name])) {
+                                                    echo $error2[$field_name];
                                                 } ?>
                         </span>
                     </label>
@@ -652,8 +656,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"><?php
-                                                if (isset($error3[$field_name])) {
-                                                    echo $error3[$field_name];
+                                                if (isset($error2[$field_name])) {
+                                                    echo $error2[$field_name];
                                                 } ?>
                         </span>
                     </label>
@@ -672,8 +676,8 @@
                     <label for="<?= $field_name; ?>">
                         <?= $field_label; ?>
                         <span class="color-red"><?php
-                                                if (isset($error3[$field_name])) {
-                                                    echo $error3[$field_name];
+                                                if (isset($error2[$field_name])) {
+                                                    echo $error2[$field_name];
                                                 } ?>
                         </span>
                     </label>

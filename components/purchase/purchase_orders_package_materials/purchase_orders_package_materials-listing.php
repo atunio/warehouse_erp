@@ -54,9 +54,6 @@ $sql_cl			= " SELECT * FROM (
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
 					) AS t1
 					WHERE 1=1 ";
-if (po_permisions("ALL PO in List") != '1') {
-	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
-}
 if (isset($flt_po_no) && $flt_po_no != "") {
 	$sql_cl 	.= " AND t1.po_no LIKE '%" . trim($flt_po_no) . "%' ";
 }
@@ -400,16 +397,20 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																		$row2 = $db->fetch($result2);
 																		foreach ($row2 as $data2) {
 																			$tracking_no = $data2['tracking_no'];
-																			if (po_permisions("Arrival") == 1) { ?>
-																				<?= $data2['tracking_no']; ?>
+																			$detail_id3 = "&logistic_id=" . $data2['id'];
+																			if (po_permisions("Pkg_Receive") == 1) { ?>
+																				<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&cmd3=add&active_tab=tab3&id=" . $id . $detail_id3) ?>">
+																					<?= $tracking_no; ?>
+																				</a>
 																				<span class="chip green lighten-5">
 																					<span class="green-text">
 																						<?php echo $data2['status_name']; ?>
 																					</span>
-																				</span> <br>
+																				</span>
+																				<br>
 																			<?php
 																			} else { ?>
-																				<?= $data2['tracking_no']; ?>
+																				<?= $tracking_no; ?>
 																				<span class="chip green lighten-5">
 																					<span class="green-text">
 																						<?php echo $data2['status_name']; ?>
@@ -428,7 +429,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																	<?php }
+																		<?php }
 																	if ($data['order_product_status'] == 1 || $data['order_product_status'] == '') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">

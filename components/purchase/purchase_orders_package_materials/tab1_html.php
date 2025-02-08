@@ -60,7 +60,7 @@
                                                                                 } ?>">
                                 <input type="hidden" name="active_tab" value="tab1" />
                             <?php } ?>
-
+                            <br>
                             <div class="row">
                                 <?php
                                 $field_name     = "po_date";
@@ -262,7 +262,7 @@
                                                     if ($count1 > 0) {
                                                         $row1    = $db->fetch($result1);
                                                         foreach ($row1 as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>)</option>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo ucwords(strtolower($data2['package_name'])); ?> (<?php echo $data2['category_name']; ?>)</option>
                                                     <?php }
                                                     } ?>
                                                     <option value="package_add_modal">+Add New Package/Part</option>
@@ -325,7 +325,7 @@
                                             <td>
                                                 <span id="total_case_pack_<?= $i; ?>">
                                                     <?php
-                                                    if (isset($case_pack[$i - 1]) && isset($order_qty[$i - 1])) {
+                                                    if (isset($case_pack[$i - 1]) && $case_pack[$i - 1] > 0 && isset($order_qty[$i - 1]) && $order_qty[$i - 1] > 0) {
                                                         echo ceil($order_qty[$i - 1] / $case_pack[$i - 1]);
                                                     } ?>
                                                 </span>

@@ -128,18 +128,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
-				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-
+				foreach ($duplicate_colum_values  as $key => $duplicate_colum_values1) {
 					$db_column = $dup_data;
 					if ($dup_data == 'product_id') {
 						$db_column = "product_uniqueid";
 					}
-
 					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
-						$duplicate_data_array[] = $duplicate_colum_values1;
+						$duplicate_data_array[$key][$db_column][] = $duplicate_colum_values1;
 						if (!isset($error['msg'])) {
 							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
 						} else {
@@ -148,19 +146,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 				}
 			}
-			foreach ($all_data  as $data1) {
-				// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Modified Array:" . $data1[$dup_data];
-				$duplicate_data_array = array_unique($duplicate_data_array);
-				if (!in_array($data1[$dup_data], $duplicate_data_array)) {
+			foreach ($all_data  as $key1 => $data1) {
+				if (!isset($duplicate_data_array[$key1]) || (isset($duplicate_data_array[$key1]) && sizeof($duplicate_data_array[$key1]) == '0')) {
+					// echo $data1['product_id'];
 					$columns = $column_data = "";
 					foreach ($data1 as $key => $data) {
-
 						if ($key != "") {
-
 							if ($key == 'product_id') {
 								$key = "product_uniqueid";
 							}
-
 							if ($key != 'is_insert') {
 								if ($key == 'product_category') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
@@ -189,9 +183,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							}
 						}
 					}
-
 					$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-						VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							 VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id			= mysqli_insert_id($conn);

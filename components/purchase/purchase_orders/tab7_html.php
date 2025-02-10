@@ -576,6 +576,48 @@
                                 <a class="btn waves-effect waves-light gradient-45deg-amber-amber modal-trigger" href="#repair_type_add_modal">New Repair Type</a>
                             </div>
                         </div>
+                        <div class="row partial_refund_status" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '18') || $status_id_rma == '') {
+                                                                echo "display: none;";
+                                                            } ?>">
+
+                            <div class="input-field col m3 s12">
+                                <?php
+                                $field_name     = "partial_refund_status";
+                                $field_label    = "Inventory Status";
+                                $sql1           = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(6, 19, 20, 22, 23, 24, 27) ORDER BY status_name";
+                                $result1        = $db->query($conn, $sql1);
+                                $count1         = $db->counter($result1);
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count1 > 0) {
+                                            $row1    = $db->fetch($result1);
+                                            foreach ($row1 as $data2) { ?>
+                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?> </option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">* <?php
+                                                                    if (isset($error7[$field_name])) {
+                                                                        echo $error7[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m4 s12 repair_type" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '19') || $status_id_rma == '') {
+                                                                                        echo "display: none;";
+                                                                                    } ?>">
+                                <a class="btn waves-effect waves-light gradient-45deg-amber-amber modal-trigger" href="#repair_type_add_modal">New Repair Type</a>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="input-field col m12 s12 text_align_center">
                                 <?php if (isset($id) && $id > 0 && (($cmd7 == 'add' || $cmd7 == '') && access("add_perm") == 1)  || ($cmd7 == 'edit' && access("edit_perm") == 1) || ($cmd7 == 'delete' && access("delete_perm") == 1)) { ?>

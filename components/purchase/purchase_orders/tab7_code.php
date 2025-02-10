@@ -122,6 +122,12 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 	} else {
 		$field_name = "status_id_rma";
 		if (${$field_name} == '19' || ${$field_name} == '18' || ${$field_name} == '22' || ${$field_name} == '23' || ${$field_name} == '24') {
+			if (${$field_name} == '18') {
+				$field_name2 = "partial_refund_status";
+				if (!isset(${$field_name2}) || (isset(${$field_name2})  && (${$field_name2} == "0" || ${$field_name2} == ""))) {
+					$error7[$field_name2] = "Required";
+				}
+			}
 			if (${$field_name} == '19') {
 				$field_name = "repair_type";
 				if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
@@ -148,6 +154,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 			$repair_type 	= $sub_location_id_barcode_rma = "0";
 		}
 	}
+ 
 	$field_name = "receive_id_barcode_rma";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error7[$field_name] = "Required";
@@ -155,8 +162,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 	if (empty($error7)) {
 		if (po_permisions("RMA") == 0) {
 			$error7['msg'] = "You do not have add permissions.";
-		} else {
-
+		} else { 
 			$credit_memo = 0;
 			$actual_price = $reduced_price = 0;
 			$sql_pd1		= "	SELECT a.*, a.price
@@ -184,6 +190,9 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 				}
 				$reduced_price = 0;
 			}
+			if(!isset($repaire_status_id) || (isset($repaire_status_id) && $repaire_status_id != '18')){
+				$repaire_status_id = "0";
+			}
 
 			$sql_pd1	= "	SELECT a.*
 							FROM purchase_order_detail_receive_rma a
@@ -191,10 +200,10 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 			$result_pd1	= $db->query($conn, $sql_pd1);
 			$count_pd1	= $db->counter($result_pd1);
 			if ($count_pd1 == 0) {
-				$sql6 = "INSERT INTO purchase_order_detail_receive_rma(receive_id, status_id, new_value, reduced_price, 
+				$sql6 = "INSERT INTO purchase_order_detail_receive_rma(receive_id, status_id, repaire_status_id, new_value, reduced_price, 
 																		repair_type, sub_location_id, tracking_no, credit_memo, 
 																		add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-						 VALUES('" . $receive_id_barcode_rma . "', '" . $status_id_rma . "', '" . $new_value . "', '" . $reduced_price . "', 
+						 VALUES('" . $receive_id_barcode_rma . "', '" . $status_id_rma . "', '" . $repaire_status_id . "', '" . $new_value . "', '" . $reduced_price . "', 
 						 '" . $repair_type . "', '" . $sub_location_id_barcode_rma . "', '" . $tracking_no_rma . "', '" . $credit_memo . "', 
 						 '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 				// echo "<br><br>" . $sql6;
@@ -216,6 +225,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 																				sub_location_id 		= '" . $sub_location_id_barcode_rma . "',
 																				tracking_no 			= '" . $tracking_no_rma . "',
 																				credit_memo 			= '" . $credit_memo . "',
+																				repaire_status_id		= '" . $repaire_status_id . "',
  
 																				update_timezone			= '" . $timezone . "',
 																				update_date				= '" . $add_date . "',

@@ -226,57 +226,60 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
 			foreach ($filtered_product_ids as $data_p) {
-
-				$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
-				$result_dup = $db->query($conn, $sql_dup);
-				$count_dup 	= $db->counter($result_dup);
-
-				if ($count_dup == 0) {
-					// Check if all required array elements exist
-					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-							 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
-					$ok = $db->query($conn, $sql6);
-					if ($ok) {
-						$k++; // Increment the counter only if the insertion is successful
-					}
-					$i++;
-				} else {
-					$product_ids[$i] 			= "";
-					$product_condition[$i] 		= "";
-					$order_price[$i] 			= "";
-					$order_qty[$i] 				= "";
-					$expected_status[$i] 		= "";
-					$i++;
-				}
-			}
-			if (isset($package_ids)) {
-				$sql_dup = " DELETE FROM purchase_order_packages_detail WHERE po_id	= '" . $id . "'";
-				$db->query($conn, $sql_dup);
-
-				$filtered_id = (array_values(array_filter($package_ids)));
-
-				$ii = 0; // Initialize the counter before the loop
-				$rr = 1;
-				foreach ($filtered_id as $package_id) {
-					$sql_dup	= " SELECT a.* 
-									FROM purchase_order_packages_detail a 
-									WHERE a.po_id	= '" . $id . "'
-									AND a.package_id	= '" . $package_id . "' ";
-					$result_dup	= $db->query($conn, $sql_dup);
-					$count_dup	= $db->counter($result_dup);
+				if($data_p !=""){
+					$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
+					$result_dup = $db->query($conn, $sql_dup);
+					$count_dup 	= $db->counter($result_dup);
+	
 					if ($count_dup == 0) {
-						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_packages_detail(po_id, package_id,  order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-								VALUES('" . $id . "', '" . $package_id . "',  '" . $order_part_qty[$ii]  . "', '" . $order_part_price[$ii] . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+						// Check if all required array elements exist
+						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$k++; // Increment the counter only if the insertion is successful
 						}
-						$ii++;
+						$i++;
 					} else {
-						$package_ids[$ii] 		= "";
-						$order_part_qty[$ii] 	= "";
-						$order_part_price[$ii] 	= "";
-						$ii++;
+						$product_ids[$i] 			= "";
+						$product_condition[$i] 		= "";
+						$order_price[$i] 			= "";
+						$order_qty[$i] 				= "";
+						$expected_status[$i] 		= "";
+						$i++;
+					}
+				}
+			}
+			if (isset($package_ids)) {
+				if($data_p !=""){
+					$sql_dup = " DELETE FROM purchase_order_packages_detail WHERE po_id	= '" . $id . "'";
+					$db->query($conn, $sql_dup);
+
+					$filtered_id = (array_values(array_filter($package_ids)));
+
+					$ii = 0; // Initialize the counter before the loop
+					$rr = 1;
+					foreach ($filtered_id as $package_id) {
+						$sql_dup	= " SELECT a.* 
+										FROM purchase_order_packages_detail a 
+										WHERE a.po_id	= '" . $id . "'
+										AND a.package_id	= '" . $package_id . "' ";
+						$result_dup	= $db->query($conn, $sql_dup);
+						$count_dup	= $db->counter($result_dup);
+						if ($count_dup == 0) {
+							$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_packages_detail(po_id, package_id,  order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+									VALUES('" . $id . "', '" . $package_id . "',  '" . $order_part_qty[$ii]  . "', '" . $order_part_price[$ii] . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							$ok = $db->query($conn, $sql6);
+							if ($ok) {
+								$k++; // Increment the counter only if the insertion is successful
+							}
+							$ii++;
+						} else {
+							$package_ids[$ii] 		= "";
+							$order_part_qty[$ii] 	= "";
+							$order_part_price[$ii] 	= "";
+							$ii++;
+						}
 					}
 				}
 			}

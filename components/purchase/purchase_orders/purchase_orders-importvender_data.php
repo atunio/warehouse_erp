@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles	= array("product_id", "product_category", "serial_no", "overall_grade", "storage", "battery", "memory", "processor", "warranty_days", "price", "defects_or_notes", "status");
+$supported_column_titles	= array("product_id",  "serial_no", "overall_grade", "defects_or_notes");
 $duplication_columns 		= array("serial_no");
-$required_columns 			= array("serial_no");
+$required_columns 			= array("product_id", "serial_no");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -202,9 +202,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -214,16 +214,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 									PO List
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab4") ?>">
 									PO Profile
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div>  
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-panel custom_padding_card_content_table_top">

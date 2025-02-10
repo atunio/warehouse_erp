@@ -827,179 +827,193 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<h4 class="card-title"><?php echo $title_heading2; ?></h4><br>
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2_2" value="Y" />
-							<div class="row">
-								<div class="input-field col m8 s12">
-									<?php
-									$field_name 	= "stock_id";
-									$field_label 	= "Product";
-									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
-																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
-														FROM product_stock a1
-														INNER JOIN products a ON a.id = a1.product_id
-														INNER JOIN product_categories b ON b.id = a.product_category
- 														WHERE a.enabled = 1
-														AND a1.p_total_stock > 0
-														AND a1.p_inventory_status = 5
-														AND a1.sub_location = '" . $id . "'
-														AND a1.is_move_finale = 0
-														ORDER BY b.category_name, a.product_uniqueid  "; //echo $sql1;
-									// AND a1.is_processed = 0
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									?>
-									<i class="material-icons prefix">question_answer</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																											echo ${$field_name . "_valid"};
-																																										} ?>">
-											<option value="">Select</option>
-											<?php
-											if ($count1 > 0) {
-												$row1	= $db->fetch($result1);
-												foreach ($row1 as $data2) { ?>
-													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
-
-														<?php
-														if ($data2['category_name'] != "") {
-															echo " (" . $data2['category_name'] . ") ";
-														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?>
-														-> Body: <?php echo $data2['body_grade']; ?>,
-														LCD: <?php echo $data2['lcd_grade']; ?>,
-														Digitizer: <?php echo $data2['digitizer_grade']; ?>,
-														Overall Grade: <?php echo $data2['stock_grade']; ?>
-
-												<?php }
-											} ?>
-										</select>
-										<label for="<?= $field_name; ?>">
-											<?= $field_label; ?>
-											<span class="color-red">* <?php
-																		if (isset($error2[$field_name])) {
-																			echo $error2[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-									<?php
-									$field_name = "stock_id_for_package_material"; ?>
-									<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
-								</div>
-								<div class="input-field col m2 s12">
-									<?php
-									$field_name 	= "finale_condition";
-									$field_label	= "Finale Condition";
-									?>
-									<i class="material-icons prefix">subtitles</i>
-									<div class="select2div">
-										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
-																																											echo ${$field_name . "_valid"};
-																																										} ?>">
-											<option value="">Select</option>
-											<option value="54" <?php if (isset(${$field_name}) && ${$field_name} == '54') { ?> selected="selected" <?php } ?>>
-												54
-											</option>
-											<option value="27" <?php if (isset(${$field_name}) && ${$field_name} == '27') { ?> selected="selected" <?php } ?>>
-												27
-											</option>
-										</select>
-										<label for="<?= $field_name; ?>">
-											<?= $field_label; ?>
-											<span class="color-red"> * <?php
-																		if (isset($error2[$field_name])) {
-																			echo $error2[$field_name];
-																		} ?>
-											</span>
-										</label>
-									</div>
-								</div>
-								<div class="input-field col m2 s12">
-									<?php
-									$field_name  = "custom_product_id";
-									$field_label = "Custom Product ID";
-									?>
-									<i class="material-icons prefix">description</i>
-									<input id="<?= $field_name; ?>" name="<?= $field_name; ?>" type="text" value="<?php if (isset(${$field_name})) {
-																														echo ${$field_name};
-																													} ?>" class="  validate <?php if (isset(${$field_name . "_valid"})) {
-																																				echo ${$field_name . "_valid"};
-																																			} ?>">
-									<label for="<?= $field_name; ?>">
-										<?= $field_label; ?>
-										<span class="color-red"><?php
-																if (isset($error2[$field_name])) {
-																	echo $error2[$field_name];
-																} ?>
-										</span>
-									</label>
-								</div>
-							</div>
-							<div class="row">
-								<div class="input-field col m4 s12"></div>
-							</div>
-							<div class="row">
-								<?php
-								for ($k = 1; $k <= 3; $k++) { ?>
-									<div class="input-field col m4 s12">
+							<?php
+							for($a = 1; $a<= 50; $a++){
+								$style= "style='display:none;'";
+								if($a == 1){
+									$style= "style='display:block;'";
+								}
+							?>
+								<div class="row" id="row_<?php echo $a; ?>" <?= $style; ?> >
+									<div class="input-field col m2 s12">
 										<?php
-										$field_name 	= "package_id" . $k;
-										$field_label	= "Packaging Material / Part  "  . $k;
+										$field_name 	= "stock_id";
+										$field_label 	= "Product";
+										$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
+																	a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
+															FROM product_stock a1
+															INNER JOIN products a ON a.id = a1.product_id
+															INNER JOIN product_categories b ON b.id = a.product_category
+															WHERE a.enabled = 1
+															AND a1.p_total_stock > 0
+															AND a1.p_inventory_status = 5
+															AND a1.sub_location = '" . $id . "'
+															AND a1.is_move_finale = 0
+															ORDER BY b.category_name, a.product_uniqueid  "; //echo $sql1;
+										// AND a1.is_processed = 0
+										$result1 		= $db->query($conn, $sql1);
+										$count1 		= $db->counter($result1);
+										?>
+										<i class="material-icons prefix">question_answer</i>
+										<div class="select2div">
+											<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																												echo ${$field_name . "_valid"};
+																																											} ?>">
+												<option value="">Select</option>
+												<?php
+												if ($count1 > 0) {
+													$row1	= $db->fetch($result1);
+													foreach ($row1 as $data2) { ?>
+														<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
+
+															<?php
+															if ($data2['category_name'] != "") {
+																echo " (" . $data2['category_name'] . ") ";
+															} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?>
+															-> Body: <?php echo $data2['body_grade']; ?>,
+															LCD: <?php echo $data2['lcd_grade']; ?>,
+															Digitizer: <?php echo $data2['digitizer_grade']; ?>,
+															Overall Grade: <?php echo $data2['stock_grade']; ?>
+
+													<?php }
+												} ?>
+											</select>
+											<label for="<?= $field_name; ?>">
+												<?= $field_label; ?>
+												<span class="color-red">* <?php
+																			if (isset($error2[$field_name])) {
+																				echo $error2[$field_name];
+																			} ?>
+												</span>
+											</label>
+										</div>
+										<?php
+										$field_name = "stock_id_for_package_material"; ?>
+										<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
+									</div>
+									<div class="input-field col m1 s12">
+										<?php
+										$field_name 	= "finale_condition";
+										$field_label	= "Finale Condition";
 										?>
 										<i class="material-icons prefix">subtitles</i>
 										<div class="select2div">
 											<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
 																																												echo ${$field_name . "_valid"};
 																																											} ?>">
-												<?php
-												if (isset($stock_id) && $stock_id > 0) {
-													$sql1 			= " SELECT d.*, e.category_name, a.is_mandatory
-																		FROM product_packages a 
-																		INNER JOIN products b ON b.id = a.product_id
-																		INNER JOIN product_stock c ON b.id = c.product_id
-																		INNER JOIN packages d ON d.id = a.package_id
-																		INNER JOIN product_categories e ON e.id = d.product_category
-																		WHERE c.id = '" . $stock_id . "'
-																		AND d.stock_in_hand > 0
-																		ORDER BY a.is_mandatory DESC, d.package_name ";
-													$result1 		= $db->query($conn, $sql1);
-													$count1 		= $db->counter($result1);
-													if ($count1 > 0) {
-														$row1	= $db->fetch($result1); ?>
-														<option value="">Select</option>
-														<?php
-														foreach ($row1 as $data2) {
-															$mandatory_optional = "";
-															if ($data2['is_mandatory'] == "Yes") {
-																$mandatory_optional = " - Mandatory -";
-															}
-															if ($data2['is_mandatory'] == "No") {
-																$mandatory_optional = " - Optional -";
-															} ?>
-															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-																<?php echo $data2['package_name']; ?> (<?php echo $data2['category_name'] . ")," . $mandatory_optional . " Total Stock Available: " . $data2['stock_in_hand']; ?>
-															</option>
-														<?php }
-													} else { ?>
-														<option value="">No <?= $field_label; ?> Available</option>
-													<?php }
-												} else { ?>
-													<option value="">Select</option>
-												<?php } ?>
+												<option value="">Select</option>
+												<option value="54" <?php if (isset(${$field_name}) && ${$field_name} == '54') { ?> selected="selected" <?php } ?>>
+													54
+												</option>
+												<option value="27" <?php if (isset(${$field_name}) && ${$field_name} == '27') { ?> selected="selected" <?php } ?>>
+													27
+												</option>
 											</select>
 											<label for="<?= $field_name; ?>">
 												<?= $field_label; ?>
-												<span class="color-red"> <?php
-																			if (isset($error[$field_name])) {
-																				echo $error[$field_name];
+												<span class="color-red"> * <?php
+																			if (isset($error2[$field_name])) {
+																				echo $error2[$field_name];
 																			} ?>
 												</span>
 											</label>
 										</div>
-										<?php
-										$field_name = "product_id_for_package_material"; ?>
-										<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
 									</div>
-								<?php } ?>
-							</div>
+									<div class="input-field col m2 s12">
+										<?php
+										$field_name  = "custom_product_id";
+										$field_label = "Custom Product ID";
+										?>
+										<i class="material-icons prefix">description</i>
+										<input id="<?= $field_name; ?>" name="<?= $field_name; ?>" type="text" value="<?php if (isset(${$field_name})) {
+																															echo ${$field_name};
+																														} ?>" class="  validate <?php if (isset(${$field_name . "_valid"})) {
+																																					echo ${$field_name . "_valid"};
+																																				} ?>">
+										<label for="<?= $field_name; ?>">
+											<?= $field_label; ?>
+											<span class="color-red"><?php
+																	if (isset($error2[$field_name])) {
+																		echo $error2[$field_name];
+																	} ?>
+											</span>
+										</label>
+									</div>
+								
+									<?php
+									for ($k = 1; $k <= 3; $k++) { ?>
+										<div class="input-field col m2 s12">
+											<?php
+											$field_name 	= "package_id" . $k;
+											$field_label	= "Packaging Material / Part  "  . $k;
+											?>
+											<i class="material-icons prefix">subtitles</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<?php
+													if (isset($stock_id) && $stock_id > 0) {
+														$sql1 			= " SELECT d.*, e.category_name, a.is_mandatory
+																			FROM product_packages a 
+																			INNER JOIN products b ON b.id = a.product_id
+																			INNER JOIN product_stock c ON b.id = c.product_id
+																			INNER JOIN packages d ON d.id = a.package_id
+																			INNER JOIN product_categories e ON e.id = d.product_category
+																			WHERE c.id = '" . $stock_id . "'
+																			AND d.stock_in_hand > 0
+																			ORDER BY a.is_mandatory DESC, d.package_name ";
+														$result1 		= $db->query($conn, $sql1);
+														$count1 		= $db->counter($result1);
+														if ($count1 > 0) {
+															$row1	= $db->fetch($result1); ?>
+															<option value="">Select</option>
+															<?php
+															foreach ($row1 as $data2) {
+																$mandatory_optional = "";
+																if ($data2['is_mandatory'] == "Yes") {
+																	$mandatory_optional = " - Mandatory -";
+																}
+																if ($data2['is_mandatory'] == "No") {
+																	$mandatory_optional = " - Optional -";
+																} ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+																	<?php echo $data2['package_name']; ?> (<?php echo $data2['category_name'] . ")," . $mandatory_optional . " Total Stock Available: " . $data2['stock_in_hand']; ?>
+																</option>
+															<?php }
+														} else { ?>
+															<option value="">No <?= $field_label; ?> Available</option>
+														<?php }
+													} else { ?>
+														<option value="">Select</option>
+													<?php } ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+											<?php
+											$field_name = "product_id_for_package_material"; ?>
+											<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
+										</div>
+									<?php } ?>
+									<div class="input-field col m1 s12">
+										<a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $a ?>" href="javascript:void(0)">
+											<i class="material-icons dp48">cancel</i>
+										</a> &nbsp;
+										<a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px;" id="add-more^<?= $a ?>" href="javascript:void(0)">
+											<i class="material-icons dp48">add_circle</i>
+										</a>&nbsp;&nbsp;
+									</div>
+								</div>
+							<?php
+							}
+							?>
 							<div class="row">
 								<div class="input-field col m4 s12"></div>
 							</div>

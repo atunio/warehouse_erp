@@ -280,8 +280,8 @@
                                         }
                                     } else {
                                         if (isset($test_on_local) && $test_on_local == 1) {
-                                            $product_ids[]          = "212";
-                                            $product_ids[]          = "213";
+                                            $product_ids[]          = "2987";
+                                            $product_ids[]          = "2988";
                                             $product_condition[]    = "A";
                                             $product_condition[]    = "A";
                                             $order_price[]          = "200";

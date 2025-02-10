@@ -464,6 +464,9 @@ $(document).ready(function() {
             $(".new_value").hide(); 
         }
 		else if(status_id_rma == '19' || status_id_rma == '18' || status_id_rma == '22' || status_id_rma == '23' || status_id_rma == '24'){
+            if(status_id_rma == '18'){
+                 $(".partial_refund_status").show();  
+            }
             if(status_id_rma == '19'){
                 $(".tracking_no_rma").hide();
                 $(".repair_type").show();  
@@ -743,6 +746,29 @@ $(document).ready(function() {
     });
     ///////////////////////////////////////////// 
 
+
+    /////////////////////////////////////////////
+    $(".show_receive_from_barcode_section_tab6_2").click(function() {
+
+        $("#receive_from_barcode_section_tab6_2").show();
+        $(".show_receive_from_barcode_show_btn_tab6_2").hide();
+        $(".show_receive_from_barcode_hide_btn_tab6_2").show();
+
+         $("#receive_as_manual_barcodes_section_tab6_2").hide();
+        //  $(".show_receive_as_manual_barcodes_hide_btn_tab6").hide();
+        //  $(".show_receive_as_manual_barcodes_show_btn_tab6").show();
+
+        //  $("#update_tested_devices_serial_from_phonechecker_tab6").hide();
+        //  $(".update_tested_devices_serial_from_phonechecker_hide_btn_tab6").hide();
+        //  $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
+
+    });
+    $(".hide_receive_from_barcode_section_tab6_2").click(function() {  
+        $("#receive_from_barcode_section_tab6_2").hide();
+        $(".show_receive_from_barcode_hide_btn_tab6_2").hide();
+        $(".show_receive_from_barcode_show_btn_tab6_2").show();
+    });
+    ///////////////////////////////////////////// 
 
       /////////////////////////////////////////////
     $(".show_broken_device_section_tab6").click(function() {

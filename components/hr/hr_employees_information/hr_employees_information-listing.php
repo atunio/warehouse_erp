@@ -4,7 +4,7 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 $db = new mySqlDB;
-$selected_db_name 		= $_SESSION["db_name"];
+$selected_db_name 		= $_SESSION["db_name"]; 
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 		= $_SESSION["user_id"];
 

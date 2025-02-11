@@ -187,7 +187,7 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 	}
 	if (isset($e_national_id_no) && $e_national_id_no == "") {
 		$error['e_national_id_no'] 	= "Required";
-		$e_national_id_no_valid 	= "invalid";
+		$e_national_id_no_valid 	= "invalid";	
 	}
 	if (isset($e_joining_date) && $e_joining_date == "") {
 		$error['e_joining_date']	= "Required";

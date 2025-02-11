@@ -49,8 +49,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($department_name) && $department_name == "") {
 		$error['msg'] = "Enter department name";
 		$title_valid = "invalid";
-	} else if (isset($department_name) && (strlen($department_name) > 45 || strlen($department_name) < 5)) {
-		$error['msg'] = "Department name should be between 5 to 45 characters";
+	} else if (isset($department_name) && (strlen($department_name) < 3)) {
+		$error['msg'] = "Department name should be greater than 3 characters";
 		$department_name_valid = "invalid";
 	}
 	if (empty($error)) {

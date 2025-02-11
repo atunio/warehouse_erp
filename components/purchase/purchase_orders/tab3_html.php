@@ -66,55 +66,7 @@
         $sql2           = $sql;
         $sql2           .= " AND a.arrived_date IS NOT NULL";
         $sql           .= $orderby;
-        $sql2           .= $orderby;
-        // echo $sql;
-        // $result_log2     = $db->query($conn, $sql2);
-        // $count_log2      = $db->counter($result_log2);
-        /*
-        if ($count_log2 > 0) { ?>
-            <div class="card-panel">
-                <form action="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" method="post" target="_blank">
-
-                    <div class="row">
-                        <div class="col m4 s12">
-                            <h5>Print Labels</h5>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <?php
-                        $field_name     = "no_of_labels";
-                        $field_label     = "No of Labels";
-                        ?>
-                        <div class="input-field col m4 s12">
-                            <i class="material-icons prefix">description</i>
-                            <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                echo ${$field_name};
-                                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                    } ?>">
-                            <label for="<?= $field_name; ?>">
-                                <?= $field_label; ?>
-                                <span class="color-red"> *<?php
-                                                            if (isset($error3[$field_name])) {
-                                                                echo $error3[$field_name];
-                                                            } ?>
-                                </span>
-                            </label>
-                        </div>
-                        <div class="input-field col m2 s12">
-                            <?php
-                            if (isset($id) && $id > 0 && access("print_perm") == 1) { ?>
-                                <br>
-                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Print Labels</button>
-                            <?php } ?>
-                        </div>
-                        <div class="input-field col m4 s12"></div>
-                    </div>
-                </form>
-            </div>
-        <?php
-        } 
-        */ ?>
+        $sql2           .= $orderby;  ?>
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab3") ?>" method="post" enctype="multipart/form-data">
             <input type="hidden" name="is_Submit_tab3" value="Y" />
             <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />

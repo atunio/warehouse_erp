@@ -664,36 +664,36 @@
                     </div>
                 </div>
             <?php } ?>
-            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
-                <input type="hidden" name="is_Submit_tab6_6" value="Y" />
-                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-                                                                    echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>">
-                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-
-                <div class="card-panel custom_padding_card_content_table_top_bottom">
-                    <div class="row">
-                        <div class="col m8 s12">
-                            <h6>Fetch Return Data from PhoneCheck</h6>
-                        </div>
-                        <div class="col m4 s12 update_tested_devices_serial_from_phonechecker_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {
-                                                                                                                        echo "display: none;";
-                                                                                                                    } else {;
-                                                                                                                    } ?>">
-                            <a href="javascript:void(0)" class="show_update_tested_devices_serial_from_phonechecker_tab6">Show Form</a>
-                        </div>
-                        <div class="col m4 s12 update_tested_devices_serial_from_phonechecker_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
-                                                                                                                    } else {
-                                                                                                                        echo "display: none;";
-                                                                                                                    } ?>">
-                            <a href="javascript:void(0)" class="hide_update_tested_devices_serial_from_phonechecker_tab6">Hide Form</a>
-                        </div>
+            <div class="card-panel custom_padding_card_content_table_top_bottom">
+                <div class="row">
+                    <div class="col m8 s12">
+                        <h6>Fetch Data from PhoneCheck</h6>
                     </div>
-                    <div id="update_tested_devices_serial_from_phonechecker_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
-                                                                                            } else {
-                                                                                                echo "display: none;";
-                                                                                            } ?>">
+                    <div class="col m4 s12 update_tested_devices_serial_from_phonechecker_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {
+                                                                                                                    echo "display: none;";
+                                                                                                                } else {;
+                                                                                                                } ?>">
+                        <a href="javascript:void(0)" class="show_update_tested_devices_serial_from_phonechecker_tab6">Show Form</a>
+                    </div>
+                    <div class="col m4 s12 update_tested_devices_serial_from_phonechecker_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
+                                                                                                                } else {
+                                                                                                                    echo "display: none;";
+                                                                                                                } ?>">
+                        <a href="javascript:void(0)" class="hide_update_tested_devices_serial_from_phonechecker_tab6">Hide Form</a>
+                    </div>
+                </div>
+                <div id="update_tested_devices_serial_from_phonechecker_tab6" style="<?php if (isset($is_Submit_tab6_6) && $is_Submit_tab6_6 == 'Y') {;
+                                                                                        } else {
+                                                                                            echo "display: none;";
+                                                                                        } ?>">
+                                                                                        
+                    <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                        <input type="hidden" name="is_Submit_tab6_6" value="Y" />
+                        <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
+                        <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                            echo encrypt($_SESSION['csrf_session']);
+                                                                        } ?>">
+                        <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                         <br>
                         <div class="row">
                             <div class="input-field col m4 s12">
@@ -739,7 +739,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="input-field col m4 s12">
+                            <div class="input-field col m2 s12">
                                 <?php
                                 $field_name     = "diagnostic_date";
                                 $field_id       = $field_name;
@@ -759,191 +759,283 @@
                                                                 } ?>
                                     </span>
                                 </label>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="input-field col m4 s12"></div>
+                            </div> 
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
                                     <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Fetch Data</button>
                                 <?php } ?>
                             </div>
-                            <div class="input-field col m4 s12"></div>
                         </div>
                         <div class="row">
                             <div class="input-field col m12 s12"></div>
+                        </div>
+                    </form>
+                    <?php 
+                    $sql_preview        = " SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
+                                            FROM phone_check_api_data_return a
+                                            LEFT JOIN products c ON c.product_model_no = a.model_no 
+                                            LEFT JOIN return_items_detail d ON d.product_id = c.id 
+                                            WHERE a.return_id = '" . $id . "' 
+                                            AND a.is_processed = 0
+                                            ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
+                                            // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
+                    $result_preview     = $db->query($conn, $sql_preview);
+                    $count_preview      = $db->counter($result_preview);
+                    if ($count_preview > 0) {
+                        $row_preview = $db->fetch($result_preview); ?>
+                        <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                            <input type="hidden" name="is_Submit2_preview" value="Y" />
+                            <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+                                <div class="card-content custom_padding_card_content_table_top">
+                                    <h6 class="card-title">Preview Fetched Data</h6><br>
+                                    <div class="row">
+                                        <table id="page-length-option1" class="display bordered striped addproducttable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="text-align: center;">S.No</th>
+                                                    <th style="text-align: center;">
+                                                        <label>
+                                                            <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+                                                                                                                                                        echo "checked";
+                                                                                                                                                    } ?> />
+                                                            <span></span>
+                                                        </label>
+                                                    </th>
+                                                    <th style="text-align: center;">Serial#</th>
+                                                    <th>Return Product ID</th>
+                                                    <th>Diagnostic Product ID</th>
+                                                    <th>Diagnostic Model#</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 0;
+                                                foreach ($row_preview as $data) {
+                                                    $phone_check_product_id = $data['product_uniqueid'];
+                                                    $phone_check_model_no   = $data['model_no'];
+                                                    $po_id                  = $data['return_id'];
+                                                    $po_detail_id           = $data['po_detail_id'];
+                                                    $product_item_price     = $data['order_price'];
+                                                    $bulkserialNo[]         = $data['imei_no'];
+                                                    $phone_check_api_data   = $data['phone_check_api_data'];
+                                                    if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
+                                                    $checked = "";
+                                                        if ($po_detail_id > 0) {
+                                                            $checked = "checked";
+                                                        } ?>
+                                                        <tr>
+                                                            <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
+                                                            <td style="width:80px; text-align: center;">
+                                                                <?php
+                                                                if (access("delete_perm") == 1) { ?>
+                                                                    <label>
+                                                                        <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
+                                                                                                                                                                                echo $checked;
+                                                                                                                                                                            } ?> class="checkbox filled-in" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                <?php } ?>
+                                                            </td>
+                                                            <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
+                                                            <td>
+                                                                <?php
+                                                                if ($po_detail_id > 0) {  ?>
+                                                                    <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
+                                                                        <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
+                                                                    </select>
+                                                                <?php } else { ?>
+                                                                    <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
+                                                                        <option value="">Select</option>
+                                                                        <?php
+                                                                        $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
+                                                                                                FROM return_items_detail a 
+                                                                                                INNER JOIN returns b ON b.id = a.return_id
+                                                                                                INNER JOIN products c ON c.id = a.product_id
+                                                                                                WHERE 1=1 
+                                                                                                AND a.return_id = '" . $po_id . "'   ";
+                                                                        $result_pd03    = $db->query($conn, $sql_pd03);
+                                                                        $count_pd03        = $db->counter($result_pd03);
+                                                                        if ($count_pd03 > 0) {
+                                                                            $row_pd03 = $db->fetch($result_pd03);
+                                                                            foreach ($row_pd03 as $data_pd03) { ?>
+                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>">ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
+                                                                        <?php }
+                                                                        } ?>
+                                                                    </select>
+                                                                <?php }
+                                                                $i++;
+                                                                ?>
+                                                            </td>
+                                                            <td><?php echo $phone_check_product_id; ?></td>
+                                                            <td><?php echo $phone_check_model_no; ?></td>
+                                                            <td>
+                                                                <label>
+                                                                    <input type="text" name="prices[<?= $data['imei_no']; ?>]" id="prices_<?php echo $i; ?>" value=" <?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?>" />
+                                                                    <span></span>
+                                                                </label>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                <?php }
+                                                } ?>
+                                            </tbody>
+                                        </table>
+                                    </div><br><br>
+                                    <div class="row"> 
+                                        <div class="input-field col m2 s12">
+                                            <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                                <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
+                                                    <i class="material-icons right">send</i>
+                                                </button>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    <?php }?>
+                </div>
+            </div>
+            <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                <input type="hidden" name="is_Submit_tab6_2_3" value="Y" />
+                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                    echo encrypt($_SESSION['csrf_session']);
+                                                                } ?>">
+                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+
+                <div class="card-panel custom_padding_card_content_table_top_bottom">
+                    <div class="row">
+                        <div class="col m8 s12">
+                            <h6>Process Fetched Data</h6>
+                        </div>
+                        <div class="col m4 s12 show_receive_from_barcode_show_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {
+                                                                                                    echo "display: none;";
+                                                                                                } else {;
+                                                                                                } ?>">
+                            <a href="javascript:void(0)" class="show_receive_from_barcode_section_tab6_2">Show Form</a>
+                        </div>
+                        <div class="col m4 s12 show_receive_from_barcode_hide_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {;
+                                                                                                } else {
+                                                                                                    echo "display: none;";
+                                                                                                } ?>">
+                            <a href="javascript:void(0)" class="hide_receive_from_barcode_section_tab6_2">Hide Form</a>
+                        </div>
+                    </div>
+                    <div id="receive_from_barcode_section_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {;
+                                                                        } else {
+                                                                            echo "display: none;";
+                                                                        } ?>">
+                        <div class="row">
+                            <div class="input-field col m12 s12"> </div>
+                        </div>
+                        <div class="row">
+                            
+                            <div class="input-field col m7 s12">
+                                <?php
+                                $field_name     = "diagnostic_fetch_id";
+                                $field_label    = "Product";
+                                $sql            = " SELECT a.*, c.product_model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                    FROM return_receive_diagnostic_fetch_return a 
+                                                    INNER JOIN return_items_detail b ON b.id = a.po_detail_id
+                                                    INNER JOIN products c ON c.id = b.product_id
+                                                    LEFT JOIN product_categories d ON d.id = c.product_category
+                                                    WHERE a.po_id = '" . $id . "'
+                                                    AND a.is_processed = 0  
+                                                    ORDER BY c.product_uniqueid, a.serial_no ";
+                                // echo $sql; 
+                                $result_log2    = $db->query($conn, $sql);
+                                $count_r2       = $db->counter($result_log2); ?>
+                                <i class="material-icons prefix pt-1">add_shopping_cart</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count_r2 > 0) {
+                                            $row_r2    = $db->fetch($result_log2);
+                                            foreach ($row_r2 as $data_r2) { 
+                                                $detail_id_r1       = $data_r2['id'];
+                                                $order_qty          = $data_r2['order_qty']; 
+                                                $sql_rc1            = "	SELECT a.* 
+                                                                        FROM purchase_order_detail_receive a 
+                                                                        WHERE 1=1 
+                                                                        AND a.po_detail_id = '" . $detail_id_r1 . "'
+                                                                        AND a.enabled = 1 "; //echo $sql_cl;
+                                                $result_rc1         = $db->query($conn, $sql_rc1);
+                                                $total_received_qty = $db->counter($result_rc1);  ?> 
+                                                <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php  
+                                                    echo "Product: ".$data_r2['product_desc']." (" . $data_r2['product_uniqueid'].") - ";
+                                                    if ($data_r2['category_name'] != "") {
+                                                        echo " (" . $data_r2['category_name'] . ") ";
+                                                    }
+                                                    echo " - Serial#: " . $data_r2['serial_no'].", Model#: " . $data_r2['product_model_no']; ?>
+                                                </option>
+                                        <?php
+                                            }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red"> * <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div> 
+                            <div class="input-field col m3 s12">
+                                <?php 
+                                $field_name     = "sub_location_id_fetched";
+                                $field_label    = "Location";
+                                $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
+                                $result1        = $db->query($conn, $sql1);
+                                $count1         = $db->counter($result1);
+                                ?>
+                                <i class="material-icons prefix">question_answer</i>
+                                <div class="select2div">
+                                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                        <option value="">Select</option>
+                                        <?php
+                                        if ($count1 > 0) {
+                                            $row1    = $db->fetch($result1);
+                                            foreach ($row1 as $data2) { ?>
+                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                    <?php echo $data2['sub_location_name'];
+                                                    if ($data2['sub_location_type'] != "") {
+                                                        echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                    } ?>
+                                                </option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                    <label for="<?= $field_name; ?>">
+                                        <?= $field_label; ?>
+                                        <span class="color-red">* <?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="input-field col m2 s12">
+                                <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                    <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Submit</button>
+                                <?php } ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </form>
             <?php
-             $sql_preview = "SELECT a.*
-							FROM phone_check_api_data_return a
-                            LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
- 							WHERE a.po_id = '" . $id . "' 
-                            AND a.is_processed = 0
-                            ORDER BY c.enabled DESC, a.sku_code, a.model_no ";
-                            
-            $result_preview    = $db->query($conn, $sql_preview);
-            $count_preview        = $db->counter($result_preview);
-            if ($count_preview > 0) {
-                $row_preview = $db->fetch($result_preview); ?>
-                <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
-                    <input type="hidden" name="is_Submit2_preview" value="Y" />
-                    <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
-                        <div class="card-content custom_padding_card_content_table_top">
-                            <h6 class="card-title">Return Preview Fetched Data</h6><br>
-                            <div class="row">
-                                <table id="page-length-option1" class="display bordered striped addproducttable">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">S.No</th>
-                                            <th style="text-align: center;">
-                                                <label>
-                                                    <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
-                                                                                                                                                echo "checked";
-                                                                                                                                            } ?> />
-                                                    <span></span>
-                                                </label>
-                                            </th>
-                                            <th style="text-align: center;">Serial#</th>
-                                            <th>Return Product ID</th>
-                                            <th>Diagnostic Product ID</th>
-                                            <th>Diagnostic Model#</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $i = 0;
-                                        foreach ($row_preview as $data) {
-                                            $phone_check_product_id = $data['sku_code'];
-                                            $phone_check_model_no   = $data['model_no'];
-                                            $return_id              = $data['po_id'];
-                                            $bulkserialNo[]         = $data['imei_no'];
-                                            $phone_check_api_data   = $data['phone_check_api_data'];
-                                            if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
-                                                $product_item_price = $checked = "";
-                                                 $sql_pd02         = "	SELECT a.id, a.order_price 
-                                                                        FROM return_items_detail a 
-                                                                        INNER JOIN returns b ON b.id = a.return_id
-                                                                        INNER JOIN products c ON c.id = a.product_id
-                                                                        WHERE 1=1
-                                                                        AND a.return_id = '" . $id . "'
-                                                                        AND c.product_model_no = '" . $phone_check_model_no . "'
-                                                                        AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
-                                                                        
-                                                $result_pd02    = $db->query($conn, $sql_pd02);
-                                                $count_pd02     = $db->counter($result_pd02);
-                                                if ($count_pd02 > 0) {
-                                                    $checked = "checked";
-                                                } ?>
-                                                <tr>
-                                                    <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
-                                                    <td style="width:80px; text-align: center;">
-                                                        <?php
-                                                        if (access("delete_perm") == 1) { ?>
-                                                            <label>
-                                                                <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
-                                                                                                                                                                        echo $checked;
-                                                                                                                                                                    } ?> class="checkbox filled-in" />
-                                                                <span></span>
-                                                            </label>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
-                                                    <td>
-                                                        <?php
-                                                        if ($count_pd02 > 0 && ($phone_check_product_id != "" && $phone_check_product_id != NULL)) {
-                                                            $row_pd02 = $db->fetch($result_pd02);
-                                                            $product_item_price = $row_pd02[0]['order_price']; ?>
-                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
-                                                                <option value="<?php echo $phone_check_product_id; ?>"><?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
-                                                            </select>
-                                                        <?php } else { ?>
-                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
-                                                                <option value="">Select</option>
-                                                                <?php
-                                                                $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
-                                                                                        FROM return_items_detail a 
-                                                                                        INNER JOIN returns b ON b.id = a.return_id
-                                                                                        INNER JOIN products c ON c.id = a.product_id
-                                                                                        WHERE 1=1 
-                                                                                        AND a.return_id = '" . $return_id . "'   ";
-                                                                $result_pd03    = $db->query($conn, $sql_pd03);
-                                                                $count_pd03        = $db->counter($result_pd03);
-                                                                if ($count_pd03 > 0) {
-                                                                    $row_pd03 = $db->fetch($result_pd03);
-                                                                    foreach ($row_pd03 as $data_pd03) { ?>
-                                                                        <option value="<?php echo $data_pd03['product_uniqueid']; ?>"><?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
-                                                                <?php }
-                                                                } ?>
-                                                            </select>
-                                                        <?php }
-                                                        $i++;
-                                                        ?>
-                                                    </td>
-                                                    <td><?php echo $phone_check_product_id; ?></td>
-                                                    <td><?php echo $phone_check_model_no; ?></td>
-                                                    <td><?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?></td>
-                                                </tr>
-                                        <?php }
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div><br><br>
-                            <div class="row">
-                                <div class="input-field col m3 s12">
-                                    <i class="material-icons prefix">question_answer</i>
-                                    <div class="select2div">
-                                        <?php
-                                        $field_name     = "process_bin_id";
-                                        $field_label    = "Bin/Location";
-
-                                        $sql1           = " SELECT b.id,b.sub_location_name, b.sub_location_type
-                                                                FROM  warehouse_sub_locations b";
-                                        $result1        = $db->query($conn, $sql1);
-                                        $count1         = $db->counter($result1);
-                                        ?>
-                                        <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                                                        } ?>">
-                                            <option value="">Select</option>
-                                            <?php
-                                            if ($count1 > 0) {
-                                                $row1    = $db->fetch($result1);
-                                                foreach ($row1 as $data2) { ?>
-                                                    <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php
-                                                                                                                                                                                                        echo $data2['sub_location_name'];
-                                                                                                                                                                                                        if ($data2['sub_location_type'] != "") {
-                                                                                                                                                                                                            echo "(" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                                                                                                                                                                        } ?></option>
-                                            <?php }
-                                            } ?>
-                                        </select>
-                                        <label for="<?= $field_name; ?>">
-                                            <?= $field_label; ?>
-                                            <span class="color-red">*<?php
-                                                                        if (isset($error6[$field_name])) {
-                                                                            echo $error6[$field_name];
-                                                                        } ?>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="input-field col m2 s12">
-                                    <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
-                                        <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process Diagnostic
-                                            <i class="material-icons right">send</i>
-                                        </button>
-                                    <?php } ?>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </form>
-            <?php }
             $td_padding = "padding:5px 10px !important;";
             $sql            = " SELECT * FROM (
                                     SELECT 'ProductReceived' as record_type, '1' as total_qty_received, 
@@ -982,7 +1074,7 @@
                                 <h5>Return Received Products</h5>
                             </div>
                             <div class="col m8 s12">
-                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export in Excel</a>
+                                <a href="export/export_return_ro_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export in Excel</a>
                             </div>
                         </div>
                         <?php

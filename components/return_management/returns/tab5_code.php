@@ -86,7 +86,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 								b.return_id = '" . $id . "'
 								AND a.serial_no_barcode = '" . $serial_no_barcode . "'
 							) ";
-			// echo $sql_ee1;
+			 echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
 			if ($counter_ee1 == 0) {

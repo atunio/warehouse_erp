@@ -281,7 +281,7 @@
                                     } else {
                                         if (isset($test_on_local) && $test_on_local == 1) {
                                             $product_ids[]          = "2987";
-                                            $product_ids[]          = "2988";
+                                            $product_ids[]          = "2989";
                                             $product_condition[]    = "A";
                                             $product_condition[]    = "A";
                                             $order_price[]          = "200";
@@ -357,7 +357,7 @@
                                         $readonly = "readonly='readonly'";
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
-                                    for ($i = 1; $i <= 50; $i++) {
+                                    for ($i = 1; $i <= 25; $i++) {
                                         $field_name     = "product_ids";
                                         $field_id       = "productids_" . $i;
                                         $field_label    = "Product";
@@ -558,7 +558,7 @@
                                             $readonly = "readonly='readonly'";
                                         }
                                         $sum_part_value = $sum_part_qty =  $sum_part_price = 0;
-                                        for ($i = 1; $i <= 50; $i++) {
+                                        for ($i = 1; $i <= 10; $i++) {
                                             $field_name     = "package_ids";
                                             $field_id       = "packageids_" . $i;
                                             $style_btn = '';
@@ -599,7 +599,7 @@
                                                         if ($count1 > 0) {
                                                             $row1    = $db->fetch($result1);
                                                             foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueids']; ?></option>
+                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>

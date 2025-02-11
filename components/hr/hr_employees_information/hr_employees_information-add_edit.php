@@ -212,19 +212,19 @@ if ($cmd == 'add') {
 										</a>
 										<?php
 										if (isset($cmd2) && $cmd2 != "") { ?><br>
-											<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>">
+											<!-- 	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>">
 												Add New Eduction
-											</a>
+											</a> -->
 										<?php }
 										if (isset($cmd3) && $cmd3 != "") { ?><br>
-											<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd3=add&active_tab=tab3") ?>">
+											<!-- <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd3=add&active_tab=tab3") ?>">
 												Add New Experience
-											</a>
+											</a> -->
 										<?php }
 										if (isset($cmd4) && $cmd4 != "") { ?><br>
-											<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd4=add&active_tab=tab4") ?>">
+											<!-- <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd4=add&active_tab=tab4") ?>">
 												Add New Employment History
-											</a>
+											</a> -->
 									<?php }
 										/*
 										if (isset($cmd5) && $cmd5 != "") { ?><br>
@@ -356,16 +356,19 @@ if ($cmd == 'add') {
 													</span>
 												</label>
 											</div>
-											<div class="col m4 s12">
-												<div class="input-field">
+										</div>
+										<div class="row">
+											<div class="input-field col m4 s12 custom_margin_bottom_col">
+												<i class="material-icons prefix pt-2">people_outline</i>
+												<div class="select2div">
 													<?php
 													$field_name 	= "e_gender";
 													$field_label 	= "Gender";
 													?>
-													<i class="material-icons prefix pt-2">people_outline</i>
-													<select id="e_gender" name="e_gender" class="validate <?php if (isset($e_gender)) {
-																												echo $e_gender;
-																											} ?>">
+
+													<select id="e_gender" name="e_gender" class="select2 browser-default select2-hidden-accessible validate  <?php if (isset($e_gender)) {
+																																									echo $e_gender;
+																																								} ?>">
 														<option value="">Select</option>
 														<option value="Male" <?php if (isset($e_gender) && $e_gender == "Male") { ?> selected="selected" <?php } ?>>Male</option>
 														<option value="Female" <?php if (isset($e_gender) && $e_gender == "Female") { ?> selected="selected" <?php } ?>>Female</option>
@@ -380,77 +383,6 @@ if ($cmd == 'add') {
 													</label>
 												</div>
 											</div>
-										</div>
-										<div class="row">
-											<div class="input-field col m4 s12">
-												<?php
-												$field_name 	= "e_birth_date";
-												$field_label 	= "Date of Birth";
-												?>
-												<i class="material-icons prefix">date_range</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>" class="datepicker validate <?php if (isset(${$field_name . "_valid"})) {
-																																										echo ${$field_name . "_valid"};
-																																									} ?>">
-												<label for="<?= $field_name; ?>">
-													<?= $field_label; ?>
-													<span class="color-red"> * <?php
-																				if (isset($error[$field_name])) {
-																					echo $error[$field_name];
-																				} ?>
-													</span>
-												</label>
-											</div>
-											<div class="col m4 s12">
-												<div class="input-field">
-
-													<?php
-													$field_name 	= "e_marital_status";
-													$field_label 	= "Marital Status";
-													?>
-													<i class="material-icons prefix pt-2">people_outline</i>
-													<select id="e_marital_status" name="e_marital_status" class="validate <?php if (isset($e_marital_status)) {
-																																echo $e_marital_status;
-																															} ?>">
-														<option value="">Select </option>
-														<option value="Single" <?php if (isset($e_marital_status) && $e_marital_status == "Single") { ?> selected="selected" <?php } ?>>Single</option>
-														<option value="Married" <?php if (isset($e_marital_status) && $e_marital_status == "Married") { ?> selected="selected" <?php } ?>>Married</option>
-														<option value="Divorced" <?php if (isset($e_marital_status) && $e_marital_status == "Divorced") { ?> selected="selected" <?php } ?>>Divorced</option>
-														<option value="Other" <?php if (isset($e_marital_status) && $e_marital_status == "Other") { ?> selected="selected" <?php } ?>>Other</option>
-													</select>
-													<label for="<?= $field_name; ?>">
-														<?= $field_label; ?>
-														<span class="color-red"> * <?php
-																					if (isset($error[$field_name])) {
-																						echo $error[$field_name];
-																					} ?>
-														</span>
-													</label>
-												</div>
-											</div>
-											<div class="input-field col m4 s12">
-												<?php
-												$field_name 	= "e_phone";
-												$field_label 	= "Phone";
-												?>
-												<i class="material-icons prefix">phone_iphone_outline</i>
-												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																	echo ${$field_name};
-																																} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																							echo ${$field_name . "_valid"};
-																																						} ?>">
-												<label for="<?= $field_name; ?>">
-													<?= $field_label; ?>
-													<span class="color-red"> * <?php
-																				if (isset($error[$field_name])) {
-																					echo $error[$field_name];
-																				} ?>
-													</span>
-												</label>
-											</div>
-										</div>
-										<div class="row">
 											<div class="input-field col m4 s12">
 												<?php
 												$field_name 	= "e_email";
@@ -491,11 +423,12 @@ if ($cmd == 'add') {
 													</span>
 												</label>
 											</div>
-
+										</div>
+										<div class="row">
 											<div class="input-field col m4 s12">
 												<?php
-												$field_name 	= "e_joining_date";
-												$field_label 	= "Joining Date";
+												$field_name 	= "e_birth_date";
+												$field_label 	= "Date of Birth";
 												?>
 												<i class="material-icons prefix">date_range</i>
 												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -503,6 +436,65 @@ if ($cmd == 'add') {
 																																} ?>" class="datepicker validate <?php if (isset(${$field_name . "_valid"})) {
 																																										echo ${$field_name . "_valid"};
 																																									} ?>">
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> * <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+											<div class="input-field col m4 s12 custom_margin_bottom_col">
+												<i class="material-icons prefix pt-2">people_outline</i>
+
+												<div class="select2div">
+													<?php
+													$field_name 	= "e_marital_status";
+													$field_label 	= "Marital Status";
+													?>
+													<select id="e_marital_status" name="e_marital_status" class="select2 browser-default select2-hidden-accessible validate <?php if (isset($e_marital_status)) {
+																																												echo $e_marital_status;
+																																											} ?>">
+														<option value="">Select </option>
+														<option value="Single" <?php if (isset($e_marital_status) && $e_marital_status == "Single") { ?> selected="selected" <?php } ?>>Single</option>
+														<option value="Married" <?php if (isset($e_marital_status) && $e_marital_status == "Married") { ?> selected="selected" <?php } ?>>Married</option>
+														<option value="Divorced" <?php if (isset($e_marital_status) && $e_marital_status == "Divorced") { ?> selected="selected" <?php } ?>>Divorced</option>
+														<option value="Other" <?php if (isset($e_marital_status) && $e_marital_status == "Other") { ?> selected="selected" <?php } ?>>Other</option>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"> * <?php
+																					if (isset($error[$field_name])) {
+																						echo $error[$field_name];
+																					} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+
+
+
+
+
+
+
+
+
+
+
+
+											<div class="input-field col m4 s12">
+												<?php
+												$field_name 	= "e_phone";
+												$field_label 	= "Phone";
+												?>
+												<i class="material-icons prefix">phone_iphone_outline</i>
+												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																																	echo ${$field_name};
+																																} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																							echo ${$field_name . "_valid"};
+																																						} ?>">
 												<label for="<?= $field_name; ?>">
 													<?= $field_label; ?>
 													<span class="color-red"> * <?php
@@ -721,16 +713,20 @@ if ($cmd == 'add') {
 												</label>
 											</div>
 
-											<div class="col m4 s12">
-												<div class="input-field">
-													<i class="material-icons prefix pt-2">person_outline</i>
-													<select id="emp_status" name="emp_status" class="validate <?php if (isset($emp_statuss_valid)) {
-																													echo $emp_statuss_valid;
-																												} ?>">
+											
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
+												<i class="material-icons prefix">person_outline</i>
+												<div class=" select2div">
+
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset($emp_statuss_valid)) {
+																																														echo $emp_statuss_valid;
+																																													} ?>">
+														<option value="">Select</option>
 														<option value="Active" <?php if (isset($emp_status) && $emp_status == "Active") { ?> selected="selected" <?php } ?>>Active</option>
 														<option value="Deactive" <?php if (isset($emp_status) && $emp_status == "Deactive") { ?> selected="selected" <?php } ?>>Deactive</option>
 													</select>
 													<label for="emp_status">Status</label>
+
 												</div>
 											</div>
 										</div>
@@ -746,6 +742,26 @@ if ($cmd == 'add') {
 																																} ?>" class="twoDecimalNumber validate <?php if (isset(${$field_name . "_valid"})) {
 																																											echo ${$field_name . "_valid"};
 																																										} ?>">
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> * <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+											<div class="input-field col m4 s12">
+												<?php
+												$field_name 	= "e_joining_date";
+												$field_label 	= "Joining Date";
+												?>
+												<i class="material-icons prefix">date_range</i>
+												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																																	echo ${$field_name};
+																																} ?>" class="datepicker validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
 												<label for="<?= $field_name; ?>">
 													<?= $field_label; ?>
 													<span class="color-red"> * <?php
@@ -775,7 +791,7 @@ if ($cmd == 'add') {
 													</span>
 												</label>
 											</div>
-											<div class="input-field col m4 s12">
+											<div class="input-field col m12 s12">
 												<?php
 												$field_name 	= "e_exit_reason";
 												$field_label 	= "Exit Reason";
@@ -837,16 +853,18 @@ if ($cmd == 'add') {
 													</span>
 												</label>
 											</div>
-											<div class="col m4 s12">
+
+											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<?php
 												$field_name 	= "user_type";
 												$field_label 	= "Login User Type";
 												?>
-												<div class="input-field">
-													<i class="material-icons prefix pt-2">person_outline</i>
-													<select name="user_type" id="user_type" class="validate <?php if (isset($user_type_valid)) {
-																												echo $user_type_valid;
-																											} ?>">
+												<i class="material-icons prefix pt-2">person_outline</i>
+
+												<div class="select2div">
+													<select name="user_type" id="user_type" class="select2 browser-default select2-hidden-accessible validate <?php if (isset($user_type_valid)) {
+																																									echo $user_type_valid;
+																																								} ?>">
 														<?php if ($cmd == 'add') { ?>
 															<option value="">Select </option>
 															<option value="Sub Users" <?php if (isset($user_type) && $user_type == "Sub Users") { ?> selected="selected" <?php } ?>>Sub Users</option>
@@ -1069,10 +1087,22 @@ if ($cmd == 'add') {
 												</div>
 											</div>
 											<div class="row">
-												<div class="input-field col m12 s12">
+												<div class="input-field col m4 s12"></div>
+												<div class="input-field col m2 s12">
 													<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 												</div>
-												<div class="input-field col m4 s12"></div>
+												<div class="input-field col m3 s12">
+													<?php
+													if (isset($id) && $id > 0) { ?>
+														<?php
+														if (isset($cmd2) && $cmd2 != "") { ?>
+															<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>">
+																Add New Eduction
+															</a>
+													<?php }
+													} ?>
+												</div>
+												<div class="input-field col m3 s12"></div> 
 											</div>
 										</form>
 									<?php } else { ?>
@@ -1178,80 +1208,76 @@ if ($cmd == 'add') {
 
 											<div id="experience_field">
 												<div class="row">
-													<h4>Experience</h4>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">work_outline</i>
-															<input id="e_job_title" type="text" name="e_job_title" value="<?php if (isset($e_job_title)) {
-																																echo $e_job_title;
-																															} ?>"="" class="validate <?php if (isset($e_job_title)) {
-																																							echo $e_job_title;
-																																						} ?>">
-															<label for="e_job_title">Job Title</label>
-														</div>
-													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">work_outline</i>
-															<input id="e_job_role" type="text" name="e_job_role" value="<?php if (isset($e_job_role)) {
-																															echo $e_job_role;
-																														} ?>"="" class="validate <?php if (isset($e_job_role)) {
-																																						echo $e_job_role;
+													<h4>Experience</h4> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">work_outline</i>
+														<input id="e_job_title" type="text" name="e_job_title" value="<?php if (isset($e_job_title)) {
+																															echo $e_job_title;
+																														} ?>" class="validate <?php if (isset($e_job_title_valid)) {
+																																						echo $e_job_title_valid;
 																																					} ?>">
-															<label for="e_job_role">Job Role</label>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">date_range</i>
-															<input id="e_date_from" type="text" name="e_date_from" class="datepicker" value="<?php if (isset($e_date_from)) {
-																																					echo $e_date_from;
+														<label for="e_job_title">Job Title</label>
+													</div> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">work_outline</i>
+														<input id="e_job_role" type="text" name="e_job_role" value="<?php if (isset($e_job_role)) {
+																														echo $e_job_role;
+																													} ?>" class="validate <?php if (isset($e_job_role_valid)) {
+																																					echo $e_job_role_valid;
 																																				} ?>">
-															<label for="e_date_from">From</label>
-														</div>
-													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">date_range</i>
-															<input id="e_date_to" type="text" name="e_date_to" class="datepicker" value="<?php if (isset($e_date_to)) {
-																																				echo $e_date_to;
-																																			} ?>">
-															<label for="e_date_to">To</label>
-														</div>
-													</div>
+														<label for="e_job_role">Job Role</label>
+													</div> 
 												</div>
-												<div class="row">
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">business</i>
-															<input id="e_company" type="text" name="e_company" value="<?php if (isset($e_company)) {
-																															echo $e_company;
-																														} ?>"="" class="validate <?php if (isset($e_company)) {
-																																						echo $e_company;
-																																					} ?>">
-															<label for="e_company">Company</label>
-														</div>
-													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">description_outline</i>
-															<input id="e_job_description" type="text" name="e_job_description" value="<?php if (isset($e_job_description)) {
-																																			echo $e_job_description;
-																																		} ?>"="" class="validate <?php if (isset($e_job_description)) {
-																																										echo $e_job_description;
-																																									} ?>">
-															<label for="e_job_description">Job Description</label>
-														</div>
+												<div class="row"> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">date_range</i>
+														<input id="e_date_from" type="text" name="e_date_from" class="datepicker" value="<?php if (isset($e_date_from_valid)) {
+																																				echo $e_date_from_valid;
+																																			} ?>">
+														<label for="e_date_from">From</label>
+													</div> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">date_range</i>
+														<input id="e_date_to" type="text" name="e_date_to" class="datepicker" value="<?php if (isset($e_date_to_valid)) {
+																																			echo $e_date_to_valid;
+																																		} ?>">
+														<label for="e_date_to">To</label>
+													</div> 
+												</div>
+												<div class="row"> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">business</i>
+														<input id="e_company" type="text" name="e_company" value="<?php if (isset($e_company)) {
+																														echo $e_company;
+																													} ?>" class="validate <?php if (isset($e_company_valid)) {
+																																					echo $e_company_valid;
+																																				} ?>">
+														<label for="e_company">Company</label>
+													</div> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">description_outline</i>
+														<input id="e_job_description" type="text" name="e_job_description" value="<?php if (isset($e_job_description)) {
+																																		echo $e_job_description;
+																																	} ?>"  class="validate <?php if (isset($e_job_description_valid)) {
+																																									echo $e_job_description_valid;
+																																								} ?>">
+														<label for="e_job_description">Job Description</label>
 													</div>
 												</div>
 												<div class="row">
 													<div class="input-field col m4 s12"></div>
-													<div class="input-field col m4 s12">
+													<div class="input-field col m2 s12">
 														<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_exp; ?></button>
 													</div>
-													<div class="input-field col m4 s12"></div>
+													<div class="input-field col m3 s12">
+														<?php
+														if (isset($id) && $id > 0) { ?> 
+															<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd3=add&active_tab=tab3") ?>">
+																Add New Experience
+															</a>
+														<?php  } ?>
+													</div>
+													<div class="input-field col m3 s12"></div>
 												</div>
 											</div>
 										</form>
@@ -1277,11 +1303,11 @@ if ($cmd == 'add') {
 															<div class="col m12 s12">
 																<?php
 																$sql_cl1 = "SELECT a.*
-													FROM " . $selected_db_name . ".employee_experience a
-													WHERE a.enabled 		= 1 
-													AND a.subscriber_users_id 	= '" . $subscriber_users_id . "' 
-													AND a.emp_profile_id	= '" . $id . "' 
-													ORDER BY a.id DESC ";
+																			FROM " . $selected_db_name . ".employee_experience a
+																			WHERE a.enabled 		= 1 
+																			AND a.subscriber_users_id 	= '" . $subscriber_users_id . "' 
+																			AND a.emp_profile_id	= '" . $id . "' 
+																			ORDER BY a.id DESC ";
 																$result_cl1 	= $db->query($conn, $sql_cl1);
 																$count_cl1 	= $db->counter($result_cl1);
 																if ($count_cl1 > 0) { ?>
@@ -1360,18 +1386,20 @@ if ($cmd == 'add') {
 											<div id="employment_history_field">
 												<div class="row">
 													<h4>Employment History</h4>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">work_outline</i>
-															<select id="designation_id" name="designation_id" class="validate  <?php if (isset($designation_id_valid)) {
-																																	echo $designation_id_valid;
-																																} ?>">
+													<br>
+													<div class="input-field col m6 s12 custom_margin_bottom_col">
+														<i class="material-icons prefix">work_outline</i>
+														<div class="select2div">
+															<select id="designation_id" name="designation_id"
+																class="select2 browser-default select2-hidden-accessible validate 	  <?php if (isset($designation_id_valid)) {
+																																		echo $designation_id_valid;
+																																	} ?>">
 																<option value="">Select Designation</option>
 																<?php
 																$sql1 		= "	SELECT a.*
-																FROM " . $selected_db_name . ".designations a
-																WHERE a.enabled = 1 AND a.subscriber_users_id = '" . $subscriber_users_id . "' 
-																ORDER BY a.designation ";
+																				FROM " . $selected_db_name . ".designations a
+																				WHERE a.enabled = 1 AND a.subscriber_users_id = '" . $subscriber_users_id . "' 
+																				ORDER BY a.designation ";
 																$result1 	= $db->query($conn, $sql1);
 																$count1 	= $db->counter($result1);
 																if ($count1 > 0) {
@@ -1383,9 +1411,11 @@ if ($cmd == 'add') {
 															</select>
 															<label for="designation_id">Designation</label>
 														</div>
-													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
+													</div> 
+													<div class="col m6 s12 input-field custom_margin_bottom_col  ">
+													<i class="material-icons prefix">business</i>
+
+														<div class="select2div">
 															<?php
 															$sql1 		= "	SELECT a.*
 																			FROM " . $selected_db_name . ".departments a
@@ -1394,8 +1424,7 @@ if ($cmd == 'add') {
 																			ORDER BY a.department_name ";
 															// echo $sql1; 
 															?>
-															<i class="material-icons prefix">business</i>
-															<select id="dept_id" name="dept_id" class="validate  <?php if (isset($dept_id_valid)) {
+															<select id="dept_id" name="dept_id" class="select2 browser-default select2-hidden-accessible validate  <?php if (isset($dept_id_valid)) {
 																														echo $dept_id_valid;
 																													} ?>">
 																<option value="">Select Department</option>
@@ -1412,12 +1441,13 @@ if ($cmd == 'add') {
 															<label for="dept_id">Department</label>
 														</div>
 													</div>
-												</div>
+												</div> <br>
 												<div class="row">
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">aspect_ratio</i>
-															<select id="scale_id" name="scale_id" class="validate  <?php if (isset($scale_id_valid)) {
+													<div class="input-field col m6 s12 custom_margin_bottom_col">
+													<i class="material-icons prefix">aspect_ratio</i>
+
+														<div class="select2div ">
+															<select id="scale_id" name="scale_id" class="select2 browser-default select2-hidden-accessible validate  <?php if (isset($scale_id_valid)) {
 																														echo $scale_id_valid;
 																													} ?>">
 																<option value="">Select Scale</option>
@@ -1439,10 +1469,10 @@ if ($cmd == 'add') {
 															<label for="scale_id">Scale</label>
 														</div>
 													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">group_work</i>
-															<select id="entry_type" name="entry_type" class="validate <?php if (isset($entry_type_valid)) {
+													<div class="input-field col m6 s12 custom_margin_bottom_col">
+														<i class="material-icons prefix">group_work</i>
+														<div class="select2div">
+															<select id="entry_type" name="entry_type" class="select2 browser-default select2-hidden-accessible validate <?php if (isset($entry_type_valid)) {
 																															echo $entry_type_valid;
 																														} ?>">
 																<option value="">Select Entry Type</option>
@@ -1455,11 +1485,13 @@ if ($cmd == 'add') {
 														</div>
 													</div>
 												</div>
+												<br>
 												<div class="row">
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">group_work</i>
-															<select id="employment_type" name="employment_type" class="validate <?php if (isset($employment_type_valid)) {
+													<div class=" input-field col m6 s12 custom_margin_bottom_col ">
+													<i class="material-icons prefix">group_work</i>
+
+														<div class=" select2div ">
+															<select id="employment_type" name="employment_type" class="select2 browser-default select2-hidden-accessible validate  <?php if (isset($employment_type_valid)) {
 																																	echo $employment_type_valid;
 																																} ?>">
 																<option value="">Select Employment Type</option>
@@ -1472,41 +1504,45 @@ if ($cmd == 'add') {
 															</select>
 															<label for="employment_type">Employment Type</label>
 														</div>
-													</div>
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">date_range</i>
-															<input id="emp_history_entry_date" type="text" name="emp_history_entry_date" class="datepicker validate <?php if (isset($emp_history_entry_date_valid)) {
-																																										echo $emp_history_entry_date_valid;
-																																									} ?>" value="<?php if (isset($emp_history_entry_date)) {
-																																														echo $emp_history_entry_date;
-																																													} ?>">
-															<label for="emp_history_entry_date">Starting Date</label>
-														</div>
-													</div>
-												</div>
-												<div class="row">
-													<div class="col m6 s12">
-														<div class="input-field col m12 s12">
-															<i class="material-icons prefix">attach_money</i>
-															<input id="increament_amount" type="text" name="increament_amount" class="twoDecimalNumber validate <?php if (isset($increament_amount_valid)) {
-																																									echo $increament_amount_valid;
-																																								} ?>" value="<?php if (isset($increament_amount)) {
-																																													echo $increament_amount;
+													</div> 
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">date_range</i>
+														<input id="emp_history_entry_date" type="text" name="emp_history_entry_date" class="datepicker validate <?php if (isset($emp_history_entry_date_valid)) {
+																																									echo $emp_history_entry_date_valid;
+																																								} ?>" value="<?php if (isset($emp_history_entry_date)) {
+																																													echo $emp_history_entry_date;
 																																												} ?>">
-															<input type="hidden" name="increament_amount_old" value="<?php if (isset($increament_amount_old)) {
-																															echo $increament_amount_old;
-																														} ?>">
-															<label for="increament_amount">Increament Hourly Rate</label>
-														</div>
-													</div>
+														<label for="emp_history_entry_date">Starting Date</label>
+													</div>  
+													<div class="input-field col m6 s12">
+														<i class="material-icons prefix">attach_money</i>
+														<input id="increament_amount" type="text" name="increament_amount" class="twoDecimalNumber validate <?php if (isset($increament_amount_valid)) {
+																																								echo $increament_amount_valid;
+																																							} ?>" value="<?php if (isset($increament_amount)) {
+																																												echo $increament_amount;
+																																											} ?>">
+														<input type="hidden" name="increament_amount_old" value="<?php if (isset($increament_amount_old)) {
+																														echo $increament_amount_old;
+																													} ?>">
+														<label for="increament_amount">Increament Hourly Rate</label>
+													</div> 
 												</div>
 												<div class="row">
 													<div class="input-field col m4 s12"></div>
-													<div class="input-field col m4 s12">
+													<div class="input-field col m2 s12">
 														<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add"><?php echo $button_edu; ?></button>
 													</div>
-													<div class="input-field col m4 s12"></div>
+													<div class="input-field col m3 s12">
+														<?php
+														if (isset($cmd4) && $cmd4 != "") {
+															if (isset($cmd4) && $cmd4 != "") { ?>
+																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&id=" . $id . "&cmd4=add&active_tab=tab4") ?>">
+																	Add New Employment History
+																</a>
+														<?php }
+														} ?>
+													</div>
+													<div class="input-field col m3 s12"></div>
 												</div>
 											</div>
 										</form>
@@ -1518,6 +1554,10 @@ if ($cmd == 'add') {
 											<button type="button" class="close white-text" data-dismiss="alert" aria-label="Close">
 												<span aria-hidden="true">×</span>
 											</button>
+
+
+
+
 										</div>
 									<?php } ?>
 								</div>

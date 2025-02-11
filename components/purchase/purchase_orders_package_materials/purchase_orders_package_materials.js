@@ -135,7 +135,8 @@ $(document).on('change', '.product_packages', function(event) {
     var next_row = rowno + 1;
 
     if (selectedValue === 'package_add_modal') {
-        $('#package_add_modal').modal('open');
+        $('#package_add_modal').modal('open'); 
+        $('#selected_package_id').val(rowno);
         $(this).val('');
         event.stopImmediatePropagation();
         return;

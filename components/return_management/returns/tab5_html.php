@@ -199,6 +199,9 @@
                                                                     if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                         $receiving_qty_value = ${$field_name}[$detail_id_r1];
                                                                     }
+                                                                    if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_qty_value == "") {
+                                                                        $receiving_qty_value = 2;
+                                                                    }
                                                                     if (isset($error5[$field_name])) { ?>
                                                                      <span class="color-red"><?php echo $error5[$field_name]; ?></span>
                                                                  <?php } ?>
@@ -218,6 +221,10 @@
                                                                     $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
                                                                     $result1        = $db->query($conn, $sql1);
                                                                     $count1         = $db->counter($result1);
+                                                                    
+                                                                    if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_location_val == "") {
+                                                                        $receiving_location_val = 1737;
+                                                                    }
                                                                     ?>
                                                                  <span class="color-red"><?php
                                                                                             if (isset($error5[$field_name])) {

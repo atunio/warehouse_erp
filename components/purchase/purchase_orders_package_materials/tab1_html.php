@@ -209,6 +209,25 @@
                                                 $case_pack[]            = $data2['order_case_pack'];
                                             }
                                         }
+                                        else{
+                                            if (isset($test_on_local) && $test_on_local == 1) {
+                                                $package_ids[] = 10;
+                                                $package_ids[] = 6;
+                                                $package_ids[] = 12;
+                                                
+                                                $order_price[] = 10;
+                                                $order_price[] = 10;
+                                                $order_price[] = 10;
+
+                                                $order_qty[] = 20;
+                                                $order_qty[] = 18;
+                                                $order_qty[] = 20;
+                                                
+                                                $case_pack[] = 10;
+                                                $case_pack[] = 6;
+                                                $case_pack[] = 5;
+                                            }
+                                        }
                                     } ?>
                                     <input type="hidden" id="total_products_in_po" value="<?php if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) {
                                                                                                 echo "1";
@@ -222,7 +241,7 @@
                                         $readonly = "readonly='readonly'";
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
-                                    for ($i = 1; $i <= 50; $i++) {
+                                    for ($i = 1; $i <= 10; $i++) {
                                         $field_name     = "package_ids";
                                         $field_id       = "packageids_" . $i;
                                         $style_btn = '';
@@ -262,7 +281,7 @@
                                                     if ($count1 > 0) {
                                                         $row1    = $db->fetch($result1);
                                                         foreach ($row1 as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo ucwords(strtolower($data2['package_name'])); ?> (<?php echo $data2['category_name']; ?>)</option>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo ucwords(strtolower($data2['package_name'])); ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?></option>
                                                     <?php }
                                                     } ?>
                                                     <option value="package_add_modal">+Add New Package/Part</option>

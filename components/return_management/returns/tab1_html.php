@@ -183,8 +183,6 @@
                                 if (isset($id) && $id > 0) {
 
                                     unset($product_ids);
-/*                                     unset($product_condition);
-                                     unset($order_price);*/
                                     unset($return_qty);
                                     unset($expected_status);
 
@@ -195,11 +193,18 @@
                                         $row_ee1 = $db->fetch($result_ee1);
                                         foreach ($row_ee1 as $data2) {
                                             $product_ids[]          = $data2['product_id'];
-/*                                             $product_condition[]    = $data2['product_condition'];
-                                           
- $order_price[]          = $data2['order_price'];*/ 
-                                            $return_qty[]            = $data2['return_qty'];
+                                            $return_qty[]           = $data2['return_qty'];
                                             $expected_status[]      = $data2['expected_status'];
+                                        }
+                                    }
+                                    else{
+                                        if (isset($test_on_local) && $test_on_local == 1) {
+                                            $product_ids[]          = "2987";
+                                            $product_ids[]          = "2989";
+                                            $return_qty[]           = "2";
+                                            $return_qty[]           = "2";
+                                            $expected_status[]      = "6";
+                                            $expected_status[]      = "6";
                                         }
                                     }
                                 } ?>

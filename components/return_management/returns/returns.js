@@ -833,7 +833,23 @@ $(document).ready(function() {
         $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
     });
     /////////////////////////////////////////////
+    /////////////////////////////////////////////
+    $(".show_receive_from_barcode_section_tab6_2").click(function() {
 
+        $("#receive_from_barcode_section_tab6_2").show();
+        $(".show_receive_from_barcode_show_btn_tab6_2").hide();
+        $(".show_receive_from_barcode_hide_btn_tab6_2").show();
+
+        $("#receive_as_manual_barcodes_section_tab6_2").hide(); 
+
+    });
+    $(".hide_receive_from_barcode_section_tab6_2").click(function() {  
+        $("#receive_from_barcode_section_tab6_2").hide();
+        $(".show_receive_from_barcode_hide_btn_tab6_2").hide();
+        $(".show_receive_from_barcode_show_btn_tab6_2").show();
+    });
+    ///////////////////////////////////////////// 
+    
     /////////////////////////////////////////////
     $(".show_receive_from_barcode_section_tab7").click(function() {
 

@@ -14,12 +14,12 @@ $user_id 				= $_SESSION["user_id"];
 $title_heading			= "Import to Map Data";
 $button_val				= "Preview";
 
-$return_no = $removal_order_id= $vender_name = "";
+$return_no = $removal_order_id= $store_name = "";
 
 if (isset($id) && $id > 0) {
-	$sql_ee 		= " SELECT a.*, b.vender_name
+	$sql_ee 		= " SELECT a.*, b.store_name
 						FROM returns a 
-						LEFT JOIN venders b ON b.id = a.vender_id
+						LEFT JOIN stores b ON b.id = a.store_id
 						WHERE a.id = '" . $id . "' ";
 	$result_ee		= $db->query($conn, $sql_ee);
 	$counter_ee1	= $db->counter($result_ee);
@@ -27,7 +27,7 @@ if (isset($id) && $id > 0) {
 		$row_ee				= $db->fetch($result_ee);
 		$return_no				= $row_ee[0]['return_no'];
 		$removal_order_id	= $row_ee[0]['removal_order_id'];
-		$vender_name		= $row_ee[0]['vender_name'];
+		$store_name		= $row_ee[0]['store_name'];
 	} else {
 		$error['msg'] = "No record found";
 	}
@@ -324,10 +324,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-									PO List
+									RO List
 								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab6") ?>">
-									PO Profile
+									RO Profile
 								</a>
 							</div>
 						</div>
@@ -350,7 +350,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								<h6 class="media-heading"><span class=""><?php echo "<b>Return#:</b>" . $return_no; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Name: </b>" . $vender_name; ?></span></h6>
+								<h6 class="media-heading"><span class=""><?php echo "<b>Store Name: </b>" . $store_name; ?></span></h6>
 							</div>
 							<div class="input-field col m3 s12">
 								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $removal_order_id; ?></span></h6>

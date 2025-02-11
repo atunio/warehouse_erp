@@ -811,133 +811,132 @@
                             <div class="input-field col m12 s12"></div>
                         </div>
                     </form>
-                    
-            <?php 
-            $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
-							FROM phone_check_api_data a
-                            LEFT JOIN products c ON c.product_model_no = a.model_no 
-                            LEFT JOIN purchase_order_detail d ON d.product_id = c.id 
- 							WHERE a.po_id = '" . $id . "' 
-                            AND a.is_processed = 0
-                            ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
-                            // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
-            $result_preview    = $db->query($conn, $sql_preview);
-            $count_preview        = $db->counter($result_preview);
-            if ($count_preview > 0) {
-                $row_preview = $db->fetch($result_preview); ?>
-                <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
-                    <input type="hidden" name="is_Submit2_preview" value="Y" />
-                    <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
-                        <div class="card-content custom_padding_card_content_table_top">
-                            <h6 class="card-title">Preview Fetched Data</h6><br>
-                            <div class="row">
-                                <table id="page-length-option1" class="display bordered striped addproducttable">
-                                    <thead>
-                                        <tr>
-                                            <th style="text-align: center;">S.No</th>
-                                            <th style="text-align: center;">
-                                                <label>
-                                                    <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
-                                                                                                                                                echo "checked";
-                                                                                                                                            } ?> />
-                                                    <span></span>
-                                                </label>
-                                            </th>
-                                            <th style="text-align: center;">Serial#</th>
-                                            <th>PO Product ID</th>
-                                            <th>Diagnostic Product ID</th>
-                                            <th>Diagnostic Model#</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $i = 0;
-                                        foreach ($row_preview as $data) {
-                                            $phone_check_product_id = $data['product_uniqueid'];
-                                            $phone_check_model_no   = $data['model_no'];
-                                            $po_id                  = $data['po_id'];
-                                            $po_detail_id           = $data['po_detail_id'];
-                                            $product_item_price     = $data['order_price'];
-                                            $bulkserialNo[]         = $data['imei_no'];
-                                            $phone_check_api_data   = $data['phone_check_api_data'];
-                                            if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
-                                               $checked = "";
-                                                if ($po_detail_id > 0) {
-                                                    $checked = "checked";
-                                                } ?>
+                    <?php 
+                    $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
+                                    FROM phone_check_api_data a
+                                    LEFT JOIN products c ON c.product_model_no = a.model_no 
+                                    LEFT JOIN purchase_order_detail d ON d.product_id = c.id 
+                                    WHERE a.po_id = '" . $id . "' 
+                                    AND a.is_processed = 0
+                                    ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
+                                    // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
+                    $result_preview    = $db->query($conn, $sql_preview);
+                    $count_preview        = $db->counter($result_preview);
+                    if ($count_preview > 0) {
+                        $row_preview = $db->fetch($result_preview); ?>
+                        <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
+                            <input type="hidden" name="is_Submit2_preview" value="Y" />
+                            <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
+                                <div class="card-content custom_padding_card_content_table_top">
+                                    <h6 class="card-title">Preview Fetched Data</h6><br>
+                                    <div class="row">
+                                        <table id="page-length-option1" class="display bordered striped addproducttable">
+                                            <thead>
                                                 <tr>
-                                                    <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
-                                                    <td style="width:80px; text-align: center;">
-                                                        <?php
-                                                        if (access("delete_perm") == 1) { ?>
-                                                            <label>
-                                                                <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
-                                                                                                                                                                        echo $checked;
-                                                                                                                                                                    } ?> class="checkbox filled-in" />
-                                                                <span></span>
-                                                            </label>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
-                                                    <td>
-                                                        <?php
-                                                        if ($po_detail_id > 0) {  ?>
-                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
-                                                                <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
-                                                            </select>
-                                                        <?php } else { ?>
-                                                            <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
-                                                                <option value="">Select</option>
-                                                                <?php
-                                                                $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
-                                                                                        FROM purchase_order_detail a 
-                                                                                        INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                                                        INNER JOIN products c ON c.id = a.product_id
-                                                                                        WHERE 1=1 
-                                                                                        AND a.po_id = '" . $po_id . "'   ";
-                                                                $result_pd03    = $db->query($conn, $sql_pd03);
-                                                                $count_pd03        = $db->counter($result_pd03);
-                                                                if ($count_pd03 > 0) {
-                                                                    $row_pd03 = $db->fetch($result_pd03);
-                                                                    foreach ($row_pd03 as $data_pd03) { ?>
-                                                                        <option value="<?php echo $data_pd03['product_uniqueid']; ?>">ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
-                                                                <?php }
-                                                                } ?>
-                                                            </select>
-                                                        <?php }
-                                                        $i++;
-                                                        ?>
-                                                    </td>
-                                                    <td><?php echo $phone_check_product_id; ?></td>
-                                                    <td><?php echo $phone_check_model_no; ?></td>
-                                                    <td>
+                                                    <th style="text-align: center;">S.No</th>
+                                                    <th style="text-align: center;">
                                                         <label>
-                                                            <input type="text" name="prices[<?= $data['imei_no']; ?>]" id="prices_<?php echo $i; ?>" value=" <?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?>" />
+                                                            <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+                                                                                                                                                        echo "checked";
+                                                                                                                                                    } ?> />
                                                             <span></span>
                                                         </label>
-                                                        
-                                                    </td>
+                                                    </th>
+                                                    <th style="text-align: center;">Serial#</th>
+                                                    <th>PO Product ID</th>
+                                                    <th>Diagnostic Product ID</th>
+                                                    <th>Diagnostic Model#</th>
+                                                    <th>Price</th>
                                                 </tr>
-                                        <?php }
-                                        } ?>
-                                    </tbody>
-                                </table>
-                            </div><br><br>
-                            <div class="row"> 
-                                <div class="input-field col m2 s12">
-                                    <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
-                                        <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
-                                            <i class="material-icons right">send</i>
-                                        </button>
-                                    <?php } ?>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 0;
+                                                foreach ($row_preview as $data) {
+                                                    $phone_check_product_id = $data['product_uniqueid'];
+                                                    $phone_check_model_no   = $data['model_no'];
+                                                    $po_id                  = $data['po_id'];
+                                                    $po_detail_id           = $data['po_detail_id'];
+                                                    $product_item_price     = $data['order_price'];
+                                                    $bulkserialNo[]         = $data['imei_no'];
+                                                    $phone_check_api_data   = $data['phone_check_api_data'];
+                                                    if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
+                                                    $checked = "";
+                                                        if ($po_detail_id > 0) {
+                                                            $checked = "checked";
+                                                        } ?>
+                                                        <tr>
+                                                            <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
+                                                            <td style="width:80px; text-align: center;">
+                                                                <?php
+                                                                if (access("delete_perm") == 1) { ?>
+                                                                    <label>
+                                                                        <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
+                                                                                                                                                                                echo $checked;
+                                                                                                                                                                            } ?> class="checkbox filled-in" />
+                                                                        <span></span>
+                                                                    </label>
+                                                                <?php } ?>
+                                                            </td>
+                                                            <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
+                                                            <td>
+                                                                <?php
+                                                                if ($po_detail_id > 0) {  ?>
+                                                                    <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
+                                                                        <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
+                                                                    </select>
+                                                                <?php } else { ?>
+                                                                    <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
+                                                                        <option value="">Select</option>
+                                                                        <?php
+                                                                        $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
+                                                                                                FROM purchase_order_detail a 
+                                                                                                INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                                                                INNER JOIN products c ON c.id = a.product_id
+                                                                                                WHERE 1=1 
+                                                                                                AND a.po_id = '" . $po_id . "'   ";
+                                                                        $result_pd03    = $db->query($conn, $sql_pd03);
+                                                                        $count_pd03        = $db->counter($result_pd03);
+                                                                        if ($count_pd03 > 0) {
+                                                                            $row_pd03 = $db->fetch($result_pd03);
+                                                                            foreach ($row_pd03 as $data_pd03) { ?>
+                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>">ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
+                                                                        <?php }
+                                                                        } ?>
+                                                                    </select>
+                                                                <?php }
+                                                                $i++;
+                                                                ?>
+                                                            </td>
+                                                            <td><?php echo $phone_check_product_id; ?></td>
+                                                            <td><?php echo $phone_check_model_no; ?></td>
+                                                            <td>
+                                                                <label>
+                                                                    <input type="text" name="prices[<?= $data['imei_no']; ?>]" id="prices_<?php echo $i; ?>" value=" <?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?>" />
+                                                                    <span></span>
+                                                                </label>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                <?php }
+                                                } ?>
+                                            </tbody>
+                                        </table>
+                                    </div><br><br>
+                                    <div class="row"> 
+                                        <div class="input-field col m2 s12">
+                                            <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                                <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
+                                                    <i class="material-icons right">send</i>
+                                                </button>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-
-                        </div>
-                    </div>
-                </form>
-            <?php }?>
+                        </form>
+                    <?php }?>
                 </div>
             </div>
             <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">

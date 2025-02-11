@@ -68,11 +68,11 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 					$inv_color_name			= $row_pd1[0]['color_name'];
 					$logistics_cost			= $row_pd1[0]['logistics_cost'];
 
-					// $po_logistic_cost = 0;
-					$po_logistic_cost 		= po_logistic_cost($db, $conn, $inv_po_id, $logistics_cost);
-					$po_receiving_labor 	= po_receiving_labor($db, $conn, $inv_po_id);
-					$po_diagnostic_labor 	= po_diagnostic_labor($db, $conn, $inv_po_id);
-					$inv_price 				= round(($inv_price + $po_receiving_labor + $po_diagnostic_labor + $po_logistic_cost), 2);
+					$po_logistic_cost = $po_receiving_labor = $po_diagnostic_labor = 0;
+					// $po_logistic_cost 		= po_logistic_cost($db, $conn, $inv_po_id, $logistics_cost);
+					// $po_receiving_labor 		= po_receiving_labor($db, $conn, $inv_po_id);
+					// $po_diagnostic_labor 	= po_diagnostic_labor($db, $conn, $inv_po_id);
+					// $inv_price 				= round(($inv_price + $po_receiving_labor + $po_diagnostic_labor + $po_logistic_cost), 2);
 
 					$sql_pd2	= "	SELECT a.id FROM product_stock a WHERE a.receive_id = '" . $inv_receive_id . "' ";
 					// echo "<br><br>" . $sql_pd2;
@@ -123,10 +123,12 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 						$db->query($conn, $sql_c_up);
 					}
 
+					/*
 					if ($old_base_product_id != $inv_base_product_id) {
 						$sql_c_up = "UPDATE products SET product_uniqueid = '" . $inv_base_product_id . "' WHERE id = '" . $inv_product_id . "' ";
 						$db->query($conn, $sql_c_up);
 					}
+					*/
 					$sql_c_up = "UPDATE purchase_order_detail_receive 
 																		SET edit_lock 			= '1',
 																			Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',
@@ -861,7 +863,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 					$result_pd01	= $db->query($conn, $sql_pd01);
 					$count_pd01		= $db->counter($result_pd01);
 					if ($count_pd01 == 0) {
-						echo $sql_pd01 		= "	SELECT a.* 
+						 $sql_pd01 		= "	SELECT a.* 
 											FROM purchase_order_detail_receive a 
 											WHERE a.enabled = 1 
 											AND a.recevied_product_category = '" . $product_category_diagn . "' 

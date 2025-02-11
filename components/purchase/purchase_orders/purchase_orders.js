@@ -104,6 +104,7 @@ $(document).ready(function() {
         if (selectedValue === 'product_add_modal') {
             // Open the modal
             $('#product_add_modal').modal('open');
+            $('#selected_product_id').val(rowno);
             // Reset the select box to prevent accidental selection
             $(this).val('');
             event.stopImmediatePropagation(); // Stop further actions
@@ -130,6 +131,7 @@ $(document).ready(function() {
         var value               = 0;
         var order_price         = parseFloat($("#orderprice_"+rowno).val());
         var pkg_stock_in_hand   = parseFloat($("#pkg_stock_of_product_"+rowno).text());
+        
          if(!isNaN(order_price) && !isNaN(order_qty)){
             value = (order_price * order_qty);
             $("#value_"+rowno).text(formatNumber(value, 2));
@@ -160,7 +162,12 @@ $(document).ready(function() {
         if(total_qty > 0){
             $("#total_qty").text(total_qty);
         } 
-        var pkg_stock_of_product_needed = order_qty - pkg_stock_in_hand;
+        if(pkg_stock_in_hand > 0){
+            var pkg_stock_of_product_needed = order_qty - pkg_stock_in_hand;
+        }else{
+            var pkg_stock_of_product_needed = order_qty - 0;
+        }
+        
         if(pkg_stock_of_product_needed < 0){
             pkg_stock_of_product_needed = 0;
         }
@@ -312,6 +319,7 @@ $(document).ready(function() {
     
         if (selectedValue === 'package_add_modal') {
             $('#package_add_modal').modal('open');
+            $('#selected_package_id').val(rowno);
             $(this).val('');
             event.stopImmediatePropagation();
             return;
@@ -744,8 +752,7 @@ $(document).ready(function() {
         $(".show_receive_from_barcode_hide_btn_tab6").hide();
         $(".show_receive_from_barcode_show_btn_tab6").show();
     });
-    ///////////////////////////////////////////// 
-
+    /////////////////////////////////////////////
 
     /////////////////////////////////////////////
     $(".show_receive_from_barcode_section_tab6_2").click(function() {
@@ -768,23 +775,13 @@ $(document).ready(function() {
         $(".show_receive_from_barcode_hide_btn_tab6_2").hide();
         $(".show_receive_from_barcode_show_btn_tab6_2").show();
     });
-    ///////////////////////////////////////////// 
+    /////////////////////////////////////////////
 
-      /////////////////////////////////////////////
+    /////////////////////////////////////////////
     $(".show_broken_device_section_tab6").click(function() {
-
         $("#broken_device_section_tab6").show();
         $(".show_broken_device_show_btn_tab6").hide();
         $(".show_broken_device_hide_btn_tab6").show();
-
-        //  $("#receive_as_manual_barcodes_section_tab6").hide();
-        //  $(".show_receive_as_manual_barcodes_hide_btn_tab6").hide();
-        //  $(".show_receive_as_manual_barcodes_show_btn_tab6").show();
-
-        //  $("#update_tested_devices_serial_from_phonechecker_tab6").hide();
-        //  $(".update_tested_devices_serial_from_phonechecker_hide_btn_tab6").hide();
-        //  $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
-
     });
     $(".hide_broken_device_section_tab6").click(function() {  
         $("#broken_device_section_tab6").hide();
@@ -799,15 +796,6 @@ $(document).ready(function() {
         $("#fake_serial_no_section_tab6").show();
         $(".show_fake_serial_no_show_btn_tab6").hide();
         $(".show_fake_serial_no_hide_btn_tab6").show();
-
-        //  $("#receive_as_manual_barcodes_section_tab6").hide();
-        //  $(".show_receive_as_manual_barcodes_hide_btn_tab6").hide();
-        //  $(".show_receive_as_manual_barcodes_show_btn_tab6").show();
-
-        //  $("#update_tested_devices_serial_from_phonechecker_tab6").hide();
-        //  $(".update_tested_devices_serial_from_phonechecker_hide_btn_tab6").hide();
-        //  $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
-
     });
     $(".hide_fake_serial_no_section_tab6").click(function() {  
         $("#fake_serial_no_section_tab6").hide();

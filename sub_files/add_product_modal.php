@@ -5,9 +5,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="input-field col m6 s12">
+        <input type="hidden" value="0" name="selected_product_id" id="selected_product_id" />
+         <div class="input-field col m6 s12">
             <?php
-            $field_name     = "product_uniqueid";
+            $field_name     = "product_uniqueid_modal";
             $field_label    = "Product ID";
             $sql1           = "SELECT * FROM product_ids WHERE enabled = 1 ORDER BY product_id ";
             $result1        = $db->query($conn, $sql1);
@@ -40,7 +41,7 @@
 
         <div class="input-field col m6 s12">
             <?php
-            $field_name     = "product_category";
+            $field_name     = "product_category_modal";
             $field_label     = "Category";
             $sql1             = "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
             $result1         = $db->query($conn, $sql1);

@@ -100,6 +100,9 @@
                                         if (isset($all_checked4) && $all_checked4 == '1') {
                                             $headings .= ' checked ';
                                         }
+                                        if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+                                            $headings .= ' checked ';
+                                        }
                                         $headings .= ' 			/>
                                                                 <span></span>
                                                             </label>
@@ -142,6 +145,8 @@
                                                         <label style="margin-left: 25px;">
                                                             <input type="checkbox" name="logistics_ids_2[]" id="logistics_ids_2[]" value="<?= $detail_id2; ?>" <?php
                                                                                                                                                                 if (isset($logistics_ids_2) && in_array($detail_id2, $logistics_ids_2)) {
+                                                                                                                                                                    echo "checked";
+                                                                                                                                                                } else if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
                                                                                                                                                                     echo "checked";
                                                                                                                                                                 } ?> class="checkbox4 filled-in" />
                                                             <span></span>

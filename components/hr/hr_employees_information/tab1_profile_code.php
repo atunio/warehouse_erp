@@ -57,7 +57,7 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['e_email'] = "The Email is already exist.";
+ 			$error['e_email'] = "Already exist.";
 		}
 		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
 								WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
@@ -65,7 +65,7 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The National ID is already exist.";
+ 			$error['e_national_id_no'] = "Already exist.";
 		}
 		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
 								WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
@@ -73,7 +73,7 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The Employment Code is already exist.";
+ 			$error['emp_code'] = "Already exist.";
 		}
 		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".users a 
 								WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
@@ -81,7 +81,7 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The Username is already exist.";
+ 			$error['username'] = "Already exist.";
 		}
 		$sql_ee1		= "	SELECT * FROM " . $selected_db_name . ".users a
  							WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
@@ -89,8 +89,18 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The Email is is already exist in another user.";
+ 			$error['e_email'] = "Already exist.";
 		}
+
+		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
+								WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
+								AND a.emp_pin_code 			= '" . $user_pin_code . "'  ";
+		$result_ee1		= $db->query($conn, $sql_ee1);
+		$counter_ee1	= $db->counter($result_ee1);
+		if ($counter_ee1 > 0) {
+ 			$error['user_pin_code'] = "Already exist.";
+		}
+		
 	} else if ($cmd == 'edit') {
 
 		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
@@ -100,8 +110,18 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['e_email'] = "The Email is already exist.";
+ 			$error['e_email'] = "Already exist.";
 		}
+		$sql_ee1		= "	SELECT * FROM " . $selected_db_name . ".users a
+							INNER JOIN employee_profile b ON b.user_id = a.id  
+							WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
+							AND a.email 			= '" . $e_email . "'
+							AND b.id	 		   != '" . $id . "' ";
+		$result_ee1		= $db->query($conn, $sql_ee1);
+		$counter_ee1	= $db->counter($result_ee1);
+		if ($counter_ee1 > 0) {
+			$error['e_email'] = "Already exist.";
+ 		}
 		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
 								WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
 								AND a.e_national_id_no 	= '" . $e_national_id_no . "'
@@ -118,18 +138,18 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The Employment Code is already exist.";
+			$error['emp_code'] = "Already exist.";
 		}
-		$sql_ee1		= "	SELECT * FROM " . $selected_db_name . ".users a
-							INNER JOIN employee_profile b ON b.user_id = a.id  
+
+		$sql_ee1		= "	SELECT a.* FROM " . $selected_db_name . ".employee_profile a 
 							WHERE a.subscriber_users_id = '" . $subscriber_users_id . "' 
-							AND a.email 			= '" . $e_email . "'
-							AND b.id	 		   != '" . $id . "' ";
+							AND a.emp_pin_code 			= '" . $user_pin_code . "' 
+							AND a.id	 		   	   != '" . $id . "' ";
 		$result_ee1		= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
 		if ($counter_ee1 > 0) {
-			$error['msg'] = "The Email is is already exist in another user.";
-		}
+			$error['user_pin_code'] ="This PIN is already exist";
+ 		}
 	}
 
 	$profile_pic_file_name = "";
@@ -227,6 +247,18 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$error[$field_name]	= "Required";
 		${$field_name . "_valid"}		= "invalid";
 	}
+	$field_name = "user_pin_code";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name]	= "Required";
+		${$field_name . "_valid"}		= "invalid";
+	}
+	else{
+		if (isset(${$field_name}) && strlen(${$field_name}) != "6") {
+			$error[$field_name]	= "PIN Code length should be 6 characters atleast";
+			${$field_name . "_valid"}		= "invalid";
+		}
+
+	}
 	if (empty($error)) {
 		$e_full_name = $first_name . " " . $last_name;
 		$user_sections_str = implode(",", $user_sections);
@@ -236,14 +268,14 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 																		e_mailing_address, e_mailing_city, e_mailing_state, e_mailing_country,
 																		e_emergency_contact_name, e_emergency_contact_relationship, e_emergency_contact_phone,
 																		e_emergency_contact_email, e_exit_date,  e_exit_reason, e_profile_pic, 
-																		e_resume_upload,  emp_status, emp_code, hourly_rate,
+																		e_resume_upload,  emp_status, emp_code, hourly_rate,emp_pin_code,department_id,
 																		add_date, add_by, add_by_user_id, add_ip)
 				VALUES('" . $subscriber_users_id . "', '" . $e_full_name . "', '" . $e_gender . "', '" . $e_birth_date1 . "', '" . $e_marital_status . "', 
 						'" . $e_phone . "', '" . $e_email . "', '" . $e_national_id_no . "', '" . $e_joining_date1 . "', '" . $parent_name . "', 
 						'" . $e_mailing_address . "', '" . $e_mailing_city . "', '" . $e_mailing_state . "', '" . $e_mailing_country . "', 
 						'" . $e_emergency_contact_name . "', '" . $e_emergency_contact_relationship . "', '" . $e_emergency_contact_phone . "', 
 						'" . $e_emergency_contact_email . "', '" . $e_exit_date1 . "',  '" . $e_exit_reason . "', '" . $profile_pic_file_name . "', 
-						'" . $resume_file_file_name . "',  '" . $emp_status . "', '" . $emp_code . "',  '" . $hourly_rate . "', 
+						'" . $resume_file_file_name . "',  '" . $emp_status . "', '" . $emp_code . "',  '" . $hourly_rate . "',  '" . $user_pin_code . "',  '" . $user_department . "', 
 							'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "')";
 			// echo $sql;
 			$ok = $db->query($conn, $sql);
@@ -294,6 +326,8 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 																				emp_status							= '" . $emp_status . "',
 																				emp_code							= '" . $emp_code . "',
 																				hourly_rate							= '" . $hourly_rate . "',
+																				emp_pin_code						= '" . $user_pin_code . "',
+																				department_id						= '" . $user_department . "',
 																				
 																				update_date 						= '" . $add_date . "',
 																				update_by 	 						= '" . $_SESSION['username'] . "',
@@ -320,6 +354,9 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 				$error['msg'] = "There is Error, record did not update, Please check it again OR contact Support Team.";
 			}
 		}
+	}
+	else{
+		$error['msg'] = "Please check errors";
 	}
 } else if ($cmd == 'edit' && isset($id)) {
 	$sql_ee 								= " SELECT a.*, b.username, b.a_password, b.user_type, b.user_sections, b.first_name, b.last_name
@@ -362,6 +399,8 @@ if (isset($is_submit_profile) && $is_submit_profile == 'Y') {
 		$u_password 						= $row_ee[0]['a_password'];
 		$user_type 							= $row_ee[0]['user_type'];
 		$hourly_rate						= $row_ee[0]['hourly_rate'];
+		$user_pin_code						= $row_ee[0]['emp_pin_code'];
+		$user_department					= $row_ee[0]['department_id'];
 		$user_sections						= explode(",", $row_ee[0]['user_sections']);
 	}
 }

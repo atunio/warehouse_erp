@@ -62,11 +62,10 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 						$db->query($conn, $sql_c_up);
 
 						$sql_itm1	= "	SELECT c.id 
-										FROM purchase_order_detail a
-										INNER JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+										FROM  purchase_order_detail_receive b
 										INNER JOIN product_stock c ON c.receive_id = b.id
-										WHERE a.po_id = '" . $id . "'
-										AND c.p_inventory_status = 5";
+										WHERE b.po_id = '" . $id . "'
+										AND c.p_inventory_status = 5 ";
 						// echo "<br><br><br><br><br><br><br>" . $sql_itm1;
 						$result_itm1	= $db->query($conn, $sql_itm1);
 						$count_itm1		= $db->counter($result_itm1);
@@ -75,16 +74,16 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 							foreach ($row_itm1 as $data_itm1) {
 								$stk_id = $data_itm1['id'];
 								$reduced_amount = round(($reduced_price_upd / $count_itm1), 2);
-
 								$sql_c_up = "UPDATE product_stock SET price = round((price+" . $reduced_amount . "), 2), distributed_amount = round((distributed_amount+" . $reduced_amount . "), 2) WHERE id = '" . $stk_id . "' ";
+								// echo "<br><br>" . $sql_c_up;
 								$db->query($conn, $sql_c_up);
 
 								$sql6 = "INSERT INTO purchase_order_detail_receive_rma_reduced_prices(subscriber_users_id, receive_rma_id, stock_id, reduced_amount, add_by_user_id, add_date,  add_by, add_ip, add_timezone, added_from_module_id)
-										VALUES('" . $subscriber_users_id . "', '" . $receive_rma_id . "', '" . $stk_id . "', '" . $reduced_amount . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+										 VALUES('" . $subscriber_users_id . "', '" . $receive_rma_id . "', '" . $stk_id . "', '" . $reduced_amount . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+								// echo "<br>" . $sql6;
 								$db->query($conn, $sql6);
 							}
 						}
-
 						if ($credit_memo_upd > 0) {
 							$sql6 = "INSERT INTO vender_credit_memo(subscriber_users_id, receive_rma_id, credit_memo, add_by_user_id, add_date,  add_by, add_ip, add_timezone, added_from_module_id)
 	 								 VALUES('" . $subscriber_users_id . "', '" . $receive_rma_id . "', '" . $credit_memo_upd . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
@@ -93,7 +92,6 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 							$sql_c_up = "UPDATE venders SET credit_balance = round((credit_balance+" . $credit_memo_upd . "), 2) WHERE id = '" . $vender_id . "' ";
 							$db->query($conn, $sql_c_up);
 						}
-
 						$k++;
 					}
 				}
@@ -112,10 +110,8 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 		}
 	}
 }
-
 if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 	extract($_POST);
-
 	$field_name = "status_id_rma";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error7[$field_name] = "Required";
@@ -154,7 +150,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 			$repair_type 	= $sub_location_id_barcode_rma = "0";
 		}
 	}
- 
+
 	$field_name = "receive_id_barcode_rma";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error7[$field_name] = "Required";
@@ -162,7 +158,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 	if (empty($error7)) {
 		if (po_permisions("RMA") == 0) {
 			$error7['msg'] = "You do not have add permissions.";
-		} else { 
+		} else {
 			$credit_memo = 0;
 			$actual_price = $reduced_price = 0;
 			$sql_pd1		= "	SELECT a.*, a.price
@@ -190,7 +186,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 				}
 				$reduced_price = 0;
 			}
-			if(!isset($repaire_status_id) || (isset($repaire_status_id) && $repaire_status_id != '18')){
+			if (!isset($repaire_status_id) || (isset($repaire_status_id) && $repaire_status_id != '18')) {
 				$repaire_status_id = "0";
 			}
 

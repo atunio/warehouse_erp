@@ -58,21 +58,40 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql_cl = " SELECT  a.id AS record_id, a.base_product_id, a.serial_no_barcode as serial_no, h.status_name as rma_status, 
-							a.price as po_price, k.new_value, m.repair_type_name as repair_type, i.sub_location_name as sub_location, k.tracking_no
-					FROM purchase_order_detail_receive a
-					INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-					INNER JOIN products c ON c.id = b.product_id
-					LEFT JOIN product_categories d ON d.id =c.product_category
-					INNER JOIN product_stock j ON j.receive_id = a.id
-					LEFT JOIN purchase_order_detail_receive_rma k ON k.receive_id = a.id
-					LEFT JOIN inventory_status h ON h.id = k.status_id
-					LEFT JOIN warehouse_sub_locations i ON i.id = k.sub_location_id
-					LEFT JOIN repair_types m ON m.id = k.repair_type
-					WHERE a.enabled = 1 
-					AND b.po_id = '" . $id . "'
-					AND a.inventory_status != '" . $tested_or_graded_status . "'   
-					ORDER BY  a.base_product_id, a.serial_no_barcode DESC";
+		$sql_cl = " SELECT * FROM (
+						SELECT  a.id AS record_id, c.product_uniqueid AS product_id, a.serial_no_barcode AS serial_no, h.status_name AS rma_status, 
+								a.price AS price, k.new_value, m.repair_type_name AS repair_type, i.sub_location_name AS sub_location, k.tracking_no
+						FROM purchase_order_detail_receive a
+						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+						INNER JOIN products c ON c.id = b.product_id
+						LEFT JOIN product_categories d ON d.id =c.product_category
+						INNER JOIN product_stock j ON j.receive_id = a.id
+						LEFT JOIN purchase_order_detail_receive_rma k ON k.receive_id = a.id
+						LEFT JOIN inventory_status h ON h.id = k.status_id
+						LEFT JOIN warehouse_sub_locations i ON i.id = k.sub_location_id
+						LEFT JOIN repair_types m ON m.id = k.repair_type
+						WHERE a.enabled = 1 
+						AND a.po_id = '" . $id . "'
+						AND a.inventory_status != '" . $tested_or_graded_status . "'  
+
+						UNION ALL 
+
+						SELECT  a.id AS record_id, c.product_uniqueid AS product_id, a.serial_no_barcode AS serial_no, h.status_name AS rma_status, 
+								a.price AS price, k.new_value, m.repair_type_name AS repair_type, i.sub_location_name AS sub_location, k.tracking_no
+						FROM purchase_order_detail_receive a
+						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+						INNER JOIN products c ON c.id = b.product_id
+						LEFT JOIN product_categories d ON d.id =c.product_category
+						INNER JOIN product_stock j ON j.receive_id = a.id
+						LEFT JOIN purchase_order_detail_receive_rma k ON k.receive_id = a.id
+						LEFT JOIN inventory_status h ON h.id = k.status_id
+						LEFT JOIN warehouse_sub_locations i ON i.id = k.sub_location_id
+						LEFT JOIN repair_types m ON m.id = k.repair_type
+						WHERE a.enabled = 1 
+						AND a.po_id = '" . $id . "'
+						AND a.inventory_status != '" . $tested_or_graded_status . "'  
+					) AS t1
+					ORDER BY  product_id, serial_no DESC ";
 		// echo $sql_cl;die;
 		$result_cl 	= $db->query($conn, $sql_cl);
 		$count_cl 	= $db->counter($result_cl);

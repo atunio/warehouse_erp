@@ -64,6 +64,14 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 				}
 			}
 			if ($k > 0) {
+				$sql_ee13 		= " SELECT id FROM purchase_order_detail_receive   WHERE po_id = '" . $id . "' ";
+				$result_rc3 	= $db->query($conn, $sql_ee13);
+				$counter_rc3	= $db->counter($result_rc3);
+				if ($counter_rc3 == 0) {
+					update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic);
+					update_po_status($db, $conn, $id, $arrival_status_dynamic);
+					$disp_status_name = get_status_name($db, $conn, $arrival_status_dynamic);
+				}
 				if ($k == 1) {
 					$msg5['msg_success'] = $k . " record has been deleted successfully.";
 				} else {
@@ -240,8 +248,8 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 								$c_product_id2 					= $row_pd3[0]['product_id'];
 								$c_product_condition2 			= $row_pd3[0]['product_condition'];
 								$c_expected_status2     		= $row_pd3[0]['expected_status'];
-								$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-										VALUES('" . $product_uniqueid_main1 . "', '" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$sql6 = "INSERT INTO purchase_order_detail_receive(logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+										VALUES('" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 								$ok = $db->query($conn, $sql6);
 								if ($ok) {
 									$receive_id = mysqli_insert_id($conn);
@@ -408,8 +416,8 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 					$c_product_condition2 			= $row_pd3[0]['product_condition'];
 					$c_expected_status2     		= $row_pd3[0]['expected_status'];
 
-					$sql6 = "INSERT INTO purchase_order_detail_receive(base_product_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-							VALUES('" . $product_uniqueid_main1 . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO purchase_order_detail_receive(po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+							 VALUES('" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 
@@ -545,8 +553,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 								for ($m = 0; $m < $allocated_qty; $m++) {
 									$receiving_location_add = $receiving_location[$key];
-									$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, base_product_id, recevied_product_category, po_detail_id, receive_type, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-											 VALUES('" . $id . "', '" . $product_uniqueid_main1 . "', '" . $recevied_product_category . "',  '" . $po_detail_id . "', 'CateogryReceived', '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+									$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category,  receive_type, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+											 VALUES('" . $id . "', '" . $recevied_product_category . "', 'CateogryReceived', '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 										$receive_id = mysqli_insert_id($conn);

@@ -265,7 +265,13 @@ switch ($type) {
         break;
     case 'add_package':
 
-        if ($package_name != "" && $product_category != "") {
+        if ($package_name != "" && $product_category != "" && $sku_code != "") { 
+            if(!isset($case_pack)){
+                $case_pack = "0";
+            }
+            if(!isset($pack_desc)){
+                $pack_desc = "";
+            }
             $count = 0;
 
             $table              = "product_categories";
@@ -277,13 +283,12 @@ switch ($type) {
             $sql    = " SELECT a.*, b.category_name
                         FROM packages a 
                         LEFT JOIN product_categories b ON b.id = a.product_category
-                        WHERE a.package_name    = '" . $package_name . "'
-                        AND a.product_category	= '" . $product_category . "' ";
+                        WHERE a.sku_code    = '" . $sku_code . "'  ";
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids,  package_name, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
-                        VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+                $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids,  package_name, sku_code, case_pack, pack_desc, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+                        VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $sku_code  . "', '" . $case_pack  . "', '" . $pack_desc  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
                     $package_id         = mysqli_insert_id($conn);

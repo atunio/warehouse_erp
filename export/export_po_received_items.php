@@ -59,7 +59,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$user_id 				= $_SESSION["user_id"];
 
 		$sql_cl = "	SELECT * FROM (
-						SELECT a.id as record_id, a.base_product_id, serial_no_barcode AS `serial`, a.battery ,
+						SELECT a.id as record_id, c.product_uniqueid as product_id, serial_no_barcode AS `serial`, a.battery ,
 							a.body_grade, a.lcd_grade, a.digitizer_grade,
 							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
 							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
@@ -76,8 +76,25 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						WHERE a.enabled = 1
 						AND b.po_id = '" . $id . "'
 						AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+
+						UNION ALL 
+
+						SELECT a.id AS record_id, c.product_uniqueid as product_id, serial_no_barcode AS `serial`, a.battery,
+							a.body_grade, a.lcd_grade, a.digitizer_grade,
+							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
+							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
+						FROM purchase_order_detail_receive a
+						INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+						INNER JOIN products c ON c.id = a.product_id
+						LEFT JOIN product_categories d ON d.id =c.product_category
+						LEFT JOIN users e ON e.id = a.add_by_user_id
+						LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+						LEFT JOIN inventory_status h ON h.id = a.inventory_status
+						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+						WHERE a.enabled = 1
+						AND a.po_id =  '" . $id . "'
 					) AS t1
-					ORDER BY record_id  ";
+					ORDER BY inventory_status, product_id  ";
 		// echo $sql_cl;
 		$result_cl 	= $db->query($conn, $sql_cl);
 		$count_cl 	= $db->counter($result_cl);

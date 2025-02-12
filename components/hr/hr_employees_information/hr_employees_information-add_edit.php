@@ -21,6 +21,7 @@ if (isset($test_on_local) && $test_on_local == 1) {
 	$e_exit_date 						= "";
 	$e_exit_reason 						= "";
 	$hour_rate 							= "15";
+	$user_pin_code 						= mt_rand(100000, 999999);
 	$e_exit_reason 						= "";
 	$emp_code 							= date('YmdHis');
 	$hourly_rate 						= "25";
@@ -472,18 +473,6 @@ if ($cmd == 'add') {
 													</label>
 												</div>
 											</div>
-
-
-
-
-
-
-
-
-
-
-
-
 											<div class="input-field col m4 s12">
 												<?php
 												$field_name 	= "e_phone";
@@ -712,8 +701,6 @@ if ($cmd == 'add') {
 													</span>
 												</label>
 											</div>
-
-											
 											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<i class="material-icons prefix">person_outline</i>
 												<div class=" select2div">
@@ -854,7 +841,7 @@ if ($cmd == 'add') {
 												</label>
 											</div>
 
-											<div class="input-field col m3 s12 custom_margin_bottom_col">
+											<div class="input-field col m4 s12 custom_margin_bottom_col">
 												<?php
 												$field_name 	= "user_type";
 												$field_label 	= "Login User Type";
@@ -883,7 +870,64 @@ if ($cmd == 'add') {
 												</div>
 											</div>
 										</div>
+										<div class="row">
+											<div class="input-field col m4 s12 custom_margin_bottom_col">
+												<?php
+												$field_name 	= "user_department";
+												$field_label 	= "Department";
+												$sql_dep = "SELECT d.id,d.department_name FROM departments d WHERE d.enabled = 1";
+												$result_dep		= $db->query($conn, $sql_dep);
+												$counter_dep	= $db->counter($result_dep);
+												?>
+												<i class="material-icons prefix pt-2">person_outline</i>
 
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset($user_type_valid)) {
+																																									echo $user_type_valid;
+																																								} ?>">
+															<option value="">Select </option>
+															<?php 
+															if ($counter_dep > 0) {
+																$row_dep = $db->fetch($result_dep);
+									
+																foreach($row_dep as $data_dep){ ?>
+																	<option value="<?php echo $data_dep['id'] ?>" <?php if(isset($user_department) && $user_department ==  $data_dep['id'] ){ echo "selected"; } ?> ><?php echo $data_dep['department_name'] ?> </option>
+																<?php
+																}
+															}
+															?>
+															
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"> * <?php
+																					if (isset($error[$field_name])) {
+																						echo $error[$field_name];
+																					} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m4 s12">
+												<?php
+												$field_name 	= "user_pin_code";
+												$field_label 	= "User Pin Code";
+												?>
+												<i class="material-icons prefix">lock_outline</i>
+												<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" 
+													value="<?php if (isset(${$field_name})) { echo ${$field_name}; } ?>" 
+													class="validate <?php if (isset(${$field_name . "_valid"})) { echo ${$field_name . "_valid"}; } ?>" 
+													pattern="^\d{6}$" title="Please enter exactly 6 digits" required />
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> * <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>												
 										<div class="row">
 											<div class="col m12 s12">
 												<?php
@@ -1790,4 +1834,18 @@ if ($cmd == 'add') {
 			</div>
 		</div>
 	</div><br><br>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#user_pin_code').on('keyup', function() {
+				var value = $(this).val();
+				
+				// If the input value exceeds 6 digits, trim it to 6 digits
+				if (value.length > 6) {
+					$(this).val(value.slice(0, 6));
+				}
+			});
+		});
+
+	</script>
 	<!-- END: Page Main-->

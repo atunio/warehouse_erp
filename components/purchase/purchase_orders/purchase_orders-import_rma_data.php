@@ -40,8 +40,8 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
-$master_columns				= array("record_id", "base_product_id", "serial_no", "rma_status", "po_price", "new_value", "repair_type", "sub_location", "tracking_no");
+$supported_column_titles	= array("record_id", "product_id", "serial_no", "rma_status", "price", "new_value", "repair_type", "sub_location", "tracking_no");
+$master_columns				= array("record_id", "product_id", "serial_no", "rma_status", "price", "new_value", "repair_type", "sub_location", "tracking_no");
 $duplication_columns 		= array("record_id");
 $required_columns 			= array("record_id", "rma_status");
 
@@ -143,7 +143,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$update_master = $columns = $column_data = "";
 				if (isset($data1['record_id']) && $data1['record_id'] != '') {
 					$receive_id_1		= $data1['record_id'];
-					$base_product_id 	= $data1['base_product_id'];
 					$serial 			= $data1['serial_no'];
 
 					if (isset($receive_id_1) && $receive_id_1 > 0) {
@@ -268,7 +267,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$update_master .= "`" . $insert_db_field_id_detail . "` = '0', ";
 										$update_master .= "`reduced_price` = '0', ";
 									}
-								} else if ($insert_db_field_id != 'record_id' && $insert_db_field_id != 'base_product_id' && $insert_db_field_id != 'serial_no'  && $insert_db_field_id != 'po_price') {
+								} else if ($insert_db_field_id != 'record_id' && $insert_db_field_id != 'product_id' && $insert_db_field_id != 'serial_no'  && $insert_db_field_id != 'price') {
 									$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
 								}
 							}

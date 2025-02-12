@@ -63,6 +63,7 @@
 						</li>
 						<li class="divider"></li>
 					<?php } ?>
+					<li><a target="_blank" class="grey-text text-darken-1" href="attendance.php"><i class="material-icons">access_time</i>Attendance</a></li>
 					<li><a class="grey-text text-darken-1" href="signout"><i class="material-icons">keyboard_tab</i> Logout</a></li>
 				</ul>
             </div>

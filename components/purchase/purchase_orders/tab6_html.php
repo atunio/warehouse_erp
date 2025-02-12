@@ -272,7 +272,7 @@
                                         </span>
                                     </label>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="input-field col m2 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
                                     <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Submit</button>
@@ -727,7 +727,7 @@
                                                                                         } else {
                                                                                             echo "display: none;";
                                                                                         } ?>">
-                                                                                        
+
                     <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_6" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
@@ -800,7 +800,7 @@
                                                                 } ?>
                                     </span>
                                 </label>
-                            </div> 
+                            </div>
                             <div class="input-field col m4 s12">
                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
                                     <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Fetch Data</button>
@@ -811,7 +811,7 @@
                             <div class="input-field col m12 s12"></div>
                         </div>
                     </form>
-                    <?php 
+                    <?php
                     $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
                                     FROM phone_check_api_data a
                                     LEFT JOIN products c ON c.product_model_no = a.model_no 
@@ -819,7 +819,7 @@
                                     WHERE a.po_id = '" . $id . "' 
                                     AND a.is_processed = 0
                                     ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
-                                    // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
+                    // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
                     $result_preview    = $db->query($conn, $sql_preview);
                     $count_preview        = $db->counter($result_preview);
                     if ($count_preview > 0) {
@@ -861,7 +861,7 @@
                                                     $bulkserialNo[]         = $data['imei_no'];
                                                     $phone_check_api_data   = $data['phone_check_api_data'];
                                                     if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
-                                                    $checked = "";
+                                                        $checked = "";
                                                         if ($po_detail_id > 0) {
                                                             $checked = "checked";
                                                         } ?>
@@ -881,7 +881,7 @@
                                                             <td style="width:150px;"><?php echo $data['imei_no']; ?></td>
                                                             <td>
                                                                 <?php
-                                                                if ($po_detail_id > 0) {  ?>
+                                                                if ($po_detail_id > 0) { ?>
                                                                     <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
                                                                         <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
                                                                     </select>
@@ -889,18 +889,17 @@
                                                                     <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
                                                                         <option value="">Select</option>
                                                                         <?php
-                                                                        $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
-                                                                                                FROM purchase_order_detail a 
-                                                                                                INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                                                                INNER JOIN products c ON c.id = a.product_id
-                                                                                                WHERE 1=1 
-                                                                                                AND a.po_id = '" . $po_id . "'   ";
+                                                                        $sql_pd03       = "	SELECT c.id, c.product_uniqueid, c.product_model_no
+                                                                                            FROM  products c 
+                                                                                            WHERE 1=1 AND c.enabled = 1 ";
                                                                         $result_pd03    = $db->query($conn, $sql_pd03);
-                                                                        $count_pd03        = $db->counter($result_pd03);
+                                                                        $count_pd03     = $db->counter($result_pd03);
                                                                         if ($count_pd03 > 0) {
                                                                             $row_pd03 = $db->fetch($result_pd03);
                                                                             foreach ($row_pd03 as $data_pd03) { ?>
-                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>">ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
+                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if ($phone_check_model_no == $data_pd03['product_model_no']) {
+                                                                                                                                                    echo " selected ";
+                                                                                                                                                } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
                                                                         <?php }
                                                                         } ?>
                                                                     </select>
@@ -909,13 +908,16 @@
                                                                 ?>
                                                             </td>
                                                             <td><?php echo $phone_check_product_id; ?></td>
-                                                            <td><?php echo $phone_check_model_no; ?></td>
+                                                            <td>
+                                                                <input type="hidden" name="model_nos[<?= $data['imei_no']; ?>]" value="<?php echo $phone_check_model_no; ?>">
+                                                                <?php echo $phone_check_model_no; ?>
+                                                            </td>
                                                             <td>
                                                                 <label>
                                                                     <input type="text" name="prices[<?= $data['imei_no']; ?>]" id="prices_<?php echo $i; ?>" value=" <?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?>" />
                                                                     <span></span>
                                                                 </label>
-                                                                
+
                                                             </td>
                                                         </tr>
                                                 <?php }
@@ -923,7 +925,7 @@
                                             </tbody>
                                         </table>
                                     </div><br><br>
-                                    <div class="row"> 
+                                    <div class="row">
                                         <div class="input-field col m2 s12">
                                             <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
                                                 <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
@@ -936,7 +938,7 @@
                                 </div>
                             </div>
                         </form>
-                    <?php }?>
+                    <?php } ?>
                 </div>
             </div>
             <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
@@ -953,39 +955,52 @@
                             <h6>Process Fetched Data</h6>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_show_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {
-                                                                                                    echo "display: none;";
-                                                                                                } else {;
-                                                                                                } ?>">
+                                                                                                        echo "display: none;";
+                                                                                                    } else {;
+                                                                                                    } ?>">
                             <a href="javascript:void(0)" class="show_receive_from_barcode_section_tab6_2">Show Form</a>
                         </div>
                         <div class="col m4 s12 show_receive_from_barcode_hide_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {;
-                                                                                                } else {
-                                                                                                    echo "display: none;";
-                                                                                                } ?>">
+                                                                                                    } else {
+                                                                                                        echo "display: none;";
+                                                                                                    } ?>">
                             <a href="javascript:void(0)" class="hide_receive_from_barcode_section_tab6_2">Hide Form</a>
                         </div>
                     </div>
                     <div id="receive_from_barcode_section_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {;
-                                                                        } else {
-                                                                            echo "display: none;";
-                                                                        } ?>">
+                                                                            } else {
+                                                                                echo "display: none;";
+                                                                            } ?>">
                         <div class="row">
                             <div class="input-field col m12 s12"> </div>
                         </div>
                         <div class="row">
-                            
+
                             <div class="input-field col m7 s12">
                                 <?php
                                 $field_name     = "diagnostic_fetch_id";
                                 $field_label    = "Product";
-                                $sql            = " SELECT a.*, c.product_model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
-                                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                                    INNER JOIN products c ON c.id = b.product_id
-                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE a.po_id = '" . $id . "'
-                                                    AND a.is_processed = 0  
-                                                    ORDER BY c.product_uniqueid, a.serial_no ";
+                                $sql            = " SELECT * FROM (
+                                                        SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                        FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                                        INNER JOIN products c ON c.id = b.product_id
+                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                        WHERE a.po_id = 1
+                                                        AND a.is_processed = 0
+                                                        AND a.enabled = 1  
+
+                                                        UNION ALL 
+
+                                                        SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                        FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                                        INNER JOIN products c ON c.id = a.product_id_not_in_po
+                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                        WHERE a.po_id = 1
+                                                        AND a.enabled = 1
+                                                        AND a.is_processed = 0
+                                                    ) AS t1
+                                                    ORDER BY product_uniqueid, serial_no ";
                                 // echo $sql; 
                                 $result_log2    = $db->query($conn, $sql);
                                 $count_r2       = $db->counter($result_log2); ?>
@@ -998,23 +1013,22 @@
                                         <?php
                                         if ($count_r2 > 0) {
                                             $row_r2    = $db->fetch($result_log2);
-                                            foreach ($row_r2 as $data_r2) { 
+                                            foreach ($row_r2 as $data_r2) {
                                                 $detail_id_r1       = $data_r2['id'];
-                                                $order_qty          = $data_r2['order_qty']; 
-                                                $sql_rc1            = "	SELECT a.* 
+                                                $sql_rc1            = " SELECT a.* 
                                                                         FROM purchase_order_detail_receive a 
                                                                         WHERE 1=1 
                                                                         AND a.po_detail_id = '" . $detail_id_r1 . "'
                                                                         AND a.enabled = 1 "; //echo $sql_cl;
                                                 $result_rc1         = $db->query($conn, $sql_rc1);
-                                                $total_received_qty = $db->counter($result_rc1);  ?> 
+                                                $total_received_qty = $db->counter($result_rc1);  ?>
                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                    <?php  
-                                                    echo "Product: ".$data_r2['product_desc']." (" . $data_r2['product_uniqueid'].") - ";
+                                                    <?php
+                                                    echo "Product: " . $data_r2['product_desc'] . " (" . $data_r2['product_uniqueid'] . ") - ";
                                                     if ($data_r2['category_name'] != "") {
                                                         echo " (" . $data_r2['category_name'] . ") ";
                                                     }
-                                                    echo " - Serial#: " . $data_r2['serial_no'].", Model#: " . $data_r2['product_model_no']; ?>
+                                                    echo " - Serial#: " . $data_r2['serial_no'] . ", Model#: " . $data_r2['model_no']; ?>
                                                 </option>
                                         <?php
                                             }
@@ -1023,15 +1037,15 @@
                                     <label for="<?= $field_name; ?>">
                                         <?= $field_label; ?>
                                         <span class="color-red"> * <?php
-                                                                if (isset($error6[$field_name])) {
-                                                                    echo $error6[$field_name];
-                                                                } ?>
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
                                         </span>
                                     </label>
                                 </div>
-                            </div> 
+                            </div>
                             <div class="input-field col m3 s12">
-                                <?php 
+                                <?php
                                 $field_name     = "sub_location_id_fetched";
                                 $field_label    = "Location";
                                 $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
@@ -1083,7 +1097,7 @@
                                             a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
                                             e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
                                             i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
-                                            b.order_price, h.status_name, c.product_category 
+                                            h.status_name, c.product_category 
                                     FROM purchase_order_detail_receive a
                                     INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                     INNER JOIN purchase_orders b1 ON b1.id = b.po_id
@@ -1103,7 +1117,7 @@
                                         a.*, '' AS product_uniqueid, '' AS product_desc, d.category_name, 
                                         e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
                                         i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
-                                        '' as order_price, h.status_name, a.recevied_product_category as product_category
+                                        h.status_name, a.recevied_product_category as product_category
                                     FROM purchase_order_detail_receive a 
                                     INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                     INNER JOIN product_categories d ON d.id = a.recevied_product_category  
@@ -1114,6 +1128,24 @@
                                     WHERE a.po_id = '" . $id . "'
                                     AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
                                     GROUP BY a.recevied_product_category
+
+                                    UNION ALL 
+
+                                    SELECT 'ProductReceived' as record_type, '1' as total_qty_received, 
+                                            a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
+                                            i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
+                                            h.status_name, c.product_category 
+                                    FROM purchase_order_detail_receive a
+                                    INNER JOIN purchase_orders b1 ON b1.id = a.po_id
+                                    INNER JOIN products c ON c.id = a.product_id
+                                    LEFT JOIN product_categories d ON d.id =c.product_category
+                                    LEFT JOIN users e ON e.id = a.add_by_user_id
+                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                    LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                    LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                    WHERE a.enabled = 1
+                                    AND a.po_id = '" . $id . "' 
                                 ) AS t1
                                 ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
             $result_log     = $db->query($conn, $sql);
@@ -1136,14 +1168,14 @@
                         <div class="row">
                             <?php
                             if (po_permisions("Move as Inventory") == 1) { ?>
-                                    <div class="col m2 s12">
-                                        <label>
-                                            <input type="checkbox" id="all_checked7" class="filled-in" name="all_checked7" value="1" <?php if (isset($all_checked7) && $all_checked7 == '1') {
-                                                                                                                                            echo "checked";
-                                                                                                                                        } ?> />
-                                            <span></span>
-                                        </label>
-                                    </div>
+                                <div class="col m2 s12">
+                                    <label>
+                                        <input type="checkbox" id="all_checked7" class="filled-in" name="all_checked7" value="1" <?php if (isset($all_checked7) && $all_checked7 == '1') {
+                                                                                                                                        echo "checked";
+                                                                                                                                    } ?> />
+                                        <span></span>
+                                    </label>
+                                </div>
                             <?php } ?>
                             <div class="col m8 s12">
                                 <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
@@ -1192,7 +1224,7 @@
                                                     $serial_no_barcode          = $data['serial_no_barcode'];
                                                     $processor                  = $data['processor'];
                                                     $warranty                   = $data['warranty'];
-                                                    $order_price                = $data['order_price'];
+                                                    $price                = $data['price'];
                                                     $is_diagnost                = $data['is_diagnost'];
                                                     $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                     $is_rma_processed           = $data['is_rma_processed'];
@@ -1232,11 +1264,10 @@
                                                         <td style="<?= $td_padding; ?>">
                                                             <?php
                                                             $color          = "purple";
-                                                            $sql            = " SELECT a.*
-                                                                                FROM vender_po_data a
-                                                                                WHERE a.enabled = 1
-                                                                                AND a.serial_no = '" . $serial_no_barcode . "'
-                                                                                AND a.po_id             = '" . $id . "'  ";
+                                                            $sql            = " SELECT a.* FROM vender_po_data a 
+                                                                                WHERE a.enabled = 1 
+                                                                                AND a.serial_no = '" . $serial_no_barcode . "' 
+                                                                                AND a.po_id = '" . $id . "'  ";
                                                             $result_vebder  = $db->query($conn, $sql);
                                                             $count_vebder   = $db->counter($result_vebder);
                                                             if ($count_vebder > 0) {
@@ -1355,8 +1386,8 @@
                                                             <?php } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
-                                                            <?php if ($order_price != '') {
-                                                                echo "Price: " . number_format($order_price, 2) . "<br>";
+                                                            <?php if ($price != '') {
+                                                                echo "Price: " . number_format($price, 2) . "<br>";
                                                             } ?>
                                                             <?php if ($defectsCode != '') {
                                                                 echo "Defects: " . $defectsCode . "<br>";
@@ -1433,6 +1464,7 @@
             document.getElementById('barcodeForm2').submit();
         }
     }
+
     function autoSubmit2_1(event) {
         var keycode_value = event.keyCode;
         if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {

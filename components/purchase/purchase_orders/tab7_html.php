@@ -143,25 +143,48 @@
                             ) AS t1
                             ORDER BY rec_sort, is_rma_processed DESC, is_rma_added DESC, base_product_id, serial_no_barcode DESC ";
             */
-            $sql        = " SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
-                                a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
-                                a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
-                                a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
-                                c.product_desc, d.category_name, 
-                                e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
-                                i.sub_location_name AS sub_location_name_after_diagnostic,
-                                c1.order_price, h.status_name, c.product_uniqueid
-                            FROM purchase_order_detail_receive_rma a1
-                            INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
-                            INNER JOIN purchase_order_detail c1 ON c1.id = a.po_detail_id
-                            INNER JOIN purchase_orders d1 ON d1.id = c1.po_id
-                            LEFT JOIN inventory_status h ON h.id = a1.status_id 
-                            LEFT JOIN warehouse_sub_locations i ON i.id = a1.sub_location_id
-                            LEFT JOIN users e ON e.id = a.add_by_user_id
-                            INNER JOIN products c ON c.id = c1.product_id
-                            LEFT JOIN product_categories d ON d.id =c.product_category
-                            WHERE d.id = '" . $id . "' 
-                            AND a.enabled = 1 ";
+            $sql        = " SELECT * FROM (
+                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
+                                    a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                    a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
+                                    a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
+                                    c.product_desc, d.category_name, 
+                                    e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
+                                    i.sub_location_name AS sub_location_name_after_diagnostic,
+                                    c1.order_price, h.status_name, c.product_uniqueid
+                                FROM purchase_order_detail_receive_rma a1
+                                INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
+                                INNER JOIN purchase_order_detail c1 ON c1.id = a.po_detail_id
+                                INNER JOIN purchase_orders d1 ON d1.id = c1.po_id
+                                LEFT JOIN inventory_status h ON h.id = a1.status_id 
+                                LEFT JOIN warehouse_sub_locations i ON i.id = a1.sub_location_id
+                                LEFT JOIN users e ON e.id = a.add_by_user_id
+                                INNER JOIN products c ON c.id = c1.product_id
+                                LEFT JOIN product_categories d ON d.id =c.product_category
+                                WHERE d1.id = '" . $id . "' 
+                                AND a.enabled = 1
+
+                                UNION ALL 
+
+                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
+                                    a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                    a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
+                                    a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
+                                    c.product_desc, d.category_name, 
+                                    e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
+                                    i.sub_location_name AS sub_location_name_after_diagnostic,
+                                    a.price, h.status_name, c.product_uniqueid
+                                FROM purchase_order_detail_receive_rma a1
+                                INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
+                                INNER JOIN purchase_orders d1 ON d1.id = a.po_id
+                                LEFT JOIN inventory_status h ON h.id = a1.status_id 
+                                LEFT JOIN warehouse_sub_locations i ON i.id = a1.sub_location_id
+                                LEFT JOIN users e ON e.id = a.add_by_user_id
+                                INNER JOIN products c ON c.id = a.product_id
+                                LEFT JOIN product_categories d ON d.id =c.product_category
+                                WHERE d1.id = '" . $id . "'
+                                AND a.enabled = 1
+                            ) AS t1 ";
 
             // echo $sql;
             $result_log = $db->query($conn, $sql);
@@ -360,6 +383,23 @@
                                                         LEFT JOIN purchase_order_detail_receive_rma a1 ON a1.receive_id = a.id
                                                         WHERE a.enabled = 1 
                                                         AND b.po_id = '" . $id . "'
+                                                        AND a1.id IS NULL
+                                                        AND a.inventory_status = '6' 
+                                                        AND a.edit_lock = 1 
+                                                        
+                                                        UNION ALL 
+
+                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, a.base_product_id,  
+                                                            a.sub_product_id, c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                        FROM purchase_order_detail_receive a
+                                                        INNER JOIN products c ON c.id = A.product_id
+                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                        LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                                        LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                                        INNER JOIN product_stock j ON j.receive_id = a.id 
+                                                        LEFT JOIN purchase_order_detail_receive_rma a1 ON a1.receive_id = a.id
+                                                        WHERE a.enabled = 1 
+                                                        AND a.po_id = '" . $id . "'
                                                         AND a1.id IS NULL
                                                         AND a.inventory_status = '6' 
                                                         AND a.edit_lock = 1 
@@ -577,8 +617,8 @@
                             </div>
                         </div>
                         <div class="row partial_refund_status" style="<?php if (!isset($status_id_rma) || (isset($status_id_rma) && $status_id_rma != '18') || $status_id_rma == '') {
-                                                                echo "display: none;";
-                                                            } ?>">
+                                                                            echo "display: none;";
+                                                                        } ?>">
 
                             <div class="input-field col m3 s12">
                                 <?php

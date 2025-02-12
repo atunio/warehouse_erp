@@ -710,6 +710,7 @@ $page_heading 	= "Stock Summary";
 																				<td><?php echo $data3['sub_location_name']; ?></td>
 																				<td>
 																					<?php
+																					$filter_3 = $data3['serial_no'];
 																					if (access("edit_perm") == 1) { ?>
 																						<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																							<?php echo $data3['p_total_stock']; ?>
@@ -725,7 +726,6 @@ $page_heading 	= "Stock Summary";
 																				</td>
 																				<td>
 																					<?php
-																					$filter_3 = $data3['serial_no'];
 																					if (access("edit_perm") == 1) { ?>
 																						<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																							<?php echo number_format($data3['price'], 2); ?>

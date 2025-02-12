@@ -97,8 +97,7 @@ if (isset($is_Submit) || isset($id)) {
 			$redirect_to_export = "export/export_available_stock.php?string=." . encrypt("module_id=" . $module_id) . $import_params;
 			// echo "<br><br><br>" . $redirect_to_export;die;
 			echo '<script> window.open("' . $redirect_to_export . '"); </script>';
-		}
-		else{
+		} else {
 			$action_searchButton = "search";
 		}
 		if (!isset($action_exportButton) && $count_cl == 0) {
@@ -182,7 +181,7 @@ $page_heading 	= "Stock Detail";
 																			echo encrypt($_SESSION['csrf_session']);
 																		} ?>">
 						<div class="row">
-							
+
 							<div class="input-field col m3 s12 custom_margin_bottom_col">
 								<?php
 								$field_name     = "flt_product_id";
@@ -246,7 +245,7 @@ $page_heading 	= "Stock Detail";
 										</span>
 									</label>
 								</div>
-							</div> 
+							</div>
 							<div class="input-field col m3 s12">
 								<?php
 								$field_name 	= "flt_serial_no";
@@ -513,13 +512,24 @@ $page_heading 	= "Stock Detail";
 															<?php
 															if (access("edit_perm") == 1) { ?>
 																<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=history&id=" . $product_id) ?>" title="Detail View">
-																	<?php echo ucwords(strtolower($data['product_desc'])); ?> (<?php echo $data['category_name']; ?>)
+																	<?php
+
+																	if ($data['product_desc'] != "") {
+																		echo ucwords(strtolower($data['product_desc']));
+																	}  ?> (<?php echo $data['category_name']; ?>)
 																</a> &nbsp;&nbsp;
 															<?php } else {
-																echo ucwords(strtolower($data['product_desc'])); ?> (<?php echo $data['category_name']; ?>)
+																if ($data['product_desc'] != "") {
+																	echo ucwords(strtolower($data['product_desc']));
+																} ?> (<?php echo $data['category_name']; ?>)
 															<?php } ?>
 														</td>
-														<td><?php echo ucwords(strtolower($data['type_name'])); ?></td>
+														<td>
+															<?php
+															if ($data['type_name'] != "") {
+																echo ucwords(strtolower($data['type_name']));
+															} ?>
+														</td>
 														<td>
 															<?php
 															$status_name = $data['status_name'];

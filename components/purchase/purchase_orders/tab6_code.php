@@ -238,7 +238,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 				}
 			}
 			if (!isset($all_devices_info['imei']) || (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) == 0)) {
-				$error6['msg'] = "No Serial# is avaible again this invoice# in the date.";
+				$error6['msg'] = "No Serial# is avaible again this PO# in the date.";
 			}
 			if ($k > 0) {
 				$msg6['msg_success'] = "Total " . $k . " Serial# have been updated successfully.";

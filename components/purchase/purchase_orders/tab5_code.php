@@ -34,7 +34,9 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 			foreach ($receviedProductIds as $receviedProductId) {
 				$receviedProductId_array = explode("-", $receviedProductId);
 				if ($receviedProductId_array[0] == 'CateogryReceived') {
-					$delete_id = " recevied_product_category = '" . $receviedProductId_array[1] . "' AND po_id = '" . $id . "' ";
+					$delete_id = " 	recevied_product_category = '" . $receviedProductId_array[1] . "' 
+									AND sub_location_id = '" . $receviedProductId_array[2] . "'
+									AND po_id = '" . $id . "' ";
 				} else {
 					$delete_id = " id= '" . $receviedProductId_array[1] . "' ";
 				}

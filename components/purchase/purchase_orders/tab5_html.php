@@ -1438,7 +1438,7 @@
                                         LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                         WHERE a.po_id = '" . $id . "'
                                         AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
-                                        GROUP BY a.recevied_product_category
+                                        GROUP BY a.recevied_product_category, sub_location_id
                                     ) AS t1
                                     ORDER BY product_type DESC, record_type, product_category, sub_location_id, serial_no_barcode ";
                 $result_log     = $db->query($conn, $sql);
@@ -1459,9 +1459,9 @@
                                  <th>Actions</th>
                              </tr>
                              <?php
-                                $sql        =  "SELECT sub_location_id, locations, product_category, category_name, SUM(total_products) AS total_products
+                                $sql        =  "SELECT sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
                                                 FROM (
-                                                    SELECT a.sub_location_id, GROUP_CONCAT(DISTINCT CONCAT(e.sub_location_name) SEPARATOR ', ') AS locations, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
+                                                    SELECT a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
                                                     FROM purchase_order_detail b 
                                                     INNER JOIN products c ON c.id = b.product_id
                                                     INNER JOIN purchase_order_detail_receive a ON a.`po_detail_id` = b.id
@@ -1470,20 +1470,20 @@
                                                     WHERE a.enabled = 1 
                                                     AND b.po_id = '" . $id . "'
                                                     AND a.`receive_type` != 'CateogryReceived'
-                                                    GROUP BY c.product_category
+                                                    GROUP BY c.product_category, a.sub_location_id
 
                                                     UNION ALL 
 
-                                                    SELECT a.sub_location_id, GROUP_CONCAT(DISTINCT CONCAT(e.sub_location_name) SEPARATOR ', ') AS locations, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
+                                                    SELECT a.sub_location_id, e.sub_location_name, e.sub_location_type, a.recevied_product_category AS product_category, d.`category_name`, COUNT(a.id) AS total_products
                                                     FROM purchase_order_detail_receive a 
                                                     INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                                     INNER JOIN product_categories d ON d.id = a.recevied_product_category  
                                                     LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
                                                     WHERE a.po_id = '" . $id . "'
-                                                    GROUP BY a.recevied_product_category
+                                                    GROUP BY a.recevied_product_category, a.sub_location_id
                                                 ) AS t1
-                                                GROUP BY category_name
-                                                ORDER BY category_name ";
+                                                GROUP BY category_name, sub_location_id
+                                                ORDER BY category_name, sub_location_name ";
                                 $result_t1  = $db->query($conn, $sql);
                                 $count_t1   = $db->counter($result_t1);
                                 if ($count_t1 > 0) {
@@ -1494,7 +1494,13 @@
                                             $product_category_rc2   = $data_t1['product_category']; ?>
                                          <tr>
                                              <td><?php echo $data_t1['category_name']; ?></td>
-                                             <td><?php echo $data_t1['locations']; ?></td>
+                                             <td>
+                                                 <?php echo $data_t1['sub_location_name']; ?>
+                                                 <?php
+                                                    if ($data_t1['sub_location_type'] != "") {
+                                                        echo " (" . $data_t1['sub_location_type'] . ")";
+                                                    } ?>
+                                             </td>
                                              <td><?php echo $data_t1['total_products']; ?></td>
                                              <td>
                                                  <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&sub_location_id=" . $detail_id2 . "&product_category=" . $product_category_rc2)  ?>" target="_blank">
@@ -1608,6 +1614,7 @@
                                                     $row_cl1 = $db->fetch($result_log);
                                                     foreach ($row_cl1 as $data) {
                                                         $detail_id2 = $data['id'];
+                                                        $detail_id3 = $data['sub_location_id'];
                                                         if ($data['record_type'] == 'CateogryReceived') {
                                                             $detail_id2 = $data['product_category'];
                                                         } ?>
@@ -1618,7 +1625,7 @@
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
                                                                  <label>
-                                                                     <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $data['record_type']; ?>-<?= $detail_id2; ?>" class="checkbox6 filled-in" />
+                                                                     <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $data['record_type']; ?>-<?= $detail_id2; ?>-<?= $detail_id3; ?>" class="checkbox6 filled-in" />
                                                                      <span></span>
                                                                  </label>
                                                              <?php } ?>

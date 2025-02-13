@@ -102,6 +102,7 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 				GROUP BY a.recevied_product_category, a.sub_location_id
 			) AS t1
 			WHERE product_category 	=  '" . $product_category . "'
+			AND sub_location_id 	=  '" . $sub_location_id . "'
 			GROUP BY category_name, sub_location_name
 			ORDER BY category_name, sub_location_name ";
 // echo $sql_ee1;die;

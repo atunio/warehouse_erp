@@ -373,6 +373,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 <!-- END: Page Main-->
 
 <script>
+	calculateWorkedHours();
 	function calculateWorkedHours() {
 		var clockedIn = document.getElementById("clocked_in").value;
 		var clockedOut = document.getElementById("clocked_out").value;

@@ -261,15 +261,6 @@ $pageTitle = PROJECT_TITLE . ". Panel Dashboard"; ?>
 										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col s12 m12 l12">
-										<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
-											<div class="card-content custom_padding_card_content_table_top">
-												Marked Attendance Here
-											</div>
-										</div>
-									</div>	
-								</div>	
 							<!--  -->
 						<!-- </form> -->
 					</div>
@@ -294,19 +285,46 @@ $pageTitle = PROJECT_TITLE . ". Panel Dashboard"; ?>
 				var module_id = $("#module_id").val();
 				if (pressedKeys.length == 6) {
 
-					var dataString = 'type=attendance&password=' + arrayString + '&time_flag=' + time_flag + '&module_id=' + module_id;
+					var dataString = 'type=attendance&emp_pin_code=' + arrayString + '&time_flag=' + time_flag + '&module_id=' + module_id;
 					
 					$.ajax({
 						type: "POST",
 						url: "ajax/attendance_in_out.php",
 						data: dataString,
 						cache: false,
-						success: function(data) {
-							if (data != 'Select') {
+						success: function(response) {
+							if (response) {
 								$(".circle").css("background-color", "#ddd");
 								pressedKeys = [];
 								currentIndex = 1;
-								alert(data);
+								 
+								if (response === "Invalid") {
+									var toastHTML = 'Invalid Pin code entered kindly enter the correct pin code.';
+									showToast(toastHTML, "Fail");
+								}else if(response === "FailClockIn"){
+									var toastHTML = 'Please Clock in before then you may clock out.';
+									showToast(toastHTML, "Fail");
+								} 
+								else if(response === "FailClockOut"){
+									var toastHTML = 'Please Clock out before then you may clock in again.';
+									showToast(toastHTML, "Fail");
+								} 
+								else if(response === "ClockOut"){
+									var toastHTML = 'Already you have done clock out.';
+									showToast(toastHTML, "Fail");
+								} 
+								else if(response === "ClockIn"){
+									var toastHTML = 'Already you have done clock in kindly clock out.';
+									showToast(toastHTML, "Fail");
+								} 
+								else if(response === "ClockInOut"){
+									var toastHTML = 'Already you have done today clock in & clock out.';
+									showToast(toastHTML, "Fail");
+								} 
+								else{
+									var toastHTML = response;
+									showToast(toastHTML, "Success");
+								}
 								
 							}
 						},
@@ -362,8 +380,13 @@ $pageTitle = PROJECT_TITLE . ". Panel Dashboard"; ?>
 		}
 		setInterval(updateClock, 1000);
 		updateClock();
-
-
+		function showToast(message, type) {
+			var toastClass = type === 'Success' ? 'green' : 'red';
+			M.toast({
+				html: message,
+				classes: toastClass
+			});
+		} 
 	</script>
 		<!-- END: Page Main-->
 		<!-- Theme Customizer -->

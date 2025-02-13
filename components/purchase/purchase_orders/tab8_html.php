@@ -68,7 +68,8 @@
                 <?php //*/ 
                 $td_padding = "padding:5px 10px !important;";
                 $sql        = " WITH cte AS (
-                                    SELECT  a.po_detail_id, c.product_uniqueid, 
+                                    SELECT * FROM (
+                                        SELECT  a.po_detail_id, c.product_uniqueid, 
                                             c2.stock_grade,
                                             b.order_price,
                                             COUNT(c2.id) AS total_qty, 
@@ -78,17 +79,40 @@
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
                                             ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
                                             ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * b.order_price), 2) total_price
-                                    FROM purchase_order_detail_receive a 
-                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                    INNER JOIN products c ON c.id = b.product_id
-                                    INNER JOIN product_stock c2 ON c2.receive_id = a.id
-                                    WHERE a.enabled     = 1 AND c2.enabled = 1 AND b.enabled = 1
-                                    AND a.is_diagnost   = 1
-                                    AND b.po_id         = '" . $id . "'
-                                    AND c2.p_inventory_status = 5
-                                    AND c2.stock_grade IN('A', 'B', 'C')
-                                    GROUP BY c.product_uniqueid, c2.stock_grade
-                                    ORDER BY c.product_uniqueid, c2.stock_grade
+                                        FROM purchase_order_detail_receive a 
+                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                        INNER JOIN products c ON c.id = b.product_id
+                                        INNER JOIN product_stock c2 ON c2.receive_id = a.id
+                                        WHERE a.enabled     = 1 AND c2.enabled = 1 AND b.enabled = 1
+                                        AND a.is_diagnost   = 1
+                                        AND b.po_id         = '" . $id . "'
+                                        AND c2.p_inventory_status = 5
+                                        AND c2.stock_grade IN('A', 'B', 'C')
+                                        GROUP BY c.product_uniqueid, c2.stock_grade
+                                        
+                                        UNION ALL 
+                                        
+                                        SELECT  a.po_detail_id, c.product_uniqueid, 
+                                            c2.stock_grade,
+                                            a.price AS  order_price,
+                                            COUNT(c2.id) AS total_qty, 
+                                            ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
+                                            ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
+                                            ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
+                                            ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * a.price), 2) total_price
+                                        FROM purchase_order_detail_receive a 
+                                        INNER JOIN products c ON c.id = a.product_id
+                                        INNER JOIN product_stock c2 ON c2.receive_id = a.id
+                                        WHERE a.enabled     = 1 AND c2.enabled = 1  
+                                        AND a.is_diagnost   = 1
+                                        AND a.po_id         = '" . $id . "'
+                                        AND c2.p_inventory_status = 5
+                                        AND c2.stock_grade IN('A', 'B', 'C')
+                                        GROUP BY c.product_uniqueid, c2.stock_grade
+                                    ) AS t1
+                                    ORDER BY product_uniqueid, stock_grade
                                 ),
                                 product_totals AS (
                                     SELECT product_uniqueid,

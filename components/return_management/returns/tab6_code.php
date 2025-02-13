@@ -380,7 +380,9 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 			if (isset($bulkserialNo) && $bulkserialNo != null) {
 				foreach ($bulkserialNo as $data) {
 					$phone_check_product_id		= $product_ids[$data];
+					$single_model_no			= $model_nos[$data];
 					$single_price				= $prices[$data];
+					$product_id_fetched 		= 0;
 
 					if ($phone_check_product_id != "") {
 						$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid, c.product_category
@@ -392,40 +394,55 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 												AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
+
 						if ($count_pd01 > 0) {
-							$row_pd01								= $db->fetch($result_pd01);
-							$diagnostic_fetch_product_detail_id		= $row_pd01[0]['id'];
-							$product_category_diagn					= $row_pd01[0]['product_category'];
-
-							$sql_pd01_4 		= "	SELECT  a.*
-													FROM return_receive_diagnostic_fetch_return a 
-													WHERE a.enabled = 1 
-													AND a.po_id = '" . $id . "'
-													AND a.serial_no = '" . $data . "'
-													ORDER BY a.id DESC LIMIT 1";
-							$result_pd01_4	= $db->query($conn, $sql_pd01_4);
-							$count_pd01_4	= $db->counter($result_pd01_4);
-							if ($count_pd01_4 == 0) {
-								//  echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ".$phone_check_product_id;
-								$sql = "INSERT INTO return_receive_diagnostic_fetch_return (po_id, po_detail_id, product_category, serial_no, amount, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-										VALUES	('" . $id . "', '" . $diagnostic_fetch_product_detail_id . "', '" . $product_category_diagn . "', '" . $data . "', '" . $single_price . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
-								$ok = $db->query($conn, $sql);
-								if ($ok) { 
-									$sql_c_up = "UPDATE  phone_check_api_data SET 	 
-																					is_processed						= '1', 
-
-																					update_timezone		   	 			= '" . $timezone . "',
-																					update_date			    			= '" . $add_date . "',
-																					update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
-																					update_by			    			= '" . $_SESSION['username'] . "',
-																					update_ip			    			= '" . $add_ip . "',
-																					update_from_module_id				= '" . $module_id . "'
-											WHERE imei_no = '" . $data . "' ";
-									$db->query($conn, $sql_c_up); 
-									$k++;
-								}
+							$row_pd01						= $db->fetch($result_pd01);
+							$product_category_diagn			= $row_pd01[0]['product_category'];
+							$id_identification_field_name	= "po_detail_id";
+							$id_identification_field_value	= $row_pd01[0]['id'];
+							$product_id_fetched				= $row_pd01[0]['product_id'];
+						} else {
+							$sql_pd01 		= "	SELECT c.id, c.product_category FROM products c WHERE 1=1 AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+							$result_pd01	= $db->query($conn, $sql_pd01);
+							$count_pd01		= $db->counter($result_pd01);
+							if ($count_pd01 > 0) {
+								$row_pd01						= $db->fetch($result_pd01);
+								$product_category_diagn			= $row_pd01[0]['product_category'];
+								$id_identification_field_name	= "product_id_not_in_ro";
+								$id_identification_field_value	= $row_pd01[0]['id'];
+								$product_id_fetched				= $id_identification_field_value;
 							}
 						}
+
+						$sql_pd01_4 		= "	SELECT  a.*
+												FROM return_receive_diagnostic_fetch_return a 
+												WHERE a.enabled = 1 
+												AND a.po_id = '" . $id . "'
+												AND a.serial_no = '" . $data . "'
+												ORDER BY a.id DESC LIMIT 1";
+						$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+						$count_pd01_4	= $db->counter($result_pd01_4);
+						if ($count_pd01_4 == 0) {
+							//  echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ".$phone_check_product_id;
+							$sql = "INSERT INTO return_receive_diagnostic_fetch_return (po_id,  product_id, " . $id_identification_field_name . ", product_category, serial_no, amount, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+									VALUES	('" . $id . "', '" . $product_id_fetched . "', '" . $id_identification_field_value . "','" . $product_category_diagn . "', '" . $data . "', '" . $single_price . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
+							$ok = $db->query($conn, $sql);
+							if ($ok) { 
+								$sql_c_up = "UPDATE  phone_check_api_data SET 	 
+																				is_processed						= '1', 
+
+																				update_timezone		   	 			= '" . $timezone . "',
+																				update_date			    			= '" . $add_date . "',
+																				update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
+																				update_by			    			= '" . $_SESSION['username'] . "',
+																				update_ip			    			= '" . $add_ip . "',
+																				update_from_module_id				= '" . $module_id . "'
+										WHERE imei_no = '" . $data . "' ";
+								$db->query($conn, $sql_c_up); 
+								$k++;
+							}
+						}
+						
 					}  
 				}
 			}
@@ -839,8 +856,10 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 			if ($count_pd01 > 0) {
 				$row_pd01						= $db->fetch($result_pd01);
 				$diagnostic_fetch_product_id	= $row_pd01[0]['po_detail_id'];
+				$product_id_not_in_ro			= $row_pd01[0]['product_id_not_in_ro'];
 				$product_category_diagn			= $row_pd01[0]['product_category']; 
 				$data 							= $row_pd01[0]['serial_no'];
+				$model_no						= $row_pd01[0]['model_no'];
 				$fetched_amount 				= $row_pd01[0]['amount']; 
 
 				$sql_pd01_4 		= "	SELECT  a.*
@@ -875,6 +894,12 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 						if ($count_pd01 > 0) {
 							$row_pd01		= $db->fetch($result_pd01);
 							$receive_id_2 	= $row_pd01[0]['id'];
+						}else{
+							$sql = "INSERT INTO return_items_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_ro . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							$db->query($conn, $sql);
+							$receive_id_2 = mysqli_insert_id($conn);
+						}
 							$sql_c_up = "UPDATE  return_items_detail_receive SET 		
 																					ro_detail_id						= '" . $diagnostic_fetch_product_id . "', 
 																					serial_no_barcode					= '" . $data . "', 
@@ -936,24 +961,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 					}
 						 
 					
-				}
-					
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-				 
+				
 			} else {
 				$error5['msg'] = "The record is already exist";
 			}

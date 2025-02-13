@@ -848,18 +848,17 @@
                                                                     <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
                                                                         <option value="">Select</option>
                                                                         <?php
-                                                                        $sql_pd03         = "	SELECT a.id, a.order_price ,a.product_id,c.product_uniqueid, c.product_model_no
-                                                                                                FROM return_items_detail a 
-                                                                                                INNER JOIN returns b ON b.id = a.return_id
-                                                                                                INNER JOIN products c ON c.id = a.product_id
-                                                                                                WHERE 1=1 
-                                                                                                AND a.return_id = '" . $po_id . "'   ";
+                                                                        $sql_pd03         = "SELECT c.id, c.product_uniqueid, c.product_model_no
+                                                                                                FROM  products c 
+                                                                                                WHERE 1=1 AND c.enabled = 1  ";
                                                                         $result_pd03    = $db->query($conn, $sql_pd03);
                                                                         $count_pd03        = $db->counter($result_pd03);
                                                                         if ($count_pd03 > 0) {
                                                                             $row_pd03 = $db->fetch($result_pd03);
                                                                             foreach ($row_pd03 as $data_pd03) { ?>
-                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>">ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
+                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if ($phone_check_model_no == $data_pd03['product_model_no']) {
+                                                                                                                                                    echo " selected ";
+                                                                                                                                                } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
                                                                         <?php }
                                                                         } ?>
                                                                     </select>
@@ -868,7 +867,10 @@
                                                                 ?>
                                                             </td>
                                                             <td><?php echo $phone_check_product_id; ?></td>
-                                                            <td><?php echo $phone_check_model_no; ?></td>
+                                                            <td>
+                                                                <input type="hidden" name="model_nos[<?= $data['imei_no']; ?>]" value="<?php echo $phone_check_model_no; ?>">
+                                                                <?php echo $phone_check_model_no; ?>
+                                                            </td>
                                                             <td>
                                                                 <label>
                                                                     <input type="text" name="prices[<?= $data['imei_no']; ?>]" id="prices_<?php echo $i; ?>" value=" <?php if ($product_item_price != "") echo number_format($product_item_price, 2); ?>" />
@@ -937,14 +939,37 @@
                                 <?php
                                 $field_name     = "diagnostic_fetch_id";
                                 $field_label    = "Product";
-                                $sql            = " SELECT a.*, c.product_model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                    FROM return_receive_diagnostic_fetch_return a 
-                                                    INNER JOIN return_items_detail b ON b.id = a.po_detail_id
-                                                    INNER JOIN products c ON c.id = b.product_id
-                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE a.po_id = '" . $id . "'
-                                                    AND a.is_processed = 0  
-                                                    ORDER BY c.product_uniqueid, a.serial_no ";
+                                // SELECT a.*, c.product_model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                //                     FROM return_receive_diagnostic_fetch_return a 
+                                //                     INNER JOIN return_items_detail b ON b.id = a.po_detail_id
+                                //                     INNER JOIN products c ON c.id = b.product_id
+                                //                     LEFT JOIN product_categories d ON d.id = c.product_category
+                                //                     WHERE a.po_id = '" . $id . "'
+                                //                     AND a.is_processed = 0  
+                                //                     ORDER BY c.product_uniqueid, a.serial_no 
+                                                    
+                                $sql            = " SELECT * FROM (
+                                                        SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                        FROM return_receive_diagnostic_fetch_return a 
+                                                        INNER JOIN return_items_detail b ON b.id = a.po_detail_id
+                                                        INNER JOIN products c ON c.id = b.product_id
+                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                        WHERE a.po_id = '$id'
+                                                        AND a.is_processed = 0
+                                                        AND a.enabled = 1  
+
+
+                                                        UNION ALL 
+
+                                                        SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                        FROM return_receive_diagnostic_fetch_return a 
+                                                        INNER JOIN products c ON c.id = a.product_id_not_in_ro
+                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                        WHERE a.po_id = '$id'
+                                                        AND a.enabled = 1
+                                                        AND a.is_processed = 0
+                                                    ) AS t1
+                                                    ORDER BY product_uniqueid, serial_no";
                                 // echo $sql; 
                                 $result_log2    = $db->query($conn, $sql);
                                 $count_r2       = $db->counter($result_log2); ?>
@@ -973,7 +998,7 @@
                                                     if ($data_r2['category_name'] != "") {
                                                         echo " (" . $data_r2['category_name'] . ") ";
                                                     }
-                                                    echo " - Serial#: " . $data_r2['serial_no'].", Model#: " . $data_r2['product_model_no']; ?>
+                                                    echo " - Serial#: " . $data_r2['serial_no'] . ", Model#: " . $data_r2['model_no']; ?>
                                                 </option>
                                         <?php
                                             }

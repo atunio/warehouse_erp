@@ -37,19 +37,19 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "SELECT  *, timesheets.id AS timesheets_id, a.e_full_name, b.department_name,
+$sql_cl		= "SELECT  *, a1.id AS timesheets_id, a.e_full_name, b.department_name,
 					FLOOR(SUM(
 						(SUBSTRING_INDEX(worked_hours, ' hr', 1) * 60) +  
-						(SUBSTRING_INDEX(SUBSTRING_INDEX(worked_hours, ' min', 1), ' ', -1))
+						(SUBSTRING_INDEX(SUBSTRING_INDEX(a1.worked_hours, ' min', 1), ' ', -1))
 					) / 60) AS total_hours,
 					SUM(
 						(SUBSTRING_INDEX(worked_hours, ' hr', 1) * 60) +  
-						(SUBSTRING_INDEX(SUBSTRING_INDEX(worked_hours, ' min', 1), ' ', -1))
+						(SUBSTRING_INDEX(SUBSTRING_INDEX(a1.worked_hours, ' min', 1), ' ', -1))
 					) % 60 AS total_minutes
-				FROM timesheets
-				JOIN `employee_profile` a ON a.id =timesheets.`employee_id`
-				JOIN `departments` b  ON b.id =  timesheets.`department_id`
-				GROUP BY employee_id, department_id, MONTH(clock_date)";
+				FROM timesheets a1
+				JOIN `employee_profile` a ON a.id =a1.`employee_id`
+				JOIN `departments` b  ON b.id =  a1.`department_id`
+				GROUP BY a1.employee_id, a1.department_id, MONTH(a1.clock_date) ";
 //$sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
 $count_cl	= $db->counter($result_cl);

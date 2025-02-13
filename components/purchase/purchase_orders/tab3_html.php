@@ -34,7 +34,7 @@
         <?php }  ?>
     </div>
     <?php
-    if (!isset($id)) { ?>
+    if (!isset($id) || (isset($id) && $id == '')) { ?>
         <div class="card-panel">
             <div class="row">
                 <!-- Search for small screen-->
@@ -53,7 +53,7 @@
     <?php
     }
     $td_padding = "padding:5px 15px !important;";
-    if (isset($id)) {
+    if (isset($id) && $id > 0) {
         $orderby    = " ORDER BY a.tracking_no ";
         $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
                         FROM purchase_order_detail_logistics a

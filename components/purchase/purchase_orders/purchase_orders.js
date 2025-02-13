@@ -465,16 +465,21 @@ $(document).ready(function() {
         $('#repair_type').val('').trigger('change');
 
         var status_id_rma = $(this).val();
+        if(status_id_rma == '18'){
+            $(".partial_refund_status").show();  
+        }
+        else{
+            $(".partial_refund_status").hide(); 
+        }
         if(status_id_rma == '' || status_id_rma == null){
             $(".tracking_no_rma").hide();
             $(".repair_type").hide();
             $(".sub_location_id_barcode_rma").hide(); 
             $(".new_value").hide(); 
+            $(".partial_refund_status").hide(); 
         }
 		else if(status_id_rma == '19' || status_id_rma == '18' || status_id_rma == '22' || status_id_rma == '23' || status_id_rma == '24'){
-            if(status_id_rma == '18'){
-                 $(".partial_refund_status").show();  
-            }
+           
             if(status_id_rma == '19'){
                 $(".tracking_no_rma").hide();
                 $(".repair_type").show();  

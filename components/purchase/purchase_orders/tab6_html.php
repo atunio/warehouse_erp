@@ -89,7 +89,7 @@
         } ?>
     </div>
     <?php
-    if (!isset($id)) { ?>
+    if (!isset($id) || (isset($id) && $id == '')) { ?>
         <div class="card-panel custom_padding_card_content_table_top_bottom">
             <div class="row">
                 <!-- Search for small screen-->
@@ -108,20 +108,12 @@
         <?php
     } else {
         $td_padding = "padding:5px 15px !important;";
-
-        $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
-                        FROM purchase_order_detail_logistics a
-                        LEFT JOIN inventory_status c ON c.id = a.logistics_status
-                        LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
-                        WHERE a.po_id = '" . $id . "'
-                        AND a.arrived_date IS NOT NULL
-                        ORDER BY a.tracking_no ";
-        // echo $sql; 
+        $sql        = " SELECT a.id
+                        FROM purchase_order_detail_receive a
+                         WHERE a.po_id = '" . $id . "' "; // echo $sql; 
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
-        if ($count_log > 0) {
-            ///*
-        ?>
+        if ($count_log > 0) { ?>
             <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab6") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab6_2" value="Y" />
                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
@@ -678,33 +670,6 @@
                     </div>
                 </div>
             </form>
-            <?php //*/  
-            $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
-                            FROM purchase_order_detail_logistics a
-                            LEFT JOIN inventory_status c ON c.id = a.logistics_status
-                            LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
-                            WHERE a.po_id = '" . $id . "'
-                            AND a.arrived_date IS NOT NULL
-                            ORDER BY a.tracking_no ";
-            // echo $sql; 
-            $result_log     = $db->query($conn, $sql);
-            $count_log      = $db->counter($result_log);
-            if ($count_log > 0) { ?>
-            <?php
-            } else { ?>
-                <div class="card-panel custom_padding_card_content_table_top_bottom">
-                    <div class="row">
-                        <div class="col 24 s12"><br>
-                            <div class="card-alert card red lighten-5">
-                                <div class="card-content red-text">
-                                    <p>No arrival received yet. </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php } ?>
-
             <div class="card-panel custom_padding_card_content_table_top_bottom">
                 <div class="row">
                     <div class="col m8 s12">

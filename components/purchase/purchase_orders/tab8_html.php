@@ -34,7 +34,7 @@
         <?php }  ?>
     </div>
     <?php
-    if (!isset($id)) { ?>
+    if (!isset($id) || (isset($id) && $id == '')) { ?>
         <div class="card-panel">
             <div class="row">
                 <!-- Search for small screen-->

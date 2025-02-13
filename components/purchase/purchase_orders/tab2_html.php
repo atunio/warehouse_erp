@@ -35,7 +35,7 @@
     </div>
 
     <?php
-    if (!isset($id)) { ?>
+    if (!isset($id) || (isset($id) && $id == '')) { ?>
         <div class="card-panel">
             <div class="row">
                 <!-- Search for small screen-->
@@ -51,9 +51,7 @@
                 </div>
             </div>
         </div>
-    <?php } ?>
-    <?php
-    if (isset($cmd2_1) && $cmd2_1 == 'edit') { ?>
+    <?php } else if (isset($id) && $id > 0 && isset($cmd2_1) && $cmd2_1 == 'edit') { ?>
         <div class="card-panel">
             <h5>Update Single Record</h5>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd2_1=edit&detail_id=" . $detail_id . "&active_tab=tab2") ?>" method="post">
@@ -236,10 +234,8 @@
         </div>
         <?php
     }
-
     $td_padding = "padding:5px 15px !important;";
-
-    if (isset($id)) {
+    if (isset($id) && $id > 0) {
         $sql             = " SELECT a.*, c.status_name, d.logistics_cost
                             FROM purchase_order_detail_logistics a
  						    LEFT JOIN inventory_status c ON c.id = a.logistics_status
@@ -384,7 +380,7 @@
             </form>
         <?php }
     }
-    if (isset($cmd) && !isset($cmd2_1)) { ?>
+    if (isset($id) && $id > 0 && isset($cmd) && !isset($cmd2_1)) { ?>
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>" method="post">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab2" value="Y" />

@@ -76,7 +76,7 @@ $box_arrival_no 	= 1;
 
 
 $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_location_type, product_category, category_name, SUM(total_products) AS total_products
-				FROM (
+			FROM (
 				SELECT b1.po_no, f.vender_name, a.sub_location_id, e.sub_location_name, e.sub_location_type, c.product_category, d.`category_name`, COUNT(a.id) AS total_products
 				FROM purchase_order_detail b 
 				INNER JOIN purchase_orders b1 ON b1.id = b.po_id
@@ -88,7 +88,7 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 				WHERE a.enabled = 1 
 				AND b.po_id = '" . $id . "'
 				AND a.`receive_type` != 'CateogryReceived'
-				GROUP BY c.product_category
+				GROUP BY c.product_category, a.sub_location_id
 
 				UNION ALL 
 
@@ -99,10 +99,9 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 				LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
 				LEFT JOIN venders f ON f.id = b1.vender_id
 				WHERE a.po_id = '" . $id . "'
-				GROUP BY a.recevied_product_category
+				GROUP BY a.recevied_product_category, a.sub_location_id
 			) AS t1
-			WHERE sub_location_id 	=  '" . $sub_location_id . "'
-			AND product_category 	=  '" . $product_category . "'
+			WHERE product_category 	=  '" . $product_category . "'
 			GROUP BY category_name, sub_location_name
 			ORDER BY category_name, sub_location_name ";
 // echo $sql_ee1;die;
@@ -132,11 +131,11 @@ if ($counter_ee1 > 0) {
 				<br><br>
 				Vendor: ' . $vender_name . '
 				<br><br>
-				Category: ' . $category_name . '
+				' . $category_name . '
 				<br>
 				Qty: ' . $total_products . '
 				<br><br>
-				Location: ' . $sub_location_name . '
+				' . $sub_location_name . '
 				<br>
 				' . $arrived_date . '
 			</div>  ';  //echo $report_data;die;

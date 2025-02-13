@@ -725,6 +725,9 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 	if (!isset($product_id_generate) || (isset($product_id_generate)  && ($product_id_generate == "0" || $product_id_generate == ""))) {
 		$error6['product_id_generate'] = "Required";
 	}
+	if (!isset($received_qty) || (isset($received_qty)  && ($received_qty == "0" || $received_qty == ""))) {
+		$error6['received_qty'] = "Required";
+	}
 	if (empty($error6)) {
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
@@ -751,8 +754,6 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 					$row_ee1 = $db->fetch($result_ee1);
 					foreach ($row_ee1 as $data_ee1) {
 						$po_detail_id				= $data_ee1['id'];
-						$order_qty					= $data_ee1['order_qty'];
-						$order_price				= $data_ee1['order_price'];
 						$c_product_id2 				= $data_ee1['product_id'];
 						$c_product_condition2		= $data_ee1['product_condition'];
 						$c_expected_status2			= $data_ee1['expected_status'];
@@ -766,7 +767,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 						$count_pd01_2	= $db->counter($result_pd01_2);
 						if ($count_pd01_2 > 0) {
 							$k = 0;
-							for ($i = 0; $i < $order_qty; $i++) {
+							for ($i = 0; $i < $received_qty; $i++) {
 								$sql_pd01		= " SELECT a.* 
 													FROM purchase_order_detail_receive a
 													WHERE a.enabled = 1
@@ -814,7 +815,6 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 													WHERE id = '" . $receive_id_2 . "' ";
 										$db->query($conn, $sql_c_up);
 										$k++;
-										$msg6['msg_success']	= "Serial No has been updated successfully.";
 									}
 								}
 							}
@@ -834,6 +834,10 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 						} else {
 							$error6['msg'] = "No product receive yet for the product's Category.";
 						}
+					}
+					if (isset($k) && $k > 0) {
+						$msg6['msg_success']	= "Serial No has been updated successfully.";
+						$received_qty = "";
 					}
 				}
 			} else {

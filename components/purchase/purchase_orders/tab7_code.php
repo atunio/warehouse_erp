@@ -34,24 +34,30 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 				$result_pd1	= $db->query($conn, $sql_pd1);
 				$count_pd1	= $db->counter($result_pd1);
 				if ($count_pd1 > 0) {
-					$row_pd1 				= $db->fetch($result_pd1);
-					$receive_rma_id			= $row_pd1[0]['id'];
-					$status_id_upd 			= $row_pd1[0]['status_id'];
-					$reduced_price_upd		= $row_pd1[0]['reduced_price'];
-					$new_value_upd			= $row_pd1[0]['new_value'];
-					$sub_location_id_upd	= $row_pd1[0]['sub_location_id'];
-					$credit_memo_upd		= $row_pd1[0]['credit_memo'];
-					$inv_po_detail_id		= $row_pd1[0]['po_detail_id'];
+					$row_pd1 					= $db->fetch($result_pd1);
+					$receive_rma_id				= $row_pd1[0]['id'];
+					$status_id_upd 				= $row_pd1[0]['status_id'];
+					$partial_refund_status		= $row_pd1[0]['partial_refund_status'];
+					$reduced_price_upd			= $row_pd1[0]['reduced_price'];
+					$new_value_upd				= $row_pd1[0]['new_value'];
+					$sub_location_id_upd		= $row_pd1[0]['sub_location_id'];
+					$credit_memo_upd			= $row_pd1[0]['credit_memo'];
+					$inv_po_detail_id			= $row_pd1[0]['po_detail_id'];
 
-					$sql_c_up 	= "	UPDATE product_stock SET p_inventory_status = '" . $status_id_upd . "', ";
+					if ($status_id_upd == '18') {
+						$p_inventory_status = $partial_refund_status;
+					} else {
+						$p_inventory_status = $status_id_upd;
+					}
+
+					$sql_c_up 	= "	UPDATE product_stock SET p_inventory_status = '" . $p_inventory_status . "', ";
 					if ($status_id_upd == '19' || $status_id_upd == '18') {
 						$sql_c_up 	.= "price 			= '" . $new_value_upd . "', 
 										sub_location 	= '" . $sub_location_id_upd . "' ";
 					} else {
 						$sql_c_up 	.= "sub_location = '0' ";
 					}
-					$sql_c_up 	.= " 
-									WHERE receive_id = '" . $rma_receive_id . "' ";
+					$sql_c_up 	.= " WHERE receive_id = '" . $rma_receive_id . "' ";
 
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -123,6 +129,8 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 				if (!isset(${$field_name2}) || (isset(${$field_name2})  && (${$field_name2} == "0" || ${$field_name2} == ""))) {
 					$error7[$field_name2] = "Required";
 				}
+			} else {
+				$partial_refund_status = 0;
 			}
 			if (${$field_name} == '19') {
 				$field_name = "repair_type";
@@ -196,10 +204,10 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 			$result_pd1	= $db->query($conn, $sql_pd1);
 			$count_pd1	= $db->counter($result_pd1);
 			if ($count_pd1 == 0) {
-				$sql6 = "INSERT INTO purchase_order_detail_receive_rma(receive_id, status_id, repaire_status_id, new_value, reduced_price, 
+				$sql6 = "INSERT INTO purchase_order_detail_receive_rma(receive_id, status_id, repaire_status_id, partial_refund_status, new_value, reduced_price, 
 																		repair_type, sub_location_id, tracking_no, credit_memo, 
 																		add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-						 VALUES('" . $receive_id_barcode_rma . "', '" . $status_id_rma . "', '" . $repaire_status_id . "', '" . $new_value . "', '" . $reduced_price . "', 
+						 VALUES('" . $receive_id_barcode_rma . "', '" . $status_id_rma . "', '" . $repaire_status_id . "', '" . $partial_refund_status . "', '" . $new_value . "', '" . $reduced_price . "', 
 						 '" . $repair_type . "', '" . $sub_location_id_barcode_rma . "', '" . $tracking_no_rma . "', '" . $credit_memo . "', 
 						 '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 				// echo "<br><br>" . $sql6;
@@ -207,7 +215,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 				if ($ok) {
 					$sql_c_up 	= "UPDATE purchase_order_detail_receive SET is_rma_added = '1'  WHERE id = '" . $receive_id_barcode_rma . "' ";
 					$db->query($conn, $sql_c_up);
-					$new_value = $repair_type = "";
+					$new_value = $repair_type = $partial_refund_status = "";
 				}
 			} else {
 
@@ -222,6 +230,7 @@ if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 																				tracking_no 			= '" . $tracking_no_rma . "',
 																				credit_memo 			= '" . $credit_memo . "',
 																				repaire_status_id		= '" . $repaire_status_id . "',
+																				partial_refund_status	= '" . $partial_refund_status . "',
  
 																				update_timezone			= '" . $timezone . "',
 																				update_date				= '" . $add_date . "',

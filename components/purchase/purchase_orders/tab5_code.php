@@ -54,7 +54,7 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 				}
 
 				$sql_c_up = "DELETE FROM  purchase_order_detail_receive  
-							 WHERE " . $delete_id . " AND (is_diagnost = 0 OR is_diagnostic_bypass = 1) ";
+							 WHERE " . $delete_id . "  AND (is_diagnost = 0 OR is_diagnostic_bypass = 1)  ";
 				//echo "<br><br>" . $sql_c_up;
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {

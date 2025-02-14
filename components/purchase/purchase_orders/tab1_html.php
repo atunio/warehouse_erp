@@ -465,7 +465,6 @@
                                                     $field_id       = "productcondition_" . $i;
                                                     $field_label     = "Product Condition";
                                                     ?>
-
                                                     <select <?php echo $disabled;
                                                             echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
                                                         <option value="">N/A</option>
@@ -480,10 +479,11 @@
                                                     $field_name     = "expected_status";
                                                     $field_id       = "expectedstatus_" . $i;
                                                     $field_label    = "Status";
-                                                    $sql_status     = "SELECT id, status_name
+                                                    $sql_status     = " SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
-                                                                        AND id IN(5, 13, 27)";
+                                                                        AND id NOT IN(2, 3, 5, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18, 19, 20)
+                                                                        ORDER BY status_name ";
                                                     $result_status  = $db->query($conn, $sql_status);
                                                     $count_status   = $db->counter($result_status);
                                                     ?>
@@ -599,7 +599,9 @@
                                                         if ($count1 > 0) {
                                                             $row1    = $db->fetch($result1);
                                                             foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
+                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
+                                                                                                                                                                                                                                                                                                                        echo "SKU Code: " . $data2['sku_code'];
+                                                                                                                                                                                                                                                                                                                    } ?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>

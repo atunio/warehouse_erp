@@ -252,7 +252,15 @@
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m12 s12">
-                            <h5>Logistics Detail</h5>
+                            <h5>
+                                Logistics Detail
+                                <?php
+                                if ($count_log > 0) {?>
+                                    <a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+                                        <i class="material-icons dp48">print</i>
+                                    </a>
+                                <?php }?>
+                            </h5>
                             <table class="bordered">
                                 <thead>
                                     <tr>
@@ -282,7 +290,8 @@
                                 <tbody>
                                     <?php
                                     $i = 0;
-                                    if ($count_log > 0) {
+                                    if ($count_log > 0) {?> 
+                                    <?php 
                                         $row_cl1 = $db->fetch($result_log);
                                         foreach ($row_cl1 as $data) {
                                             $detail_id2     = $data['id'];

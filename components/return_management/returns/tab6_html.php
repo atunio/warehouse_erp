@@ -69,7 +69,6 @@
                         LEFT JOIN inventory_status c ON c.id = a.logistics_status
                         LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
                         WHERE a.return_id = '" . $id . "'
-                        AND a.arrived_date IS NOT NULL
                         ORDER BY a.tracking_no ";
         // echo $sql; 
         $result_log     = $db->query($conn, $sql);
@@ -644,7 +643,6 @@
                             LEFT JOIN inventory_status c ON c.id = a.logistics_status
                             LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
                             WHERE a.return_id = '" . $id . "'
-                            AND a.arrived_date IS NOT NULL
                             ORDER BY a.tracking_no ";
             // echo $sql; 
             $result_log     = $db->query($conn, $sql);
@@ -739,7 +737,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="input-field col m2 s12">
+                            <div class="input-field col m3 s12">
                                 <?php
                                 $field_name     = "diagnostic_date";
                                 $field_id       = $field_name;
@@ -954,7 +952,7 @@
                                                         INNER JOIN return_items_detail b ON b.id = a.po_detail_id
                                                         INNER JOIN products c ON c.id = b.product_id
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = '$id'
+                                                        WHERE a.po_id = '".$id."'
                                                         AND a.is_processed = 0
                                                         AND a.enabled = 1  
 
@@ -965,7 +963,7 @@
                                                         FROM return_receive_diagnostic_fetch_return a 
                                                         INNER JOIN products c ON c.id = a.product_id_not_in_ro
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = '$id'
+                                                        WHERE a.po_id = '".$id."'
                                                         AND a.enabled = 1
                                                         AND a.is_processed = 0
                                                     ) AS t1
@@ -1067,10 +1065,10 @@
                                             a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
                                             e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
                                             i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
-                                            b.order_price, h.status_name, c.product_category 
+                                            h.status_name, c.product_category 
                                     FROM return_items_detail_receive a
                                     INNER JOIN return_items_detail b ON b.id = a.ro_detail_id
-                                    INNER JOIN returns b1 ON b1.id = b.return_id
+                                    INNER JOIN `returns` b1 ON b1.id = b.return_id
                                     INNER JOIN products c ON c.id = b.product_id
                                     LEFT JOIN product_categories d ON d.id =c.product_category
                                     LEFT JOIN users e ON e.id = a.add_by_user_id
@@ -1080,8 +1078,27 @@
                                     WHERE a.enabled = 1
                                     AND b.return_id = '" . $id . "'
                                     AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+
+ 
+                                    UNION ALL
+
+                                    SELECT 'ProductReceived' as record_type, '1' as total_qty_received, 
+                                            a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
+                                            i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
+                                            h.status_name, c.product_category 
+                                    FROM return_items_detail_receive a
+                                    INNER JOIN `returns` b1 ON b1.id = A.return_id
+                                    INNER JOIN products c ON c.id = a.product_id
+                                    LEFT JOIN product_categories d ON d.id = c.product_category
+                                    LEFT JOIN users e ON e.id = a.add_by_user_id
+                                    LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
+                                    LEFT JOIN inventory_status h ON h.id = a.inventory_status
+                                    LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
+                                    WHERE a.enabled = 1
+                                    AND a.return_id = '" . $id . "' 
                                 ) AS t1
-                                ORDER BY record_type, product_category, sub_location_id, serial_no_barcode "; //echo $sql;
+                                ORDER BY record_type, product_category, sub_location_id, serial_no_barcode  "; //echo $sql;
             $result_log     = $db->query($conn, $sql);
             $count_log      = $db->counter($result_log);
             if ($count_log > 0) { ?>
@@ -1099,11 +1116,10 @@
                                 <h5>Return Received Products</h5>
                             </div>
                             <div class="col m8 s12">
-                                <a href="export/export_return_ro_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export in Excel</a>
+                                <a href="export/export_return_ro_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
                             </div>
                         </div>
-                        <?php
-                        if (po_permisions("Move as Inventory") == 1) { ?>
+                        <?php ?>
                             <div class="row">
                                 <div class="col m12 s12">
                                     <label>
@@ -1114,7 +1130,7 @@
                                     </label>
                                 </div>
                             </div>
-                        <?php } ?>
+                        <?php ?>
                         <div class="section section-data-tables">
                             <div class="row">
                                 <div class="col m12 s12">
@@ -1141,7 +1157,7 @@
                                                 $row_cl1 = $db->fetch($result_log);
                                                 foreach ($row_cl1 as $data) {
                                                     $detail_id2                 = $data['id'];
-                                                    $return_id               = $data['return_id'];
+                                                    $return_id                  = $data['return_id'];
                                                     $total_qty_received         = $data['total_qty_received'];
                                                     $product_uniqueid_main      = $data['product_uniqueid'];
                                                     $battery                    = $data['battery'];
@@ -1157,7 +1173,7 @@
                                                     $serial_no_barcode          = $data['serial_no_barcode'];
                                                     $processor                  = $data['processor'];
                                                     $warranty                   = $data['warranty'];
-                                                    $order_price                = $data['order_price'];
+                                                    $price                      = $data['price'];
                                                     $is_diagnost                = $data['is_diagnost'];
                                                     $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                     $is_rma_processed           = $data['is_rma_processed'];
@@ -1166,7 +1182,7 @@
                                                         <td style="<?= $td_padding; ?>; text-align: center;"><?php echo $i + 1; ?></td>
                                                         <td style="<?= $td_padding; ?>; text-align: center;">
                                                             <?php
-                                                            if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
+                                                            if ($serial_no_barcode != "" && $serial_no_barcode != null &&  $edit_lock == "0" && $is_diagnost == "1") {
                                                                 $checkbox_del++; ?>
                                                                 <label>
                                                                     <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" class="checkbox7 filled-in" />
@@ -1319,8 +1335,8 @@
                                                             <?php } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
-                                                            <?php if ($order_price != '') {
-                                                                echo "Price: " . number_format($order_price, 2) . "<br>";
+                                                            <?php if ($price != '' && $price >0) {
+                                                                echo "Price: " . number_format($price, 2) . "<br>";
                                                             } ?>
                                                             <?php if ($defectsCode != '') {
                                                                 echo "Defects: " . $defectsCode . "<br>";
@@ -1358,7 +1374,7 @@
                             </div>
                         </div>
                         <?php
-                        if (po_permisions("Move as Inventory") == 1 && $checkbox_del > 0) { ?>
+                        if ($checkbox_del > 0) { ?>
                             <div class="row">
                                 <div class="input-field col m12 s12 text_align_center">
                                     <?php if (isset($id) && $id > 0) { ?>

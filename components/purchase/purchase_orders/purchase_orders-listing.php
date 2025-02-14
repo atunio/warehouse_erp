@@ -383,10 +383,9 @@ $page_heading 	= "List Purchase Orders ";
 																				$row_lg2                = $db->fetch($result_r2);
 																				$total_items_ordered    = $row_lg2[0]['order_qty'];
 																			}
-																			$sql3               = "SELECT a.id
+																			$sql3               = " SELECT a.id
 																									FROM purchase_order_detail_receive a
-																									INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-																									WHERE b.po_id = '" . $id . "'
+ 																									WHERE a.po_id = '" . $id . "'
 																									AND a.enabled = 1 ";
 																			$result3            = $db->query($conn, $sql3);
 																			$total_received     = $db->counter($result3);
@@ -401,8 +400,7 @@ $page_heading 	= "List Purchase Orders ";
 																			if ($data['order_status'] == $diagnost_status_dynamic) {
 																				$sql3               = "SELECT a.id
 																										FROM purchase_order_detail_receive a
-																										INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id 
-																										WHERE b.po_id = '" . $id . "'
+ 																										WHERE a.po_id = '" . $id . "'
 																										AND a.serial_no_barcode IS NOT NULL
 																										AND a.serial_no_barcode !=''
 																										AND a.is_diagnost = 1

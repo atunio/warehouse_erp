@@ -309,10 +309,10 @@ $page_heading 	= "List of Returns ";
 														$row_cl = $db->fetch($result_cl);
 														foreach ($row_cl as $data) {
 															$id 				= $data['id'];
-															$sql2				= "	SELECT a.*, status_name
-																					FROM return_items_detail a
- 																					LEFT JOIN inventory_status b ON b.id = a.return_status_item
-																					WHERE a.return_status_item = '" . $id . "'";
+															$sql2				= "	SELECT a.*, b.status_name
+																					FROM return_order_detail_logistics a
+ 																					LEFT JOIN inventory_status b ON b.id = a.logistics_status
+																					WHERE a.return_id = '" . $id . "'";
 															$result2			= $db->query($conn, $sql2);?>
 															<tr>
 																<td style="text-align: center;"><?php echo $i + 1; ?></td>
@@ -334,7 +334,7 @@ $page_heading 	= "List of Returns ";
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
 																			$sql2_2				= "SELECT a.*
-																									FROM return_items_detail a
+																									FROM return_order_detail_logistics a
 																									WHERE a.return_id = '" . $id . "'";
 																			$result2_2			= $db->query($conn, $sql2_2);
 																			$total_logistics	= $db->counter($result2_2);
@@ -453,14 +453,12 @@ $page_heading 	= "List of Returns ";
 																</td>
 																<td>
 																	<?php
-																	/*
 																	$j = 0;
 																	if ($total_logistics > 0) {
 																		$row2 = $db->fetch($result2);
 																		foreach ($row2 as $data2) {
-																			$tracking_no = $data2['tracking_no'];
-																			if (po_permisions("Arrival") == 1) { ?>
-																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&cmd3=add&active_tab=tab3&id=" . $id . "&detail_id=" . $tracking_no) ?>">
+																			$tracking_no = $data2['tracking_no'];?>
+																				<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&cmd3=add&active_tab=tab2&id=" . $id) ?>">
 																					<?= $data2['tracking_no']; ?>
 																					<span class="chip green lighten-5">
 																						<span class="green-text">
@@ -468,20 +466,10 @@ $page_heading 	= "List of Returns ";
 																						</span>
 																					</span>
 																				</a><br>
-																			<?php
-																			} else { ?>
-																				<?= $data2['tracking_no']; ?>
-																				<span class="chip green lighten-5">
-																					<span class="green-text">
-																						<?php echo $data2['status_name']; ?>
-																					</span>
-																				</span>
-																				<br>
-																	<?php
-																			}
+																			<?php 
 																			$j++;
 																		}
-																	} */?>
+																	}?>
 																</td>
 																<td class="text-align-center">
 																	<?php

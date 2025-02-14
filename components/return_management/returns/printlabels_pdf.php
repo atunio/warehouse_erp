@@ -70,10 +70,10 @@ $total_boxes 		= 3;
 $box_arrival_no 	= 1;
 
 
-$sql_ee1 = " SELECT  a.*, b.return_no, c.store_name
-FROM return_order_detail_logistics a  INNER JOIN RETURNS b ON b.id = a.return_id LEFT JOIN `stores` c  ON c.id = b.store_id
-WHERE a.return_id ='" . $id . "'
-			ORDER BY date_format(a.arrived_date, '%Y%m%d') "; //echo $sql_ee1;die;
+$sql_ee1 = "SELECT  a.*, b.return_no, c.store_name
+			FROM return_order_detail_logistics a  INNER JOIN RETURNS b ON b.id = a.return_id LEFT JOIN `stores` c  ON c.id = b.store_id
+			WHERE a.return_id ='" . $id . "'
+			ORDER BY a.id "; //echo $sql_ee1;die;
 $k = 1;
 $result_ee1 	= $db->query($conn, $sql_ee1);
 $counter_ee1	= $db->counter($result_ee1);

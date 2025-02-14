@@ -21,39 +21,7 @@
                 <i class="material-icons">add_shopping_cart</i>
                 <span>Logistics</span>
             </a>
-        </li> 
-        <li class="tab">
-            <a href="#tab3_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab3')) { echo "active"; } ?>">
-                <i class="material-icons">add_shopping_cart</i>
-                <span> Arrival
-                    <?php
-                    $sql2                = "SELECT a.*
-                                            FROM return_order_detail_logistics a
-                                            WHERE a.return_id = '" . $id . "'";
-                    $result2            = $db->query($conn, $sql2);
-                    $total_logistics    = $db->counter($result2);
-
-                    $j              = 0;
-                    $sql3           = " SELECT a.*
-                                        FROM return_order_detail_logistics a
-                                        WHERE a.return_id = '" . $id . "'
-                                        AND arrived_date IS NOT NULL ";
-                    $result3        = $db->query($conn, $sql3);
-                    $total_arrived  = $db->counter($result3);
-                    if ($total_logistics > 0 && $total_arrived > 0) {
-                        $total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
-                        if ($total_arrival_percentage > 0) {
-                            echo " <span class='color-green'>(" . round(($total_arrival_percentage)) . "%)</span>";
-                            if ($total_arrival_percentage < '100') { ?>
-                                <i class="material-icons dp48">warning</i>
-                    <?php
-                            }
-                        }
-                    }
-                    ?>
-                </span>
-            </a>
-        </li> 
+        </li>  
         <li class="tab">
             <a href="#tab5_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab5')) { echo "active"; } ?>">
                 <i class="material-icons">assistant</i>

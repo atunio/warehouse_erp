@@ -134,7 +134,6 @@ foreach ($_POST as $key => $value) {
 
 include('tab1_code.php');
 include('tab2_code.php');
-include('tab3_code.php');
 include('tab5_code.php');
 include('tab6_code.php');
 
@@ -554,7 +553,6 @@ $general_heading = "Return"; ?>
 							<?php 
 							include('tab1_html.php'); 
 							include('tab2_html.php');
-							include('tab3_html.php');
 							include('tab5_html.php'); 
 							include('tab6_html.php'); ?>
 						</div>

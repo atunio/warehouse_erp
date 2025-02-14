@@ -31,49 +31,45 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	}
 }
 if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
-	if (po_permisions("Logistics") == 0) {
-		$error2['msg'] = "You do not have add permissions.";
-	} else {
-		$sql_ee1 = " DELETE FROM return_order_detail_logistics WHERE id = '" . $detail_id . "'";
-		$ok = $db->query($conn, $sql_ee1);
-		if ($ok) {
-			$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
-			// echo $sql_ee1;
-			$result_ee1 	= $db->query($conn, $sql_ee1);
-			$counter_ee1	= $db->counter($result_ee1);
-			if ($counter_ee1 == 0) {
-				$sql_c_up = "UPDATE  return_items_detail
-												SET 	
-													return_status_item	= '" . $before_logistic_status_dynamic . "',
+	$sql_ee1 = " DELETE FROM return_order_detail_logistics WHERE id = '" . $detail_id . "'";
+	$ok = $db->query($conn, $sql_ee1);
+	if ($ok) {
+		$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
+		// echo $sql_ee1;
+		$result_ee1 	= $db->query($conn, $sql_ee1);
+		$counter_ee1	= $db->counter($result_ee1);
+		if ($counter_ee1 == 0) {
+			$sql_c_up = "UPDATE  return_items_detail
+											SET 	
+												return_status_item	= '" . $before_logistic_status_dynamic . "',
 
-													update_timezone			= '" . $timezone . "',
-													update_date				= '" . $add_date . "',
-													update_by				= '" . $_SESSION['username'] . "',
-													update_ip				= '" . $add_ip . "'
-						WHERE return_id = '" . $id . "' ";
-				$db->query($conn, $sql_c_up);
+												update_timezone			= '" . $timezone . "',
+												update_date				= '" . $add_date . "',
+												update_by				= '" . $_SESSION['username'] . "',
+												update_ip				= '" . $add_ip . "'
+					WHERE return_id = '" . $id . "' ";
+			$db->query($conn, $sql_c_up);
 
-				$sql_c_up = "UPDATE  returns
-												SET 	
-													return_status		= '" . $before_logistic_status_dynamic . "',
+			$sql_c_up = "UPDATE  returns
+											SET 	
+												return_status		= '" . $before_logistic_status_dynamic . "',
 
-													update_timezone		= '" . $timezone . "',
-													update_date			= '" . $add_date . "',
-													update_by			= '" . $_SESSION['username'] . "',
-													update_ip			= '" . $add_ip . "'
-						WHERE id = '" . $id . "' ";
-				$db->query($conn, $sql_c_up);
+												update_timezone		= '" . $timezone . "',
+												update_date			= '" . $add_date . "',
+												update_by			= '" . $_SESSION['username'] . "',
+												update_ip			= '" . $add_ip . "'
+					WHERE id = '" . $id . "' ";
+			$db->query($conn, $sql_c_up);
 
-				$table		= "inventory_status";
-				$columns	= array("status_name");
-				$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
-				foreach ($get_col_from_table as $array_key1 => $array_data1) {
-					${$array_key1} = $array_data1;
-				}
+			$table		= "inventory_status";
+			$columns	= array("status_name");
+			$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
+			foreach ($get_col_from_table as $array_key1 => $array_data1) {
+				${$array_key1} = $array_data1;
 			}
-			$msg2['msg_success'] = "Record has been added successfully.";
-			unset($cmd2_1);
 		}
+		$msg2['msg_success'] = "Record has been added successfully.";
+		unset($cmd2_1);
 	}
 }
 
@@ -112,65 +108,62 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error2['msg'] = "Please add master record first";
 	}
-	if (empty($error2)) {
-		if (po_permisions("Logistics") == 0) {
-			$error2['msg'] = "You do not have add permissions.";
-		} else {
-			$k = 0;
-			if ($cmd2 == 'add') {
+	if (empty($error2)) { 
+		$k = 0;
+		if ($cmd2 == 'add') {
 
-				if (access("add_perm") == 0) {
-					$error2['msg'] = "You do not have add permissions.";
+			if (access("add_perm") == 0) {
+				$error2['msg'] = "You do not have add permissions.";
+			} else {
+				$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, logistics_cost , tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
+							VALUES('" . $id . "', '" . $courier_name . "', '" . $logistics_cost . "',  '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+				
+					$ok = $db->query($conn, $sql6);
+				if ($ok) {
+					$tracking_no	= "";
+					$no_of_boxes 	= 1;
+					$sql_c_up = "UPDATE  return_items_detail SET return_status_item		= '" . $status_id . "',
+																	update_timezone		= '" . $timezone . "',
+																	update_date			= '" . $add_date . "',
+																	update_by			= '" . $_SESSION['username'] . "',
+																	update_ip			= '" . $add_ip . "'
+								WHERE return_id = '" . $id . "' ";
+					$db->query($conn, $sql_c_up);
+					$k++;
+					if (isset($error2['msg'])) unset($error2['msg']);
 				} else {
-				 	$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, logistics_cost , tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $courier_name . "', '" . $logistics_cost . "',  '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-					
-					 $ok = $db->query($conn, $sql6);
-					if ($ok) {
-						$tracking_no	= "";
-						$no_of_boxes 	= 1;
-						$sql_c_up = "UPDATE  return_items_detail SET return_status_item		= '" . $status_id . "',
-																		update_timezone		= '" . $timezone . "',
-																		update_date			= '" . $add_date . "',
-																		update_by			= '" . $_SESSION['username'] . "',
-																		update_ip			= '" . $add_ip . "'
-									WHERE return_id = '" . $id . "' ";
-						$db->query($conn, $sql_c_up);
-						$k++;
-						if (isset($error2['msg'])) unset($error2['msg']);
-					} else {
-						$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
-					}
-				}
-			}
-
-			if ($k > 0) {
-
-		 		$sql_c_up = "UPDATE  returns SET 	return_status	= '" . $logistic_status_dynamic . "',
-													logistics_cost	= '" . $logistics_cost . "',
-													update_timezone	= '" . $timezone . "',
-													update_date		= '" . $add_date . "',
-													update_by		= '" . $_SESSION['username'] . "',
-													update_ip		= '" . $add_ip . "'
-						WHERE id = '" . $id . "' ";
-					
-				$db->query($conn, $sql_c_up);
-
-				if (isset($msg2['msg_success'])) {
-					$msg2['msg_success'] .= "<br>Logistics info has been added successfully.";
-				} else {
-					$msg2['msg_success'] = "Logistics info has been added successfully.";
-				}
-
-				if ($_SERVER['HTTP_HOST'] != 'localhost') {
-					$tracking_no = "";
-				}
-
-				if ($_SERVER['HTTP_HOST'] == 'localhost') {
-					$tracking_no = date('YmdHis');
+					$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
 				}
 			}
 		}
+
+		if ($k > 0) {
+
+			$sql_c_up = "UPDATE  returns SET 	return_status	= '" . $logistic_status_dynamic . "',
+												logistics_cost	= '" . $logistics_cost . "',
+												update_timezone	= '" . $timezone . "',
+												update_date		= '" . $add_date . "',
+												update_by		= '" . $_SESSION['username'] . "',
+												update_ip		= '" . $add_ip . "'
+					WHERE id = '" . $id . "' ";
+				
+			$db->query($conn, $sql_c_up);
+
+			if (isset($msg2['msg_success'])) {
+				$msg2['msg_success'] .= "<br>Logistics info has been added successfully.";
+			} else {
+				$msg2['msg_success'] = "Logistics info has been added successfully.";
+			}
+
+			if ($_SERVER['HTTP_HOST'] != 'localhost') {
+				$tracking_no = "";
+			}
+
+			if ($_SERVER['HTTP_HOST'] == 'localhost') {
+				$tracking_no = date('YmdHis');
+			}
+		}
+		 
 	} else {
 		$error2['msg'] = "Please check Error in form.";
 	}
@@ -214,77 +207,74 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		$error2['msg'] = "Please click to edit anyone record";
 	}
 	if (empty($error2)) {
-		if (po_permisions("Logistics") == 0) {
-			$error2['msg'] = "You do not have add permissions.";
-		} else {
-			$sql_c_up = "UPDATE  return_order_detail_logistics 
-										SET 
-											courier_name 			= '" . $courier_name_update . "',
-											tracking_no 			= '" . $tracking_no_update . "',
-											shipment_date 			= '" . $shipment_date_update1 . "',
-											expected_arrival_date 	= '" . $expected_arrival_date_update1 . "',
-											logistics_status		= '" . $status_id_update . "',
-											logistics_cost			= '" . $logistics_cost_update . "',
-											no_of_boxes				= '" . $no_of_boxes_update . "',
-											
+		$sql_c_up = "UPDATE  return_order_detail_logistics 
+									SET 
+										courier_name 			= '" . $courier_name_update . "',
+										tracking_no 			= '" . $tracking_no_update . "',
+										shipment_date 			= '" . $shipment_date_update1 . "',
+										expected_arrival_date 	= '" . $expected_arrival_date_update1 . "',
+										logistics_status		= '" . $status_id_update . "',
+										logistics_cost			= '" . $logistics_cost_update . "',
+										no_of_boxes				= '" . $no_of_boxes_update . "',
+										
+										update_timezone			= '" . $timezone . "',
+										update_date				= '" . $add_date . "',
+										update_by				= '" . $_SESSION['username'] . "',
+										update_ip				= '" . $add_ip . "'
+					WHERE id = '" . $detail_id . "' ";
+		$ok = $db->query($conn, $sql_c_up);
+		if ($ok) {
+
+			$sql_c_up = "UPDATE  returns
+										SET 	
+											logistics_cost		= '" . $logistics_cost_update . "',
+
+											update_timezone		= '" . $timezone . "',
+											update_date			= '" . $add_date . "',
+											update_by			= '" . $_SESSION['username'] . "',
+											update_ip			= '" . $add_ip . "'
+						WHERE id = '" . $id . "' ";
+			$db->query($conn, $sql_c_up);
+
+			$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
+			// echo $sql_ee1;
+			$result_ee1 	= $db->query($conn, $sql_ee1);
+			$counter_ee1	= $db->counter($result_ee1);
+			if ($counter_ee1 == 0) {
+				$sql_c_up = "UPDATE  return_items_detail
+										SET 	
+											return_status_item	= '" . $logistic_status_dynamic . "',
+
 											update_timezone			= '" . $timezone . "',
 											update_date				= '" . $add_date . "',
 											update_by				= '" . $_SESSION['username'] . "',
 											update_ip				= '" . $add_ip . "'
-						WHERE id = '" . $detail_id . "' ";
-			$ok = $db->query($conn, $sql_c_up);
-			if ($ok) {
-
-				$sql_c_up = "UPDATE  returns
-											SET 	
-												logistics_cost		= '" . $logistics_cost_update . "',
-
-												update_timezone		= '" . $timezone . "',
-												update_date			= '" . $add_date . "',
-												update_by			= '" . $_SESSION['username'] . "',
-												update_ip			= '" . $add_ip . "'
-							WHERE id = '" . $id . "' ";
+				WHERE return_id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
-				$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
-				// echo $sql_ee1;
-				$result_ee1 	= $db->query($conn, $sql_ee1);
-				$counter_ee1	= $db->counter($result_ee1);
-				if ($counter_ee1 == 0) {
-					$sql_c_up = "UPDATE  return_items_detail
-											SET 	
-												return_status_item	= '" . $logistic_status_dynamic . "',
+				$sql_c_up = "UPDATE  returns
+										SET 	
+											return_status		= '" . $logistic_status_dynamic . "',
 
-												update_timezone			= '" . $timezone . "',
-												update_date				= '" . $add_date . "',
-												update_by				= '" . $_SESSION['username'] . "',
-												update_ip				= '" . $add_ip . "'
-					WHERE return_id = '" . $id . "' ";
-					$db->query($conn, $sql_c_up);
+											update_timezone		= '" . $timezone . "',
+											update_date			= '" . $add_date . "',
+											update_by			= '" . $_SESSION['username'] . "',
+											update_ip			= '" . $add_ip . "'
+				WHERE id = '" . $id . "' ";
+				$db->query($conn, $sql_c_up);
 
-					$sql_c_up = "UPDATE  returns
-											SET 	
-												return_status		= '" . $logistic_status_dynamic . "',
-
-												update_timezone		= '" . $timezone . "',
-												update_date			= '" . $add_date . "',
-												update_by			= '" . $_SESSION['username'] . "',
-												update_ip			= '" . $add_ip . "'
-					WHERE id = '" . $id . "' ";
-					$db->query($conn, $sql_c_up);
-
-					$table		= "inventory_status";
-					$columns	= array("status_name");
-					$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
-					foreach ($get_col_from_table as $array_key1 => $array_data1) {
-						${$array_key1} = $array_data1;
-					}
+				$table		= "inventory_status";
+				$columns	= array("status_name");
+				$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
+				foreach ($get_col_from_table as $array_key1 => $array_data1) {
+					${$array_key1} = $array_data1;
 				}
-				$msg2['msg_success'] = "Record has been updated successfully.";
-			} else {
-				$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 			}
+			$msg2['msg_success'] = "Record has been updated successfully.";
+		} else {
+			$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 		}
+		 
 	} else {
 		$error2['msg'] = "Please check the error in form.";
 	}
@@ -296,73 +286,69 @@ if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 		$error2['logistics_status'] = "Required";
 	}
 	if (empty($error2)) {
-		if (po_permisions("Logistics") == 0) {
-			$error2['msg'] = "You do not have add permissions.";
-		} else {
-			if (isset($logistics_ids) && sizeof($logistics_ids) > 0) {
-				$k = 0;
-				foreach ($logistics_ids as $logistics_id) {
-					$sql_c_up = "UPDATE  return_order_detail_logistics SET 	logistics_status	= '" . $logistics_status . "',
-																				update_timezone		= '" . $timezone . "',
-																				update_date			= '" . $add_date . "',
-																				update_by			= '" . $_SESSION['username'] . "',
-																				update_ip			= '" . $add_ip . "'
-										WHERE id = '" . $logistics_id . "' ";
-					$ok = $db->query($conn, $sql_c_up);
-					if ($ok) {
+		if (isset($logistics_ids) && sizeof($logistics_ids) > 0) {
+			$k = 0;
+			foreach ($logistics_ids as $logistics_id) {
+				$sql_c_up = "UPDATE  return_order_detail_logistics SET 	logistics_status	= '" . $logistics_status . "',
+																			update_timezone		= '" . $timezone . "',
+																			update_date			= '" . $add_date . "',
+																			update_by			= '" . $_SESSION['username'] . "',
+																			update_ip			= '" . $add_ip . "'
+									WHERE id = '" . $logistics_id . "' ";
+				$ok = $db->query($conn, $sql_c_up);
+				if ($ok) {
 
-						$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
-						// echo $sql_ee1;
-						$result_ee1 	= $db->query($conn, $sql_ee1);
-						$counter_ee1	= $db->counter($result_ee1);
-						if ($counter_ee1 == 0) {
-							$sql_c_up = "UPDATE  return_items_detail
-													SET 	
-														return_status_item	= '" . $logistics_status . "',
+					$sql_ee1 = " SELECT b.* FROM return_order_detail_logistics b WHERE b.return_id = '" . $id . "'";
+					// echo $sql_ee1;
+					$result_ee1 	= $db->query($conn, $sql_ee1);
+					$counter_ee1	= $db->counter($result_ee1);
+					if ($counter_ee1 == 0) {
+						$sql_c_up = "UPDATE  return_items_detail
+												SET 	
+													return_status_item	= '" . $logistics_status . "',
 
-														update_timezone			= '" . $timezone . "',
-														update_date				= '" . $add_date . "',
-														update_by				= '" . $_SESSION['username'] . "',
-														update_ip				= '" . $add_ip . "'
-							WHERE return_id = '" . $id . "' ";
-							$db->query($conn, $sql_c_up);
+													update_timezone			= '" . $timezone . "',
+													update_date				= '" . $add_date . "',
+													update_by				= '" . $_SESSION['username'] . "',
+													update_ip				= '" . $add_ip . "'
+						WHERE return_id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
 
-							$sql_c_up = "UPDATE  returns
-													SET 	
-														return_status		= '" . $logistics_status . "',
+						$sql_c_up = "UPDATE  returns
+												SET 	
+													return_status		= '" . $logistics_status . "',
 
-														update_timezone		= '" . $timezone . "',
-														update_date			= '" . $add_date . "',
-														update_by			= '" . $_SESSION['username'] . "',
-														update_ip			= '" . $add_ip . "'
-							WHERE id = '" . $id . "' ";
-							$db->query($conn, $sql_c_up);
+													update_timezone		= '" . $timezone . "',
+													update_date			= '" . $add_date . "',
+													update_by			= '" . $_SESSION['username'] . "',
+													update_ip			= '" . $add_ip . "'
+						WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
 
-							$table		= "inventory_status";
-							$columns	= array("status_name");
-							$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
-							foreach ($get_col_from_table as $array_key1 => $array_data1) {
-								${$array_key1} = $array_data1;
-							}
+						$table		= "inventory_status";
+						$columns	= array("status_name");
+						$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
+						foreach ($get_col_from_table as $array_key1 => $array_data1) {
+							${$array_key1} = $array_data1;
 						}
+					}
 
-						$k++;
-						if (isset($error2['msg'])) unset($error2['msg']);
-					} else {
-						$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
-					}
+					$k++;
+					if (isset($error2['msg'])) unset($error2['msg']);
+				} else {
+					$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
 				}
-				if ($k > 0) {
-					if (isset($msg2['msg_success'])) {
-						$msg2['msg_success'] .= "<br>Logistics status  has been updated successfully.";
-					} else {
-						$msg2['msg_success'] = "Logistics status has been added successfully.";
-					}
-					$logistics_status = "";
-				}
-			} else {
-				$error2['msg'] = "Please select atleast one record.";
 			}
+			if ($k > 0) {
+				if (isset($msg2['msg_success'])) {
+					$msg2['msg_success'] .= "<br>Logistics status  has been updated successfully.";
+				} else {
+					$msg2['msg_success'] = "Logistics status has been added successfully.";
+				}
+				$logistics_status = "";
+			}
+		} else {
+			$error2['msg'] = "Please select atleast one record.";
 		}
 	} else {
 		$error2['msg'] = "Please check required fields in the form.";

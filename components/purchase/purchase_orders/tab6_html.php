@@ -951,7 +951,7 @@
                                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                                         INNER JOIN products c ON c.id = b.product_id
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = 1
+                                                        WHERE a.po_id = '".$id."'
                                                         AND a.is_processed = 0
                                                         AND a.enabled = 1  
 
@@ -961,7 +961,7 @@
                                                         FROM purchase_order_detail_receive_diagnostic_fetch a 
                                                         INNER JOIN products c ON c.id = a.product_id_not_in_po
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = 1
+                                                        WHERE a.po_id = '".$id."'
                                                         AND a.enabled = 1
                                                         AND a.is_processed = 0
                                                     ) AS t1

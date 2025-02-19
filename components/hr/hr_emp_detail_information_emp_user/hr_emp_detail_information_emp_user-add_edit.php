@@ -232,7 +232,7 @@ if ($cmd == 'add') {
 														<input id="e_birth_date" type="text" name="e_birth_date" class="datepicker" value="<?php if (isset($e_birth_date)) {
 																																				echo $e_birth_date;
 																																			} ?>" required>
-														<label for="e_birth_date">Date of Birth</label>
+														<label for="e_birth_date">Date of Birth (d/m/Y)</label>
 													</div>
 												</div>
 											</div>

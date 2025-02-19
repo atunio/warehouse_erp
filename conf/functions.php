@@ -1925,3 +1925,8 @@ function update_ro_detail_status($db, $conn, $po_detail_id, $order_product_statu
 				WHERE id = '" . $po_detail_id . "' ";
 	$db->query($conn, $sql_c_up);
 }
+function set_replace_string_char($data)
+{
+	$replace_data = str_replace(array(',', "'"), '', $data);
+	return $replace_data;
+}

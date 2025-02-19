@@ -52,7 +52,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 	if (empty($error)) {
 		// Split the pasted data by new lines (each line is a row)
-		$excel_data = str_replace("'", '', $excel_data);
+		//$excel_data = str_replace("'", '', $excel_data);
+		$excel_data = set_replace_string_char($excel_data);
 		$rows = explode(PHP_EOL, trim($excel_data));
 		// Split each row by tabs or commas (each column in a row)
 		$data = array();

@@ -1049,9 +1049,41 @@ function get_pkg_stock_of_product(product_id, rowno) {
     return deferred.promise();
 }
 
-    
-    
-
-    
-   
-    
+function showToast(message, type) {
+    var toastClass = type === 'Success' ? 'green' : 'red';
+    M.toast({
+        html: message,
+        classes: toastClass
+    });
+}
+$(document).on('change', '#stage_status', function(event) {
+    var stage_status = $(this).val();
+    var id = $("#id").val();
+    var module_id = $("#module_id").val();
+    if(stage_status != "" && id != ""){
+        var dataString = 'type=update_stage_status&stage_status=' + stage_status + '&id=' + id + '&module_id=' + module_id;
+        $.ajax({
+            type: "POST",
+            url: "ajax/ajax_add_entries.php",
+            data: dataString,
+            cache: false,
+            success: function(response) {
+                if (response) {
+                   
+                    if (response === "Fail") {
+                        var toastHTML = 'Some errors check.';
+                        showToast(toastHTML, "Fail");
+                    } 
+                    else{
+                        var toastHTML = "Stage status updated successfully.";
+                        showToast(toastHTML, "Success");
+                    }
+                    
+                }
+            },
+            error: function() {
+                
+            }
+        });
+    }
+});

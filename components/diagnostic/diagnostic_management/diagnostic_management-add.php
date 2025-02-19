@@ -415,13 +415,13 @@ if(isset($is_Submit2_preview) && $is_Submit2_preview == 'Y'){
 									<?php
 									$field_name     = "diagnostic_date";
 									$field_id       = $field_name;
-									$field_label    = "PhoneCheck Diagnostic Date ";
+									$field_label    = "PhoneCheck Diagnostic Date (d/m/Y)";
 									?>
 									<i class="material-icons prefix">date_range</i>
 									<input id="<?= $field_id; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																													echo ${$field_name};
 																												} else {
-																													echo date('m/d/Y');
+																													echo date('d/m/Y');
 																												} ?>" class="datepicker validate ">
 									<label for="<?= $field_id; ?>">
 										<?= $field_label; ?>

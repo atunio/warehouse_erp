@@ -747,7 +747,7 @@
                                 <input id="<?= $field_id; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                 echo ${$field_name};
                                                                                                             } else {
-                                                                                                                echo date('m/d/Y');
+                                                                                                                echo date('d/m/Y');
                                                                                                             } ?>" class="datepicker validate ">
                                 <label for="<?= $field_id; ?>">
                                     <?= $field_label; ?>

@@ -4,6 +4,7 @@
                                                         echo "none";
                                                     } ?>;">
     <input type="hidden" id="module_id" value="<?= $module_id; ?>" />
+    <input type="hidden" id="id" value="<?= $id; ?>" />
     <?php
     if (isset($cmd) && $cmd == 'edit') { ?>
         <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=edit&id=' . $id); ?>">
@@ -17,7 +18,21 @@
                         <?= $general_heading; ?> => Master Info
                     </h6>
                 </div>
-                <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <div class="input-field col m1 s12" style="margin-top: 5px; margin-bottom: 5px;">
+                    <?php
+                    $field_name     = "stage_status";
+                    $field_label     = "Stage Status";
+                    ?>
+                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
+                        <option value="Draft" <?php if (isset(${$field_name}) && ${$field_name} == "Draft") { ?> selected="selected" <?php } ?>>Draft</option>
+                        <?php 
+                        if(isset($cmd) && $cmd == 'edit'){?>
+                            <option value="Completed" <?php if (isset(${$field_name}) && ${$field_name} == "Completed") { ?> selected="selected" <?php } ?>>Completed</option>
+                            <option value="Committed" <?php if (isset(${$field_name}) && ${$field_name} == "Committed") { ?> selected="selected" <?php } ?>>Committed</option>
+                        <?php }?>
+                    </select>
+                </div>
+                <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                     <?php /*?>
                     <a href="javascript:void(0)" class="btn cyan waves-effect waves-light ">
                         <i class="material-icons ">print</i>
@@ -25,17 +40,17 @@
                     </a>  &nbsp;&nbsp;
                 <?php */ ?>
                     <?php
-                    if (isset($po_no) && isset($id)) {
+                    if (isset($po_no) && isset($id)) {  
                         if (access("edit_perm") == 1) { ?>
                             <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                                 Save changes
                             </button>
                             <?php
-                            if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
+                            //if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
                                 <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
                                     Import Products
                                 </a>
-                    <?php }
+                    <?php   //}
                         }
                     }
                     include("tab_action_btns.php"); ?>
@@ -266,7 +281,7 @@
                                     unset($order_qty);
                                     unset($expected_status);
 
-                                    $sql_ee1    = "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' ";
+                                    $sql_ee1    = "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.enabled = 1 ";
                                     $result_ee1 = $db->query($conn, $sql_ee1);
                                     $count_ee1  = $db->counter($result_ee1);
                                     if ($count_ee1 > 0) {
@@ -301,7 +316,8 @@
                                     $sql_ee1        = " SELECT a.*, b.case_pack 
                                                         FROM purchase_order_packages_detail a 
                                                         INNER JOIN packages b ON b.id = a.package_id
-                                                        WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+                                                        WHERE a.po_id = '" . $id . "'
+                                                        AND a.enabled = 1 ";  //echo $sql_ee1;
                                     $result_ee1        = $db->query($conn, $sql_ee1);
                                     $count_ee1      = $db->counter($result_ee1);
                                     if ($count_ee1 > 0) {
@@ -319,7 +335,7 @@
                                         <th style="width: %;">
                                             Product &nbsp;
                                             <?php
-                                            if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
+                                            //if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                 <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
                                                     Import
                                                 </a> &nbsp;&nbsp;
@@ -328,11 +344,12 @@
                                                     <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         Add Packages / Parts
                                                     </a>
-                                                    <?php } ?>&nbsp;&nbsp;
+                                                <?php 
+                                                } ?>&nbsp;&nbsp;
                                                     <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         <i class="material-icons  dp48 md-36">add_circle</i>
                                                     </a>
-                                                <?php } ?>
+                                        <?php //} ?>
                                         </th>
                                         <th style="width: 100px;">Pkg Stock</th>
                                         <th style="width: 120px;">Pkg Needed</th>
@@ -352,10 +369,10 @@
                                                                                             } ?>">
                                     <?php
                                     $disabled = $readonly = "";
-                                    if (isset($order_status) && $order_status != 1 && $order_status != 4 && $order_status != 10 && $order_status != 12) {
-                                        $disabled = "disabled='disabled'";
-                                        $readonly = "readonly='readonly'";
-                                    }
+                                    // if (isset($stage_status) && $stage_status != "Committed") {
+                                    //     $disabled = "disabled='disabled'";
+                                    //     $readonly = "readonly='readonly'";
+                                    // }
                                     $sum_value = $sum_qty =  $sum_price = 0;
                                     for ($i = 1; $i <= 25; $i++) {
                                         $field_name     = "product_ids";
@@ -384,9 +401,9 @@
                                                         FROM products a
                                                         LEFT JOIN product_categories b ON b.id = a.product_category
                                                         WHERE a.enabled = 1 ";
-                                        if (isset($order_status) && $order_status != 1 && $order_status != 4 && $order_status != 12 && isset(${$field_name}[$i - 1])) {
-                                            $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
-                                        }
+                                        // if (isset($stage_status) && $stage_status != "Committed" && isset(${$field_name}[$i - 1])) {
+                                        //     $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
+                                        // }
                                         $sql1      .= " ORDER BY a.product_desc ";
                                         $result1    = $db->query($conn, $sql1);
                                         $count1     = $db->counter($result1);
@@ -465,6 +482,7 @@
                                                     $field_id       = "productcondition_" . $i;
                                                     $field_label     = "Product Condition";
                                                     ?>
+
                                                     <select <?php echo $disabled;
                                                             echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
                                                         <option value="">N/A</option>
@@ -479,11 +497,10 @@
                                                     $field_name     = "expected_status";
                                                     $field_id       = "expectedstatus_" . $i;
                                                     $field_label    = "Status";
-                                                    $sql_status     = " SELECT id, status_name
+                                                    $sql_status     = "SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
-                                                                        AND id NOT IN(2, 3, 5, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18, 19, 20)
-                                                                        ORDER BY status_name ";
+                                                                        AND id IN(5, 13, 27)";
                                                     $result_status  = $db->query($conn, $sql_status);
                                                     $count_status   = $db->counter($result_status);
                                                     ?>
@@ -502,14 +519,14 @@
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
+                                                    //if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>
                                                         </a> &nbsp;
                                                         <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">add_circle</i>
                                                         </a>&nbsp;&nbsp;
-                                                    <?php } ?>
+                                                    <?php //} ?>
                                                 </td>
                                             </tr>
                                     <?php }
@@ -599,9 +616,7 @@
                                                         if ($count1 > 0) {
                                                             $row1    = $db->fetch($result1);
                                                             foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
-                                                                                                                                                                                                                                                                                                                        echo "SKU Code: " . $data2['sku_code'];
-                                                                                                                                                                                                                                                                                                                    } ?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
+                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>
@@ -653,20 +668,21 @@
                                                 <td>
                                                     <span id="total_case_pack_<?= $i; ?>">
                                                         <?php
-                                                        if (isset($case_pack[$i - 1]) && isset($order_part_qty[$i - 1])) {
+                                                        if (isset($case_pack[$i - 1]) && $case_pack[$i - 1]>0 && isset($order_part_qty[$i - 1]) && $order_part_qty[$i - 1]>0) {
                                                             echo ceil($order_part_qty[$i - 1] / $case_pack[$i - 1]);
                                                         } ?>
                                                     </span>
                                                 </td>
                                                 <td colspan="3">
-                                                    <?php if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
+                                                    <?php 
+                                                    //if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>
                                                         </a> &nbsp;
                                                         <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">add_circle</i>
                                                         </a>&nbsp;&nbsp;
-                                                    <?php } ?>
+                                                    <?php //} ?>
                                                 </td>
                                             </tr>
                                         <?php }

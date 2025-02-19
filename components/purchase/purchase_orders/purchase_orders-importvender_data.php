@@ -34,8 +34,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		if (po_permisions("Vendor Data") == 0) {
 			$error2['msg'] = "You do not have add permissions.";
 		} else {
-			$excel_data = str_replace("'", "", str_replace(",", "", $excel_data));
-
+			//$excel_data = str_replace("'", "", str_replace(",", "", $excel_data));
+			$excel_data = set_replace_string_char($excel_data);
 			// Split the pasted data by new lines (each line is a row)
 			$rows = explode(PHP_EOL, trim($excel_data));
 			// Split each row by tabs or commas (each column in a row)

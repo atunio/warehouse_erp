@@ -51,11 +51,11 @@
 
                                 <input type="hidden" name="is_Submit" value="Y" />
                             <?php } ?>
-
+ 
                             <div class="row" style="margin-top: 20px;">
                                 <div class="input-field col m3 s12 custom_margin_bottom_col">
-                                    <?php
-                                    $field_name     = "return_type";
+                                    <?php 
+                                    $field_name     = "return_type"; 
                                     $field_label     = "Return Type";
                                     ?>
                                     <i class="material-icons prefix">question_answer</i>
@@ -78,7 +78,7 @@
                                             </span>
                                         </label>
                                     </div>
-                                </div>
+                                </div> 
                                 <?php
                                 $field_name     = "removal_order_id";
                                 $field_label     = "Order / Removal ID";
@@ -88,8 +88,8 @@
                                     <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                                         echo ${$field_name};
                                                                                                                     } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                echo ${$field_name . "_valid"};
-                                                                                                                                            } ?> custom_input_heigh">
+                                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                                        } ?> custom_input_heigh">
                                     <label for="<?= $field_name; ?>">
                                         <?= $field_label; ?>
                                         <span class="color-red">* <?php
@@ -98,7 +98,7 @@
                                                                     } ?>
                                         </span>
                                     </label>
-                                </div>
+                                </div> 
                                 <?php
                                 $field_name     = "return_date";
                                 $field_label     = "Return Date (d/m/Y)";
@@ -120,7 +120,7 @@
                                                                     } ?>
                                         </span>
                                     </label>
-                                </div>
+                                </div> 
                                 <div class="input-field col m3 s12 custom_margin_bottom_col">
                                     <?php
                                     $field_name     = "store_id";
@@ -157,7 +157,7 @@
                                     <a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#store_add_modal">Add New Store</a>
                                 </div>
                             </div>
-
+                         
                             <?php if (($cmd == 'add' &&  access("add_perm") == 1)) { ?>
                                 <div class="row">
                                     <div class="input-field col m6 s12">
@@ -196,7 +196,8 @@
                                             $return_qty[]           = $data2['return_qty'];
                                             $expected_status[]      = $data2['expected_status'];
                                         }
-                                    } else {
+                                    }
+                                    else{
                                         if (isset($test_on_local) && $test_on_local == 1) {
                                             $product_ids[]          = "2987";
                                             $product_ids[]          = "2989";
@@ -208,7 +209,7 @@
                                     }
                                 } ?>
 
-
+                                
                                 <thead>
                                     <tr>
 
@@ -221,7 +222,7 @@
                                                 </a> &nbsp;&nbsp;
                                                 <?php
                                                 if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) { ?>
-                                                    <!--  <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                                   <!--  <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         Add Packages / Parts
                                                     </a> -->
                                                     <?php } ?>&nbsp;&nbsp;
@@ -232,12 +233,12 @@
                                         </th>
                                         <th style="width: 200px;">Status</th>
                                         <th style="width: 100px;">Qty</th>
-                                        <th style="width: 150px;">Actions</th>
+                                         <th style="width: 150px;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
 
-
+                                
                                     <input type="hidden" id="total_products_in_po" value="<?php if (!isset($product_ids) || (isset($product_ids) && sizeof($product_ids) == 0)) {
                                                                                                 echo "1";
                                                                                             } else {
@@ -301,7 +302,7 @@
                                         $pkg_stock_of_product_needed = $return_qty_val - $pkg_stock_in_hand;
                                         if ((isset($return_status) && $return_status != 1 && $return_status != 4 && $return_status != 10 && $return_status != 12 && isset(${$field_name}[$i - 1])) || ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
                                             <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
-                                                <td>
+                                            <td>
                                                     <select <?php echo $disabled;
                                                             echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product-select <?= $field_name ?>_<?= $i ?>">
                                                         <option value="">Select a product</option>
@@ -320,11 +321,10 @@
                                                     $field_name     = "expected_status";
                                                     $field_id       = "expectedstatus_" . $i;
                                                     $field_label    = "Status";
-                                                    $sql_status     = " SELECT id, status_name
+                                                    $sql_status     = "SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
-                                                                        AND id NOT IN(2, 3, 5, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18, 19, 20)
-                                                                        ORDER BY status_name";
+                                                                        AND id IN(6, 8 ,9 ,16 ,17 , 18 , 19 ,20)";
                                                     $result_status  = $db->query($conn, $sql_status);
                                                     $count_status   = $db->counter($result_status);
                                                     ?>
@@ -352,8 +352,8 @@
                                                                                                                                                             echo $return_qty_val;
                                                                                                                                                         } ?>" class="validate custom_input return_qty">
                                                 </td>
-
-
+                                              
+                                           
                                                 <td>
                                                     <?php
                                                     if (isset($return_status) && ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
@@ -373,7 +373,7 @@
                                         <td colspan="3"></td>
                                     </tr>
                                 </tbody>
-                            </table>
+                            </table> 
                         </div>
                     </div>
                 </div>

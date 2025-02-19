@@ -29,6 +29,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$category_name_valid 	= "invalid";
 	}
 	if (empty($error)) {
+		$excel_data = set_replace_string_char($excel_data);
 		// Split the pasted data by new lines (each line is a row)
 		$rows = explode(PHP_EOL, trim($excel_data));
 		// Split each row by tabs or commas (each column in a row)
@@ -316,7 +317,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
 										if ($s_heading == 'po_date' || $s_heading == 'estimated_receive_date') {
-											$cell_format = "Date (m/d/Y)";
+											$cell_format = "Date (d/m/Y)";
 										}
 										if ($s_heading == 'product_id') {
 											$cell_format = "Text (Unique)";

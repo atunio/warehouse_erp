@@ -41,7 +41,7 @@ $sql_cl			= " SELECT * FROM (
 						SELECT '' AS offer_no, aa.po_no,aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
 								aa.id AS po_id_master,   
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
+								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
 						FROM purchase_orders aa
 						LEFT JOIN venders c ON c.id = aa.vender_id
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
@@ -53,7 +53,7 @@ $sql_cl			= " SELECT * FROM (
 						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
 								aa.id AS po_id_master, 
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po
+								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
 						FROM purchase_orders aa
 						INNER JOIN offers a ON a.id = aa.offer_id
 						INNER JOIN venders c ON c.id = a.vender_id
@@ -346,6 +346,7 @@ $page_heading 	= "List Purchase Orders ";
 																		<span class="green-text">
 																			<?php
 																			echo $data['po_status_name'];
+																			
 																			///*
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
@@ -433,7 +434,13 @@ $page_heading 	= "List Purchase Orders ";
 																				}
 																			}
 																			//*/ 
+																			
 																			?>
+																		</span>
+																	</span>
+																	<span class="chip blue lighten-5">
+																		<span class="blue-text">
+																			<?php echo "".$data['stage_status']; ?>
 																		</span>
 																	</span>
 																</td>

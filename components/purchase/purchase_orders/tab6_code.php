@@ -209,6 +209,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 				foreach ($all_devices_info['imei'] as $data) {
 					// $data = "DMTPD5R1FK10";
 					if ($data != "" && $data != null) {
+
 						$insert_bin_and_po_id_fields 	= "po_id, ";
 						$insert_bin_and_po_id_values 	= "'" . $id . "', ";
 						$serial_no_barcode_diagnostic 	= $data;
@@ -224,20 +225,12 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 							$device_detail_array 	= getinfo_phonecheck_imie($data);
 							$jsonData2				= json_encode($device_detail_array);
-							if ($jsonData2 == '{"msg":"token expired"}') {
-								athenticate_phonecheck();
-								$device_detail_array 	= getinfo_phonecheck_imie($data);
-								$jsonData2				= json_encode($device_detail_array);
-							}
-							// echo "<br><br><pre>";
-							// print_r($device_detail_array);
-							// die;
 							if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
 								include("components/purchase/purchase_orders/process_phonecheck_response.php");
 							} else {
-								// $sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-								// 		VALUES	(" . $insert_bin_and_po_id_values . " '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
-								// $db->query($conn, $sql);
+								$sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+										VALUES	(" . $insert_bin_and_po_id_values . " '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
+								$db->query($conn, $sql);
 							}
 							$k++;
 						}
@@ -246,10 +239,9 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			}
 			if (!isset($all_devices_info['imei']) || (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) == 0)) {
 				$error6['msg'] = "No Serial# is avaible again this PO# in the date.";
-			} else if ($k > 0) {
-				$msg6['msg_success'] = "Total " . $k . " Serial# have been fetch successfully.";
-			} else {
-				$error6['msg'] = "No more Serial# available to fetch.";
+			}
+			if ($k > 0) {
+				$msg6['msg_success'] = "Total " . $k . " Serial# have been updated successfully.";
 			}
 		}
 	} else {

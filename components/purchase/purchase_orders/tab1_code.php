@@ -12,6 +12,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$is_imaged_po				= "Yes";
 	$vender_invoice_no			= date('YmdHis');
 	$order_status 				= 1;
+	$stage_status           	= "Draft";
 }
 
 $db 					= new mySqlDB;
@@ -53,6 +54,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$is_wiped_po			= $row_ee[0]['is_wiped_po'];
 	$is_imaged_po			= $row_ee[0]['is_imaged_po'];
 	$order_status           = $row_ee[0]['order_status'];
+	$stage_status           = $row_ee[0]['stage_status'];
+	
 	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
 
 	$product_condition 		= [];
@@ -218,11 +221,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					WHERE id = '" . $id . "' ";
 		$ok = $db->query($conn, $sql_c_up);
 		$k = 0;
-		if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) {
-			$sql_dup = " DELETE FROM purchase_order_detail WHERE po_id	= '" . $id . "'";
-			$db->query($conn, $sql_dup);
-
+		//if (isset($stage_status) && $stage_status != "Committed") {
 			$filtered_product_ids = array_values(array_filter($product_ids));
+			$current_ids = implode(',', $filtered_product_ids);
+			if($current_ids !=""){
+				$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
+							WHERE po_id	= '" . $id . "' 
+							AND product_id NOT IN(" . $current_ids . ") ";
+				$db->query($conn, $sql_dup1);
+			}
+
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
 			foreach ($filtered_product_ids as $data_p) {
@@ -230,60 +238,94 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
 					$result_dup = $db->query($conn, $sql_dup);
 					$count_dup 	= $db->counter($result_dup);
-	
-					if ($count_dup == 0) {
-						// Check if all required array elements exist
-						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
-						$ok = $db->query($conn, $sql6);
-						if ($ok) {
-							$k++; // Increment the counter only if the insertion is successful
+					if ($count_dup > 0) {
+						$row_dup = $db->fetch($result_dup);
+						foreach ($row_dup as $data_dup) {
+							$po_detail_id1 = $data_dup['id'];
+							if ($po_detail_id1 > 0) {
+								$sql_c_up = "UPDATE  purchase_order_detail SET 	order_qty 			= '" . $order_qty[$i] . "',
+																				order_price			= '" . $order_price[$i] . "',
+																				product_condition	= '" . $product_condition[$i] . "',
+																				expected_status		= '" . $expected_status[$i] . "',
+																				enabled				= '1',
+																				
+																				update_timezone	= '" . $timezone . "',
+																				update_date		= '" . $add_date . "',
+																				update_by		= '" . $_SESSION['username'] . "',
+																				update_ip		= '" . $add_ip . "'
+											WHERE id = '" . $po_detail_id1 . "' ";
+								$db->query($conn, $sql_c_up);
+							}
 						}
-						$i++;
-					} else {
 						$product_ids[$i] 			= "";
 						$product_condition[$i] 		= "";
 						$order_price[$i] 			= "";
 						$order_qty[$i] 				= "";
 						$expected_status[$i] 		= "";
 						$i++;
+
+					} else {
+						
+						// Check if all required array elements exist
+						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+						VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$k++; // Increment the counter only if the insertion is successful
+						}
+						$i++;
 					}
 				}
 			}
 			if (isset($package_ids)) {
-				if($data_p !=""){
-					$sql_dup = " DELETE FROM purchase_order_packages_detail WHERE po_id	= '" . $id . "'";
-					$db->query($conn, $sql_dup);
+				$filtered_id = (array_values(array_filter($package_ids)));
+				$current_ids = implode(',', $filtered_id);
+				if($current_ids !=""){
+					$sql_dup1 = "UPDATE purchase_order_packages_detail SET enabled = 0 
+								WHERE po_id	= '" . $id . "' 
+								AND package_id NOT IN(" . $current_ids . ") ";
+					$db->query($conn, $sql_dup1);
+				}
 
-					$filtered_id = (array_values(array_filter($package_ids)));
-
-					$ii = 0; // Initialize the counter before the loop
-					$rr = 1;
-					foreach ($filtered_id as $package_id) {
-						$sql_dup	= " SELECT a.* 
-										FROM purchase_order_packages_detail a 
-										WHERE a.po_id	= '" . $id . "'
-										AND a.package_id	= '" . $package_id . "' ";
-						$result_dup	= $db->query($conn, $sql_dup);
-						$count_dup	= $db->counter($result_dup);
-						if ($count_dup == 0) {
-							$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_packages_detail(po_id, package_id,  order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-									VALUES('" . $id . "', '" . $package_id . "',  '" . $order_part_qty[$ii]  . "', '" . $order_part_price[$ii] . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-							$ok = $db->query($conn, $sql6);
-							if ($ok) {
-								$k++; // Increment the counter only if the insertion is successful
-							}
-							$ii++;
-						} else {
-							$package_ids[$ii] 		= "";
-							$order_part_qty[$ii] 	= "";
-							$order_part_price[$ii] 	= "";
-							$ii++;
+				$ii = 0; // Initialize the counter before the loop
+				$rr = 1;
+				foreach ($filtered_id as $package_id) {
+					$sql_dup	= " SELECT a.* 
+									FROM purchase_order_packages_detail a 
+									WHERE a.po_id	= '" . $id . "'
+									AND a.package_id	= '" . $package_id . "' ";
+					$result_dup	= $db->query($conn, $sql_dup);
+					$count_dup	= $db->counter($result_dup);
+					if ($count_dup == 0) {
+						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_packages_detail(po_id, package_id,  order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+								VALUES('" . $id . "', '" . $package_id . "',  '" . $order_part_qty[$ii]  . "', '" . $order_part_price[$ii] . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$k++; // Increment the counter only if the insertion is successful
 						}
+						$ii++;
+					} else {
+
+						$sql_c_up = "UPDATE  purchase_order_packages_detail SET 	
+																					order_qty 			= '" . $order_part_qty[$ii] . "',
+																					order_price			= '" . $order_part_price[$ii] . "',
+																					enabled 			= 1,
+																					
+																					update_timezone	= '" . $timezone . "',
+																					update_date		= '" . $add_date . "',
+																					update_by		= '" . $_SESSION['username'] . "',
+																					update_ip		= '" . $add_ip . "'
+									WHERE po_id = '" . $id . "'  AND package_id = '" . $package_id . "' ";
+						$db->query($conn, $sql_c_up);
+
+						$package_ids[$ii] 		= "";
+						$order_part_qty[$ii] 	= "";
+						$order_part_price[$ii] 	= "";
+						$ii++;
 					}
 				}
 			}
-		}
+		//}
 		if ($k == 1) {
 			if (isset($error2['msg'])) unset($error2['msg']);
 			$msg2['msg_success'] = "Record has been added successfully.";

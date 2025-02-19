@@ -222,7 +222,7 @@
                                                 INNER JOIN products c ON c.id = a.product_id
                                                 INNER JOIN product_categories d ON d.id = c.product_category
                                                 WHERE 1=1 
-                                                AND a.po_id = '" . $id . "' 
+                                                AND a.po_id = '" . $id . "' AND a.enabled =1
                                                 GROUP BY d.category_name
                                                 ORDER BY d.category_name"; //echo $sql_cl;
                                 $result_r1  = $db->query($conn, $sql_r1);

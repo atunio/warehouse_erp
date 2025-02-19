@@ -71,7 +71,7 @@
             /*
             $sql        = " SELECT * FROM(
                                 SELECT  '1' as rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
-                                        a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                        a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
                                         a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
                                         a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
                                         c.product_desc, d.category_name, 
@@ -95,7 +95,7 @@
                                 UNION ALL 
 
                                 SELECT  '1' as rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
-                                        a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                        a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
                                         a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
                                         a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
                                          
@@ -123,7 +123,7 @@
                                 
                                 SELECT 
                                     '2' as rec_sort, '0' AS id, '0' AS logistic_id, '0' AS po_detail_id, '0' AS edit_lock, a.serial_no AS serial_no_barcode,  a.product_uniqueid AS base_product_id,
-                                    '' AS sub_product_id, '' AS model_name, '' AS model_no, '' AS make_name, '' AS carrier_name, '' AS color_name, a.battery, '' AS body_grade, 
+                                     '' AS model_name, '' AS model_no, '' AS make_name, '' AS carrier_name, '' AS color_name, a.battery, '' AS body_grade, 
                                     '' AS lcd_grade,  '' AS digitizer_grade,  a.overall_grade, a.memory AS ram, a.storage, a.processor, '' AS warranty, a.price, 
                                     a.defects_or_notes,  a.status AS inventory_status,  '' AS sku_code,  '' AS phone_check_api_data,  '0' AS is_diagnost,  '0' AS is_rma_processed, '0' AS is_rma_added, '1' AS enabled,
                                     
@@ -144,8 +144,8 @@
                             ORDER BY rec_sort, is_rma_processed DESC, is_rma_added DESC, base_product_id, serial_no_barcode DESC ";
             */
             $sql        = " SELECT * FROM (
-                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
-                                    a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,  
+                                    a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
                                     a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
                                     a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
                                     c.product_desc, d.category_name, 
@@ -166,8 +166,8 @@
 
                                 UNION ALL 
 
-                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode,  a.base_product_id,  
-                                    a.sub_product_id, a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
+                                SELECT '1' AS rec_sort, a.id, a.logistic_id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,  
+                                    a.model_name, a.model_no, a.make_name, a.carrier_name, a.color_name, a.battery, a.body_grade, 
                                     a.lcd_grade,  a.digitizer_grade,  a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price, 
                                     a.defects_or_notes,  a.inventory_status,  a.sku_code,  a.phone_check_api_data,  a.is_diagnost, a.is_rma_processed, a.is_rma_added, a.enabled,
                                     c.product_desc, d.category_name, 
@@ -185,7 +185,6 @@
                                 WHERE d1.id = '" . $id . "'
                                 AND a.enabled = 1
                             ) AS t1 ";
-
             // echo $sql;
             $result_log = $db->query($conn, $sql);
             $count_log  = $db->counter($result_log);
@@ -371,8 +370,8 @@
                                 $field_name     = "receive_id_barcode_rma";
                                 $field_label    = "Product";
                                 $sql            = " SELECT * FROM(
-                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, a.base_product_id,  
-                                                                a.sub_product_id, c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,
+                                                                c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
                                                         FROM purchase_order_detail_receive a
                                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                                         INNER JOIN products c ON c.id = b.product_id
@@ -389,10 +388,10 @@
                                                         
                                                         UNION ALL 
 
-                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, a.base_product_id,  
-                                                            a.sub_product_id, c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                        SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,
+                                                            c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
                                                         FROM purchase_order_detail_receive a
-                                                        INNER JOIN products c ON c.id = A.product_id
+                                                        INNER JOIN products c ON c.id = a.product_id
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
                                                         LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                                         LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic

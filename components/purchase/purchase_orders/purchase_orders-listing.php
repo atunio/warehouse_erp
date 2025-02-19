@@ -469,7 +469,7 @@ $page_heading 	= "List Purchase Orders ";
 																					INNER JOIN products b ON b.id = aa2.product_id
 																					INNER JOIN product_categories d ON d.id = b.product_category
 																					WHERE 1=1 
-																					AND aa2.po_id = '" . $id . "'  
+																					AND aa2.po_id = '" . $id . "' AND aa2.enabled = 1 
 																					GROUP BY b.product_category ";
 																	$result3	= $db->query($conn, $sql3);
 																	$count3		= $db->counter($result3);

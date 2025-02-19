@@ -203,7 +203,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$imei_already = $phone_check_sku_codes = "";
 			$k = $n = 0;
 			$all_devices_info = v2_devices_call_phonecheck($data);
-			// echo "<br><br><pre>";   print_r($all_devices_info['imei']); die;
+			// echo "<br><br><pre>"; print_r($all_devices_info);die;
 			if (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) > 0) {
 				$m = 1;
 				foreach ($all_devices_info['imei'] as $data) {

@@ -215,6 +215,7 @@
                                                     INNER JOIN products c ON c.id = a.product_id
                                                     INNER JOIN product_categories d ON d.id = c.product_category
                                                     WHERE 1=1 
+                                                    AND a.enabled = 1
                                                     AND a.po_id = '" . $id . "' 
                                                     ORDER BY c.product_uniqueid, a.product_condition ";
                                 // echo $sql; 
@@ -318,6 +319,7 @@
                                                     INNER JOIN products c ON c.id = a.product_id
                                                     INNER JOIN product_categories d ON d.id = c.product_category
                                                     WHERE 1=1 
+                                                    AND a.enabled = 1
                                                     AND a.po_id = '" . $id . "' 
                                                     ORDER BY c.product_uniqueid, a.product_condition ";
                                 // echo $sql; 
@@ -780,7 +782,7 @@
                     $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
                                     FROM phone_check_api_data a
                                     LEFT JOIN products c ON c.product_model_no = a.model_no 
-                                    LEFT JOIN purchase_order_detail d ON d.product_id = c.id 
+                                    LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
                                     WHERE a.po_id = '" . $id . "' 
                                     AND a.is_processed = 0
                                     ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
@@ -951,9 +953,10 @@
                                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                                         INNER JOIN products c ON c.id = b.product_id
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = '".$id."'
+                                                        WHERE a.po_id = '" . $id . "'
                                                         AND a.is_processed = 0
-                                                        AND a.enabled = 1  
+                                                        AND a.enabled = 1 
+                                                        AND b.enabled = 1
 
                                                         UNION ALL 
 
@@ -961,7 +964,7 @@
                                                         FROM purchase_order_detail_receive_diagnostic_fetch a 
                                                         INNER JOIN products c ON c.id = a.product_id_not_in_po
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
-                                                        WHERE a.po_id = '".$id."'
+                                                        WHERE a.po_id = '" . $id . "'
                                                         AND a.enabled = 1
                                                         AND a.is_processed = 0
                                                     ) AS t1
@@ -1073,6 +1076,7 @@
                                     LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                     LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                     WHERE a.enabled = 1
+                                    AND b.enabled = 1
                                     AND b.po_id = '" . $id . "'
                                     AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 
@@ -1127,7 +1131,7 @@
 
                         <div class="row">
                             <div class="col m3 s12">
-                                <h5>Received Products</h5>
+                                <h5>Detail</h5>
                             </div>
                         </div>
                         <div class="row">
@@ -1160,7 +1164,7 @@
                                                             <th>Serial#</th>   
                                                             <th>Specification</th>
                                                              <th>Grading</th> 
-                                                            <th>Price / <br>Defects</th> 
+                                                            <th>Defects</th> 
                                                              <th>Inventory Status</th>';
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
@@ -1340,7 +1344,6 @@
                                                                             Vendor Grade: <?php echo $vender_grade; ?></span>
                                                                     </span><br>
                                                                 <?php
-
                                                                 }
                                                             }
                                                             if ($overall_grade != "") { ?><br>
@@ -1351,10 +1354,9 @@
                                                             <?php } ?>
                                                         </td>
                                                         <td style="<?= $td_padding; ?>">
-                                                            <?php if ($price != '') {
-                                                                echo "Price: " . number_format($price, 2) . "<br>";
-                                                            } ?>
-                                                            <?php if ($defectsCode != '') {
+                                                            <?php
+                                                            // if ($price != '') { echo "Price: " . number_format($price, 2) . "<br>"; }
+                                                            if ($defectsCode != '') {
                                                                 echo "Defects: " . $defectsCode . "<br>";
                                                             } ?>
                                                         </td>

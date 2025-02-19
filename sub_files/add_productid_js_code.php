@@ -14,7 +14,7 @@
             success: function(data) {
                 if (data != 'Select') {
                     $("#product_id_modal").val("");
-                    $("#product_uniqueid").append(data);
+                    $("#product_uniqueid2").append(data);
                 }
             },
             error: function() {

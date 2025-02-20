@@ -50,12 +50,17 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 						$p_inventory_status = $status_id_upd;
 					}
 
-					$sql_c_up 	= "	UPDATE product_stock SET p_inventory_status = '" . $p_inventory_status . "', ";
+					$sql_c_up 	= "	UPDATE product_stock SET p_inventory_status = '" . $p_inventory_status . "' ";
 					if ($status_id_upd == '19' || $status_id_upd == '18') {
-						$sql_c_up 	.= "price 			= '" . $new_value_upd . "', 
-										sub_location 	= '" . $sub_location_id_upd . "' ";
+						$sql_c_up 	.= ", price 			= '" . $new_value_upd . "', 
+										  sub_location 		= '" . $sub_location_id_upd . "' ";
 					} else {
-						$sql_c_up 	.= "sub_location = '0' ";
+						$sql_c_up 	.= ", sub_location = '0' ";
+					}
+					if ($status_id_upd == '8' || $status_id_upd == '16' || $status_id_upd == '17') {
+						$sql_c_up 	.= ", p_total_stock = '0' ";
+					} else {
+						$sql_c_up 	.= ", is_final_pricing = '1' ";
 					}
 					$sql_c_up 	.= " WHERE receive_id = '" . $rma_receive_id . "' ";
 

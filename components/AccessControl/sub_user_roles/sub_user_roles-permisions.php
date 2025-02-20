@@ -551,15 +551,23 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</div>
 							<div class="input-field col m1 s12">
 								<label>
-									<input type="checkbox" <?php if (isset($special_module_permisions_10) && in_array("Move as Inventory", $special_module_permisions_10)) {
+									<input type="checkbox" <?php if (isset($special_module_permisions_10) && in_array("DiagnosticExport", $special_module_permisions_10)) {
 																echo "checked=''";
-															} ?> value="Move as Inventory" name="special_module_permisions_10[]" id="special_module_permisions_10" class="checkbox <?php echo $parent_id_level_1; ?> <?php echo $parent_id_level_2; ?> <?php echo $parent_id_level_3; ?>" />
-									<span>Move as Inventory</span>
+															} ?> value="DiagnosticExport" name="special_module_permisions_10[]" id="special_module_permisions_10" class="checkbox <?php echo $parent_id_level_1; ?> <?php echo $parent_id_level_2; ?> <?php echo $parent_id_level_3; ?>" />
+									<span>Diagnostic Export</span>
 								</label>
 							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col m5 s12">
+							</div>
+							<div class="input-field col m1 s12">
+								<label>
+									<input type="checkbox" <?php if (isset($special_module_permisions_10) && in_array("Move as Inventory", $special_module_permisions_10)) {
+																echo "checked=''";
+															} ?> value="Move as Inventory" name="special_module_permisions_10[]" id="special_module_permisions_10" class="checkbox <?php echo $parent_id_level_1; ?> <?php echo $parent_id_level_2; ?> <?php echo $parent_id_level_3; ?>" />
+									<span>Move as Inventory</span>
+								</label>
 							</div>
 							<div class="input-field col m1 s12">
 								<label>

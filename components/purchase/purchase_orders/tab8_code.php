@@ -19,13 +19,12 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 					$suggested_price 	= $data_8_p1['suggested_price'];
 					$sql_c_up = "	UPDATE product_stock a
 									INNER JOIN purchase_order_detail_receive b ON b.id = a.receive_id
-									INNER JOIN purchase_order_detail c ON c.id = b.po_detail_id
-									INNER JOIN purchase_orders c2 ON c2.id = c.po_id
+ 									INNER JOIN purchase_orders c2 ON c2.id = b.po_id
 									INNER JOIN products d ON d.id = a.product_id
 									SET a.price = round(" . $suggested_price . ", 2),
 										a.is_final_pricing = 1,
 										c2.is_pricing_done = 1
-									WHERE c.po_id 				= '" . $id . "' 
+									WHERE b.po_id 				= '" . $id . "' 
 									AND d.product_uniqueid 		= '" . $po_product_uniq_id . "'
 									AND a.stock_grade 			= '" . $price_grade . "'
 									AND a.p_inventory_status 	= 5  ";

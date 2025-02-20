@@ -1145,10 +1145,12 @@
                                         <span></span>
                                     </label>
                                 </div>
-                            <?php } ?>
-                            <div class="col m8 s12">
-                                <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
-                            </div>
+                            <?php } 
+                            if (po_permisions("DiagnosticExport") == '1') {?>
+                                <div class="col m8 s12">
+                                    <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
+                                </div>
+                            <?php }?>
                         </div>
                         <div class="section section-data-tables">
                             <div class="row">

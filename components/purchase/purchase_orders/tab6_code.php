@@ -59,8 +59,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 					$inv_po_detail_id		= $row_pd1[0]['po_detail_id'];
 					$inv_product_id			= $row_pd1[0]['inv_product_id'];
 					$old_base_product_id	= $row_pd1[0]['product_uniqueid'];
-					$inv_base_product_id	= $row_pd1[0]['base_product_id'];
-					$inv_serial_no			= $row_pd1[0]['serial_no_barcode'];
+ 					$inv_serial_no			= $row_pd1[0]['serial_no_barcode'];
 					$inv_sub_location		= $row_pd1[0]['sub_location_id_after_diagnostic'];
 					$inv_battery 			= $row_pd1[0]['battery'];
 					$inv_body_grade 		= $row_pd1[0]['body_grade'];
@@ -133,13 +132,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 						// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
 						$db->query($conn, $sql_c_up);
 					}
-
-					/*
-					if ($old_base_product_id != $inv_base_product_id) {
-						$sql_c_up = "UPDATE products SET product_uniqueid = '" . $inv_base_product_id . "' WHERE id = '" . $inv_product_id . "' ";
-						$db->query($conn, $sql_c_up);
-					}
-					*/
+ 
 					$sql_c_up = "UPDATE purchase_order_detail_receive 
 																		SET edit_lock 			= '1',
 																			Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',

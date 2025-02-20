@@ -14,7 +14,7 @@ $inventory_status_dynamic		= "14";
 $tested_or_graded_status 		= 5;
 $status_ids_rma_status 			= 7;
 $status_for_update_info			= "6,13,19,20,22,23,24,25";
-$status_for_search				= "5, 6, 8, 9, 13, 14, 16, 17, 18, 19, 20, 22, 23, 24";
+$status_for_search				= "5, 6, 9, 13, 14, 18, 19, 20, 22, 23, 24";
 
 $project_domain 				= "creativeworkflows.ai";
 $project_domain2 				= "creativeworkflows.ai";

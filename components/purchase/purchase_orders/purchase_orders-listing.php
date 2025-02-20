@@ -39,7 +39,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 }
 $sql_cl			= " SELECT * FROM (
 						SELECT '' AS offer_no, aa.po_no,aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
-								aa.id AS po_id_master,   
+								aa.id AS po_id_master, aa.enabled,  
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
 						FROM purchase_orders aa
@@ -51,7 +51,7 @@ $sql_cl			= " SELECT * FROM (
 						UNION ALL 
 						
 						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
-								aa.id AS po_id_master, 
+								aa.id AS po_id_master, aa.enabled,
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
 								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
 						FROM purchase_orders aa
@@ -77,7 +77,8 @@ if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
 if (isset($flt_po_status) && $flt_po_status != "") {
 	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_po_status) . "' ";
 }
-$sql_cl	.= " 		ORDER BY  t1.po_id_master DESC";
+$sql_cl	.= " AND t1.enabled = 1
+			 ORDER BY  t1.enabled DESC, t1.po_id_master DESC";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);

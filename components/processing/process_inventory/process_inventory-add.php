@@ -114,6 +114,8 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 					${"package_id" . $k} = 0;
 				}
 			}
+
+			/*
 			$sql = "SELECT a.* 
 					FROM " . $selected_db_name . ".time_clock_detail a
 					WHERE a.enabled                 = 1
@@ -124,7 +126,6 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 					AND a.entry_type                = 'process'
 					AND (a.stopTime = NULL OR a.stopTime IS NULL) 
 					ORDER BY a.id DESC LIMIT 1";
-			// echo $sql;die;
 			$result_cl     = $db->query($conn, $sql);
 			$count_cl     = $db->counter($result_cl);
 			if ($count_cl > 0) {
@@ -178,6 +179,7 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 					$db->query($conn, $sql);
 				}
 			}
+			*/
 
 			$parts_ids_array = array();
 			for ($k = 1; $k <= $total_parts; $k++) {
@@ -186,15 +188,15 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 				}
 			}
 			$device_processing_parts_price 	= device_parts_price($db, $conn, $parts_ids_array);
-			$device_processing_labor 		= device_processing_labor($db, $conn, $stock_id);
+			// $device_processing_labor 		= device_processing_labor($db, $conn, $stock_id);
+			$device_processing_labor = 0;
 
 			$sql_ee						= " SELECT a.*, b.product_uniqueid, b.product_desc, b.detail_desc, c.sub_location_name, f.po_no, f.po_date
 											FROM product_stock a
 											INNER JOIN products b ON b.id = a.product_id 
 											LEFT JOIN warehouse_sub_locations c ON c.id = a.sub_location 
 											INNER JOIN purchase_order_detail_receive d ON d.id = a.receive_id
-											INNER JOIN purchase_order_detail e ON e.id = d.po_detail_id
-											INNER JOIN purchase_orders f ON f.id = e.po_id
+ 											INNER JOIN purchase_orders f ON f.id = d.po_id
 											WHERE a.id = '" . $stock_id . "' ";
 			// echo $sql_ee;die;
 			$result_ee					= $db->query($conn, $sql_ee);

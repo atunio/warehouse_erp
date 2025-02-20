@@ -122,6 +122,9 @@ $page_heading 	= "Bins For Processing";
 															<td class="text-align-center">
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&detail_id=" . $id . "&cmd2=add") ?>">
 																	<i class="material-icons dp48">list</i>
+																</a>&nbsp;&nbsp;
+																<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/bin_processing_print.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
+																	<i class="material-icons dp48">print</i>
 																</a>
 															</td>
 														</tr>

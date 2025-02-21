@@ -3,6 +3,9 @@ if (!isset($module)) {
 	require_once('../../../../conf/functions.php');
 	disallow_direct_school_directory_access();
 } 
+if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
+	$defect_code	= "".date('Ymd-His');
+}
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];

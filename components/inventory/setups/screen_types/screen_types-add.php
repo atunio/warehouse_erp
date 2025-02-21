@@ -4,7 +4,7 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
-	$screen_type_name	= "Approved";
+ 	$screen_type_name	= "SCR ".date('Ymd-His');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];

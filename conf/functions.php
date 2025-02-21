@@ -1930,3 +1930,8 @@ function set_replace_string_char($data)
 	$replace_data = str_replace(array(',', "'"), '', $data);
 	return $replace_data;
 }
+function set_table_headings($heading)
+{
+	$heading = strtolower(str_replace(array(' ', "</br>", "<br>", "/"), '', $heading));
+	return $heading;
+}

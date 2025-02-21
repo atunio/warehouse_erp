@@ -59,6 +59,7 @@ $result_cl	= $db->query($conn, $sql_cl);
 $count_cl	= $db->counter($result_cl);
 $page_heading 	= "List of Products";
 ?>
+
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
@@ -269,17 +270,35 @@ $page_heading 	= "List of Products";
 									</div>
 								</form>
 								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('SNo', 'ProductID', 'Description', 'Category', 'ModelNo', 'Actions');
+										$k 				= 0;
+ 										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>
+								<div class="row">
 									<div class="col s12">
 										<table id="page-length-option" class="display pagelength50_3">
 											<thead>
-												<tr>
+												<tr> 
 													<?php
-													$headings = '<th class="sno_width_60">S.No</th>
-																<th>Product ID </th>
-																<th>Description</th>
-																<th>Category</th>
-																<th>Model#</th>
-																<th>Action</th>';
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
 													echo $headings;
 													?>
 												</tr>
@@ -292,12 +311,12 @@ $page_heading 	= "List of Products";
 													foreach ($row_cl as $data) {
 														$id = $data['id'];  ?>
 														<tr>
-															<td style="text-align: center;"><?php echo $i + 1; ?></td>
-															<td><?php echo $data['product_uniqueid']; ?></td>
-															<td><?php echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . "")); ?></td>
-															<td><?php echo $data['category_name']; ?></td>
-															<td><?php echo $data['product_model_no']; ?></td>
-															<td class="text-align-center">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['product_uniqueid']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(set_table_headings(substr($data['product_desc'], 0, 50) . "")); ?></td>
+															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['category_name']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['product_model_no']; ?></td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[5]);?>">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&cmd2=add&id=" . $id) ?>" title="Edit">
@@ -337,4 +356,4 @@ $page_heading 	= "List of Products";
 			<div class="content-overlay"></div>
 		</div>
 	</div>
-</div>
+</div> 

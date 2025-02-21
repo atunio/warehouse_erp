@@ -10,12 +10,71 @@
             }
         });
 
+
+        function handleButtonAction(originalAction, e, dt, button, config) {
+            // Get Visible Columns
+            var visibleColumns = [];
+            dt.columns(':visible').every(function () {
+                visibleColumns.push(this.header().textContent);
+            });
+
+            // Call the original action for the button
+            originalAction.call(this, e, dt, button, config);
+        }
+
+        buttons: [
+            {
+                extend: 'copy',
+                text: 'Copy',
+                exportOptions: {
+                    columns: ':visible' // Export only visible columns
+                },
+                action: function (e, dt, button, config) {
+                    handleButtonAction($.fn.dataTable.ext.buttons.copyHtml5.action, e, dt, button, config);
+                }
+            },
+            {
+                extend: 'excel',
+                text: 'Excel',
+                filename: 'stock_excel_export',
+                exportOptions: {
+                    columns: ':visible' // Export only visible columns
+                },
+                action: function (e, dt, button, config) {
+                    handleButtonAction($.fn.dataTable.ext.buttons.excelHtml5.action, e, dt, button, config);
+                }
+            },
+            {
+                extend: 'pdf',
+                text: 'PDF',
+                filename: 'pdf_export',
+                exportOptions: {
+                    columns: ':visible'  // Export only visible columns
+                },
+                action: function (e, dt, button, config) {
+                    handleButtonAction($.fn.dataTable.ext.buttons.pdfHtml5.action, e, dt, button, config);
+                }
+            },
+            {
+                extend: 'print',
+                text: 'Print',
+                exportOptions: {
+                    columns: ':visible' // Export only visible columns
+                },
+                action: function (e, dt, button, config) {
+                    handleButtonAction($.fn.dataTable.ext.buttons.print.action, e, dt, button, config);
+                }
+            }
+        ]
+
         $('table.display2').DataTable({
             "responsive": true,
             "lengthMenu": [
                 [10, 25, 50, -1],
                 [10, 25, 50, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength100").dataTable().fnDestroy();
         $('table.pagelength100').DataTable({
@@ -23,7 +82,9 @@
             "lengthMenu": [
                 [100, 150, 200, -1],
                 [100, 150, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50").dataTable().fnDestroy();
         $('table.pagelength50').DataTable({
@@ -31,7 +92,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_2").dataTable().fnDestroy();
         $('table.pagelength50_2').DataTable({
@@ -39,7 +102,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_3").dataTable().fnDestroy();
         $('table.pagelength50_3').DataTable({
@@ -47,7 +112,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_4").dataTable().fnDestroy();
         $('table.pagelength50_4').DataTable({
@@ -55,7 +122,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_5").dataTable().fnDestroy();
         $('table.pagelength50_5').DataTable({
@@ -63,7 +132,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_6").dataTable().fnDestroy();
         $('table.pagelength50_6').DataTable({
@@ -71,7 +142,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_7").dataTable().fnDestroy();
         $('table.pagelength50_7').DataTable({
@@ -79,7 +152,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_8").dataTable().fnDestroy();
         $('table.pagelength50_8').DataTable({
@@ -87,7 +162,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_9").dataTable().fnDestroy();
         $('table.pagelength50_9').DataTable({
@@ -95,7 +172,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.pagelength50_10").dataTable().fnDestroy();
         $('table.pagelength50_10').DataTable({
@@ -103,7 +182,9 @@
             "lengthMenu": [
                 [50, 100, 200, -1],
                 [50, 100, 200, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
         $("table.simpledatatable_pagelength100").dataTable().fnDestroy();
         $('table.simpledatatable_pagelength100').DataTable({
@@ -111,8 +192,139 @@
             "lengthMenu": [
                 [100, 250, 500, -1],
                 [100, 250, 500, "All"]
-            ]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
+        $("table.simpledatatable_pagelength1000_1").dataTable().fnDestroy();
+        $('table.simpledatatable_pagelength1000_1').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [1000, 2000, 3000, -1],
+                [1000, 2000, 3000, "All"]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            buttons: [
+                {
+                    extend: 'copy',
+                    text: 'Copy',
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            // Export only visible columns except the first one (index 0)
+                            <?php 
+                            if(isset($module_id) && $module_id == '18'){?>
+                               return idx !== 0 && $(node).is(':visible');
+                            <?php }
+                            else{?>
+                                return $(node).is(':visible');
+                            <?php } ?>  
+                        },
+                        format: {
+                            body: function (data, row, column, node) {
+                                // Create a temporary div with the cell's HTML content
+                                var tempDiv = $('<td>').html(data);
+                                // Find all anchor tags and replace them with their inner text
+                                tempDiv.find('a').each(function() {
+                                    $(this).replaceWith($(this).text());
+                                });
+                                // Return the cleaned text content
+                                return tempDiv.text().trim();
+                            }
+                        }
+                    },
+                    action: function (e, dt, button, config) {
+                        // Get Visible Columns excluding the first one (index 0)
+                        var visibleColumns = [];
+                        dt.columns(':visible').every(function (index) {
+                            if (index !== 0) {
+                                visibleColumns.push(this.header().textContent);
+                            }
+                        });
+                        // Call the original action for Print
+                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(this, e, dt, button, config);
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: 'Excel',
+                    filename: 'stock_excel_export',
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            // Export only visible columns except the first one (index 0)
+                            <?php 
+                            if(isset($module_id) && $module_id == '18'){?>
+                               return idx !== 0 && $(node).is(':visible');
+                            <?php }
+                            else{?>
+                                return $(node).is(':visible');
+                            <?php } ?>  
+                        }
+                    },
+                    action: function (e, dt, button, config) {
+                        // Get Visible Columns excluding the first one (index 0)
+                        var visibleColumns = [];
+                        dt.columns(':visible').every(function (index) {
+                            visibleColumns.push(this.header().textContent);
+                        });
+                        // Call the original action for Excel export
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, button, config);
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: 'PDF',
+                    filename: 'pdf_export',
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            // Export only visible columns except the first one (index 0)
+                            <?php 
+                            if(isset($module_id) && $module_id == '18'){?>
+                               return idx !== 0 && $(node).is(':visible');
+                            <?php }
+                            else{?>
+                                return $(node).is(':visible');
+                            <?php } ?> 
+                        }
+                    },
+                    action: function (e, dt, button, config) {
+                        // Get Visible Columns excluding the first one (index 0)
+                        var visibleColumns = [];
+                        dt.columns(':visible').every(function (index) {
+                            visibleColumns.push(this.header().textContent);
+                        });
+                        // Call the original action for PDF export
+                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button, config);
+                    }
+                },
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    exportOptions: {
+                        columns: function (idx, data, node) {
+                            // Export only visible columns except the first one (index 0)
+                            <?php 
+                            if(isset($module_id) && $module_id == '18'){?>
+                               return idx !== 0 && $(node).is(':visible');
+                            <?php }
+                            else{?>
+                                return $(node).is(':visible');
+                            <?php } ?> 
+                        }
+                    },
+                    action: function (e, dt, button, config) {
+                        // Get Visible Columns excluding the first one (index 0)
+                        var visibleColumns = [];
+                        dt.columns(':visible').every(function (index) {
+                            visibleColumns.push(this.header().textContent);
+                        });
+                        // Call the original action for Print
+                        $.fn.dataTable.ext.buttons.print.action.call(this, e, dt, button, config);
+                    }
+                }
+            ],
+            ordering: false
+        });
+
     });
 </script>
 <?php
@@ -319,6 +531,6 @@ if (isset($module)) { ?>
             var numberDecimal1 = this.value;
             var numberDecima2 = numberDecimal1.match(/^\d+\.?\d{0,0}/);
             $(this).val(numberDecima2);
-        });
+        }); 
     </script>
 <?php }

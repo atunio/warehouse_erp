@@ -4,7 +4,7 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
-	$sub_location_name	= "Ware House 1";
+ 	$sub_location_name	= "A".date('His');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];

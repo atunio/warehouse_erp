@@ -313,7 +313,7 @@ $page_heading 	= "List of Products";
 														<tr>
 															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
 															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['product_uniqueid']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(set_table_headings(substr($data['product_desc'], 0, 50) . "")); ?></td>
+															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(strtolower(substr($data['product_desc'], 0, 50) . "")); ?></td>
 															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['category_name']; ?></td>
 															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['product_model_no']; ?></td>
 															<td class="text-align-center col-<?= set_table_headings($table_columns[5]);?>">

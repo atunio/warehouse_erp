@@ -775,13 +775,13 @@ $page_heading 	= "Stock Summary";
 																				<td class="col-<?= set_table_headings($table_columns[7]);?> text_align_right">
 																					<?php
 																					$filter_3 = $data3['serial_no'];
+																					/*
 																					if (access("edit_perm") == 1) { ?>
 																						<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																						<?php echo $data3['p_total_stock']; ?>
 																						</a> &nbsp;&nbsp;
-																					<?php } else {
-																						echo $data3['p_total_stock'];
-																					} ?> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+																					<?php }
+																					*/?>
 																				</td>
 																				<td class="col-<?= set_table_headings($table_columns[8]);?>">
 																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail" style="padding: 20px;">

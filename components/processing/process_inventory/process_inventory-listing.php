@@ -82,16 +82,35 @@ $page_heading 	= "Bins For Processing";
 								<?php } ?>
 								<br>
 								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('SNo', 'Location / Bin','Task Users','Assign Date','Actions');
+										$k 				= 0;
+										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>
+								<div class="row">
 									<div class="col s12">
 										<table id="page-length-option" class="display pagelength50_3">
 											<thead>
 												<tr>
 													<?php
-													$headings = '<th class="sno_width_60">S.No</th>
-																<th>Location / Bin</th> 
-																<th>Task Users</th> 
-																<th>Assign Date</th> 
-																<th>Action</th>';
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
 													echo $headings;
 													?>
 												</tr>
@@ -104,22 +123,22 @@ $page_heading 	= "Bins For Processing";
 													foreach ($row_cl as $data) {
 														$id = $data['id']; ?>
 														<tr>
-															<td style="text-align: center;"><?php echo $i + 1; ?></td>
-															<td>
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																<?php
 																echo $data['sub_location_name'];
 																if ($data['sub_location_type'] != "") {
 																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																} ?>
 															</td>
-															<td>
+															<td class="col-<?= set_table_headings($table_columns[2]);?>">
 																<?php
 																if ($data['task_user_details'] != "   ()") {
 																	echo "" . $data['task_user_details'] . "";
 																} ?>
 															</td>
-															<td><?php echo "" . dateformat2($data['add_date']) . ""; ?></td>
-															<td class="text-align-center">
+															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo "" . dateformat2($data['add_date']) . ""; ?></td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[4]);?>">
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&detail_id=" . $id . "&cmd2=add") ?>">
 																	<i class="material-icons dp48">list</i>
 																</a>&nbsp;&nbsp;

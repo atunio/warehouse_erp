@@ -85,12 +85,37 @@ $page_heading = "Create Role or Set Permissions For Sub User "; ?>
 							<div class="card-content custom_padding_card_content_table_top">
 								<br>
 								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('Role Name', 'Actions');
+										$k 				= 0;
+										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>
+								<div class="row">
 									<div class="col s12">
-										<table id="page-length-option" class="display">
+										<table id="page-length-option" class="display pagelength50_3">
 											<thead>
 												<tr>
-													<th class="text-align-center">Role Name</th>
-													<th class="text-align-center">Actions</th>
+													<?php
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
+													echo $headings;
+													?>
 												</tr>
 											</thead>
 											<tbody>
@@ -101,8 +126,8 @@ $page_heading = "Create Role or Set Permissions For Sub User "; ?>
 													foreach ($row_cl as $data) {
 														$i = $i + 1; ?>
 														<tr>
-															<td><?php echo $data['role_name']; ?></td>
-															<td class="text-align-center">
+															<td class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $data['role_name']; ?></td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[1]);?>">
 																<?php if (access("view_perm") == 1) { ?>
 																	<a class="waves-effect waves-light green darken-1  btn gradient-45deg-light-green-cyan box-shadow-none border-round mr-1 mb-1" title="Set Permissions" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=permisions&cmd=edit&id=" . $data['id']) ?>">
 																		<i class="material-icons dp48">folder</i>

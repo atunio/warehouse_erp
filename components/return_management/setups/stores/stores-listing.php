@@ -116,14 +116,35 @@ $page_heading 	= "List of stores";
 										</div>
 									<?php } ?><br>
 									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Store Name','Actions');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
+									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Store Name</th>
-																	<th>Action</th>';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -136,9 +157,9 @@ $page_heading 	= "List of stores";
 														foreach ($row_cl as $data) {
 															$id = $data['id'];  ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td><?php echo ucwords(strtolower($data['store_name'])); ?></td>
-																<td class="text-align-center">
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo ucwords(strtolower($data['store_name'])); ?></td>
+																<td class="text-align-center col-<?= set_table_headings($table_columns[2]);?>">
 																	<?php
 																	if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">

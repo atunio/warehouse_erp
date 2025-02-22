@@ -49,44 +49,42 @@ $page_heading 	= "List of Invoices";
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col m8 l8">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><a href="home">Home</a>
-							</li>
-							</li>
-							<li class="breadcrumb-item active">List</li>
-						</ol>
-					</div>
-					<div class="col m2 l2">
-						<?php if (access("add_perm") == 1) { ?>
-							<a class="btn waves-effect waves-light blue darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
-								Import
-							</a>
-						<?php } ?>
-					</div>
-					<div class="col m2 l2">
-						<?php if (access("add_perm") == 1) { ?>
-							<a class="btn waves-effect waves-light green darken-1 breadcrumbs-btn right" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add") ?>">
-								Add New
-							</a>
-						<?php } ?>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="col s12">
 			<div class="container">
 				<div class="section section-data-tables">
 					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top_bottom">
+									<div class="row">
+										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+											<h6 class="media-heading">
+												<?php echo $page_heading; ?>
+											</h6>
+										</div>
+										<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+											<?php
+											if (access("add_perm") == 1) { ?>
+												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=add&active_tab=tab1") ?>">
+													New
+												</a>
+											<?php }
+											if (access("add_perm") == 1) { ?>
+												<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
+													Import
+												</a>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col s12">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -114,19 +112,37 @@ $page_heading 	= "List of Invoices";
 												</div>
 											</div>
 										</div>
-									<?php } ?>
-									<h4 class="card-title"><?php echo $page_heading; ?></h4>
+									<?php } ?><br>
+									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Invoice No', 'Invoice Date','Actions');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
 									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
-
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Invoice No</th>
-																	<th>Invoice Date</th>
-																	<th>Action</th>';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -139,11 +155,11 @@ $page_heading 	= "List of Invoices";
 														foreach ($row_cl as $data) {
 															$id = $data['id'];  ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td><?php echo $data['invoice_no']; ?></td>
-																<td><?php echo ucwords(strtolower($data['invoice_date'])); ?></td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['invoice_no']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(strtolower($data['invoice_date'])); ?></td>
 																
-																<td class="text-align-center">
+																<td class="text-align-center col-<?= set_table_headings($table_columns[3]);?>">
 																	<?php
 																	if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">

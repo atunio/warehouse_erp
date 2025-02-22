@@ -118,19 +118,35 @@ $page_heading 	= "List of Customers";
 									<?php } ?>
 									<br>
 									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Customer ID','Customer Name','Phone','Address','Note About Customer','Actions');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
+									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
-
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Customer ID</th>
-																	<th>Customer Name</th>
-																	<th>Phone</th>
-																	<th>Address</th>
-																	<th>Note About Customer</th>
-																	<th>Action</th>';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -143,11 +159,11 @@ $page_heading 	= "List of Customers";
 														foreach ($row_cl as $data) {
 															$id = $data['id'];  ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td><?php echo $data['customer_no']; ?></td>
-																<td><?php echo ucwords(strtolower($data['customer_name'])); ?></td>
-																<td><?php echo ucwords(strtolower($data['phone_primary'])); ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['customer_no']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(strtolower($data['customer_name'])); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo ucwords(strtolower($data['phone_primary'])); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>">
 																	<?php
 																	if ($data['address_primary'] != '') {
 																		$address_primary = $data['address_primary'];
@@ -158,7 +174,7 @@ $page_heading 	= "List of Customers";
 																	}  ?>
 																</td>
 
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[5]);?>">
 																	<?php
 																	$note_about_customer = $data['note_about_customer'];
 																	if ($note_about_customer != '') {
@@ -169,7 +185,7 @@ $page_heading 	= "List of Customers";
 																	} ?>
 																</td>
 
-																<td class="text-align-center">
+																<td class="text-align-center col-<?= set_table_headings($table_columns[6]);?>">
 																	<?php
 																	if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">

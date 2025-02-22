@@ -285,18 +285,35 @@ $page_heading 	= "List of Returns ";
 										</div>
 									</form>
 									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'RO NO','RO Date','Removal Order','Category Wise Qty','Tracking / Pro No','Actions');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
+									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>RO#</th>
-																	<th>RO Date</th>
- 																	<th>Removal Order</th>
-																	<th>Category Wise Qty</th>
- 																	<th>Tracking / Pro #</th>
- 																	<th>Action</th>';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -315,8 +332,8 @@ $page_heading 	= "List of Returns ";
 																					WHERE a.return_id = '" . $id . "'";
 															$result2			= $db->query($conn, $sql2);?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																	<?php
 																	if ($data['return_status'] == 1 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
@@ -422,12 +439,12 @@ $page_heading 	= "List of Returns ";
 																		</span>
 																	</span>
 																</td>
-																<td> <?php echo dateformat2($data['return_date']); ?></td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>"> <?php echo dateformat2($data['return_date']); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]);?>">
 																	<b>Removal_order_id#: </b><?php echo $data['removal_order_id']; ?></br>
 																	<?php  //if ($data['offer_no'] != '') echo "<b>Offer#: </b>" . $data['offer_no']; ?>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>">
 																	<?php
 																	$sql3		= " SELECT   d.category_name, sum(aa2.return_qty) as return_qty
 																					FROM  return_items_detail aa2 
@@ -451,7 +468,7 @@ $page_heading 	= "List of Returns ";
 																		}
 																	} ?>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[5]);?>">
 																	<?php
 																	$j = 0;
 																	if ($total_logistics > 0) {
@@ -471,7 +488,7 @@ $page_heading 	= "List of Returns ";
 																		}
 																	}?>
 																</td>
-																<td class="text-align-center">
+																<td class="text-align-center col-<?= set_table_headings($table_columns[6]);?>">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("print_perm") == 1) { ?>
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">

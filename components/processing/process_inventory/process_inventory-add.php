@@ -16,7 +16,7 @@ $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 $title_heading 			= "Processing";
 $button_val 			= "Save";
-$title_heading2			= "Product Processing";
+$title_heading2			= "Add Product Processing";
 $button_val2 			= "Add";
 $total_parts 			= 3;
 
@@ -92,7 +92,54 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		}
 	}
 }
+if (isset($is_Submit2_1) && $is_Submit2_1 == 'Y') {
 
+	$field_name = "finale_condition";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	$field_name = "stock_id";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
+	if (empty($error2)) {
+		if (access("add_perm") == 0) {
+			$error2['msg'] = "You do not have add permissions.";
+		} else {
+			$package_ids = [];
+			for ($k = 1; $k <= $total_parts; $k++) {
+				if (${"package_id" . $k} != "") {
+					$package_ids[] = ${"package_id" . $k};
+				}
+				
+			}
+			$comma_separated_ids = "";
+			if(count($package_ids) > 0){
+				$comma_separated_ids = implode(',', $package_ids);
+			}
+
+			$sql_c 	= "SELECT * FROM stock_for_process WHERE stock_id = '".$stock_id."' "; // echo $sql_c;
+			$result_c	= $db->query($conn, $sql_c);
+			$count_c	= $db->counter($result_c);
+			if($count_c == 0){
+				$sql6 = "INSERT INTO " . $selected_db_name . ".stock_for_process(subscriber_users_id, stock_id, package_ids, custom_product_id, finale_condition, add_date, add_by, add_ip,added_from_module_id)
+					VALUES('" . $subscriber_users_id . "', '" . $stock_id . "', '" . $comma_separated_ids . "', '" . $custom_product_id . "', '" . $finale_condition . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "','" . $module_id . "')";
+				$ok = $db->query($conn, $sql6);
+				if ($ok) {
+					$msg2['msg_success'] = "Record has been added successfully.";
+					$status_name = "";
+				} else {
+					$error2['msg'] = "There is Error, Please check it again OR contact Support Team.";
+				}
+			}else{
+				$error2['msg'] = "This is Already Exists.";
+			}
+		}
+	}
+}
+/* Old code 
 if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 
 	$field_name = "finale_condition";
@@ -115,71 +162,71 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 				}
 			}
 
-			/*
-			$sql = "SELECT a.* 
-					FROM " . $selected_db_name . ".time_clock_detail a
-					WHERE a.enabled                 = 1
-					AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
-					AND a.user_id    				= '" . $_SESSION['user_id'] . "'
-					AND a.location_or_bin_id    	= '" . $id . "'
-					AND a.entryDate                 = '" . date('Y-m-d') . "'
-					AND a.entry_type                = 'process'
-					AND (a.stopTime = NULL OR a.stopTime IS NULL) 
-					ORDER BY a.id DESC LIMIT 1";
-			$result_cl     = $db->query($conn, $sql);
-			$count_cl     = $db->counter($result_cl);
-			if ($count_cl > 0) {
-				$row_cl1     = $db->fetch($result_cl);
-				$update_id  = $row_cl1[0]['id'];
-				$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET 	entryDate           	= '" . date('Y-m-d') . "',
-																						stopTime            	= '" . $add_date . "' ,
-																						stock_id            	= '" . $stock_id . "' ,
+			
+			// $sql = "SELECT a.* 
+			// 		FROM " . $selected_db_name . ".time_clock_detail a
+			// 		WHERE a.enabled                 = 1
+			// 		AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
+			// 		AND a.user_id    				= '" . $_SESSION['user_id'] . "'
+			// 		AND a.location_or_bin_id    	= '" . $id . "'
+			// 		AND a.entryDate                 = '" . date('Y-m-d') . "'
+			// 		AND a.entry_type                = 'process'
+			// 		AND (a.stopTime = NULL OR a.stopTime IS NULL) 
+			// 		ORDER BY a.id DESC LIMIT 1";
+			// $result_cl     = $db->query($conn, $sql);
+			// $count_cl     = $db->counter($result_cl);
+			// if ($count_cl > 0) {
+			// 	$row_cl1     = $db->fetch($result_cl);
+			// 	$update_id  = $row_cl1[0]['id'];
+			// 	$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET 	entryDate           	= '" . date('Y-m-d') . "',
+			// 																			stopTime            	= '" . $add_date . "' ,
+			// 																			stock_id            	= '" . $stock_id . "' ,
 
-																						update_date         	= '" . $add_date . "' ,
-																						update_by 	        	= '" . $_SESSION['username'] . "' ,
-																						update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
-																						update_ip 	        	= '" . $add_ip . "',
-																						update_from_module_id	= '" . $module_id . "'
-								WHERE id = '" . $update_id . "' 
-								AND subscriber_users_id = '" . $subscriber_users_id . "' ";
-				$ok = $db->query($conn, $sql);
-				if ($ok) {
-					unset($_SESSION['startTime_Process']);
-					unset($_SESSION['location_or_bin_id']);
-					unset($_SESSION['process']);
-					unset($_SESSION['is_start']);
-				}
-			} else {
-				$sql = "SELECT a.* 
-						FROM " . $selected_db_name . ".time_clock_detail a
-						WHERE a.enabled                 = 1
-						AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
-						AND a.user_id    				= '" . $_SESSION['user_id'] . "'
-						AND a.location_or_bin_id    	= '" . $id . "'
-						AND a.entryDate                 = '" . date('Y-m-d') . "'
-						AND a.entry_type                = 'process'
-						AND (a.stock_id = 0 || a.stock_id = null)
-						AND a.id = (SELECT MAX(id) FROM time_clock_detail)
-						ORDER BY a.id DESC LIMIT 1";
-				// echo $sql;die;
-				$result_cl     = $db->query($conn, $sql);
-				$count_cl     = $db->counter($result_cl);
-				if ($count_cl > 0) {
-					$row_cl1     = $db->fetch($result_cl);
-					$update_id  = $row_cl1[0]['id'];
-					$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET  stock_id            	= '" . $stock_id . "' ,
+			// 																			update_date         	= '" . $add_date . "' ,
+			// 																			update_by 	        	= '" . $_SESSION['username'] . "' ,
+			// 																			update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
+			// 																			update_ip 	        	= '" . $add_ip . "',
+			// 																			update_from_module_id	= '" . $module_id . "'
+			// 					WHERE id = '" . $update_id . "' 
+			// 					AND subscriber_users_id = '" . $subscriber_users_id . "' ";
+			// 	$ok = $db->query($conn, $sql);
+			// 	if ($ok) {
+			// 		unset($_SESSION['startTime_Process']);
+			// 		unset($_SESSION['location_or_bin_id']);
+			// 		unset($_SESSION['process']);
+			// 		unset($_SESSION['is_start']);
+			// 	}
+			// } else {
+			// 	$sql = "SELECT a.* 
+			// 			FROM " . $selected_db_name . ".time_clock_detail a
+			// 			WHERE a.enabled                 = 1
+			// 			AND a.subscriber_users_id       = '" . $subscriber_users_id . "'
+			// 			AND a.user_id    				= '" . $_SESSION['user_id'] . "'
+			// 			AND a.location_or_bin_id    	= '" . $id . "'
+			// 			AND a.entryDate                 = '" . date('Y-m-d') . "'
+			// 			AND a.entry_type                = 'process'
+			// 			AND (a.stock_id = 0 || a.stock_id = null)
+			// 			AND a.id = (SELECT MAX(id) FROM time_clock_detail)
+			// 			ORDER BY a.id DESC LIMIT 1";
+			// 	// echo $sql;die;
+			// 	$result_cl     = $db->query($conn, $sql);
+			// 	$count_cl     = $db->counter($result_cl);
+			// 	if ($count_cl > 0) {
+			// 		$row_cl1     = $db->fetch($result_cl);
+			// 		$update_id  = $row_cl1[0]['id'];
+			// 		$sql  		= " UPDATE " . $selected_db_name . ".time_clock_detail SET  stock_id            	= '" . $stock_id . "' ,
 
-																							update_date         	= '" . $add_date . "' ,
-																							update_by 	        	= '" . $_SESSION['username'] . "' ,
-																							update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
-																							update_ip 	        	= '" . $add_ip . "',
-																							update_from_module_id	= '" . $module_id . "'
-								WHERE id = '" . $update_id . "' 
-								AND subscriber_users_id = '" . $subscriber_users_id . "' ";
-					$db->query($conn, $sql);
-				}
-			}
-			*/
+			// 																				update_date         	= '" . $add_date . "' ,
+			// 																				update_by 	        	= '" . $_SESSION['username'] . "' ,
+			// 																				update_by_user_id   	= '" . $_SESSION['user_id'] . "' ,
+			// 																				update_ip 	        	= '" . $add_ip . "',
+			// 																				update_from_module_id	= '" . $module_id . "'
+			// 					WHERE id = '" . $update_id . "' 
+			// 					AND subscriber_users_id = '" . $subscriber_users_id . "' ";
+			// 		$db->query($conn, $sql);
+			// 	}
+			// }
+			
 
 			$parts_ids_array = array();
 			for ($k = 1; $k <= $total_parts; $k++) {
@@ -314,7 +361,10 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 			}
 		}
 	}
-}
+}*/
+
+
+
 if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 	if (!isset($ids_for_stock) || (isset($ids_for_stock) && sizeof($ids_for_stock) == 0)) {
 		$error['msg'] = "Select atleast one record";
@@ -656,12 +706,12 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2" value="Y" />
 							<div class="row">
-								<div class="input-field col m8 s12">
+								<div class="input-field col m6 s12">
 									<?php
 									$field_name 	= "stock_id";
 									$field_label 	= "Product";
 									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
-																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
+																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade,a1.battery_percentage
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
@@ -692,7 +742,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														} ?> - <?php echo $data2['product_uniqueid']; ?> - <?php echo $data2['serial_no']; ?>
 														-> Body: <?php echo $data2['body_grade']; ?>,
 														LCD: <?php echo $data2['lcd_grade']; ?>,
-														Digitizer: <?php echo $data2['digitizer_grade']; ?>,
+														Digitizer: <?php echo $data2['digitizer_grade']; ?>, 
+														Battery: <?php echo $data2['battery_percentage']."%"; ?>,
 														Overall Grade: <?php echo $data2['stock_grade']; ?>
 													</option>
 											<?php }
@@ -782,14 +833,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 											</span>
 										</label>
 									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="input-field col m4 s12"></div>
-							</div>
-							<div class="row">
-								<div class="input-field col m3 s12"></div>
-								<div class="input-field col m4 s12">
+								</div> 
+								<div class="input-field col m2 s12">
 									<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
 										<button class="btn purple waves-effect waves-light right" type="submit" name="action" value="update_info">Update Info
 											<i class="material-icons right">send</i>
@@ -828,14 +873,14 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<?php } ?>
 						<h4 class="card-title"><?php echo $title_heading2; ?></h4><br>
 						<form method="post" autocomplete="off" action="">
-							<input type="hidden" name="is_Submit2_2" value="Y" />
+							<input type="hidden" name="is_Submit2_1" value="Y" />
 							<div class="row">
 								<div class="input-field col m8 s12">
 									<?php
 									$field_name 	= "stock_id";
 									$field_label 	= "Product";
 									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
-																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade
+																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade, a1.battery_percentage
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
@@ -860,7 +905,6 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 												$row1	= $db->fetch($result1);
 												foreach ($row1 as $data2) { ?>
 													<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?>
-
 														<?php
 														if ($data2['category_name'] != "") {
 															echo " (" . $data2['category_name'] . ") ";
@@ -868,8 +912,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														-> Body: <?php echo $data2['body_grade']; ?>,
 														LCD: <?php echo $data2['lcd_grade']; ?>,
 														Digitizer: <?php echo $data2['digitizer_grade']; ?>,
+														Battery: <?php echo $data2['battery_percentage']."%"; ?>,
 														Overall Grade: <?php echo $data2['stock_grade']; ?>
-
 												<?php }
 											} ?>
 										</select>
@@ -1009,7 +1053,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								<div class="input-field col m3 s12"></div>
 								<div class="input-field col m4 s12">
 									<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-										<button class="btn cyan waves-effect waves-light right" type="submit" value="move_finale" name="action">Process to Finale
+										<button class="btn cyan waves-effect waves-light right" type="submit" value="move_finale" name="action">Add
 											<i class="material-icons right">send</i>
 										</button>
 									<?php } ?>
@@ -1021,6 +1065,156 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 					?>
 				</div>
 			</div>
+			<?php
+			$sql_cl1 = "	SELECT a.* ,a2.product_uniqueid, a2.product_desc, b.category_name, 
+									a1.id, a1.serial_no, a1.price, a1.device_processing_parts_price, a1.processed_date, a1.finale_condition, 
+									a1.finale_product_unique_id, a1.price_finale, a1.is_move_finale, a1.is_processed
+							FROM stock_for_process a 
+							INNER JOIN product_stock a1 ON a1.id = a.stock_id
+ 							INNER JOIN products a2 ON a2.id = a1.product_id
+							INNER JOIN product_categories b ON b.id = a2.product_category
+							ORDER BY a.id , b.category_name, a2.product_uniqueid";
+			// echo $sql_cl;
+			$result_cl1	= $db->query($conn, $sql_cl1);
+			$count_cl1	= $db->counter($result_cl1);
+			if ($count_cl1 > 0) { ?>
+				<div class="col s12">
+					<form method="post">
+						<input type="hidden" name="is_Submit2_2" value="Y" />
+						<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																			echo encrypt($_SESSION['csrf_session']);
+																		} ?>">
+						<div class="section section-data-tables">
+							<!-- Page Length Options -->
+							<div class="row">
+								<div class="col s12">
+									<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+										<div class="card-content custom_padding_card_content_table_top">
+											<h4 class="card-title">Process Products</h4><br>
+											<div class="row">
+												<div class="col s12">
+													<table id="page-length-option" class="display pagelength50_2">
+														<thead>
+															<tr>
+																<th class="sno_width_60">S.No
+																	<?php
+																	//if (po_permisions("Move to Finale") == 1) { ?>
+																		<label>
+																			<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+																																										echo "checked";
+																																									} ?> />
+																			<span></span>
+																		</label>
+																	<?php //} ?>
+																</th>
+																<?php
+																$headings = '	
+																				<th>Product ID / Product Detail</th> 
+																				<th>Serial#</th>
+																				<th>Custom Product Id</th>
+																				<th>Finale Condition</th>
+																				';
+																echo $headings;
+																for ($k = 1; $k <= 3; $k++) {?>
+																		<th>Packaging Material / Part <?php echo $k;?></th>
+																<?php }
+																?>
+															</tr>
+														</thead>
+														<tbody>
+															<?php
+															$i = 0;
+															if ($count_cl1 > 0) {
+																$row_cl1 = $db->fetch($result_cl1);
+																foreach ($row_cl1 as $data) {
+																	$detail_id2						= $data['id'];
+																	$price 							= $data['price']; 
+																	$package_ids 					= $data['package_ids'];?>
+																	<tr>
+																		<td>
+																			<?php echo $i + 1;
+																			//if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
+																				<label style="margin-left: 25px;">
+																					<input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" <?php
+																																													if (isset($ids_for_stock) && in_array($detail_id2, $ids_for_stock)) {
+																																														echo "checked";
+																																													} ?> class="checkbox filled-in" />
+																					<span></span>
+																				</label>
+																			<?php //} ?>
+																		</td>
+																		<td>
+																			<?php echo $data['product_uniqueid']; ?>
+																			<?php
+																			echo ucwords(strtolower($data['product_desc']));
+																			if ($data['category_name'] != "") {
+																				echo "(" . $data['category_name'] . ")";
+																			} ?>
+																		</td>
+																		<td><?php echo $data['serial_no']; ?></td>
+																		<td><?php echo $data['custom_product_id']; ?></td>
+																		<td><?php echo $data['finale_condition']; ?></td>
+																		<?php 
+																		$package_ids_array = explode(',', $package_ids);
+																		
+																		for ($k = 0; $k < count($package_ids_array); $k++) { 
+																			$sql_p = "SELECT * FROM packages WHERE id = '".$package_ids_array[$k]."' ";
+																			$result_p	= $db->query($conn, $sql_p);
+																			$count_p	= $db->counter($result_p);
+																			if ($count_p > 0) {
+																				$row_p = $db->fetch($result_p);
+																			?>
+																			<td><?php echo $row_p[0]['package_name']?></td>
+																			<?php
+																			}else{
+																			?>
+																			<td></td>
+																			<?php
+																			}
+																		?>
+
+																		<?php 
+																		}
+																		?>
+																	</tr>
+															<?php $i++;
+																}
+															} ?>
+														<tfoot>
+															<tr>
+																<th class="sno_width_60">S.No</th>
+																<?php echo $headings; 
+																for ($k = 1; $k <= 3; $k++) {?>
+																		<th>Packaging Material / Part <?php echo $k;?></th>
+																<?php }
+																?>
+															</tr>
+														</tfoot>
+													</table>
+												</div>
+											</div>
+											<?php
+											if (po_permisions("Move to Finale") == 1) { ?>
+												<div class="row">
+													<div class="input-field col m4 s12">
+														<?php if (isset($id) && $id > 0) { ?>
+															<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Process Finale</button>
+														<?php } ?>
+													</div>
+												</div>
+											<?php } ?>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!-- Multi Select -->
+						</div><!-- START RIGHT SIDEBAR NAV -->
+						
+					</form>
+					<?php include('sub_files/right_sidebar.php'); ?>
+				</div>
+			<?php }
+			?>
 			<?php
 			$sql_cl		= "	SELECT a.product_uniqueid, a.product_desc, b.category_name, 
 									a1.id, a1.serial_no, a1.price, a1.device_processing_parts_price, a1.processed_date, a1.finale_condition, 
@@ -1043,7 +1237,6 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 			$count_cl	= $db->counter($result_cl);
 			if ($count_cl > 0) { ?>
 				<div class="col s12">
-					<div class="container">
 						<form method="post">
 							<input type="hidden" name="is_Submit3" value="Y" />
 							<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -1051,7 +1244,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																			} ?>">
 							<div class="section section-data-tables">
 								<!-- Page Length Options -->
-								<h4 class="card-title">Processed Products</h4>
+								
 								<div class="row">
 									<div class="col m6 s12">
 									</div>
@@ -1061,8 +1254,9 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 								</div>
 								<div class="row">
 									<div class="col s12">
-										<div class="card">
-											<div class="card-content">
+										<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+											<div class="card-content custom_padding_card_content_table_top">
+											<h4 class="card-title">Processed Products</h4>
 												<?php
 												if (isset($error3['msg'])) { ?>
 													<div class="card-alert card red lighten-5">
@@ -1215,9 +1409,6 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 							<?php } ?>
 						</form>
 						<?php include('sub_files/right_sidebar.php'); ?>
-					</div>
-
-					<div class="content-overlay"></div>
 				</div>
 		<?php }
 		} ?>

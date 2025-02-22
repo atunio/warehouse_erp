@@ -117,21 +117,34 @@ $page_heading 	= "List of Vendors";
 									</div>
 								<?php } ?>
 								<br>
-
+								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('SNo', 'Vendor ID','Vendor Name','Phone','Address','Type','Note About Vendor','Unpaid Balance','Actions');
+										$k 				= 0;
+										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>	
 								<table id="page-length-option" class="display pagelength50_3">
 									<thead>
 										<tr>
-
 											<?php
-											$headings = '<th class="sno_width_60">S.No</th>
-														<th>Vendor ID</th>
-														<th>Vendor Name</th>
-														<th>Phone</th>
-														<th>Address</th>
-														<th>Type</th>
-														<th>Note About Vendor</th>
-														<th>Unpaid Balance</th>
-														<th>Action</th>';
+											$headings = "";
+											foreach($table_columns as $data_c){
+												if($data_c == 'SNo'){
+													$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+												}
+												else{
+													$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+												}
+											} 
 											echo $headings;
 											?>
 										</tr>
@@ -144,11 +157,11 @@ $page_heading 	= "List of Vendors";
 											foreach ($row_cl as $data) {
 												$id = $data['id'];  ?>
 												<tr>
-													<td style="text-align: center;"><?php echo $i + 1; ?></td>
-													<td><?php echo $data['vender_no']; ?></td>
-													<td><?php if ($data['vender_name'] != "") echo ucwords(strtolower($data['vender_name'])); ?></td>
-													<td><?php echo $data['phone_no']; ?></td>
-													<td>
+													<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['vender_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php if ($data['vender_name'] != "") echo ucwords(strtolower($data['vender_name'])); ?></td>
+													<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['phone_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[4]);?>">
 														<?php
 														if ($data['address'] != '') {
 															$address = $data['address'];
@@ -158,8 +171,8 @@ $page_heading 	= "List of Vendors";
 															}
 														}  ?>
 													</td>
-													<td><?php if ($data['type_name'] != "") echo ucwords(strtolower($data['type_name'])); ?></td>
-													<td>
+													<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php if ($data['type_name'] != "") echo ucwords(strtolower($data['type_name'])); ?></td>
+													<td class="col-<?= set_table_headings($table_columns[6]);?>">
 														<?php
 														$note_about_vender = $data['note_about_vender'];
 														if ($note_about_vender != '') {
@@ -169,8 +182,8 @@ $page_heading 	= "List of Vendors";
 															}
 														} ?>
 													</td>
-													<td><?php echo number_format($data['credit_balance'], 2); ?></td>
-													<td class="text-align-center">
+													<td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo number_format($data['credit_balance'], 2); ?></td>
+													<td class="text-align-center col-<?= set_table_headings($table_columns[8]);?>">
 														<?php
 														if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 															<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">

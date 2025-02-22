@@ -59,30 +59,29 @@ $page_heading 	= "List PO For RMA ";
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		<div class="breadcrumbs-dark pb-0" id="breadcrumbs-wrapper">
-			<!-- Search for small screen-->
-			<div class="container">
-				<div class="row">
-					<div class="col m8 l8">
-						<h5 class="breadcrumbs-title mt-0 mb-0"><span><?php echo $page_heading; ?></span></h5>
-						<ol class="breadcrumbs mb-0">
-							<li class="breadcrumb-item"><a href="home">Home</a>
-							</li>
-							</li>
-							<li class="breadcrumb-item active">List</li>
-						</ol>
-					</div>
-				</div>
-			</div>
-		</div>
 		<div class="col s12">
 			<div class="container">
 				<div class="section section-data-tables">
+					<div class="row">
+						<div class="col s12">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top_bottom">
+									<div class="row">
+										<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+											<h6 class="media-heading">
+												<?php echo $page_heading; ?>
+											</h6>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<!-- Page Length Options -->
 					<div class="row">
 						<div class="col s12">
-							<div class="card">
-								<div class="card-content">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
 									<?php
 									if (isset($error['msg'])) { ?>
 										<div class="row">
@@ -110,24 +109,37 @@ $page_heading 	= "List PO For RMA ";
 												</div>
 											</div>
 										</div>
-									<?php } ?>
-									<h4 class="card-title"><?php echo $page_heading; ?></h4>
+									<?php } ?><br>
+									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'PO No / PO Date', 'Vendor / InvoiceNo',  'Product ID',  'SeriaLNo', 'RMA Grade', 'RMA Status');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
 									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>
-																		PO No</br>
-																		PO Date
-																	</th>
-  																	<th>Vendor / Invoice#</th>
-																	<th>Product ID</th>
-																	<th>SeriaL#</th>
-																	<th>RMA Grade</th> 
-																	<th>RMA Status</th>';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -140,8 +152,8 @@ $page_heading 	= "List PO For RMA ";
 														foreach ($row_cl as $data) {
 															$id	= $data['po_id'];   ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 																		<?php echo $data['po_no']; ?>
 																	</a>
@@ -149,20 +161,20 @@ $page_heading 	= "List PO For RMA ";
 																	<?php echo dateformat2($data['po_date']); ?>
 																	<br>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>">
 																	<?php echo $data['vender_name']; ?></br>
 																	<?php echo $data['vender_invoice_no']; ?>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[3]);?>">
 																	<?php echo $data['product_uniqueid']; ?></br>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>">
 																	<?php echo $data['serial_no_barcode']; ?></br>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[5]);?>">
 																	Grade: <?php echo $data['overall_grade']; ?>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[6]);?>">
 																	<span class="chip green lighten-5">
 																		<span class="green-text">
 																			<?php echo $data['status_name'];  ?>

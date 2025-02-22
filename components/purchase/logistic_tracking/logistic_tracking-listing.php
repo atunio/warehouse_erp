@@ -245,21 +245,36 @@ $page_heading 	= "Logistics ";
 										</div>
 									</form>
 									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'PO Type','PO No','PO Date','Vendor Name','Vendor Invoice No','Tracking No');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
+									<div class="row">
 										<div class="col s12">
 											<table id="page-length-option" class="display pagelength50">
 												<thead>
-													<tr>
-														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>PO Type</th>
-																	<th>PO#</th>
-																	<th>PO Date</th>
-  																	<th>Vendor Name</th>
-  																	<th>Vendor Invoice#</th>
- 																	<th>Tracking#</th>';
-														echo $headings;
-														?>
-													</tr>
+													<?php
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
+													echo $headings;
+													?>
 												</thead>
 												<tbody>
 													<?php
@@ -283,13 +298,13 @@ $page_heading 	= "Logistics ";
 															}
 															$active_tab = "tab3"; ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td> <?php echo $data['logistic_for']; ?></td>
-																<td><?php echo $data['po_no']; ?></td>
-																<td> <?php echo dateformat2($data['po_date']); ?></td>
-																<td><?php echo $data['vender_name']; ?></td>
-																<td><?php echo $data['vender_invoice_no']; ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>"> <?php echo $data['logistic_for']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['po_no']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]);?>"> <?php echo dateformat2($data['po_date']); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['vender_name']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['vender_invoice_no']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[6]);?>">
 																	<?php
 																	if ($logistic_module_id > 0) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module_id=" . $logistic_module_id . "&page=profile&cmd=edit&cmd3=add&active_tab=" . $active_tab . "&id=" . $id . $detail_id2) ?>">

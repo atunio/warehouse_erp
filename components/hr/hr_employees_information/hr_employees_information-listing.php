@@ -51,18 +51,37 @@ $page_heading = "Employees"; ?>
 							<div class="card-content custom_padding_card_content_table_top">
 								<br>
 								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('SNo', 'Emp ID','Emp Code','Full Name / Parent Name','Gender / Date Of Birth','Phone Number / Email','Status','Actions');
+										$k 				= 0;
+										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>
+								<div class="row">
 									<div class="col s12">
 										<table id="page-length-option" class="display pagelength50_3">
 											<thead>
 												<tr>
-													<th width="5%">S.No</th>
-													<th>Emp ID</th>
-													<th>Emp Code</th>
-													<th>Full Name<br>Parent Name</th>
-													<th>Gender<br>Date Of Birth</th>
-													<th>Phone Number<br>Email</th>
-													<th>Status</th>
-													<th>Actions</th>
+													<?php
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th width="5%" class="col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
+													echo $headings;
+													?>
 												</tr>
 											</thead>
 											<tbody>
@@ -73,13 +92,13 @@ $page_heading = "Employees"; ?>
 													foreach ($row_cl as $data) {
 														$id	= $data['id']; ?>
 														<tr data-id="<?php echo $id; ?>">
-															<td><?php echo $i + 1; ?></td>
-															<td><?php echo $id; ?></td>
-															<td><?php echo $data['emp_code']; ?></td>
-															<td><?php echo $data['e_full_name']; ?><br><?php echo $data['parent_name']; ?></td>
-															<td><?php echo $data['e_gender']; ?><br><?php echo dateformat2($data['e_birth_date']); ?></td>
-															<td><?php echo $data['e_phone']; ?><br><?php echo $data['e_email']; ?></td>
-															<td>
+															<td class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $id; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['emp_code']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['e_full_name']; ?><br><?php echo $data['parent_name']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['e_gender']; ?><br><?php echo dateformat2($data['e_birth_date']); ?></td>
+															<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['e_phone']; ?><br><?php echo $data['e_email']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[6]);?>">
 																<?php
 																if ($data['emp_status'] == 'Active') { ?>
 																	<span class="chip green lighten-5">
@@ -89,7 +108,7 @@ $page_heading = "Employees"; ?>
 																	<span class="chip red lighten-5"><span class="red-text"><?php echo $data['emp_status']; ?></span></span>
 																<?php } ?>
 															</td>
-															<td class="text-align-center">
+															<td class="text-align-center col-<?= set_table_headings($table_columns[7]);?>">
 																<a href="javascript:void(0)" class="<?php if ($data['enabled'] == '1') { ?>green-text<?php } else { ?>red-text<?php } ?>" onclick="change_status(this,'<?php echo $id ?>')"><?php echo ($data['enabled'] == '1') ? 'Enable' : 'Disable'; ?></a>
 																&nbsp;&nbsp;
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add_edit&cmd=edit&active_tab=tab1&id=" . $data['id']) ?>">
@@ -111,16 +130,9 @@ $page_heading = "Employees"; ?>
 													}
 												} ?>
 											<tfoot>
-												<tr>
-													<th width="5%">S.No</th>
-													<th>ID</th>
-													<th>Employment Code</th>
-													<th>Full Name<br>Parent Name<br>Gender</th>
-													<th>Date Of Birth</th>
-													<th>Phone Number<br>Email</th>
-													<th>Status</th>
-													<th>Actions</th>
-												</tr>
+													<tr>
+														<?php echo $headings; ?>
+													</tr>
 											</tfoot>
 										</table>
 									</div>

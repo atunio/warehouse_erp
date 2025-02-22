@@ -80,13 +80,37 @@ $page_heading = "Departments";
 							<div class="card-content custom_padding_card_content_table_top">
 								<br>
 								<div class="row">
+									<div class="text_align_right">
+										<?php 
+										$table_columns	= array('SNo', 'Department Name','Actions');
+										$k 				= 0;
+										foreach($table_columns as $data_c1){?>
+											<label>
+												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+												<span><?= $data_c1?></span>
+											</label>&nbsp;&nbsp;
+										<?php 
+											$k++;
+										}?> 
+									</div>
+								</div>
+								<div class="row">
 									<div class="col s12">
 										<table id="page-length-option" class="display pagelength50_3">
 											<thead>
 												<tr>
-													<th width="5%">ID</th>
-													<th>Department Name</th>
-													<th>Actions</th>
+													<?php
+													$headings = "";
+													foreach($table_columns as $data_c){
+														if($data_c == 'SNo'){
+															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														}
+														else{
+															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+														}
+													} 
+													echo $headings;
+													?>
 												</tr>
 											</thead>
 											<tbody>
@@ -98,9 +122,9 @@ $page_heading = "Departments";
 														$id 		  = $data['id'];
 														$department_name = $data['department_name']; ?>
 														<tr data-id="<?php echo $id; ?>">
-															<td><?php echo $i + 1; ?></td>
-															<td><?php echo $data['department_name']; ?></td>
-															<td class="text-align-center">
+															<td class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['department_name']; ?></td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[2]);?>">
 																<?php
 																if ($data['enabled'] == 1 && access("edit_perm") == 1) { ?>
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
@@ -123,9 +147,7 @@ $page_heading = "Departments";
 												} ?>
 											<tfoot>
 												<tr>
-													<th width="5%">ID</th>
-													<th>Department Name</th>
-													<th>Actions</th>
+												<?php echo $headings; ?>
 												</tr>
 											</tfoot>
 										</table>

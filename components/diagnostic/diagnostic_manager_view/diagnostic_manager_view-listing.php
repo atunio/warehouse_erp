@@ -249,18 +249,36 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 											</div>
 										</div>
 									</form>
-
+									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Location / Bin','Details','Total Qty','Assign User');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
 									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display">
+											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Location / Bin</th>  
-																	<th class="text_align_center">Details</th>  
-																	<th class="text_align_center">Total Qty</th>
-																	<th class="text_align_center" style="width: 300px;">Assign User</th> ';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="text_align_center col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -274,8 +292,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 															$id = $data['sub_location'];
 													?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=bin_detail&cmd=edit&id=" . $id) ?>">
 																		<?php
 																		echo $data['sub_location_name'];
@@ -284,7 +302,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																		} ?>
 																	</a>
 																</td>
-																<td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>">
 																	<?php
 																	$total_qty = 0;
 																	$sql_cl3 = "SELECT COUNT(*) AS qty, a3.category_name  
@@ -311,8 +329,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																		}
 																	} ?>
 																</td>
-																<td class="text_align_center"><?php echo $total_qty; ?></td>
-																<td>
+																<td class="text_align_center col-<?= set_table_headings($table_columns[3]);?>"><?php echo $total_qty; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>">
 																	<div class="input-field col m12 s12">
 																		<div class="select2div">
 																			<?php

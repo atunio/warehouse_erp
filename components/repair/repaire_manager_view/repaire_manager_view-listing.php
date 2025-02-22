@@ -246,20 +246,39 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 											</div>
 										</div>
 									</form>
-
+									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Location / Bin','Details','Total Qty','Assign User');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
 									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display">
+											<table id="page-length-option" class="display pagelength50_3">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Location / Bin</th>  
-																	<th class="text_align_center">Details</th>  
-																	<th class="text_align_center">Total Qty</th>
-																	<th class="text_align_center" style="width: 300px;">Assign User</th> ';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
+														
 													</tr>
 												</thead>
 												<tbody>
@@ -299,13 +318,13 @@ $page_heading 	= "List of Bins For Repair ( Manager View)";
 																		$row_cl3 = $db->fetch($result_cl3);
 																		foreach ($row_cl3 as $data3) {
 																			$total_qty += $data3['qty']; ?>
-																			<div class="col m8 s12" style="text-align: right;"><b></b><?= $data3['category_name']; ?></div>
-																			<div class="col m4 s12"><b>Qty: </b><?= $data3['qty']; ?></div>
+																			<div class="col m8 s12" ><b></b><?= $data3['category_name']; ?></div>
+																			<div class="col m4 s12" style="text-align:left;"><b>Qty: </b><?= $data3['qty']; ?></div>
 																	<?php
 																		}
 																	} ?>
 																</td>
-																<td class="text_align_center"><?php echo $total_qty; ?></td>
+																<td class=""><?php echo $total_qty; ?></td>
 																<td>
 																	<div class="input-field col m12 s12">
 																		<div class="select2div">

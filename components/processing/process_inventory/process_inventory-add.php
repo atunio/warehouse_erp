@@ -1091,19 +1091,38 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																		} ?>">
 						<div class="section section-data-tables">
 							<!-- Page Length Options -->
-
-							<div class="row">
-								<div class="col m6 s12">
-								</div>
-								<div class="col m3 s12">
-									<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-amber-amber box-shadow-none border-round mr-1 mb-1">Export Processed Data in Excel</a>
-								</div>
-							</div>
 							<div class="row">
 								<div class="col s12">
 									<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
 										<div class="card-content custom_padding_card_content_table_top">
-											<h4 class="card-title">Processed Products</h4>
+											<div class="row">
+												<div class="col m2 s12">
+													<h4 class="card-title">Processed Products</h4>
+												</div>
+												<div class="col m8 s12">
+													
+												</div>
+												<div class="col m2 s12">
+													<div class="text_align_right">
+														<a href="export/export_processed_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="waves-effect waves-light  btn gradient-45deg-amber-amber box-shadow-none border-round mr-1 mb-1">Export Processed Data in Excel</a>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="text_align_right">
+													<?php 
+													$table_columns	= array('SNo', 'Product ID / Product Detail', 'Serial No', 'Finale ProductID / Processed Date', 'Finale Grade','Parts / Package / Materials','Price','Labor Cost','Parts / Package / Materials Cost','Final Price');
+													$k 				= 0;
+													foreach($table_columns as $data_c1){?>
+														<label>
+															<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+															<span><?= $data_c1?></span>
+														</label>&nbsp;&nbsp;
+													<?php 
+														$k++;
+													}?> 
+												</div>
+											</div>
 											<?php
 											if (isset($error3['msg'])) { ?>
 												<div class="card-alert card red lighten-5">
@@ -1129,28 +1148,30 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 													<table id="page-length-option" class="display pagelength50_2">
 														<thead>
 															<tr>
-																<th class="sno_width_60">S.No
-																	<?php
-																	if (po_permisions("Move to Finale") == 1) { ?>
-																		<label>
-																			<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
-																																										echo "checked";
-																																									} ?> />
-																			<span></span>
-																		</label>
-																	<?php } ?>
-																</th>
+																
 																<?php
-																$headings = '	
-																					<th>Product ID</br>Product Detail</th> 
-																					<th>Serial#</th>
-																					<th>Finale ProductID /<br>Processed Date</th>
-																					<th>Finale Grade</th>
-																					<th>Parts / Package /<br> Materials</th>
-																					<th>Price</th>
-																					<th>Labor Cost</th>
-																					<th>Parts/Package /<br> Materials Cost</th>
-																					<th>Final Price</th>';
+																
+																$headings = "";
+																foreach($table_columns as $data_c){
+																	if($data_c == 'SNo'){ ?>
+																		
+																		<th class="sno_width_60 col-sno">SNo
+																			<?php
+																			if (po_permisions("Move to Finale") == 1) { ?>
+																				<label>
+																					<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+																																												echo "checked";
+																																											} ?> />
+																					<span></span>
+																				</label>
+																			<?php } ?>
+																		</th>
+																	<?php
+																	}
+																	else{
+																		$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+																	}
+																} 
 																echo $headings;
 																?>
 															</tr>
@@ -1168,7 +1189,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																	$total_price					= $data['price_finale'];
 																	$is_processed					= $data['is_processed']; ?>
 																	<tr>
-																		<td>
+																		<td class="col-<?= set_table_headings($table_columns[0]);?>">
 																			<?php echo $i + 1;
 																			if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
 																				<label style="margin-left: 25px;">
@@ -1180,7 +1201,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				</label>
 																			<?php } ?>
 																		</td>
-																		<td>
+																		<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																			<?php echo $data['product_uniqueid']; ?></br>
 																			<?php
 																			echo ucwords(strtolower($data['product_desc']));
@@ -1188,19 +1209,19 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				echo "(" . $data['category_name'] . ")";
 																			} ?>
 																		</td>
-																		<td><?php echo $data['serial_no']; ?></td>
-																		<td>
+																		<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['serial_no']; ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[3]);?>">
 																			<?php echo $data['finale_product_unique_id']; ?>
 																			<br>
 																			<?php echo dateformat1_with_time($data['processed_date']); ?>
 																		</td>
-																		<td>
+																		<td class="col-<?= set_table_headings($table_columns[4]);?>">
 																			<?php echo $data['finale_condition']; ?> &nbsp;&nbsp;
 																			<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
 																				<i class="material-icons dp48">print</i>
 																			</a>
 																		</td>
-																		<td>
+																		<td class="col-<?= set_table_headings($table_columns[5]);?>">
 																			<?php
 																			$m = 1;
 																			if ($data['package_name1'] != '') {
@@ -1216,44 +1237,42 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				$m++;
 																			} ?>
 																		</td>
-																		<td><?php echo number_format($price, 2); ?></td>
-																		<td><?php echo number_format($device_processing_labor, 2); ?></td>
-																		<td><?php echo number_format(($device_processing_parts_price), 2); ?></td>
-																		<td><?php echo number_format(($total_price), 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo number_format($price, 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo number_format($device_processing_labor, 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[8]);?>"><?php echo number_format(($device_processing_parts_price), 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[9]);?>"><?php echo number_format(($total_price), 2); ?></td>
 																	</tr>
 															<?php $i++;
 																}
 															} ?>
 														<tfoot>
 															<tr>
-																<th class="sno_width_60">S.No</th>
+																<th class="sno_width_60 col-sno">SNo</th>
 																<?php echo $headings; ?>
 															</tr>
 														</tfoot>
 													</table>
 												</div>
 											</div>
+											<?php
+											if (po_permisions("Move to Finale") == 1) { ?>
+												<div class="row">
+													<div class="input-field col m5 s12"></div>
+													<div class="input-field col m4 s12">
+														<?php if (isset($id) && $id > 0) { ?>
+															<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Move PO to Finale</button>
+														<?php } ?>
+													</div>
+													<div class="input-field col m4 s12"></div>
+												</div>
+											<?php } ?>
 										</div>
 									</div>
 								</div>
 							</div>
 							<!-- Multi Select -->
 						</div><!-- START RIGHT SIDEBAR NAV -->
-						<?php
-						if (po_permisions("Move to Finale") == 1) { ?>
-							<div class="row">
-								<div class="input-field col m4 s12"></div>
-								<div class="input-field col m4 s12">
-									<?php if (isset($id) && $id > 0) { ?>
-										<button class="waves-effect waves-light  btn gradient-45deg-purple-deep-orange box-shadow-none border-round mr-1 mb-1" type="submit" name="add">Move PO to Finale</button>
-									<?php } ?>
-								</div>
-								<div class="input-field col m4 s12"></div>
-							</div>
-							<div class="row">
-								<div class="input-field col m12 s12"></div>
-							</div>
-						<?php } ?>
+						
 					</form>
 					<?php include('sub_files/right_sidebar.php'); ?>
 				</div>

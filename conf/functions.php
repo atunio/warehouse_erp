@@ -1785,17 +1785,18 @@ function addSetupInFinale($baseUrl, $setupName, $finaleFieldName, $finaleFieldID
 	// Base URL for the API
 	$baseUrl = "https://app.finaleinventory.com" . $baseUrl; // Replace 'cti' with your actual accountPathComponent
 	// Fetch all party groups
-	$response = sendPostRequestFinale($baseUrl, 'GET');
+	$response = sendPostRequestFinale($baseUrl, null, 'GET');
+	// print_r($response);
 	if ($response && is_array($response)) {
 		// Find the index of the target groupName
 		$index = array_search($setupName, $response[$finaleFieldName]);
 		if ($index !== false && isset($response[$finaleFieldID][$index])) {
-			$id = $response[$finaleFieldID][$index];
+			return $id = $response[$finaleFieldID][$index];
 			// echo "Already! " . $finaleFieldName . ": " . $setupName . ", " . $finaleFieldID . ": " . $id;
 		} else {
 			///////////////////////////// Suppplier ////////////////////////////////////////////////////////////////////////////////////////////
 			$apiUrl = $baseUrl;
-			$response = sendPostRequestFinale($apiUrl, $data);
+			$response = sendPostRequestFinale($apiUrl, $data, "POST");
 			if (isset($response[$finaleFieldID]) && $response[$finaleFieldID] != "") {
 				$id = $response[$finaleFieldID];
 				return $id;

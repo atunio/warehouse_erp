@@ -64,8 +64,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					LEFT JOIN inventory_status c ON c.id = a2.p_inventory_status
 					LEFT JOIN warehouse_sub_locations d ON d.id = a2.sub_location
 					LEFT JOIN purchase_order_detail_receive d2 ON d2.id = a2.receive_id
-					LEFT JOIN purchase_order_detail d3 ON d3.id = d2.po_detail_id
-					LEFT JOIN purchase_orders d4 ON d4.id = d3.po_id
+ 					LEFT JOIN purchase_orders d4 ON d4.id = d2.po_id
 					LEFT JOIN venders d5 ON d5.id = d4.vender_id
 					LEFT JOIN vender_types d6 ON d6.id = d5.vender_type
 					WHERE 1=1  

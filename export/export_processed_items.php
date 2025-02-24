@@ -63,8 +63,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					LEFT JOIN packages d ON d.id = package_id2
 					LEFT JOIN packages e ON e.id = package_id3
 					INNER JOIN purchase_order_detail_receive  f ON f.id = a1.receive_id
-					INNER JOIN purchase_order_detail  g ON g.id = f.po_detail_id
-					INNER JOIN purchase_orders  h ON h.id = g.po_id
+ 					INNER JOIN purchase_orders  h ON h.id = f.po_id
 					WHERE a.enabled 		= 1
 					AND a1.is_move_finale 	= 1
 					AND a1.sub_location 	= '" . $id . "'

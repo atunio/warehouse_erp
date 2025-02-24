@@ -1659,7 +1659,7 @@ insert  into `menus`(`id`,`menu_name`,`module_folder`,`folder_name`,`m_level`,`s
 (63,'Logistic Tracking','purchase','logistic_tracking',2,4,15,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (64,'Setups','','',2,2,61,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (65,'Stores','return_management/setups','stores',3,1,64,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
-(66,'Formula Labor Cost','setups','formula_labor_cost',3,1,38,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,0),
+(66,'Formula Labor Cost','setups','formula_labor_cost',3,1,38,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (67,'Timesheets','hr/timesheets','timesheets',2,1,24,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1),
 (68,'Time Off','hr','timeoff',2,1,24,1,1,'radio_button_unchecked','listing','nav-expanded',NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,0,1);
 
@@ -1965,9 +1965,12 @@ CREATE TABLE `package_materials_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_orders` */
+
+insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`logistics_cost`,`sub_user_id`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'PPO1','20250214202520',1,0,'2025-02-14',NULL,NULL,NULL,1,0,0,0,'2025-02-14 20:25:22','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `package_stock` */
 
@@ -2275,7 +2278,7 @@ CREATE TABLE `product_categories` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_categories` */
 
@@ -2307,7 +2310,8 @@ insert  into `product_categories`(`id`,`subscriber_users_id`,`category_name`,`ca
 (25,1,'TV &amp; DVD','Device','2024-11-22 12:48:15','admin_albert',1,'::1','America/New_York',14,NULL,NULL,NULL,NULL,NULL,0,1),
 (26,1,'Desktops','Device','2024-11-22 12:48:19','admin_albert',1,'::1','America/New_York',14,NULL,NULL,NULL,NULL,NULL,0,1),
 (27,1,'All-In-One PC','Device','2024-11-22 12:48:25','admin_albert',1,'::1','America/New_York',14,NULL,NULL,NULL,NULL,NULL,0,1),
-(28,1,'abc c','Device','2025-01-29 17:57:19','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
+(28,1,'abc c','Device','2025-01-29 17:57:19','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(29,1,'Ipads','Device','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `product_grades` */
 
@@ -2363,7 +2367,7 @@ CREATE TABLE `product_ids` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_ids` */
 
@@ -2392,7 +2396,15 @@ insert  into `product_ids`(`id`,`subscriber_users_id`,`product_id`,`editable`,`a
 (25,1,'5eEERR33434',1,'2025-02-10 12:04:55','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
 (26,1,'123456Abc',1,'2025-02-10 12:05:04','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
 (27,1,'123456Abc12',1,'2025-02-10 12:05:08','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
-(28,1,'123456Abc122',1,'2025-02-10 12:05:11','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1);
+(28,1,'123456Abc122',1,'2025-02-10 12:05:11','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
+(29,1,'3434343434',1,'2025-02-19 21:49:13','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(30,1,'ADRER2001',1,'2025-02-19 21:49:41','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(31,1,'RERER',1,'2025-02-19 21:49:45','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(32,1,'ERERER',1,'2025-02-19 21:50:07','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(33,1,'RER',1,'2025-02-19 21:51:11','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(34,1,'sdfdgfgrete123',1,'2025-02-21 11:18:30','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(35,1,'sdfdgfgrete123345',1,'2025-02-21 11:19:01','admin_albert',NULL,'::1',NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
+(36,1,'dfdfdf',1,'2025-02-21 11:19:30','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `product_packages` */
 
@@ -2480,6 +2492,7 @@ CREATE TABLE `product_stock` (
   `bin_user_id` int(11) DEFAULT 0,
   `is_update_in_process` smallint(6) DEFAULT 0,
   `is_packed` smallint(6) DEFAULT 0,
+  `added_to_move_finale` smallint(1) DEFAULT 0,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
   `add_by_user_id` int(11) DEFAULT 0,
@@ -2498,28 +2511,28 @@ CREATE TABLE `product_stock` (
 
 /*Data for the table `product_stock` */
 
-insert  into `product_stock`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`return_receive_id`,`serial_no`,`stock_grade`,`model_no`,`finale_product_unique_id`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`finale_location_id`,`productUrl`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`price_finale`,`distributed_amount`,`is_final_pricing`,`stock_product_uniqueid`,`is_processed`,`processed_by_user_id`,`processed_by`,`processed_date`,`processed_ip`,`package_id1`,`package_id2`,`package_id3`,`finale_condition`,`device_processing_labor`,`device_processing_parts_price`,`is_move_finale`,`bin_user_id`,`is_update_in_process`,`is_packed`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,2987,8,0,'353204102994093','D','MW6W2LL/A',NULL,NULL,'95','','32GB','','',6,1,1737,0,NULL,'D','D','D','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(2,1,2987,9,0,'353204103484391','A','MW6W2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','A','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(3,1,2987,10,0,'353204105245956','C','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(4,1,2987,11,0,'353204105569306','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(5,1,2987,12,0,'353205101495867','A','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'A','A','A','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(6,1,2987,14,0,'353205101786307','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(7,1,2987,13,0,'353205102184841','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(8,1,2987,15,0,'353206101503023','B','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(9,1,2987,19,0,'353206105669283','B','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(10,1,2987,20,0,'353206106069954','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(11,1,2002,21,0,'DMPRCU1UG5VW','B','MGKL2LL/A',NULL,NULL,'84','','64GB','','',5,1,1737,0,NULL,'A','B','C','iPad Air 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(12,1,2989,1,0,'DMPWM0FBJF8J','C','MR7F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(13,1,2989,7,0,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(14,1,2989,2,0,'DMPWN06UJF8J','C','MR7F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(15,1,2989,3,0,'DMPWT3AKJF8J','D','MR7F2LL/A',NULL,NULL,'87','','32GB','','',6,1,1737,0,NULL,'D','D','D','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(16,1,2989,4,0,'DMPY3H7VJF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(17,1,2989,5,0,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(18,1,2989,6,0,'DMQX6NVDJF8J','C','MR7F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(19,1,2001,16,0,'F9FPNEZ9FCM6','C','ME277LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(20,1,2001,17,0,'F9FPNK36FCM6','C','ME277LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
-(21,1,2001,18,0,'F9FPNLLMFCM6','C','ME277LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1);
+insert  into `product_stock`(`id`,`subscriber_users_id`,`product_id`,`receive_id`,`return_receive_id`,`serial_no`,`stock_grade`,`model_no`,`finale_product_unique_id`,`cosmetic_grade`,`battery_percentage`,`ram_size`,`storage_size`,`processor_size`,`defects_or_notes`,`p_inventory_status`,`p_total_stock`,`sub_location`,`finale_location_id`,`productUrl`,`body_grade`,`lcd_grade`,`digitizer_grade`,`model_name`,`make_name`,`color_name`,`price`,`price_finale`,`distributed_amount`,`is_final_pricing`,`stock_product_uniqueid`,`is_processed`,`processed_by_user_id`,`processed_by`,`processed_date`,`processed_ip`,`package_id1`,`package_id2`,`package_id3`,`finale_condition`,`device_processing_labor`,`device_processing_parts_price`,`is_move_finale`,`bin_user_id`,`is_update_in_process`,`is_packed`,`added_to_move_finale`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,2987,8,0,'353204102994093','D','MW6W2LL/A',NULL,NULL,'95','','32GB','','',6,1,1737,0,NULL,'D','D','D','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(2,1,2987,9,0,'353204103484391','A','MW6W2LL/A',NULL,NULL,'96','','32GB','','',5,1,1737,0,NULL,'A','A','A','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(3,1,2987,10,0,'353204105245956','C','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(4,1,2987,11,0,'353204105569306','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(5,1,2987,12,0,'353205101495867','A','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'A','A','A','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(6,1,2987,14,0,'353205101786307','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(7,1,2987,13,0,'353205102184841','C','MW6W2LL/A',NULL,NULL,'99','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(8,1,2987,15,0,'353206101503023','B','MW6W2LL/A',NULL,NULL,'97','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(9,1,2987,19,0,'353206105669283','B','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','B','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(10,1,2987,20,0,'353206106069954','C','MW6W2LL/A',NULL,NULL,'94','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 10.2 (7th Gen)','Apple','Space Gray',200,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(11,1,2002,21,0,'DMPRCU1UG5VW','B','MGKL2LL/A','IPAD6-32C-20250224200235',NULL,'84','','64GB','','',5,1,1737,0,'/cti/api/product/15854','A','B','C','iPad Air 2','Apple','Space Gray',250,250,0,0,NULL,0,1,'admin_albert','2025-02-24 20:03:34','::1',0,0,0,'54',0,0,0,12,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-24 20:02:38','admin_albert',1,'::1',NULL,37,1),
+(12,1,2989,1,0,'DMPWM0FBJF8J','C','MR7F2LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'C','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(13,1,2989,7,0,'DMPWN034JF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(14,1,2989,2,0,'DMPWN06UJF8J','C','MR7F2LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(15,1,2989,3,0,'DMPWT3AKJF8J','D','MR7F2LL/A',NULL,NULL,'87','','32GB','','',6,1,1737,0,NULL,'D','D','D','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(16,1,2989,4,0,'DMPY3H7VJF8J','C','MR7F2LL/A',NULL,NULL,'100','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(17,1,2989,5,0,'DMPY94T1JF8J','C','MR7F2LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'A','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(18,1,2989,6,0,'DMQX6NVDJF8J','C','MR7F2LL/A',NULL,NULL,'90','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad 6th Gen','Apple','Space Gray',300,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(19,1,2001,16,0,'F9FPNEZ9FCM6','C','ME277LL/A',NULL,NULL,'95','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(20,1,2001,17,0,'F9FPNK36FCM6','C','ME277LL/A',NULL,NULL,'87','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1),
+(21,1,2001,18,0,'F9FPNLLMFCM6','C','ME277LL/A',NULL,NULL,'91','','32GB','','',5,1,1737,0,NULL,'B','A','C','iPad mini 2','Apple','Space Gray',250,0,0,0,NULL,0,0,NULL,NULL,NULL,0,0,0,NULL,NULL,NULL,0,0,0,0,0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,0,NULL,NULL,0,1);
 
 /*Table structure for table `products` */
 
@@ -2550,7 +2563,7 @@ CREATE TABLE `products` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2991 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3015 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `products` */
 
@@ -2561,7 +2574,31 @@ insert  into `products`(`id`,`subscriber_users_id`,`product_no`,`product_uniquei
 (2979,1,'P2979','IPAD6-32W-GY','Ipad 6th Gen 32GB Wifi Space Gray',28,0,0,NULL,'AKB20250129181750','2024-12-06 18:24:31','admin_albert',1,'::1','Asia/Karachi',11,'2025-01-29 18:17:59','admin_albert',1,'::1','Asia/Karachi',11,1),
 (2987,1,'P2987','IPAD5-32W-GY','xyz 20250210',1,0,0,NULL,'MW6W2LL/A','2025-02-10 17:41:38','admin_albert',1,'::1','Asia/Karachi',11,'2025-02-10 17:44:13','admin_albert',1,'::1','Asia/Karachi',11,1),
 (2989,1,'P2989','32W-GY','xyz 20250210',1,0,0,NULL,'MR7F2LL/A','2025-02-10 17:45:30','admin_albert',1,'::1','Asia/Karachi',11,'2025-02-11 11:52:07','admin_albert',1,'::1','Asia/Karachi',11,1),
-(2990,1,'P2990','32C-GY','xyz 20250211',1,0,0,NULL,'AKB20250211114833','2025-02-11 11:48:39','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
+(2990,1,'P2990','32C-GY','xyz 20250211',1,0,0,NULL,'AKB20250211114833','2025-02-11 11:48:39','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2991,1,'P2991','IPAD1-16W-GY','Apple Ipad 1 16GB Wifi Space Gray',29,0,0,NULL,'MD785LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2992,1,'P2992','IPAD2-16W-GY','Apple Ipad 2 16GB Wifi Black',29,0,0,NULL,'MC954LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2993,1,'P2993','IPAD3-16W-GY','Apple Ipad 3 16GB Wifi Black',29,0,0,NULL,'MC705LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2994,1,'P2994','IPAD4-16W-GY','Apple Ipad 4 16GB WiFi Black',29,0,0,NULL,'MD510LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2995,1,'P2995','IPAD4-16W-SLV','Apple Ipad 4 16GB Wifi White',29,0,0,NULL,'MD513LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2996,1,'P2996','IPAD5-128W-GY','Apple Ipad 5 128GB Wi-Fi Space Gray',29,0,0,NULL,'MP2H2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2997,1,'P2997','IPAD5-128W-SLV','Apple Ipad 5th. Gen - 9.7 Apple A9 Dual-Core 2GB RAM 128GB Storage - Only WIFI - Silver',29,0,0,NULL,'MP2J2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2998,1,'P2998','IPAD5-32C-GLD','Apple Ipad 5 32GB Wifi + Cellular Gold',29,0,0,NULL,'MPGA2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(2999,1,'P2999','IPAD5-32C-GY','Apple Ipad 5 32GB Wifi + Cellular Space Gray',29,0,0,NULL,'MP242LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3000,1,'P3000','IPAD5-32W-SLV','Apple iPad 5 32GB Wi-Fi Silver',29,0,0,NULL,'MP2G2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3001,1,'P3001','IPAD6-128W-GY','Apple Ipad 6th Generation 128GB Space Grey WiFi',29,0,0,NULL,'MR7J2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3002,1,'P3002','IPAD6-128W-RG','Apple Ipad 6 128GB Wi-Fi Rose Gold',29,0,0,NULL,'MRJP2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3003,1,'P3003','IPAD6-128W-SLV','Apple Ipad 6 128GB Wifi Silver',29,0,0,NULL,'MP2J2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3004,1,'P3004','IPAD6-32W-SLV','Apple Ipad 6th Generation 32GB Silver Wifi',29,0,0,NULL,'MR7G2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3005,1,'P3005','IPAD7-128C-GY','Apple Ipad 7 128GB Wifi + Cellular Space Gray',29,0,0,NULL,'MW702LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3006,1,'P3006','IPAD7-128W-GY','Apple Ipad 7 Generation 128GB Wifi Gray',29,0,0,NULL,'MP2H2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3007,1,'P3007','IPAD7-32W-GLD','Apple Ipad 7th. Gen - 10.2 Apple A10 Fusion Quad-Core 32GB SSD - Only WIFI - Gold',29,0,0,NULL,'MRJN2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3008,1,'P3008','IPAD7-32W-GY','Apple Ipad 7 32GB Wifi Space Gray',29,0,0,NULL,'MW742LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3009,1,'P3009','IPAD7-32W-SLV','Apple Ipad 7th. Gen - 10.2 Apple A10 Fusion Quad-Core 32GB SSD - Only WIFI - Silver',29,0,0,NULL,'MYLA2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3010,1,'P3010','IPAD8-128W-GY','Apple Ipad 8 128GB Wi-Fi Gray',29,0,0,NULL,'MW772LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3011,1,'P3011','IPAD8-32C-GY','Apple Ipad 8 Wifi + Cellular 32 GB Gray',29,0,0,NULL,'MYN32LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3012,1,'P3012','IPAD8-32W-GY','Apple Ipad 8th. Gen - 10.2 Apple A12 Bionic Hexa-Core 32GB Storage - Only WIFI - Space Grey',29,0,0,NULL,'MYL92LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3013,1,'P3013','IPAD8-32W-SLV','Apple Ipad 8th. Gen - 10.2 Apple A12 Bionic Hexa-Core - 32GB Storage - Only WIFI - Silver',29,0,0,NULL,'MYLA2LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(3014,1,'P3014','IPAD9-64W-GY','Apple Ipad 9th Gen. 10.2 - 64GB Wifi Gray',29,0,0,NULL,'MK2K3LL/A','2025-02-15 00:12:35','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `purchase_order_detail` */
 
@@ -3015,6 +3052,7 @@ CREATE TABLE `purchase_orders` (
   `po_desc` text DEFAULT NULL,
   `po_desc_public` text DEFAULT NULL,
   `order_status` smallint(1) DEFAULT 1,
+  `stage_status` varchar(50) DEFAULT 'Draft',
   `logistics_cost` double DEFAULT 0,
   `sub_user_id` int(11) DEFAULT 0,
   `is_tested_po` varchar(8) DEFAULT NULL,
@@ -3036,13 +3074,14 @@ CREATE TABLE `purchase_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `purchase_orders` */
 
-insert  into `purchase_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`po_desc`,`po_desc_public`,`order_status`,`logistics_cost`,`sub_user_id`,`is_tested_po`,`is_wiped_po`,`is_imaged_po`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PO1','20250213193509',1,0,'2025-02-13','purchase order desc : 20250213193511','',5,20.5,0,'Yes','Yes','Yes',0,0,'2025-02-13 19:35:11','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,1),
-(2,1,'PO2','20250213202330',1,0,'2025-02-13','purchase order desc : 20250213202332','',3,20.5,0,'Yes','Yes','Yes',0,0,'2025-02-13 20:23:32','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-13 20:34:04','admin_albert',1,'::1','Asia/Karachi',0,1);
+insert  into `purchase_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`po_desc`,`po_desc_public`,`order_status`,`stage_status`,`logistics_cost`,`sub_user_id`,`is_tested_po`,`is_wiped_po`,`is_imaged_po`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'PO1','20250213193509',1,0,'2025-02-13','purchase order desc : 20250213193511','',5,'Draft',20.5,0,'Yes','Yes','Yes',0,0,'2025-02-13 19:35:11','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-13 19:44:03','admin_albert',1,'::1','Asia/Karachi',0,1),
+(2,1,'PO2','20250213202330',1,0,'2025-02-13','purchase order desc : 20250213202332','',3,'Draft',20.5,0,'Yes','Yes','Yes',0,0,'2025-02-13 20:23:32','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-13 20:34:04','admin_albert',1,'::1','Asia/Karachi',0,1),
+(3,1,'PO3','20250214195756',1,0,'2025-02-14',NULL,NULL,1,'Draft',0,0,'Yes','Yes','Yes',0,0,'2025-02-14 19:57:58','admin_albert',1,'::1','Asia/Karachi',0,'2025-02-20 19:33:39','admin_albert',NULL,'::1',NULL,0,0);
 
 /*Table structure for table `qty_and_estimated_time_for_processing` */
 
@@ -3210,6 +3249,7 @@ CREATE TABLE `return_items_detail_receive` (
   `recevied_product_category` int(11) DEFAULT 0,
   `ro_detail_id` int(11) DEFAULT 0,
   `receive_type` varchar(100) DEFAULT 'ProductReceived',
+  `product_id` int(11) DEFAULT 0,
   `edit_lock` smallint(1) DEFAULT 0,
   `serial_no_barcode` varchar(255) DEFAULT NULL,
   `sub_location_id` int(11) DEFAULT 0,
@@ -3460,9 +3500,12 @@ CREATE TABLE `returns` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `returns` */
+
+insert  into `returns`(`id`,`subscriber_users_id`,`return_no`,`return_type`,`removal_order_id`,`return_date`,`store_id`,`public_note`,`internal_note`,`return_status`,`logistics_cost`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'RO1','Shipstation','20250214202533','2025-02-14',4,NULL,NULL,1,NULL,0,0,'2025-02-14 20:25:37','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `rma_order_detail` */
 
@@ -9817,6 +9860,36 @@ insert  into `sources`(`id`,`subscriber_users_id`,`source_name`,`editable`,`add_
 (2,1,'Source02',1,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,0,1),
 (3,1,'Source03',1,NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,NULL,NULL,0,1);
 
+/*Table structure for table `stock_for_process` */
+
+DROP TABLE IF EXISTS `stock_for_process`;
+
+CREATE TABLE `stock_for_process` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscriber_users_id` int(11) DEFAULT 0,
+  `stock_id` int(11) DEFAULT 0,
+  `package_ids` varchar(255) DEFAULT NULL,
+  `custom_product_id` varchar(255) DEFAULT NULL,
+  `finale_condition` int(11) DEFAULT 0,
+  `is_processed` smallint(1) DEFAULT 0,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT 0,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT 0,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `enabled` smallint(6) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `stock_for_process` */
+
 /*Table structure for table `storages` */
 
 DROP TABLE IF EXISTS `storages`;
@@ -10104,7 +10177,7 @@ CREATE TABLE `super_admin` (
 /*Data for the table `super_admin` */
 
 insert  into `super_admin`(`id`,`username`,`a_password`,`email`,`phone_no`,`first_name`,`middle_name`,`last_name`,`user_type`,`sec_users`,`subdomain`,`last_login`,`last_login_ip`,`starting_date`,`closing_date`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,'superAdmin','superAdmin','albert@ctinnovationsnyc.com','11122112121','System','Super','Admin','Super Admin',1,NULL,'2025-02-11 20:42:43','::1',NULL,NULL,'2024-08-28 23:21:07',NULL,NULL,NULL,0,'2024-08-28 23:21:07','superAdmin',NULL,'::1',0,1);
+(1,'superAdmin','superAdmin','albert@ctinnovationsnyc.com','11122112121','System','Super','Admin','Super Admin',1,NULL,'2025-02-13 22:03:48','::1',NULL,NULL,'2024-08-28 23:21:07',NULL,NULL,NULL,0,'2024-08-28 23:21:07','superAdmin',NULL,'::1',0,1);
 
 /*Table structure for table `super_admin_menus` */
 
@@ -10427,7 +10500,7 @@ CREATE TABLE `temp_po_pricing` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1531 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1633 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `temp_po_pricing` */
 
@@ -10485,12 +10558,12 @@ insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_detail_id`,`po
 (1427,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','A',224.49,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
 (1428,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','B',204.08,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
 (1429,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','C',183.67,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1525,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,6,'32W-GY','C',300,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1526,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,0,'iPad2WiFi32GBSpaceGray','C',250,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1527,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,5,'IPAD5-32W-GY','A',227.59,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1528,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,5,'IPAD5-32W-GY','B',206.9,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1529,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,5,'IPAD5-32W-GY','C',186.21,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1530,'67acd615f2811a7m0n0830fe2i5h33pb4sh6dbe',1,0,'P200234GHJI9L1','B',250,0,0,0,0,'2025-02-13 20:21:39','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
+(1627,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,6,'32W-GY','C',300,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1628,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,'iPad2WiFi32GBSpaceGray','C',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1629,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','A',227.59,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1630,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','B',206.9,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1631,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','C',186.21,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1632,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,'P200234GHJI9L1','B',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `terms` */
 
@@ -10656,7 +10729,7 @@ CREATE TABLE `timesheets` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `timesheets` */
 
@@ -10665,7 +10738,9 @@ insert  into `timesheets`(`id`,`subscriber_users_id`,`employee_id`,`department_i
 (3,1,1,0,'2025-02-13','20:39:47','20:39:55','0 hr 0 min',NULL,NULL,0,'2025-02-13 20:39:47','123456',10,'::1','Asia/Karachi',0,'2025-02-13 20:39:55','123456',10,'::1',NULL,0,1),
 (4,1,1,0,'2025-02-13','20:40:29','20:40:33','0 hr 0 min',NULL,NULL,0,'2025-02-13 20:40:29','123456',10,'::1','Asia/Karachi',0,'2025-02-13 20:40:33','123456',10,'::1',NULL,0,1),
 (5,1,1,0,'2025-02-13','20:41:04','20:41:06','0 hr 0 min',NULL,NULL,0,'2025-02-13 20:41:04','123456',10,'::1','Asia/Karachi',0,'2025-02-13 20:41:06','123456',10,'::1',NULL,0,1),
-(6,1,1,2,'2025-02-13','20:43:02',NULL,NULL,NULL,NULL,0,'2025-02-13 20:43:02','123456',10,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
+(6,1,1,2,'2025-02-13','20:43:02',NULL,NULL,NULL,NULL,0,'2025-02-13 20:43:02','123456',10,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(7,1,1,2,'2025-02-14','20:29:20','20:29:32','0 hr 0 min',NULL,NULL,0,'2025-02-14 20:29:20','123456',10,'::1','Asia/Karachi',0,'2025-02-14 20:29:31','123456',10,'::1',NULL,0,1),
+(8,1,1,2,'2025-02-14','20:30:01',NULL,NULL,NULL,NULL,0,'2025-02-14 20:30:01','123456',10,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `timesheets_time_log` */
 
@@ -10719,7 +10794,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -10736,7 +10811,17 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (10,'Admin',1,'Login','2025-02-11 12:55:21',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (11,'Super Admin',1,'Super Admin Login','2025-02-11 20:42:43',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (12,'Admin',1,'User Logout','2025-02-12 22:00:18',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(13,'Admin',1,'Login','2025-02-12 22:00:40',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(13,'Admin',1,'Login','2025-02-12 22:00:40',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(14,'Super Admin',1,'Super Admin Login','2025-02-13 22:03:48',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(15,'Admin',1,'Login','2025-02-15 00:09:43',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(16,'Admin',1,'Login','2025-02-19 14:27:57',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(17,'Admin',1,'Login','2025-02-21 10:50:12',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(18,'Admin',1,'Login','2025-02-21 10:50:42',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(19,'Admin',1,'Login','2025-02-21 10:51:04',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(20,'Admin',1,'Login','2025-02-21 10:53:56',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(21,'Admin',1,'Login','2025-02-21 14:53:24',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(22,'Admin',1,'Login','2025-02-24 17:36:32',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(23,'Admin',1,'Login','2025-02-24 20:02:28',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -10850,7 +10935,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-02-12 22:00:40','::1',6539559,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-02-24 20:02:28','::1',4399656,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab11@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Repair,Diagnostic',1,'2024-11-18 06:22:47','::1',9103992,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2025-02-13 20:42:45','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2025-02-13 20:42:32','admin_albert',1,'::1',0,1);
 
@@ -10920,7 +11005,7 @@ CREATE TABLE `users_bin_for_processing` (
 /*Data for the table `users_bin_for_processing` */
 
 insert  into `users_bin_for_processing`(`id`,`subscriber_users_id`,`bin_user_id`,`location_id`,`estimated_time`,`is_processing_start`,`is_processing_done`,`order_by`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,12,1737,0,0,0,1,'2025-02-07 16:53:15','admin_albert',1,'::1',NULL,36,NULL,NULL,0,NULL,NULL,0,1);
+(1,1,12,1737,0,1,0,1,'2025-02-07 16:53:15','admin_albert',1,'::1',NULL,36,'2025-02-24 20:02:38','admin_albert',1,'::1',NULL,37,1);
 
 /*Table structure for table `users_bin_for_repair` */
 

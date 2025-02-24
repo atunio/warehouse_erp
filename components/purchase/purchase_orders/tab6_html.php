@@ -1147,10 +1147,25 @@
                                 </div>
                             <?php } 
                             if (po_permisions("DiagnosticExport") == '1') {?>
-                                <div class="col m8 s12">
+                                <div class="col m2 s12">
                                     <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
                                 </div>
                             <?php }?>
+                            <div class="col m8 s12">
+                                <div class="text_align_right">
+                                    <?php 
+                                    $table_columns	= array('SNo','-', 'Product Detail', 'Qty', 'Serial No', 'Specification', 'Grading', 'Defects', 'Inventory Status');
+                                    $k 				= 0;
+                                    foreach($table_columns as $data_c1){?>
+                                        <label>
+                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                            <span><?= $data_c1?></span>
+                                        </label>&nbsp;&nbsp;
+                                    <?php 
+                                        $k++;
+                                    }?> 
+                                </div>
+                            </div>
                         </div>
                         <div class="section section-data-tables">
                             <div class="row">
@@ -1158,16 +1173,19 @@
                                     <table id="page-length-option" class="display pagelength50_2 dataTable dtr-inline">
                                         <thead>
                                             <tr>
-                                                <?php
-                                                $headings = '<th class="sno_width_60">S.No</th>
-                                                            <th class="sno_width_60"></th>
-                                                            <th>Product Detail</th>
-                                                            <th>Qty</th>
-                                                            <th>Serial#</th>   
-                                                            <th>Specification</th>
-                                                             <th>Grading</th> 
-                                                            <th>Defects</th> 
-                                                             <th>Inventory Status</th>';
+                                            <?php
+                                                $headings = "";
+                                                foreach($table_columns as $data_c){
+                                                    if($data_c == 'SNo'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                    }
+                                                    else if($data_c == '-'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                    }
+                                                    else{
+                                                        $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                    }
+                                                } 
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
                                             </tr>
@@ -1201,8 +1219,8 @@
                                                     $is_rma_processed           = $data['is_rma_processed'];
                                                     $edit_lock                  = $data['edit_lock']; ?>
                                                     <tr>
-                                                        <td style="<?= $td_padding; ?>; text-align: center;"><?php echo $i + 1; ?></td>
-                                                        <td style="<?= $td_padding; ?>; text-align: center;">
+                                                        <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+                                                        <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
                                                             <?php
                                                             if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
                                                                 $checkbox_del++; ?>
@@ -1212,7 +1230,7 @@
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>">
                                                             <?php
                                                             if ($product_uniqueid_main != "" && $product_uniqueid_main != null) {
                                                                 echo $product_uniqueid_main . "<br>";
@@ -1231,8 +1249,8 @@
                                                                 echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>"><?php echo "" . $data['total_qty_received']; ?></td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo "" . $data['total_qty_received']; ?></td>
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>">
                                                             <?php
                                                             $color          = "purple";
                                                             $sql            = " SELECT a.* FROM vender_po_data a 
@@ -1307,7 +1325,7 @@
                                                                 }
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>">
                                                             <?php if ($battery > '0') {
                                                                 echo "Battery: " . $battery . "%<br>";
                                                             } ?>
@@ -1321,7 +1339,7 @@
                                                                 echo "Processor: " . $processor;
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]);?>">
                                                             <?php
                                                             if ($lcd_grade != '') {
                                                                 echo "LCD: " . $lcd_grade . ", ";
@@ -1355,14 +1373,14 @@
                                                                 </span>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]);?>">
                                                             <?php
                                                             // if ($price != '') { echo "Price: " . number_format($price, 2) . "<br>"; }
                                                             if ($defectsCode != '') {
                                                                 echo "Defects: " . $defectsCode . "<br>";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[8]);?>">
                                                             <?php
                                                             $color  = "purple";
                                                             if ($count_vebder > 0) {

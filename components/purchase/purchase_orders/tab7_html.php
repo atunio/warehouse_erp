@@ -677,10 +677,10 @@
                     <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                     <input type="hidden" name="active_tab" value="tab7" />
                     <div class="section section-data-tables">
-                        <?php
-                        if (po_permisions("RMA Process") == 1) { ?>
-                            <div class="row">
-                                <div class="col m12 s12">
+                        <div class="row">
+                            <?php
+                            if (po_permisions("RMA Process") == 1) { ?>
+                                <div class="col m2 s12">
                                     <label>
                                         <input type="checkbox" id="all_checked8" class="filled-in" name="all_checked8" value="1" <?php if (isset($all_checked8) && $all_checked8 == '1') {
                                                                                                                                         echo "checked";
@@ -688,22 +688,41 @@
                                         <span></span>
                                     </label>
                                 </div>
+                            <?php
+                            }   ?>
+                            <div class="col m10 s12">
+                                <div class="text_align_right">
+                                    <?php 
+                                    $table_columns	= array('SNo', 'Product ID / Product Detail', 'Serial# / Status', 'Specification / Defects', 'Grading', 'RMA Detail');
+                                    $k 				= 0;
+                                    foreach($table_columns as $data_c1){?>
+                                        <label>
+                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                            <span><?= $data_c1?></span>
+                                        </label>&nbsp;&nbsp;
+                                    <?php 
+                                        $k++;
+                                    }?> 
+                                </div>
                             </div>
-                        <?php
-                        }   ?>
+                        </div>
                         <div class="row">
                             <div class="col m12 s12">
                                 <table id="page-length-option" class=" display pagelength50 dataTable dtr-inline">
                                     <thead>
                                         <tr>
-                                            <?php
-                                            $headings = '<th class="sno_width_60">S.No</th>
-                                                        <th>Product ID / <br>Product Detail</th>
-                                                        <th>Serial# / Status</th>
-                                                        <th>Specification / <br>Defects</th>
-                                                        <th>Grading</th>
-                                                        <th>RMA Detail</th>';
+                                        <?php
+                                            $headings = "";
+                                            foreach($table_columns as $data_c){
+                                                if($data_c == 'SNo'){
+                                                    $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                }
+                                                else{
+                                                    $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                }
+                                            } 
                                             echo $headings;
+													
                                             $headings2 = ' '; ?>
                                         </tr>
                                     </thead>
@@ -734,7 +753,7 @@
                                                 $is_rma_added               = $data['is_rma_added'];
                                                 $is_diagnost                = 0; ?>
                                                 <tr>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]);?>">
                                                         <?php echo $i + 1;
                                                         if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6 && $is_rma_processed == 0 && $is_rma_added == 1) {
                                                             $total_pending_rma++;
@@ -747,7 +766,7 @@
                                                             </label>
                                                         <?php } ?>
                                                     </td>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[1]);?>">
                                                         <?php echo $data['base_product_id']; ?>
                                                         <br>
                                                         <?php
@@ -761,7 +780,7 @@
                                                             echo " Location: " . $data['sub_location_name_after_diagnostic'];
                                                         } ?>
                                                     </td>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>">
                                                         <?php
                                                         $color          = "purple";
                                                         $string_text    = "Not Found In Vender";
@@ -811,7 +830,7 @@
                                                             </span>
                                                         <?php } ?>
                                                     </td>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>">
                                                         <?php if ($battery > '0') {
                                                             echo "Battery: " . $battery . "%<br>";
                                                         } ?>
@@ -829,7 +848,7 @@
                                                             echo "Defect: " . substr($defectsCode, 0, 50) . "..<br>";
                                                         } ?>
                                                     </td>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>">
                                                         <?php if ($body_grade != '') {
                                                             echo "Body: " . $body_grade . "<br>";
                                                         } ?>
@@ -864,7 +883,7 @@
                                                             </span>
                                                         <?php } ?>
                                                     </td>
-                                                    <td style="<?= $td_padding; ?>">
+                                                    <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>">
                                                         <?php
                                                         if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6) { ?>
                                                             <?php

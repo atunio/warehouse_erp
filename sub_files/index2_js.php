@@ -96,6 +96,7 @@
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
             <?php include('sub_files/export_datatable_button_action_code.php')?>
         });
+     
         $("table.pagelength50_2").dataTable().fnDestroy();
         $('table.pagelength50_2').DataTable({
             "responsive": true,

@@ -388,11 +388,26 @@
                         <h5 class="h5">Bulk Packing</h5>
                         <div class="section section-data-tables">
                             <div class="row">
+                                <div class="text_align_right">
+                                    <?php 
+                                    $table_columns	= array('check_all','Product ID', 'Product Description', 'Category', 'Serial No');
+                                    $k 				= 0;
+                                    foreach($table_columns as $data_c1){?>
+                                        <label>
+                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                            <span><?= $data_c1?></span>
+                                        </label>&nbsp;&nbsp;
+                                    <?php 
+                                        $k++;
+                                    }?> 
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col s12">
                                     <table id="page-length-option" class=" display pagelength50_3 dataTable dtr-inline ">
                                         <thead>
                                             <tr>
-                                                <th style="text-align: center;">
+                                                <th style="text-align: center;" class="col-check_all">
                                                     <label>
                                                         <input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
                                                                                                                                                     echo "checked";
@@ -401,11 +416,16 @@
                                                     </label>
                                                 </th>
                                                 <?php
-                                                $headings  = '
-                                                                    <th>Product ID</th>
-                                                                    <th>Product Description</th>
-                                                                    <th>Category</th>
-                                                                    <th>Serial No</th> ';
+                                                
+                                                $headings = "";
+                                                foreach($table_columns as $data_c){
+                                                    if($data_c == 'check_all'){
+                                                        $headings .= '';
+                                                    }
+                                                    else{
+                                                        $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                    }
+                                                } 
                                                 echo $headings;
                                                 ?>
                                             </tr>
@@ -420,7 +440,7 @@
                                                     $detail_id2 = $data['product_stock_id'];
                                                     $serial_no  = $data['serial_no']; ?>
                                                     <tr>
-                                                        <td style="text-align: center;">
+                                                        <td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>">
                                                             <?php
                                                             if (access("delete_perm") == 1) { ?>
                                                                 <label style="margin-left: 25px;">
@@ -431,15 +451,15 @@
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
-                                                        <td><?php echo "" . $data['product_uniqueid']; ?></td>
-                                                        <td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
-                                                        <td>
+                                                        <td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo "" . $data['product_uniqueid']; ?></td>
+                                                        <td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
+                                                        <td class="col-<?= set_table_headings($table_columns[3]);?>">
                                                             <?php
                                                             if ($data['category_name'] != "") {
                                                                 echo  " " . $data['category_name'] . "";
                                                             } ?>
                                                         </td>
-                                                        <td><?php echo "" . $data['serial_no']; ?></td>
+                                                        <td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo "" . $data['serial_no']; ?></td>
                                                     </tr>
                                             <?php $i++;
                                                 }
@@ -559,8 +579,23 @@
                                                             } ?>">
             <div class="card-panel" style="padding-bottom: 0px;">
                 <div class="row">
-                    <div class="col m11 s12">
+                    <div class="col m2 s12">
                         <h5 class="h5">Packed Products</h5>
+                    </div>
+                    <div class="col m9 s12">
+                        <div class="text_align_right">
+                            <?php 
+                            $table_columns	= array( 'check_all','SNo', 'Product ID' , 'Product Description', 'Category', 'Serial No', 'Packing Type', 'Box No', 'Pallet No');
+                            $k 				= 0;
+                            foreach($table_columns as $data_c1){?>
+                                <label>
+                                    <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                    <span><?= $data_c1?></span>
+                                </label>&nbsp;&nbsp;
+                            <?php 
+                                $k++;
+                            }?> 
+                        </div>
                     </div>
                     <div class="col m1 s12">
                         <a href="export/export_sales_order_product_packed.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 custom_btn_size btn waves-effect waves-light gradient-45deg-green-teal">
@@ -577,24 +612,26 @@
                                     <thead>
                                         <tr>
                                             <?php
-                                            echo $headings = '	<th style="text-align: center;">S.No</th>'; ?>
-                                            <th style="text-align: center;">
-                                                <label>
-                                                    <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1" <?php if (isset($all_checked3) && $all_checked3 == '1') {
-                                                                                                                                                    echo "checked";
-                                                                                                                                                } ?> />
-                                                    <span></span>
-                                                </label>
-                                            </th>
-                                            <?php
-                                            $headings  = '
-                                                                <th>Product ID</th>
-                                                                <th>Product Description</th>
-                                                                <th>Category</th>
-                                                                <th>Serial No</th>
-                                                                <th>Packing Type</th>
-                                                                <th>Box#</th>
-                                                                <th>Pallet#</th> ';
+                                            $headings = "";
+                                            foreach($table_columns as $data_c){
+                                                if($data_c == 'check_all'){ ?>
+                                                    <th style="text-align: center;" class="col-check_all">
+                                                        <label>
+                                                            <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1" <?php if (isset($all_checked3) && $all_checked3 == '1') {
+                                                                                                                                                            echo "checked";
+                                                                                                                                                        } ?> />
+                                                            <span></span>
+                                                        </label>
+                                                    </th>
+                                                <?php
+                                                }
+                                                elseif($data_c == 'SNo'){
+                                                    $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                } 
+                                                else{
+                                                    $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                }
+                                            } 
                                             echo $headings;
                                             ?>
                                         </tr>
@@ -608,10 +645,8 @@
                                                 $detail_id1     = $data['id'];
                                                 $detail_id2     = $data['product_stock_id']; ?>
                                                 <tr>
-                                                    <td style="text-align: center;">
-                                                        <?php echo $i + 1; ?>
-                                                    </td>
-                                                    <td style="text-align: center;">
+                                                    
+                                                    <td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>">
                                                         <?php
                                                         if (access("delete_perm") == 1 && $data['is_shipped'] == 0) { ?>
                                                             <label style="margin-left: 25px;">
@@ -620,18 +655,21 @@
                                                             </label>
                                                         <?php } ?>
                                                     </td>
-                                                    <td><?php echo "" . $data['product_uniqueid']; ?></td>
-                                                    <td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
-                                                    <td>
+                                                    <td style="text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
+                                                        <?php echo $i + 1; ?>
+                                                    </td>
+                                                    <td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo "" . $data['product_uniqueid']; ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[4]);?>">
                                                         <?php
                                                         if ($data['category_name'] != "") {
                                                             echo  "" . $data['category_name'] . "";
                                                         } ?>
                                                     </td>
-                                                    <td><?php echo "" . $data['serial_no']; ?></td>
-                                                    <td><?php echo $data['packing_type']; ?></td>
-                                                    <td><?php echo $data['box_no']; ?></td>
-                                                    <td><?php if (isset($data['pallet_no']) && $data['pallet_no'] > 0) echo "Pallet " . $data['pallet_no']; ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo "" . $data['serial_no']; ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo $data['packing_type']; ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo $data['box_no']; ?></td>
+                                                    <td class="col-<?= set_table_headings($table_columns[8]);?>"><?php if (isset($data['pallet_no']) && $data['pallet_no'] > 0) echo "Pallet " . $data['pallet_no']; ?></td>
                                                 </tr>
                                         <?php $i++;
                                             }
@@ -702,8 +740,23 @@
         <div class="card-panel">
 
             <div class="row">
-                <div class="col m11 s12">
+                <div class="col m2 s12">
                     <h5 class="h5">Category Wise</h5>
+                </div>
+                <div class="col m9 s12">
+                    <div class="text_align_right">
+                        <?php 
+                        $table_columns	= array('SNo', 'Packing Type', 'Box No', 'Pallets', 'Qty');
+                        $k 				= 0;
+                        foreach($table_columns as $data_c1){?>
+                            <label>
+                                <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                <span><?= $data_c1?></span>
+                            </label>&nbsp;&nbsp;
+                        <?php 
+                            $k++;
+                        }?> 
+                    </div>
                 </div>
                 <div class="col m1 s12">
                     <a href="export/export_sales_order_packed_summary.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 btn custom_btn_size waves-effect waves-light gradient-45deg-green-teal">
@@ -721,11 +774,15 @@
                             <thead>
                                 <tr>
                                     <?php
-                                    $headings = '	<th class="sno_width_60">S.No</th>
-                                                        <th>Packing Type</th>
-                                                        <th>Box#</th>
-                                                        <th>Pallets</th>
-                                                        <th>Qty</th> ';
+                                    $headings = "";
+                                    foreach($table_columns as $data_c){
+                                        if($data_c == 'SNo'){
+                                            $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                        }
+                                        else{
+                                            $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                        }
+                                    } 
                                     echo $headings;
                                     ?>
                                 </tr>
@@ -738,15 +795,15 @@
                                     foreach ($row_cl as $data) {
                                         $pallet_no = $data['pallet_no']; ?>
                                         <tr>
-                                            <td style="text-align: center;"><?php echo $i + 1; ?></td>
-                                            <td><?php echo $data['packing_type']; ?></td>
-                                            <td><?php echo $data['box_no']; ?></td>
-                                            <td><?php
+                                            <td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+                                            <td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['packing_type']; ?></td>
+                                            <td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['box_no']; ?></td>
+                                            <td class="col-<?= set_table_headings($table_columns[3]);?>"><?php
                                                 if (isset($pallet_no) && $pallet_no > 0) {
                                                     echo "Pallet " . $pallet_no;
                                                 } ?>
                                             </td>
-                                            <td><?php echo $data['total_qty']; ?></td>
+                                            <td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['total_qty']; ?></td>
                                         </tr>
                                 <?php $i++;
                                     }

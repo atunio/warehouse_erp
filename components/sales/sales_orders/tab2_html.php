@@ -305,8 +305,23 @@ $count_cl    = $db->counter($result_cl);
         if ($count_log > 0) { ?>
             <div class="card-panel">
                 <div class="row">
-                    <div class="col m11 s12">
+                    <div class="col m2 s12">
                         <h5 class="h5">Shipments Detail</h5>
+                    </div>
+                    <div class="col m9 s12">
+                        <div class="text_align_right">
+                            <?php 
+                            $table_columns	= array('SNo', 'Shipment No', 'Shipment TrackingNo / Shipment Sent Date', 'Courier / Expected Delivery Date', 'Product Detail','Serial No','Actions');
+                            $k 				= 0;
+                            foreach($table_columns as $data_c1){?>
+                                <label>
+                                    <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                    <span><?= $data_c1?></span>
+                                </label>&nbsp;&nbsp;
+                            <?php 
+                                $k++;
+                            }?> 
+                        </div>
                     </div>
                     <div class="col m1 s12">
                         <a href="export/export_sales_order_shipmnet_detail.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" class="mb-2 custom_btn_size btn waves-effect waves-light gradient-45deg-green-teal">
@@ -325,13 +340,15 @@ $count_cl    = $db->counter($result_cl);
                                 <thead>
                                     <tr>
                                         <?php
-                                        $headings = '	<th class="sno_width_60">S.No</th>
-                                                            <th>Shipment#</th>
-                                                            <th>Shipment Tracking#</br>Shipment Sent Date</th>
-                                                            <th>Courier</br>Expected Delivery Date</th>
-                                                            <th>Product Detail</th>
-                                                            <th>Serial No</th>
-                                                            <th>Action</th>';
+                                        $headings = "";
+                                        foreach($table_columns as $data_c){
+                                            if($data_c == 'SNo'){
+                                                $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                            }
+                                            else{
+                                                $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                            }
+                                        } 
                                         echo $headings;
                                         $headings2 = ' '; ?>
                                     </tr>
@@ -345,11 +362,11 @@ $count_cl    = $db->counter($result_cl);
                                             $detail_id2 = $data['shipment_detail_id'];
                                             $packing_id = $data['id']; ?>
                                             <tr>
-                                                <td style="text-align: center;"><?php echo $i + 1; ?></td>
-                                                <td><?php echo $data['shipment_no']; ?></td>
-                                                <td><?php echo $data['shipment_tracking_no']; ?></br><?php echo dateformat2($data['shipment_sent_date']); ?></td>
-                                                <td><?php echo $data['courier_name']; ?></br><?php echo dateformat2($data['expected_delivery_date']); ?></td>
-                                                <td>
+                                                <td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+                                                <td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['shipment_no']; ?></td>
+                                                <td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['shipment_tracking_no']; ?></br><?php echo dateformat2($data['shipment_sent_date']); ?></td>
+                                                <td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['courier_name']; ?></br><?php echo dateformat2($data['expected_delivery_date']); ?></td>
+                                                <td class="col-<?= set_table_headings($table_columns[4]);?>">
                                                     <?php echo "" . $data['product_uniqueid']; ?><br>
 
                                                     <?php echo ucwords(strtolower($data['product_desc'])); ?>
@@ -358,8 +375,8 @@ $count_cl    = $db->counter($result_cl);
                                                         echo  " (" . $data['category_name'] . ")";
                                                     } ?>
                                                 </td>
-                                                <td><?php echo "" . $data['serial_no']; ?></td>
-                                                <td>
+                                                <td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo "" . $data['serial_no']; ?></td>
+                                                <td class="col-<?= set_table_headings($table_columns[6]);?>">
                                                     <?php
                                                     if ($data['edit_lock'] == 0 && access("edit_perm") == 1) { ?>
                                                         <a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&cmd3=delete&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2 . "&detail_id2=" . $packing_id) ?>">

@@ -254,8 +254,25 @@
                     <input type="hidden" name="active_tab" value="tab3" />
                     <div class="card-panel">
                         <div class="row">
-                            <div class="col m12 s12">
+                            <div class="col m2 s12">
                                 <h5>Received Items</h5>
+                            </div>
+                            <div class="col m9 s12">
+                                <div class="text_align_right">
+                                    <?php 
+                                    $table_columns	= array('SNo', 'check_all', 'Tracking No', 'Package / Part Detail', 'SKU','Received Qty','Received Case Packs','Location','Received By / Receiving Date/Time');
+                                    $k 				= 0;
+                                    foreach($table_columns as $data_c1){?>
+                                        <label>
+                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                            <span><?= $data_c1?></span>
+                                        </label>&nbsp;&nbsp;
+                                    <?php 
+                                        $k++;
+                                    }?> 
+                                </div>
+                            </div>
+                            <div class="col m1 s12">
                                 <a class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_packages_receive_labels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id)  ?>" target="_blank">
                                     <i class="material-icons dp48">print</i>
                                 </a>
@@ -278,19 +295,19 @@
                                     <table id="page-length-option" class="display pagelength50_3 dataTable dtr-inline">
                                         <thead>
                                             <tr>
-                                                <?php
-                                                $headings = '   <th class="sno_width_60 text_align_center" >S.No</th>
-                                                                <th></th>
-                                                                <th>Tracking#</th>
-                                                                <th>Package / Part Detail</th>
-                                                                <th>SKU</th>
-                                                                <th>Received Qty</th>
-                                                                <th>Received Case Packs</th>
-                                                                <th>Location</th>
-                                                                <th>
-                                                                    Received By</br>
-                                                                    Receiving Date/Time
-                                                                </th> ';
+                                            <?php
+                                                $headings = "";
+                                                foreach($table_columns as $data_c){
+                                                    if($data_c == 'SNo'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                    }
+                                                    else if($data_c == 'check_all'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'"></th>';
+                                                    }
+                                                    else{
+                                                        $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                    }
+                                                } 
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
                                             </tr>
@@ -304,8 +321,8 @@
                                                     $detail_id2             = $data['po_detail_id'];
                                                     $package_logistic_id    = $data['package_logistic_id']; ?>
                                                     <tr>
-                                                        <td class="text_align_center" style="<?= $td_padding; ?>;"><?php echo $i + 1; ?></td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[1]);?>">
                                                             <?php
                                                             if (access("delete_perm") == 1 && $data['edit_lock'] == "0" && $data['is_diagnost'] == "0") { ?>
                                                                 <label style="margin-left: 25px;">
@@ -314,18 +331,18 @@
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>"><?php echo $data['tracking_no']; ?></td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['tracking_no']; ?></td>
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>">
                                                             <?php echo ucwords(strtolower($data['package_name'])); ?>
                                                             <?php
                                                             if ($data['category_name'] != "") {
                                                                 echo " (" . $data['category_name'] . ") ";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>"> <?php echo $data['sku_code']; ?></td>
-                                                        <td class="text_align_center" style="<?= $td_padding; ?>"><?php echo $data['total_received_qty']; ?></td>
-                                                        <td class="text_align_center" style="<?= $td_padding; ?>"><?php echo $data['total_case_pack']; ?></td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>"> <?php echo $data['sku_code']; ?></td>
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['total_received_qty']; ?></td>
+                                                        <td class="text_align_center" style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo $data['total_case_pack']; ?></td>
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]);?>">
 
                                                             <?php echo $data['sub_location_name']; ?>
                                                             <?php
@@ -333,7 +350,7 @@
                                                                 echo " (" . $data['sub_location_type'] . ") ";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[8]);?>">
                                                             <?php echo $data['first_name']; ?>
                                                             ( <?php echo $data['username']; ?> )
                                                             <br>

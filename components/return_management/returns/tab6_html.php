@@ -1112,10 +1112,25 @@
                         <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
 
                         <div class="row">
-                            <div class="col m4 s12">
+                            <div class="col m2 s12">
                                 <h5>Return Received Products</h5>
                             </div>
-                            <div class="col m8 s12">
+                            <div class="col m9 s12">
+                                <div class="text_align_right">
+                                    <?php 
+                                    $table_columns	= array('SNo', 'check_all', 'Product Detail', 'Serial NO', 'Specification', 'Grading', 'Price / Defects', 'Inventory Status');
+                                    $k 				= 0;
+                                    foreach($table_columns as $data_c1){?>
+                                        <label>
+                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+                                            <span><?= $data_c1?></span>
+                                        </label>&nbsp;&nbsp;
+                                    <?php 
+                                        $k++;
+                                    }?> 
+                                </div>   
+                            </div>
+                            <div class="col m1 s12">
                                 <a href="export/export_return_ro_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
                             </div>
                         </div>
@@ -1138,14 +1153,17 @@
                                         <thead>
                                             <tr>
                                                 <?php
-                                                $headings = '<th class="sno_width_60">S.No</th>
-                                                            <th class="sno_width_60"></th>
-                                                            <th>Product Detail</th>
-                                                            <th>Serial#</th>   
-                                                            <th>Specification</th>
-                                                             <th>Grading</th> 
-                                                            <th>Price / <br>Defects</th> 
-                                                             <th>Inventory Status</th>';
+                                                $headings = "";
+                                                foreach($table_columns as $data_c){
+                                                    if($data_c == 'SNo'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+                                                    }else if($data_c == 'checl_all'){
+                                                        $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'"></th>';
+                                                    }
+                                                    else{
+                                                        $headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+                                                    }
+                                                } 
                                                 echo $headings;
                                                 $headings2 = ' '; ?>
                                             </tr>
@@ -1179,8 +1197,8 @@
                                                     $is_rma_processed           = $data['is_rma_processed'];
                                                     $edit_lock                  = $data['edit_lock']; ?>
                                                     <tr>
-                                                        <td style="<?= $td_padding; ?>; text-align: center;"><?php echo $i + 1; ?></td>
-                                                        <td style="<?= $td_padding; ?>; text-align: center;">
+                                                        <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+                                                        <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
                                                             <?php
                                                             if ($serial_no_barcode != "" && $serial_no_barcode != null &&  $edit_lock == "0" && $is_diagnost == "1") {
                                                                 $checkbox_del++; ?>
@@ -1190,7 +1208,7 @@
                                                                 </label>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>">
                                                             <?php
                                                             if ($product_uniqueid_main != "" && $product_uniqueid_main != null) {
                                                                 echo $product_uniqueid_main . "<br>";
@@ -1209,7 +1227,7 @@
                                                                 echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>">
                                                             <?php
                                                             $color          = "purple";
                                                             $sql            = " SELECT a.*
@@ -1285,7 +1303,7 @@
                                                                 }
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>">
                                                             <?php if ($battery > '0') {
                                                                 echo "Battery: " . $battery . "%<br>";
                                                             } ?>
@@ -1299,7 +1317,7 @@
                                                                 echo "Processor: " . $processor;
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>">
                                                             <?php
                                                             if ($lcd_grade != '') {
                                                                 echo "LCD: " . $lcd_grade . ", ";
@@ -1334,7 +1352,7 @@
                                                                 </span>
                                                             <?php } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]);?>">
                                                             <?php if ($price != '' && $price >0) {
                                                                 echo "Price: " . number_format($price, 2) . "<br>";
                                                             } ?>
@@ -1342,7 +1360,7 @@
                                                                 echo "Defects: " . $defectsCode . "<br>";
                                                             } ?>
                                                         </td>
-                                                        <td style="<?= $td_padding; ?>">
+                                                        <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]);?>">
                                                             <?php
                                                             $color  = "purple";
                                                             if ($count_vebder > 0) {

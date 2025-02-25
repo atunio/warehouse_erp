@@ -221,7 +221,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					WHERE id = '" . $id . "' ";
 		$ok = $db->query($conn, $sql_c_up);
 		$k = 0;
-		//if (isset($stage_status) && $stage_status != "Committed") {
+		if (isset($stage_status) && $stage_status != "Committed") {
 			$filtered_product_ids = array_values(array_filter($product_ids));
 			$current_ids = implode(',', $filtered_product_ids);
 			if($current_ids !=""){
@@ -325,7 +325,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 				}
 			}
-		//}
+		}
 		if ($k == 1) {
 			if (isset($error2['msg'])) unset($error2['msg']);
 			$msg2['msg_success'] = "Record has been added successfully.";

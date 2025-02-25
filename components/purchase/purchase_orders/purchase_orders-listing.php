@@ -546,7 +546,7 @@ $page_heading 	= "List Purchase Orders ";
 																			<i class="material-icons dp48">edit</i>
 																		</a> &nbsp;&nbsp;
 																		<?php }
-																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
+																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>

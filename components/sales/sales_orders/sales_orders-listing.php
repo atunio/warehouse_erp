@@ -41,7 +41,7 @@ $sql_cl			= "
 					SELECT * FROM (
 						SELECT  aa.so_no, aa.estimated_ship_date, aa.order_status, 
 								aa.id AS sale_order_id_master, aa.customer_invoice_no, aa.order_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								c.id as customer_id, c.customer_name, f.status_name AS po_status_name
+								c.id as customer_id, c.customer_name, f.status_name AS po_status_name,aa.stage_status
 						FROM sales_orders aa
 						LEFT JOIN customers c ON c.id = aa.customer_id
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
@@ -395,6 +395,11 @@ $page_heading 	= "List Sales Orders ";
 																			?>
 																		</span>
 																	</span>
+																	<span class="chip blue lighten-5">
+																		<span class="blue-text">
+																			<?php echo "".$data['stage_status']; ?>
+																		</span>
+																	</span>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo dateformat2($data['order_date']); ?></td>
  																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['customer_name']; ?></td>
@@ -431,7 +436,7 @@ $page_heading 	= "List Sales Orders ";
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
 																	<?php }
-																	if ($data['order_status'] == 1 || $data['order_status'] == '') {
+																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 																				<i class="material-icons dp48">edit</i>
@@ -441,7 +446,7 @@ $page_heading 	= "List Sales Orders ";
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>
 																			</a> &nbsp;&nbsp;
-																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1) { ?>
+																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1 ) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
 																				<i class="material-icons dp48">delete</i>
 																			</a> &nbsp;&nbsp;

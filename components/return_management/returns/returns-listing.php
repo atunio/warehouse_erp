@@ -42,7 +42,7 @@ else {
 	}
 }
 $sql_cl			="	SELECT aa.return_no,aa.removal_order_id, aa.return_status, aa.id,c.store_name, aa.return_date, aa.enabled AS order_enabled, 
-						aa.add_by_user_id AS add_by_user_id_order, f.status_name AS ro_status_name
+						aa.add_by_user_id AS add_by_user_id_order, f.status_name AS ro_status_name,aa.stage_status
 					FROM  `returns` aa 
 					LEFT JOIN stores c ON c.id = aa.store_id
 					LEFT JOIN inventory_status f ON f.id = aa.return_status
@@ -438,6 +438,11 @@ $page_heading 	= "List of Returns ";
 																			}?>
 																		</span>
 																	</span>
+																	<span class="chip blue lighten-5">
+																		<span class="blue-text">
+																			<?php echo "".$data['stage_status']; ?>
+																		</span>
+																	</span>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[2]);?>"> <?php echo dateformat2($data['return_date']); ?></td>
 																<td class="col-<?= set_table_headings($table_columns[3]);?>">
@@ -500,7 +505,7 @@ $page_heading 	= "List of Returns ";
 																			<i class="material-icons dp48">edit</i>
 																		</a> &nbsp;&nbsp;
 																		<?php }
-																	if ($data['return_status'] == 1 || $data['return_status'] == '') {
+																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>

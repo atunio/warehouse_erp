@@ -172,7 +172,6 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		$error2['msg'] = "Please check Error in form.";
 	}
 }
-
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
 	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {

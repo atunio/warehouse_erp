@@ -746,7 +746,7 @@
                 <div class="col m9 s12">
                     <div class="text_align_right">
                         <?php 
-                        $table_columns	= array('SNo', 'Packing Type', 'Box No', 'Pallets', 'Qty');
+                        $table_columns	= array('S_No', 'Packing Type', 'Box No', 'Pallets', 'Qty');
                         $k 				= 0;
                         foreach($table_columns as $data_c1){?>
                             <label>
@@ -776,7 +776,7 @@
                                     <?php
                                     $headings = "";
                                     foreach($table_columns as $data_c){
-                                        if($data_c == 'SNo'){
+                                        if($data_c == 'S_No'){
                                             $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
                                         }
                                         else{

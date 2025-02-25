@@ -601,7 +601,7 @@ function dateformat2_2($date)
 {
 	if ($date != NULL && $date != "" && $date != "0000-00-00" && $date != "0000-00-00 00:00:00") {
 		$date = date_create($date);
-		$date = date_format($date, "M d,Y");
+		$date = date_format($date, "M d, Y");
 	} else {
 		$date = "";
 	}

@@ -44,7 +44,7 @@ $sql_cl			= " SELECT * FROM (
 								aa2.id AS po_detail_id,  
 								b.product_sku, b.package_name,
 								d.category_name, c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name,
-								f.status_name as po_status_name
+								f.status_name as po_status_name,aa.stage_status
 						FROM package_materials_orders aa
 						LEFT JOIN package_materials_order_detail aa2 ON aa.id = aa2.po_id 
 						LEFT JOIN packages b ON b.id = aa2.package_id
@@ -378,6 +378,11 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																			} ?>
 																		</span>
 																	</span>
+																	<span class="chip blue lighten-5">
+																		<span class="blue-text">
+																			<?php echo "".$data['stage_status']; ?>
+																		</span>
+																	</span>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo dateformat2($data['po_date']); ?> </td>
 																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['vender_name']; ?></td>
@@ -445,18 +450,18 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																		<?php }
-																	if ($data['order_product_status'] == 1 || $data['order_product_status'] == '') {
-																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-																				<i class="material-icons dp48">edit</i>
-																			</a> &nbsp;&nbsp;
-																		<?php }
+																	<?php }
+																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+																			<i class="material-icons dp48">edit</i>
+																		</a> &nbsp;&nbsp;
+																	<?php }
+																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 0 && access("delete_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>
 																			</a> &nbsp;&nbsp;
-																		<?php } else if ($data['order_enabled'] == 1 && ($data['po_detail_id'] == "" || $data['po_detail_id'] == null) && access("delete_perm") == 1) { ?>
+																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1)  { ?>
 																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
 																				<i class="material-icons dp48">delete</i>
 																			</a> &nbsp;&nbsp;

@@ -4,6 +4,8 @@
                                                         echo "none";
                                                     } ?>;">
     <input type="hidden" id="module_id" value="<?= $module_id; ?>" />
+    <input type="hidden" id="id" value="<?= $id; ?>" />
+    <input type="hidden" id="previous_stage_status" value="<?= $stage_status; ?>" />
     <?php
     if (isset($cmd) && $cmd == 'edit') { ?>
         <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=edit&id=' . $id); ?>">
@@ -17,7 +19,29 @@
                         <?= $general_heading; ?> => Master Info
                     </h6>
                 </div>
-                <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <div class="input-field col m1 s12" style="margin-top: 5px; margin-bottom: 5px;">
+                    <?php
+                    $field_name     = "stage_status";
+                    $field_label     = "Stage Status";
+                    ?>
+                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
+                        <option value="Draft" <?php if (isset(${$field_name}) && ${$field_name} == "Draft") { ?> selected="selected" <?php } ?>>Draft</option>
+                        <?php 
+                        if(isset($cmd) && $cmd == 'edit'){?>
+                            <?php
+                            $sql1             = "SELECT * FROM stages_status WHERE enabled = 1 ORDER BY sort_by ";
+                            $result1         = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1); 
+                            if ($count1 > 0) {
+                                $row1    = $db->fetch($result1);
+                                foreach ($row1 as $data2) { ?>
+                                    <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                <?php }
+                            } ?> 
+                        <?php }?>
+                    </select>
+                </div>
+                <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                     <?php /*?>
                     <a href="javascript:void(0)" class="btn cyan waves-effect waves-light ">
                         <i class="material-icons ">print</i>
@@ -186,7 +210,7 @@
                                     unset($return_qty);
                                     unset($expected_status);
 
-                                    $sql_ee1    = "SELECT a.* FROM return_items_detail a WHERE a.return_id = '" . $id . "' ";
+                                    $sql_ee1    = "SELECT a.* FROM return_items_detail a WHERE a.return_id = '" . $id . "' AND a.enabled = 1 ";
                                     $result_ee1 = $db->query($conn, $sql_ee1);
                                     $count_ee1  = $db->counter($result_ee1);
                                     if ($count_ee1 > 0) {
@@ -216,7 +240,7 @@
                                         <th style="width: 250px;">
                                             Product &nbsp;
                                             <?php
-                                            if (isset($return_status) && ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
+                                            if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                 <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
                                                     Import
                                                 </a> &nbsp;&nbsp;
@@ -246,7 +270,7 @@
                                                                                             } ?>">
                                     <?php
                                     $disabled = $readonly = "";
-                                    if (isset($return_status) && $return_status != 1 && $return_status != 4 && $return_status != 10 && $return_status != 12) {
+                                    if (isset($stage_status) && $stage_status == "Committed") {
                                         $disabled = "disabled='disabled'";
                                         $readonly = "readonly='readonly'";
                                     }
@@ -278,9 +302,9 @@
                                                         FROM products a
                                                         LEFT JOIN product_categories b ON b.id = a.product_category
                                                         WHERE a.enabled = 1 ";
-                                        if (isset($return_status) && $return_status != 1 && $return_status != 4 && $return_status != 12 && isset(${$field_name}[$i - 1])) {
-                                            $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
-                                        }
+                                        // if (isset($stage_status) && $stage_status == "Committed") {
+                                        //     $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
+                                        // }
                                         $sql1      .= " ORDER BY a.product_desc ";
                                         $result1    = $db->query($conn, $sql1);
                                         $count1     = $db->counter($result1);
@@ -300,7 +324,7 @@
                                             $return_qty_val = $return_qty[$i - 1];
                                         }
                                         $pkg_stock_of_product_needed = $return_qty_val - $pkg_stock_in_hand;
-                                        if ((isset($return_status) && $return_status != 1 && $return_status != 4 && $return_status != 10 && $return_status != 12 && isset(${$field_name}[$i - 1])) || ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
+                                        if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed") { ?>
                                             <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                             <td>
                                                     <select <?php echo $disabled;
@@ -356,7 +380,7 @@
                                            
                                                 <td>
                                                     <?php
-                                                    if (isset($return_status) && ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) { ?>
+                                                    if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>
                                                         </a> &nbsp;

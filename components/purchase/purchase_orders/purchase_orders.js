@@ -1058,10 +1058,11 @@ function showToast(message, type) {
 }
 $(document).on('change', '#stage_status', function(event) {
     var stage_status = $(this).val();
+    var previous_stage_status = $('#previous_stage_status').val();
     var id = $("#id").val();
     var module_id = $("#module_id").val();
     if(stage_status != "" && id != ""){
-        var dataString = 'type=update_stage_status&stage_status=' + stage_status + '&id=' + id + '&module_id=' + module_id;
+        var dataString = 'type=update_po_stage_status&stage_status=' + stage_status + '&id=' + id + '&module_id=' + module_id;
         $.ajax({
             type: "POST",
             url: "ajax/ajax_add_entries.php",
@@ -1077,6 +1078,15 @@ $(document).on('change', '#stage_status', function(event) {
                     else{
                         var toastHTML = "Stage status updated successfully.";
                         showToast(toastHTML, "Success");
+                        if((stage_status == 'Committed' && previous_stage_status != 'Committed') ){
+                            
+                            location.reload();
+                            
+                        }else if((stage_status != 'Committed' && previous_stage_status == 'Committed')){
+                           
+                            location.reload();
+                            
+                        }
                     }
                     
                 }

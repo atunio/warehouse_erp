@@ -170,17 +170,35 @@ $page_heading 	= "Bin Details ( Manager View)";
 										</div>
 									</form>
 									<div class="row">
+										<div class="text_align_right">
+											<?php 
+											$table_columns	= array('SNo', 'Location / Bin',  'ProductID', 'Category', 'Condtion', 'Qty');
+											$k 				= 0;
+											foreach($table_columns as $data_c1){?>
+												<label>
+													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+													<span><?= $data_c1?></span>
+												</label>&nbsp;&nbsp;
+											<?php 
+												$k++;
+											}?> 
+										</div>
+									</div>
+									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display">
+											<table id="page-length-option" class="display pagelength50_2 dataTable dtr-inline">
 												<thead>
 													<tr>
 														<?php
-														$headings = '<th class="sno_width_60">S.No</th>
-																	<th>Location / Bin</th> 
-																	<th>ProductID</th> 
-																	<th>Category</th> 
-																	<th>Condtion</th> 
-																	<th>Qty</th> ';
+														$headings = "";
+														foreach($table_columns as $data_c){
+															if($data_c == 'SNo'){
+																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+															}
+															else{
+																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+															}
+														} 
 														echo $headings;
 														?>
 													</tr>
@@ -193,18 +211,18 @@ $page_heading 	= "Bin Details ( Manager View)";
 														foreach ($row_cl as $data) {
 															$id = $data['sub_location']; ?>
 															<tr>
-																<td style="text-align: center;"><?php echo $i + 1; ?></td>
-																<td>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]);?>">
 																	<?php
 																	echo $data['sub_location_name'];
 																	if ($data['sub_location_type'] != "") {
 																		echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																	} ?>
 																</td>
-																<td><?php echo $data['product_uniqueid']; ?></td>
-																<td><?php echo $data['category_name']; ?></td>
-																<td><?php echo $data['stock_grade']; ?></td>
-																<td><?php echo $data['total_qty']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['product_uniqueid']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['category_name']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['stock_grade']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['total_qty']; ?></td>
 															</tr>
 													<?php $i++;
 														}

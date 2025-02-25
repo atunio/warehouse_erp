@@ -10,6 +10,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$removal_order_id			= date('YmdHis');
 	$return_type				= "Shipstation";
 	$return_status = 1;
+	$stage_status    			= "Draft";
 }
 
 $db 					= new mySqlDB;
@@ -50,7 +51,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 		$removal_order_id		= $row_ee[0]['removal_order_id'];   
 		$return_date			= $row_ee[0]['return_date'];   
 		$internal_note			= $row_ee[0]['internal_note'];   
-		$public_note			= $row_ee[0]['public_note'];   
+		$public_note			= $row_ee[0]['public_note']; 
+		$stage_status    		= $row_ee[0]['stage_status'];  
 		
 		$return_date			= str_replace("-", "/", convert_date_display($row_ee[0]['return_date']));
 	}
@@ -188,11 +190,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					WHERE id = '" . $id . "' "; 
 		$ok = $db->query($conn, $sql_c_up);
 		$k = 0;
-		if (isset($return_status) && ($return_status == 1 || $return_status == 4 || $return_status == 10 || $return_status == 12)) {
-			$sql_dup = " DELETE FROM return_items_detail WHERE return_id	= '" . $id . "'";
-			$db->query($conn, $sql_dup);
-
+		if (isset($stage_status) && $stage_status != "Committed") {
+			
 			$filtered_product_ids = array_values(array_filter($product_ids));
+			$current_ids = implode(',', $filtered_product_ids);
+			if($current_ids !=""){
+				$sql_dup1 = "UPDATE return_items_detail SET enabled = 0 
+							WHERE return_id	= '" . $id . "' 
+							AND product_id NOT IN(" . $current_ids . ") ";
+				$db->query($conn, $sql_dup1);
+			}
+
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
 			foreach ($filtered_product_ids as $data_p) {
@@ -211,6 +219,18 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 					$i++;
 				} else {
+					$sql_c_up = "UPDATE  return_items_detail SET 
+																return_qty     		= '" . $return_qty[$i] . "',
+																expected_status		= '" . $expected_status[$i] . "',
+																enabled 			= 1,
+																
+																update_timezone	= '" . $timezone . "',
+																update_date		= '" . $add_date . "',
+																update_by		= '" . $_SESSION['username'] . "',
+																update_ip		= '" . $add_ip . "'
+								WHERE return_id = '" . $id . "'  AND product_id = '" . $data_p . "' ";
+					$db->query($conn, $sql_c_up);
+
 					$product_ids[$i] 			= "";
 					$expected_status[$i] 		= "";
 					$return_qty[$i]				= "";

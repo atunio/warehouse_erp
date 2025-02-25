@@ -5,6 +5,8 @@
                                                     } ?>;">
     <input type="hidden" id="module_id" value="<?= $module_id; ?>" />
     <input type="hidden" id="id" value="<?= $id; ?>" />
+    <input type="hidden" id="previous_stage_status" value="<?= $stage_status; ?>" />
+    
     <?php
     if (isset($cmd) && $cmd == 'edit') { ?>
         <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=edit&id=' . $id); ?>">
@@ -27,8 +29,16 @@
                         <option value="Draft" <?php if (isset(${$field_name}) && ${$field_name} == "Draft") { ?> selected="selected" <?php } ?>>Draft</option>
                         <?php 
                         if(isset($cmd) && $cmd == 'edit'){?>
-                            <option value="Completed" <?php if (isset(${$field_name}) && ${$field_name} == "Completed") { ?> selected="selected" <?php } ?>>Completed</option>
-                            <option value="Committed" <?php if (isset(${$field_name}) && ${$field_name} == "Committed") { ?> selected="selected" <?php } ?>>Committed</option>
+                            <?php
+                            $sql1             = "SELECT * FROM stages_status WHERE enabled = 1 ORDER BY sort_by ";
+                            $result1         = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1); 
+                            if ($count1 > 0) {
+                                $row1    = $db->fetch($result1);
+                                foreach ($row1 as $data2) { ?>
+                                    <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                <?php }
+                            } ?> 
                         <?php }?>
                     </select>
                 </div>
@@ -335,7 +345,7 @@
                                         <th style="width: %;">
                                             Product &nbsp;
                                             <?php
-                                            //if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                            if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                 <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
                                                     Import
                                                 </a> &nbsp;&nbsp;
@@ -349,7 +359,7 @@
                                                     <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         <i class="material-icons  dp48 md-36">add_circle</i>
                                                     </a>
-                                        <?php //} ?>
+                                        <?php } ?>
                                         </th>
                                         <th style="width: 100px;">Pkg Stock</th>
                                         <th style="width: 120px;">Pkg Needed</th>
@@ -369,10 +379,10 @@
                                                                                             } ?>">
                                     <?php
                                     $disabled = $readonly = "";
-                                    // if (isset($stage_status) && $stage_status != "Committed") {
-                                    //     $disabled = "disabled='disabled'";
-                                    //     $readonly = "readonly='readonly'";
-                                    // }
+                                    if (isset($stage_status) && $stage_status == "Committed") {
+                                        $disabled = "disabled='disabled'";
+                                        $readonly = "readonly='readonly'";
+                                    }
                                     $sum_value = $sum_qty =  $sum_price = 0;
                                     for ($i = 1; $i <= 25; $i++) {
                                         $field_name     = "product_ids";
@@ -401,9 +411,9 @@
                                                         FROM products a
                                                         LEFT JOIN product_categories b ON b.id = a.product_category
                                                         WHERE a.enabled = 1 ";
-                                        // if (isset($stage_status) && $stage_status != "Committed" && isset(${$field_name}[$i - 1])) {
-                                        //     $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
-                                        // }
+                                        if (isset($stage_status) && $stage_status == "Committed" && isset(${$field_name}[$i - 1])) {
+                                            $sql1 .= " AND a.id = '" . ${$field_name}[$i - 1] . "' ";
+                                        }
                                         $sql1      .= " ORDER BY a.product_desc ";
                                         $result1    = $db->query($conn, $sql1);
                                         $count1     = $db->counter($result1);
@@ -423,7 +433,7 @@
                                             $order_qty_val = $order_qty[$i - 1];
                                         }
                                         $pkg_stock_of_product_needed = $order_qty_val - $pkg_stock_in_hand;
-                                        if ((isset($order_status) && $order_status != 1 && $order_status != 4 && $order_status != 10 && $order_status != 12 && isset(${$field_name}[$i - 1])) || ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
+                                        if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { ?>
                                             <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                                 <td>
                                                     <select <?php echo $disabled;
@@ -519,14 +529,14 @@
                                                 </td>
                                                 <td>
                                                     <?php
-                                                    //if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                                    if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>
                                                         </a> &nbsp;
                                                         <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">add_circle</i>
                                                         </a>&nbsp;&nbsp;
-                                                    <?php //} ?>
+                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                     <?php }
@@ -675,14 +685,14 @@
                                                 </td>
                                                 <td colspan="3">
                                                     <?php 
-                                                    //if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                                    if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>
                                                         </a> &nbsp;
                                                         <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">add_circle</i>
                                                         </a>&nbsp;&nbsp;
-                                                    <?php //} ?>
+                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                         <?php }

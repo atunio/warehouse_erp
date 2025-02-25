@@ -16,6 +16,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$public_note				= "public_note " . date('YmdHis');
 	$internal_note				= "internal_note " . date('YmdHis');
 	$order_status    			= "1";
+	$stage_status    			= "Draft";
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -85,6 +86,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$public_note			=  $row_ee[0]['public_note'];
 	$internal_note			=  $row_ee[0]['internal_note'];
 	$order_status    		= $row_ee[0]['order_status'];
+	$stage_status    		= $row_ee[0]['stage_status'];
 	$product_stock_ids 		= [];
 	$order_price 			= [];
 	$product_so_desc 		= [];
@@ -259,11 +261,18 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$ok = $db->query($conn, $sql_c_up);
 		}
 		$k = 0;
-		if(isset($order_status) && $order_status == 1){
-			$sql_dup = " DELETE FROM sales_order_detail WHERE sales_order_id	= '" . $id . "'";
-			$db->query($conn, $sql_dup);
+		if (isset($stage_status) && $stage_status != "Committed") {
+			// $sql_dup = " DELETE FROM sales_order_detail WHERE sales_order_id	= '" . $id . "'";
+			// $db->query($conn, $sql_dup);
 
 			$filtered_product_ids = (array_values(array_filter($product_stock_ids)));
+			$current_ids = implode(',', $filtered_product_ids);
+			if($current_ids !=""){
+				$sql_dup1 = "UPDATE sales_order_detail SET enabled = 0 
+							WHERE sales_order_id	= '" . $id . "' 
+							AND product_stock_id NOT IN(" . $current_ids . ") ";
+				$db->query($conn, $sql_dup1);
+			}
 
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
@@ -284,6 +293,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$i++;
 				}
 				else{ 
+					$sql_c_up = "UPDATE  sales_order_detail SET 
+																product_so_desc     = '" . $product_so_desc[$i] . "',
+																order_price			= '" . $order_price[$i] . "',
+																enabled 			= 1,
+																
+																update_timezone	= '" . $timezone . "',
+																update_date		= '" . $add_date . "',
+																update_by		= '" . $_SESSION['username'] . "',
+																update_ip		= '" . $add_ip . "'
+								WHERE sales_order_id = '" . $id . "'  AND product_stock_id = '" . $product_stock_id . "' ";
+					$db->query($conn, $sql_c_up);
 					$product_stock_ids[$i] 	= "";
 					$order_price[$i] 		= "";
 					$product_so_desc[$i] 	= "";

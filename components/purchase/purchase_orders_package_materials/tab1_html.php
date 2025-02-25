@@ -4,6 +4,8 @@
                                                         echo "none";
                                                     } ?>;">
     <input type="hidden" id="module_id" value="<?= $module_id; ?>" />
+    <input type="hidden" id="id" value="<?= $id; ?>" />
+    <input type="hidden" id="previous_stage_status" value="<?= $stage_status; ?>" />
     <?php
     if (isset($cmd) && $cmd == 'edit') { ?>
         <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=edit&id=' . $id); ?>">
@@ -17,7 +19,29 @@
                         <?= $general_heading; ?> --> Master Info
                     </h6>
                 </div>
-                <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <div class="input-field col m1 s12" style="margin-top: 5px; margin-bottom: 5px;">
+                    <?php
+                    $field_name     = "stage_status";
+                    $field_label     = "Stage Status";
+                    ?>
+                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
+                        <option value="Draft" <?php if (isset(${$field_name}) && ${$field_name} == "Draft") { ?> selected="selected" <?php } ?>>Draft</option>
+                        <?php 
+                        if(isset($cmd) && $cmd == 'edit'){?>
+                            <?php
+                            $sql1             = "SELECT * FROM stages_status WHERE enabled = 1 ORDER BY sort_by ";
+                            $result1         = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1); 
+                            if ($count1 > 0) {
+                                $row1    = $db->fetch($result1);
+                                foreach ($row1 as $data2) { ?>
+                                    <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                <?php }
+                            } ?> 
+                        <?php }?>
+                    </select>
+                </div>
+                <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                     <?php /*?>
                     <a href="javascript:void(0)" class="btn cyan waves-effect waves-light ">
                         <i class="material-icons ">print</i>
@@ -163,7 +187,7 @@
                                         <th style="width: %;">
                                             Package / Part &nbsp;
                                             <?php
-                                            if (isset($order_status) && $order_status == 1) {
+                                            if (isset($stage_status) && $stage_status != "Committed") {
                                                 //?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_so_details&id=" . $id)
                                                 /*?>
                                             <a href="javascript:void(0);" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
@@ -196,7 +220,7 @@
                                         unset($case_pack);
                                         $sql_ee1        = " SELECT a.*
                                                             FROM package_materials_order_detail a
-                                                             WHERE a.po_id = '" . $id . "' ";  //echo $sql_ee1;
+                                                             WHERE a.po_id = '" . $id . "' AND a.enabled 			= 1 ";  //echo $sql_ee1;
                                         $result_ee1        = $db->query($conn, $sql_ee1);
                                         $count_ee1      = $db->counter($result_ee1);
                                         if ($count_ee1 > 0) {
@@ -236,7 +260,7 @@
                                                                                             } ?>">
                                     <?php
                                     $disabled = $readonly = "";
-                                    if ((isset($order_status) && $order_status != 1)) {
+                                    if (isset($stage_status) && $stage_status == "Committed") {
                                         $disabled = "disabled='disabled'";
                                         $readonly = "readonly='readonly'";
                                     }
@@ -350,7 +374,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <?php if (isset($order_status) && $order_status == 1) { ?>
+                                                <?php if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                     <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
                                                         <i class="material-icons dp48">cancel</i>
                                                     </a> &nbsp;

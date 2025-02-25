@@ -613,9 +613,63 @@ switch ($type) {
             echo "";
         }
     break;
-    case 'update_stage_status':
+    case 'update_po_stage_status':
         if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
             $sql6 = "UPDATE " . $selected_db_name . ".purchase_orders SET  stage_status             = '" . $stage_status . "',
+                                                                                    
+                                                                            update_date             = '" . $add_date . "', 
+                                                                            update_by               = '" . $_SESSION['username'] . "', 
+                                                                            update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                                            update_ip               = '" . $add_ip . "',
+                                                                            update_from_module_id   = '" . $module_id . "'
+            WHERE id = '$id ' ";
+            $ok = $db->query($conn, $sql6);
+            if ($ok) {
+                echo "Success";
+            }
+        } else {
+            echo "Fail";
+        }
+    break;
+    case 'update_so_stage_status':
+        if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
+            $sql6 = "UPDATE " . $selected_db_name . ".sales_orders SET  stage_status             = '" . $stage_status . "',
+                                                                                    
+                                                                            update_date             = '" . $add_date . "', 
+                                                                            update_by               = '" . $_SESSION['username'] . "', 
+                                                                            update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                                            update_ip               = '" . $add_ip . "',
+                                                                            update_from_module_id   = '" . $module_id . "'
+            WHERE id = '$id ' ";
+            $ok = $db->query($conn, $sql6);
+            if ($ok) {
+                echo "Success";
+            }
+        } else {
+            echo "Fail";
+        }
+    break;
+    case 'update_ro_stage_status':
+        if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
+            $sql6 = "UPDATE " . $selected_db_name . ".returns SET  stage_status             = '" . $stage_status . "',
+                                                                                    
+                                                                            update_date             = '" . $add_date . "', 
+                                                                            update_by               = '" . $_SESSION['username'] . "', 
+                                                                            update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                                            update_ip               = '" . $add_ip . "',
+                                                                            update_from_module_id   = '" . $module_id . "'
+            WHERE id = '$id ' ";
+            $ok = $db->query($conn, $sql6);
+            if ($ok) {
+                echo "Success";
+            }
+        } else {
+            echo "Fail";
+        }
+    break;
+    case 'update_ppo_stage_status':
+        if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
+            $sql6 = "UPDATE " . $selected_db_name . ".package_materials_orders SET  stage_status             = '" . $stage_status . "',
                                                                                     
                                                                             update_date             = '" . $add_date . "', 
                                                                             update_by               = '" . $_SESSION['username'] . "', 

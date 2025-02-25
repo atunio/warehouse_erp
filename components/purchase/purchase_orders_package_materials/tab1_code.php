@@ -10,6 +10,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$po_date 					= date('d/m/Y');
 	$po_desc					= "purchase order desc : " . date('YmdHis');
 	$order_status    			= "1";
+	$stage_status    			= "Draft";
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -83,7 +84,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_date_disp		= dateformat2($row_ee[0]['po_date']);
 	$order_status    		= $row_ee[0]['order_status'];
 	$disp_status_name		=  $row_ee[0]['status_name'];
-
+	$stage_status    		= $row_ee[0]['stage_status'];
 	$package_id 				= [];
 	$order_qty 					= [];
 	$order_price 				= [];
@@ -251,11 +252,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$ok = $db->query($conn, $sql_c_up);
 		}
 		$k = 0;
-		if (isset($order_status) && $order_status == 1) {
-			$sql_dup = " DELETE FROM package_materials_order_detail WHERE po_id	= '" . $id . "'";
-			$db->query($conn, $sql_dup);
-
-			$filtered_id = (array_values(array_filter($package_ids)));
+		if (isset($stage_status) && $stage_status != "Committed") {
+			
+			$filtered_id = array_values(array_filter($package_ids));
+			$current_ids = implode(',', $filtered_id);
+			if($current_ids !=""){
+				$sql_dup1 = "UPDATE package_materials_order_detail SET enabled = 0 
+							WHERE po_id	= '" . $id . "' 
+							AND package_id NOT IN(" . $current_ids . ") ";
+				$db->query($conn, $sql_dup1);
+			}
 
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
@@ -275,6 +281,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 					$i++;
 				} else {
+					$sql_c_up = "UPDATE  package_materials_order_detail SET 
+																			product_po_desc     = '" . $product_po_desc[$i] . "',
+																			order_qty 			= '" . $order_qty[$i] . "',
+																			order_price			= '" . $order_price[$i] . "',
+																			order_case_pack		= '" . $case_pack[$i] . "',
+																			enabled 			= 1,
+																			
+																			update_timezone	= '" . $timezone . "',
+																			update_date		= '" . $add_date . "',
+																			update_by		= '" . $_SESSION['username'] . "',
+																			update_ip		= '" . $add_ip . "'
+								WHERE po_id = '" . $id . "'  AND package_id = '" . $package_id . "' ";
+					$db->query($conn, $sql_c_up);
 					$package_ids[$i] 		= "";
 					$order_qty[$i] 			= "";
 					$order_price[$i]		= "";

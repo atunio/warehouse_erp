@@ -136,18 +136,28 @@ $page_heading 	= "Stock Hisotry";
 					?>
 					<div class="section section-data-tables">
 						<div class="row">
+							<div class="text_align_right">
+								<?php 
+								$table_columns	= array('S.No', 'Category' , 'Product Desc','Product ID', 'Status','Condition', 'Stock');
+								$k 				= 0;
+								?> 
+							</div>
+						</div>
+						<div class="row">
 							<div class="col s12">
-								<table id="" class="display">
+								<table id="page-length-option1" class="display">
 									<thead>
 										<tr>
 											<?php
-											$headings = '<th class="sno_width_60">S.No</th>
-														<th>Category </th> 
-														<th>Product Desc </th> 
-														<th>Product ID</th> 
-														<th>Status</th>
-														<th>Condition</th>
-														<th>Stock</th>';
+											$headings = "";
+											foreach($table_columns as $data_c){
+												if($data_c == 'SNo'){
+													$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+												}
+												else{
+													$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+												}
+											} 
 											echo $headings;
 											?>
 										</tr>
@@ -161,13 +171,13 @@ $page_heading 	= "Stock Hisotry";
 												$id2 		= $data['id'];
 												$product_id2 = $data['product_id'];  ?>
 												<tr>
-													<td style="text-align: center;"><?php echo $i + 1; ?></td>
-													<td><?php echo $data['category_name']; ?></td>
-													<td><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
-													<td><?php echo $data['product_uniqueid']; ?></td>
-													<td><?php echo $data['status_name']; ?></td>
-													<td><?php echo $data['stock_grade']; ?></td>
-													<td> <?php echo $data['p_total_stock']; ?> </td>
+													<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['category_name']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo ucwords(strtolower($data['product_desc'])); ?></td>
+													<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['product_uniqueid']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['status_name']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['stock_grade']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[6]);?>"> <?php echo $data['p_total_stock']; ?> </td>
 												</tr>
 										<?php $i++;
 											}
@@ -232,21 +242,35 @@ $page_heading 	= "Stock Hisotry";
 					?>
 					<div class="section section-data-tables">
 						<div class="row">
+							<div class="text_align_right">
+								<?php 
+								$table_columns	= array('SNo',  'Product ID / Product Detail', 'Category', 'Status', 'Condition', 'Serial No', 'Model No', 'Specification', 'Defects or Notes', 'Cosmetic Grade');
+								$k 				= 0;
+								foreach($table_columns as $data_c1){?>
+									<label>
+										<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
+										<span><?= $data_c1?></span>
+									</label>&nbsp;&nbsp;
+								<?php 
+									$k++;
+								}?> 
+							</div>
+						</div>
+						<div class="row">
 							<div class="col s12">
 								<table id="page-length-option" class="pagelength50">
 									<thead>
 										<tr>
 											<?php
-											$headings = '<th class="sno_width_60">S.No</th>
-														<th>Product ID <br> Product Detail</th>
-														<th>Category</th>
-														<th>Status</th>
-														<th>Condition</th>
-														<th>Serial No</th>
-														<th>Model No</th>
-														<th>Specification</th>
-														<th>Defects or Notes</th>
-														<th>Cosmetic Grade</th>';
+											$headings = "";
+											foreach($table_columns as $data_c){
+												if($data_c == 'SNo'){
+													$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+												}
+												else{
+													$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
+												}
+											} 
 											echo $headings;
 											?>
 										</tr>
@@ -260,8 +284,8 @@ $page_heading 	= "Stock Hisotry";
 												$id2 		= $data['id'];
 												$product_id2 = $data['product_id'];  ?>
 												<tr>
-													<td style="text-align: center;"><?php echo $i + 1; ?></td>
-													<td>
+													<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[1]);?>">
 														<?php echo $data['product_uniqueid']; ?>
 														<br>
 														<?php
@@ -269,8 +293,8 @@ $page_heading 	= "Stock Hisotry";
 														<br>
 														Location: <?php echo $data['sub_location_name']; ?>
 													</td>
-													<td><?php echo $data['category_name']; ?></td>
-													<td>
+													<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['category_name']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[3]);?>">
 														<?php
 														$status_name = $data['status_name'];
 														if ($status_name == 'Defective') { ?>
@@ -292,10 +316,10 @@ $page_heading 	= "Stock Hisotry";
 														<?php
 														} ?>
 													</td>
-													<td><?php echo $data['stock_grade']; ?></td>
-													<td><?php echo $data['serial_no']; ?></td>
-													<td><?php echo $data['model_no']; ?></td>
-													<td>
+													<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['stock_grade']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['serial_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo $data['model_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[7]);?>">
 														<?php if ($data['battery_percentage'] > '0') {
 															echo "Battery: " . $data['battery_percentage'] . "%<br>";
 														} ?>
@@ -309,8 +333,8 @@ $page_heading 	= "Stock Hisotry";
 															echo "Processor: " . $data['processor_size'];
 														} ?>
 													</td>
-													<td><?php echo $data['defects_or_notes']; ?></td>
-													<td>
+													<td class="col-<?= set_table_headings($table_columns[8]);?>"><?php echo $data['defects_or_notes']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[9]);?>">
 														<?php echo $data['cosmetic_grade']; ?>
 														<?php if ($data['body_grade'] != '') {
 															echo "Body: " . $data['body_grade'] . "<br>";

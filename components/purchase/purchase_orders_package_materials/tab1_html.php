@@ -23,22 +23,23 @@
                     <?php
                     $field_name     = "stage_status";
                     $field_label     = "Stage Status";
-                    ?>
+                    ?> 
                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
-                        <option value="Draft" <?php if (isset(${$field_name}) && ${$field_name} == "Draft") { ?> selected="selected" <?php } ?>>Draft</option>
-                        <?php 
-                        if(isset($cmd) && $cmd == 'edit'){?>
-                            <?php
-                            $sql1             = "SELECT * FROM stages_status WHERE enabled = 1 ORDER BY sort_by ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1); 
-                            if ($count1 > 0) {
-                                $row1    = $db->fetch($result1);
-                                foreach ($row1 as $data2) { ?>
-                                    <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                <?php }
-                            } ?> 
-                        <?php }?>
+                        <?php
+                        $sql1 = "SELECT * FROM stages_status WHERE enabled = 1";
+                        if(!isset($cmd) || (isset($cmd) && $cmd == 'add' )){
+                            $sql1 .= " AND status_name = 'Draft' ";
+                        }
+                        echo  $sql1 .= " ORDER BY sort_by ";
+                        $result1         = $db->query($conn, $sql1);
+                        $count1         = $db->counter($result1); 
+                        if ($count1 > 0) {
+                            $row1    = $db->fetch($result1);
+                            foreach ($row1 as $data2) { ?>
+                                <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                            <?php  
+                            }
+                        } ?> 
                     </select>
                 </div>
                 <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">

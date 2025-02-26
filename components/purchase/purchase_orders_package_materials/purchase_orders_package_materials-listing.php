@@ -66,6 +66,9 @@ if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
 if (isset($flt_po_status) && $flt_po_status != "") {
 	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_po_status) . "' ";
 }
+if (isset($flt_stage_status) && $flt_stage_status != "") {
+	$sql_cl 	.= " AND t1.stage_status = '" . $flt_stage_status . "' ";
+}
 $sql_cl	.= " GROUP BY t1.po_id_master	
 			 ORDER BY  t1.po_id_master DESC";
 // echo $sql_cl;
@@ -145,7 +148,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 																						} ?>">
 										<div class="row">
 											<br>
-											<div class="input-field col m2 s12 custom_margin_bottom_col">
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
 												<?php
 												$field_name     = "flt_po_no";
 												$field_label	= "PO#";
@@ -213,7 +216,7 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 													</label>
 												</div>
 											</div>
-											<div class="input-field col m3 s12 custom_margin_bottom_col">
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
 												<?php
 												$field_name = "flt_vender_invoice_no";
 												$field_label = "Vendor Invoice#";
@@ -244,9 +247,8 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 														</span>
 													</label>
 												</div>
-											</div>
-
-											<div class="input-field col m2 s12 custom_margin_bottom_col">
+											</div> 
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
 												<?php
 												$field_name     = "flt_po_status";
 												$field_label	= "Status";
@@ -265,6 +267,38 @@ $page_heading 	= "Purchase Orders (Package / Parts) ";
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
 																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_stage_status";
+												$field_label	= "Stage";
+												$sql1			= "SELECT *  FROM stages_status WHERE 1=1 AND enabled = 1  ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
 														<?php }
 														} ?>
 													</select>

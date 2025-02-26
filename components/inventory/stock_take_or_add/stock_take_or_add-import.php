@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("serial_no", "transfer_location",);
+$supported_column_titles 	= array("serial_no", "entry_type", "location");
 $duplication_columns 		= array("serial_no");
-$required_columns 			= array("serial_no", "transfer_location");
+$required_columns 			= array("serial_no", "entry_type");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -67,7 +67,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 $added = 0;
-$master_table = "stock_transfer";
+$master_table = "stock_take_or_add";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	// $filter_import_colums = array_filter($import_colums, function ($value) {
@@ -124,128 +124,178 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$n = 0;
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
 				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-					$sub_location_name1 = $all_data[$n]['transfer_location'];
-					$db_column = $dup_data;
-					if ($db_column == 'serial_no') {
-						$sql1		= " SELECT a.* 
-										FROM product_stock a 
-										INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location  
-										WHERE  1=1
-									   	AND a.serial_no 		= '" . $duplicate_colum_values1 . "'
-										AND b.sub_location_name	= '" . $sub_location_name1 . "' ";
+					$sub_location_name1 = $all_data[$n]['location'];
+					$entry_type1 		= $all_data[$n]['entry_type'];
+					$db_column 			= $dup_data;
+					if ($db_column == 'serial_no') { 
+						$last_entry_type = ""; 
+						if(isset($entry_type1) && (strtolower($entry_type1) == 'add')){
+							$sql_dup	= " SELECT a.*, b.entry_type 
+											FROM product_stock a 
+											INNER JOIN stock_take_or_add b ON b.stock_id = a.id 
+											WHERE a.enabled	= 1
+											AND a.serial_no	= '" . $duplicate_colum_values1 . "'
+											ORDER BY b.id DESC LIMIT 1 ";
+							$result_dup	= $db->query($conn, $sql_dup);
+							$count_dup	= $db->counter($result_dup);
+							if ($count_dup > 0) { 
+								$row_dup1    		= $db->fetch($result_dup);
+								$last_entry_type 	= $row_dup1[0]['entry_type'];
+							}	
+							if($last_entry_type != 'Add'){
+								;
+							}
+							else{
+								$duplicate_data_array[] = $duplicate_colum_values1;
+								if (!isset($error['msg'])) {
+									$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
+								} else {
+									$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
+								}
+							} 
+						}
+						else if(isset($entry_type1) && (strtolower($entry_type1) == 'take')){
+							$sql_dup	= " SELECT a.*, b.entry_type
+											FROM product_stock a 
+											INNER JOIN stock_take_or_add b ON b.stock_id = a.id 
+											WHERE a.enabled	= 1
+											AND a.serial_no	= '" . $duplicate_colum_values1 . "'
+											ORDER BY b.id DESC LIMIT 1 ";
+							$result_dup	= $db->query($conn, $sql_dup);
+							$count_dup	= $db->counter($result_dup);
+							if ($count_dup > 0) { 
+								$row_dup1    		= $db->fetch($result_dup);
+								$last_entry_type 	= $row_dup1[0]['entry_type'];
+							}	
+							if($last_entry_type != 'Take'){
+								;
+							}
+							else{
+								$duplicate_data_array[] = $duplicate_colum_values1;
+								if (!isset($error['msg'])) {
+									$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
+								} else {
+									$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
+								}
+							} 
+						}
 					}
 					else{
 						$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
-					}
-					$result1	= $db->query($conn, $sql1);
-					$count1		= $db->counter($result1);
-					if ($count1 > 0) {
-						$duplicate_data_array[] = $duplicate_colum_values1;
-						if (!isset($error['msg'])) {
-							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist/transfered on the location.";
-						} else {
-							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist/transfered on the location.";
+						$result1	= $db->query($conn, $sql1);
+						$count1		= $db->counter($result1);
+						if ($count1 > 0) {
+							$duplicate_data_array[] = $duplicate_colum_values1;
+							if (!isset($error['msg'])) {
+								$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist/transfered on the location.";
+							} else {
+								$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist/transfered on the location.";
+							}
 						}
 					}
 					$n++;
 				}
 			} 
+			$m = 0;
 			foreach ($all_data  as $data1) {
 				$duplicate_data_array = array_unique($duplicate_data_array);
 				if (!in_array($data1[$dup_data], $duplicate_data_array)) {
 					$columns = $column_data = "";
-					foreach ($data1 as $key => $data) {
-						if ($key != "" && $key != 'is_insert') {
-							if ($key == 'serial_no') {
-								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-									$table 			= "product_stock"; 
- 									$sql1 			= "SELECT * FROM " . $table . " WHERE " . $key . " = '" . $data . "' ";
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									if ($count1 > 0) {
-										$row1 = $db->fetch($result1);
-										$stock_id 					=  $row1[0]['id'];
-										$transfer_from_location_id	=  $row1[0]['sub_location'];
-										$db_field2					= "stock_id";
+					$entry_type1 = $all_data[$m]['entry_type'];
+					if(isset($entry_type1) && (strtolower($entry_type1) == 'add' || strtolower($entry_type1) == 'take')){
+						foreach ($data1 as $key => $data) {
+							if ($key != "" && $key != 'is_insert') {
+								if ($key == 'serial_no') {
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										$table 			= "product_stock"; 
+										$sql1 			= "SELECT * FROM " . $table . " WHERE " . $key . " = '" . $data . "' ";
+										$result1 		= $db->query($conn, $sql1);
+										$count1 		= $db->counter($result1);
+										if ($count1 > 0) {
+											$row1 = $db->fetch($result1);
+											$stock_id		= $row1[0]['id'];
+											$location_id	= $row1[0]['sub_location'];
+											$db_field2		= "stock_id";
 
-										$columns 					.= ", transfer_from_location_id";
-										$column_data 				.= ", '" . $transfer_from_location_id . "'";
-
-										$columns 					.= ", " . $db_field2;
-										$column_data 				.= ", '" . $stock_id . "'";
-										
-									} 
-								}
-							}
-							else if ($key == 'transfer_location') {
-								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-									$table 			= "warehouse_sub_locations";
-									$db_field1		= "sub_location_name";
- 									$sql1 			= "SELECT * FROM " . $table . " WHERE " . $db_field1 . " = '" . $data . "' ";
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									if ($count1 > 0) {
-										$row1 = $db->fetch($result1);
-										$transfer_to_location_id =  $row1[0]['id'];
-										$db_field2				 = "transfer_to_location_id";
-										$columns 				.= ", " . $db_field2;
-										$column_data 			.= ", '" . $transfer_to_location_id . "'";
-									} 
-									else{
-										$table = "warehouse_sub_locations";
-										$sql6 = "INSERT INTO " . $table . "(subscriber_users_id, warehouse_id, sub_location_name, sub_location_type, purpose, is_mobile, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-												 VALUES('" . $subscriber_users_id . "', 1, '" . $data . "', 'bin', 'Transfer', 'no', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";//echo "<br>" . $sql6;
-										$ok = $db->query($conn, $sql6);
-										if ($ok) {
-											$transfer_to_location_id 	= mysqli_insert_id($conn);
-											$db_field2					= "transfer_to_location_id";
-											$columns 				   .= ", " . $db_field2;
-											$column_data 			   .= ", '" . $transfer_to_location_id . "'";
-										}
+											$columns		.= ", " . $db_field2;
+											$column_data	.= ", '" . $stock_id . "'";
+											
+										} 
 									}
 								}
-							}  
-							else {
-								$columns 		.= ", " . $key;
-								$column_data 	.= ", '" . $data . "'";
-							}
-						}
-					}
+								else if ($key == 'location') {
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										$table 			= "warehouse_sub_locations";
+										$db_field1		= "sub_location_name";
+										$sql1 			= "SELECT * FROM " . $table . " WHERE " . $db_field1 . " = '" . $data . "' ";
+										$result1 		= $db->query($conn, $sql1);
+										$count1 		= $db->counter($result1);
+										if ($count1 > 0) {
+											$row1 			= $db->fetch($result1);
+											$location_id 	 =  $row1[0]['id'];
+											$db_field2		 = "location_id";
 
-					if ($columns != "" && $column_data != "" && isset($stock_id) && $stock_id>0 ) { // ONLY IF one field 
-						$sql_dup	= " SELECT a.* FROM product_stock a  
-										WHERE a.id	= '" . $stock_id . "' 
-										AND a.sub_location	= '" . $transfer_to_location_id . "' "; 
-						$result_dup	= $db->query($conn, $sql_dup);
-						$count_dup	= $db->counter($result_dup);
-						if ($count_dup == 0) {
-							$sql6 = "INSERT INTO " . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-									VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+											$columns		.= ", " . $db_field2;
+											$column_data	.= ", '" . $location_id . "'";
+										} 
+										else{
+											$table = "warehouse_sub_locations";
+											$sql6 = "INSERT INTO " . $table . "(subscriber_users_id, warehouse_id, sub_location_name, sub_location_type, purpose, is_mobile, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+													VALUES('" . $subscriber_users_id . "', 1, '" . $data . "', 'bin', 'Take/In', 'no', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";//echo "<br>" . $sql6;
+											$ok = $db->query($conn, $sql6);
+											if ($ok) {
+												$location_id	= mysqli_insert_id($conn);
+												$db_field2		= "location_id";
+												$columns		.= ", " . $db_field2;
+												$column_data	.= ", '" . $location_id . "'";
+											}
+										}
+									}
+								}  
+								else {
+									$columns 		.= ", " . $key;
+									$column_data 	.= ", '" . $data . "'";
+								}
+							}
+						} 
+						if(isset($entry_type1) && (strtolower($entry_type1) == 'add')){
+							$p_total_stock = '1';
+						}
+						if(isset($entry_type1) && (strtolower($entry_type1) == 'take')){
+							$p_total_stock  = '0'; 
+						}
+ 
+						if ($columns != "" && $column_data != "" && isset($stock_id) && $stock_id>0 ) { // ONLY IF one field 
+							$sql6 = "INSERT INTO " . $master_table . "(subscriber_users_id " . $columns . ", qty, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+									 VALUES('" . $subscriber_users_id . "' " . $column_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							// echo "<br>" . $sql6;
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {
-								$id 			= mysqli_insert_id($conn);
-								$transfer_no	= "TR" . $id;
+								$id			= mysqli_insert_id($conn);
+								$change_no	= "CN" . $id;
 
-								$sql6 = "UPDATE stock_transfer SET transfer_no = '" . $transfer_no . "' WHERE id = '" . $id . "' ";
+								$sql6 = "UPDATE " . $master_table . " SET change_no = '" . $change_no . "' WHERE id = '" . $id . "' ";
 								$db->query($conn, $sql6);
 								if(isset($stock_id) && $stock_id>0){
-									$sql_c_up = "UPDATE product_stock	SET sub_location				= '" . $transfer_to_location_id . "', 
-																					
-																			update_date					= '" . $add_date . "',
-																			update_by					= '" . $_SESSION['username'] . "',
-																			update_by_user_id			= '" . $_SESSION['user_id'] . "',
-																			update_ip					= '" . $add_ip . "',
-																			update_timezone				= '" . $timezone . "'
+									$sql_c_up = "UPDATE product_stock SET  p_total_stock = '" . $p_total_stock . "', ";
+									if(isset($entry_type1) && (strtolower($entry_type1) == 'add') && isset($location_id) && $location_id>0){
+										$sql_c_up .= "sub_location = '" . $location_id . "', ";
+									}
+									$sql_c_up .= "	update_date					= '" . $add_date . "',
+													update_by					= '" . $_SESSION['username'] . "',
+													update_by_user_id			= '" . $_SESSION['user_id'] . "',
+													update_ip					= '" . $add_ip . "',
+													update_timezone				= '" . $timezone . "'
 												WHERE id = '" . $stock_id . "' ";
 									$db->query($conn, $sql_c_up);
-
 								}
 								$added++;
 							}
+							
 						}
 					}
 				}
+				$m++;
 			}
 		}
 		if ($added > 0) {
@@ -366,7 +416,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
-										
+										if($s_heading == 'entry_type'){
+											$cell_format .= " (Take or Add)";
+										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>

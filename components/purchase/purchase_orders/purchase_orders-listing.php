@@ -41,7 +41,7 @@ $sql_cl			= " SELECT * FROM (
 						SELECT '' AS offer_no, aa.po_no,aa.vender_invoice_no, aa.order_status, aa.sub_user_id,
 								aa.id AS po_id_master, aa.enabled,  
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order,
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
+								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po, aa.stage_status
 						FROM purchase_orders aa
 						LEFT JOIN venders c ON c.id = aa.vender_id
 						LEFT JOIN inventory_status f ON f.id = aa.order_status
@@ -51,9 +51,9 @@ $sql_cl			= " SELECT * FROM (
 						UNION ALL 
 						
 						SELECT 	a.offer_no AS offer_no, aa.po_no, aa.vender_invoice_no, aa.order_status, aa.sub_user_id, 
-								aa.id AS po_id_master, aa.enabled,
+								aa.id AS po_id_master, aa.enabled, 
 								c.id as vender_id, c.vender_name, aa.po_date, aa.enabled AS order_enabled, aa.add_by_user_id AS add_by_user_id_order, 
-								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po,aa.stage_status
+								f.status_name AS po_status_name, aa.is_tested_po, aa.is_wiped_po, aa.is_imaged_po, aa.stage_status
 						FROM purchase_orders aa
 						INNER JOIN offers a ON a.id = aa.offer_id
 						INNER JOIN venders c ON c.id = a.vender_id
@@ -76,6 +76,9 @@ if (isset($flt_vender_invoice_no) && $flt_vender_invoice_no != "") {
 }
 if (isset($flt_po_status) && $flt_po_status != "") {
 	$sql_cl 	.= " AND t1.order_status = '" . trim($flt_po_status) . "' ";
+}
+if (isset($flt_stage_status) && $flt_stage_status != "") {
+	$sql_cl 	.= " AND t1.stage_status = '" . $flt_stage_status . "' ";
 }
 $sql_cl	.= " AND t1.enabled = 1
 			 ORDER BY  t1.enabled DESC, t1.po_id_master DESC";
@@ -161,7 +164,7 @@ $page_heading 	= "List Purchase Orders ";
 																						} ?>">
 										<div class="row">
 											<br>
-											<div class="input-field col m2 s12 custom_margin_bottom_col">
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
 												<?php
 												$field_name     = "flt_po_no";
 												$field_label	= "PO#";
@@ -229,7 +232,7 @@ $page_heading 	= "List Purchase Orders ";
 													</label>
 												</div>
 											</div>
-											<div class="input-field col m3 s12 custom_margin_bottom_col">
+											<div class="input-field col m2 s12 custom_margin_bottom_col">
 												<?php
 												$field_name = "flt_vender_invoice_no";
 												$field_label = "Vendor Invoice#";
@@ -261,8 +264,7 @@ $page_heading 	= "List Purchase Orders ";
 													</label>
 												</div>
 											</div>
-
-											<div class="input-field col m2 s12 custom_margin_bottom_col">
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
 												<?php
 												$field_name     = "flt_po_status";
 												$field_label	= "Status";
@@ -281,6 +283,38 @@ $page_heading 	= "List Purchase Orders ";
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
 																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m1 s12 custom_margin_bottom_col">
+												<?php
+												$field_name     = "flt_stage_status";
+												$field_label	= "Stage";
+												$sql1			= "SELECT *  FROM stages_status WHERE 1=1 AND enabled = 1  ";
+												$result1		= $db->query($conn, $sql1);
+												$count1         = $db->counter($result1);
+												?>
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
 														<?php }
 														} ?>
 													</select>

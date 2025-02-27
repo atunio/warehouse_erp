@@ -434,7 +434,7 @@
                                             $order_qty_val = $order_qty[$i - 1];
                                         }
                                         $pkg_stock_of_product_needed = $order_qty_val - $pkg_stock_in_hand;
-                                        if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { ?>
+                                        //if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { ?>
                                             <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                                 <td>
                                                     <select <?php echo $disabled;
@@ -508,10 +508,10 @@
                                                     $field_name     = "expected_status";
                                                     $field_id       = "expectedstatus_" . $i;
                                                     $field_label    = "Status";
-                                                    $sql_status     = "SELECT id, status_name
+                                                    $sql_status     = " SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
-                                                                        AND id IN(5, 13, 27)";
+                                                                        AND status_type = 'Add Product' ";
                                                     $result_status  = $db->query($conn, $sql_status);
                                                     $count_status   = $db->counter($result_status);
                                                     ?>
@@ -540,7 +540,7 @@
                                                     <?php } ?>
                                                 </td>
                                             </tr>
-                                    <?php }
+                                    <?php //}
                                     } ?>
                                     <tr>
                                         <td class="text_align_right" colspan="3"><b>Total: </b></td>

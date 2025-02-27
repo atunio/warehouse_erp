@@ -35,6 +35,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$product_category			=  $row_ee[0]['product_category'];
 	$devices_per_user_per_day	= $row_ee[0]['devices_per_user_per_day'];
 	$no_of_employees			= $row_ee[0]['no_of_employees'];
+	$repair_type				= $row_ee[0]['repair_type'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -44,8 +45,6 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-
-
 	$field_name = "devices_per_user_per_day";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
@@ -60,25 +59,36 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset(${$field_name}) && (${$field_name} == "" || ${$field_name} == "0")) {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
+	} else if (${$field_name} == 'Repair') {
+		$field_name = "repair_type";
+		if (isset(${$field_name}) && (${$field_name} == "" || ${$field_name} == "0")) {
+			$error[$field_name] 	= "Required";
+			${$field_name . "_valid"} = "invalid";
+		}
+	} else {
+		$repair_type = 0;
 	}
 	if (empty($error)) {
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* 
+				$sql_dup 	= " SELECT a.* 
 								FROM formula_category a 
 								WHERE  a.formula_type		= '" . $formula_type . "'
 								AND  a.product_category		= '" . $product_category . "' ";
+				if ($formula_type == 'Repair') {
+					$sql_dup .= " AND a.repair_type = '" . $repair_type . "' ";
+				}
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_category(subscriber_users_id, formula_type, product_category, devices_per_user_per_day,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $product_category . "',  '" . $devices_per_user_per_day  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_category(subscriber_users_id, formula_type, repair_type, product_category, devices_per_user_per_day,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $repair_type . "', '" . $product_category . "',  '" . $devices_per_user_per_day  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$msg['msg_success'] = "Record has been added successfully.";
-						$formula_type = $product_category = $devices_per_user_per_day = $no_of_employees = "";
+						$formula_type = $product_category = $devices_per_user_per_day = $no_of_employees = $repair_type = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -94,12 +104,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								WHERE  a.formula_type		= '" . $formula_type . "'
 								AND  a.product_category		= '" . $product_category . "'
 								AND a.id		  		   != '" . $id . "'";
+				if ($formula_type == 'Repair') {
+					$sql_dup .= " AND a.repair_type = '" . $repair_type . "' ";
+				}
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE formula_category SET 	formula_type				= '" . $formula_type . "', 
 																product_category			= '" . $product_category . "',
 																devices_per_user_per_day	= '" . $devices_per_user_per_day . "', 
+																repair_type					= '" . $repair_type . "', 
 																
 																update_date					= '" . $add_date . "',
 																update_by					= '" . $_SESSION['username'] . "',
@@ -230,7 +244,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m4 s12">
+							<div class="input-field col m2 s12">
 								<?php
 								$field_name 	= "devices_per_user_per_day";
 								$field_label 	= "No of Devices Per User Per Day";
@@ -250,7 +264,45 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-
+							<div class="input-field col m3 s12 formula_type" style="<?php if (!isset($formula_type) || (isset($formula_type) && $formula_type != 'Repair') || $formula_type == '') {
+																						echo "display: none;";
+																					} ?>">
+								<?php
+								$field_name     = "repair_type";
+								$field_label    = "Repair Type";
+								$sql1           = "SELECT * FROM repair_types WHERE enabled = 1  ORDER BY repair_type_name ";
+								$result1        = $db->query($conn, $sql1);
+								$count1         = $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">Select</option>
+										<?php
+										if ($count1 > 0) {
+											$row1    = $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['repair_type_name']; ?> </option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
+							</div>
+							<div class="input-field col m2 s12 formula_type" style="<?php if (!isset($formula_type) || (isset($formula_type) && $formula_type != 'Repair') || $formula_type == '') {
+																						echo "display: none;";
+																					} ?>">
+								<a class="btn waves-effect waves-light gradient-45deg-amber-amber modal-trigger" href="#repair_type_add_modal">New Repair Type</a>
+							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">
@@ -267,5 +319,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		</div>
 	</div>
 </div>
-<br><br><br><br>
+<?php include("sub_files/add_repair_type_modal.php") ?>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<?php include("sub_files/add_repair_type_js_code.php") ?>
 <!-- END: Page Main-->

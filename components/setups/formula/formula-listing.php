@@ -37,9 +37,10 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "	SELECT a.*, b.category_name
+$sql_cl		= "	SELECT a.*, b.category_name, c.repair_type_name 
 				FROM formula_category a
 				LEFT JOIN product_categories b ON b.id = a.product_category
+				LEFT JOIN repair_types c ON c.id = a.repair_type
 				WHERE 1=1  ";
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
@@ -160,17 +161,17 @@ $page_heading 	= "List of Formula";
 								</form>
 								<div class="row">
 									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Formula Type','Category','No of Devices Per User Per Day','Actions');
+										<?php
+										$table_columns	= array('SNo', 'Formula Type', 'Repair Type', 'Category', 'No of Devices Per User Per Day', 'Actions');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) { ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
+										} ?>
 									</div>
 								</div>
 								<div class="row">
@@ -180,14 +181,13 @@ $page_heading 	= "List of Formula";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -198,17 +198,32 @@ $page_heading 	= "List of Formula";
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$id = $data['id'];  ?>
+														$id = $data['id'];
+														$col_no = 0; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['formula_type']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['category_name']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['devices_per_user_per_day']; ?></td>
-
-															<?php //*/ 
-															?>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[4]);?>">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $i + 1;
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['formula_type'];
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['repair_type_name'];
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['category_name'];
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['devices_per_user_per_day'];
+																$col_no++; ?>
+															</td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php
+																$col_no++;
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&cmd2=add&id=" . $id) ?>" title="Edit">
 																		<i class="material-icons dp48">edit</i>

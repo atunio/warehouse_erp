@@ -49,9 +49,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($department_name) && $department_name == "") {
 		$error['msg'] = "Enter department name";
 		$title_valid = "invalid";
-	} else if (isset($department_name) && (strlen($department_name) < 3)) {
-		$error['msg'] = "Department name should be greater than 3 characters";
-		$department_name_valid = "invalid";
 	}
 	if (empty($error)) {
 		if ($cmd == 'add') {
@@ -85,9 +82,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -101,7 +98,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">

@@ -35,7 +35,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error['msg'] 	= "Enter Designation";
 		$designation_valid	= "invalid";
 	}
-
 	if ($cmd == 'add') {
 		$sql1 		= "	SELECT * FROM " . $selected_db_name . ".designations 
 						WHERE subscriber_users_id = '" . $subscriber_users_id . "' 
@@ -88,9 +87,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -104,7 +103,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">

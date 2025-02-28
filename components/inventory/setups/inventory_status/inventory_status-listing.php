@@ -117,7 +117,7 @@ $page_heading 	= "List of Status";
 									<div class="row">
 										<div class="text_align_right">
 											<?php 
-											$table_columns	= array('SNo', 'Status Name','Actions');
+											$table_columns	= array('SNo', 'Status Name', 'Status Type', 'Actions');
 											$k 				= 0;
 											foreach($table_columns as $data_c1){?>
 												<label>
@@ -154,12 +154,15 @@ $page_heading 	= "List of Status";
 													if ($count_cl > 0) {
 														$row_cl = $db->fetch($result_cl);
 														foreach ($row_cl as $data) {
-															$id = $data['id'];  ?>
+															$id = $data['id'];
+															$col_no = 0; ?>
 															<tr>
-																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo ucwords(strtolower($data['status_name'])); ?></td>
-																<td class="text-align-center col-<?= set_table_headings($table_columns[2]);?>">
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo $i + 1;  $col_no++;?></td>
+																<td class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo ucwords(strtolower($data['status_name']));  $col_no++;?></td>
+																<td class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo ucwords(strtolower($data['status_type']));  $col_no++;?></td>
+																<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]);?>">
 																	<?php
+																	 $col_no++;
 																	if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																			<i class="material-icons dp48">add</i>

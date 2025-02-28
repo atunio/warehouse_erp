@@ -97,6 +97,33 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$case_pack[]				= $data2['case_pack'];
 		}
 	}
+
+	$sql2	= " SELECT distinct a.location_id 
+				FROM users_bin_for_diagnostic a 
+				INNER JOIN users b ON a.bin_user_id = b.id 
+				INNER JOIN warehouse_sub_locations c ON c.id = a.location_id 
+				INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
+				WHERE a.enabled = 1 
+				AND a.is_processing_done = 0
+				AND d.po_id = '".$id."'
+				AND a.bin_user_id = '".$_SESSION['user_id']."' ";
+	$result2	= $db->query($conn, $sql2);
+	$user_no_of_assignments = $db->counter($result2);
+}
+if (!isset($assignment_id)) {
+	$assignment_id = "";
+}
+if (isset($assignment_id) && $assignment_id > 0 && isset($id) && $id > 0) {
+	$sql_ee			= " SELECT a.assignment_no, b.sub_location_id,  COUNT(b.id) AS assignment_qty 
+						FROM `users_bin_for_diagnostic` a
+						INNER JOIN `purchase_order_detail_receive` b ON a.`location_id` = b.`sub_location_id`
+						WHERE a.id = '" . $assignment_id . "'
+						AND b.po_id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee		= $db->query($conn, $sql_ee);
+	$row_ee			= $db->fetch($result_ee);
+	$assignment_qty			=	$row_ee[0]['assignment_qty'];
+	$assignment_no			=  $row_ee[0]['assignment_no']; 
+	$assignment_location_id	=  $row_ee[0]['sub_location_id'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {

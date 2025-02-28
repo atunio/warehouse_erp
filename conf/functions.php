@@ -1936,3 +1936,27 @@ function set_table_headings($heading)
 	$heading = strtolower(str_replace(array(' ', "</br>", "<br>", "/"), '', $heading));
 	return $heading;
 }
+function po_permisions2($perm_type, $menu_id)
+{
+	$selected_db_name 	= $_SESSION["db_name"];
+	$user_id         	= $_SESSION["user_id"];
+	$db 				= $_SESSION["db"];
+	$conn 				= $_SESSION["conn"];
+	$output = 0;
+	if ($_SESSION["user_type"] != 'Admin') {
+		$sql	= " SELECT *
+					FROM " . $selected_db_name . ".sub_users_role_permissions a
+					INNER JOIN " . $selected_db_name . ".sub_users_user_roles b ON b.role_id = a.role_id
+					WHERE b.user_id = '" . $user_id . "'
+					AND a.menu_id = '" . $menu_id . "' 
+					AND FIND_IN_SET(  '" . $perm_type . "' , special_module_permisions) > 0 ";
+		$result		= $db->query($conn, $sql);
+		$counter	= $db->counter($result);
+		if ($counter > 0) {
+			$output = 1;
+		}
+	} else {
+		$output = 1;
+	}
+	return $output;
+}

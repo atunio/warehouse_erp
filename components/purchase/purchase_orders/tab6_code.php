@@ -1,9 +1,8 @@
 <?php
-
+ 
 if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 	$product_id_barcode_diagnostic 		= "5";
 	$product_id_manual_diagnostic 		= "5";
-	$sub_location_id_barcode_diagnostic	= 1737;
 	$sub_location_id_manual_diagnostic	= 2311;
 	$phone_check_username				= 'Ctinno2';
 	$serial_no_manual_diagnostic		= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "DMQD7TMFMF3M9", "DMQD7TMFMF3M10", "DMQD7TMFMF3M11", "DMQD7TMFMF3M12", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");
@@ -164,6 +163,9 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 	extract($_POST);
+	if (isset($assignment_id)  && ($assignment_id == "")) {
+		$error6['assignment_id'] = "Required";
+	}
 	if (isset($phone_check_username)  && ($phone_check_username == "")) {
 		$error6['phone_check_username'] = "Required";
 	}
@@ -176,7 +178,12 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 		} else {
 			$diagnostic_date1 	= convert_date_mysql_slash($diagnostic_date);
 
-			$invoiceNo 	= $po_no;
+			$sql_as1		= " SELECT a.assignment_no FROM users_bin_for_diagnostic a WHERE a.id = '" . $assignment_id . "'  "; // echo $sql_ee;
+			$result_as1		= $db->query($conn, $sql_as1);
+			$row_as1		= $db->fetch($result_as1);
+ 			$assignment_no	=  $row_as1[0]['assignment_no']; 
+
+			$invoiceNo 	= $assignment_no;
 			$limit		= 500;  // Optional, max 500 records
 			$offset		= 1;  // Optional
 
@@ -203,8 +210,8 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 					// $data = "DMTPD5R1FK10";
 					if ($data != "" && $data != null) {
 
-						$insert_bin_and_po_id_fields 	= "po_id, ";
-						$insert_bin_and_po_id_values 	= "'" . $id . "', ";
+						$insert_bin_and_po_id_fields 	= "po_id, assignment_id, ";
+						$insert_bin_and_po_id_values 	= "'" . $id . "', '" . $assignment_id . "', ";
 						$serial_no_barcode_diagnostic 	= $data;
 
 						$sql_pd01_4		= "	SELECT  a.*
@@ -252,7 +259,6 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 				foreach ($bulkserialNo as $data) {
 					$phone_check_product_id		= $product_ids[$data];
 					$single_model_no			= $model_nos[$data];
-					$single_price				= $prices[$data];
 					$product_id_fetched 		= 0;
 
 					if ($phone_check_product_id != "") {
@@ -283,19 +289,19 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 								$product_id_fetched				= $id_identification_field_value;
 							}
 						}
-
 						$sql_pd01_4 		= "	SELECT  a.*
 												FROM purchase_order_detail_receive_diagnostic_fetch a 
 												WHERE a.enabled = 1 
 												AND a.po_id = '" . $id . "'
+												AND a.assignment_id = '" . $assignment_id . "'
 												AND a.serial_no = '" . $data . "'
 												ORDER BY a.id DESC LIMIT 1";
 						$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 						$count_pd01_4	= $db->counter($result_pd01_4);
 						if ($count_pd01_4 == 0) {
 							//  echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ".$phone_check_product_id;
-							$sql = "INSERT INTO purchase_order_detail_receive_diagnostic_fetch (po_id, product_id, " . $id_identification_field_name . ", product_category, serial_no, model_no, amount, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-									VALUES	('" . $id . "', '" . $product_id_fetched . "', '" . $id_identification_field_value . "', '" . $product_category_diagn . "', '" . $data . "', '" . $single_model_no . "',  '" . $single_price . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
+							$sql = "INSERT INTO purchase_order_detail_receive_diagnostic_fetch (po_id, assignment_id, product_id, " . $id_identification_field_name . ", product_category, serial_no, model_no,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+									VALUES	('" . $id . "', '" . $assignment_id . "', '" . $product_id_fetched . "', '" . $id_identification_field_value . "', '" . $product_category_diagn . "', '" . $data . "', '" . $single_model_no . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
 							$ok = $db->query($conn, $sql);
 							if ($ok) {
 								$sql_c_up = "UPDATE  phone_check_api_data SET 	 

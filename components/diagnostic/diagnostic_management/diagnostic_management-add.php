@@ -10,7 +10,7 @@ $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
 
-$sql_cl 		= "	SELECT DISTINCT b.po_no, a.po_id, b2.sub_location_name, b2.sub_location_type,
+$sql_cl 		= "	SELECT DISTINCT a2.id, a2.assignment_no, b.po_no, a.po_id, b2.sub_location_name, b2.sub_location_type,
 							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(c2.first_name, ''), ' ', COALESCE(c2.middle_name, ''), ' ', COALESCE(c2.last_name, ''), ' (', COALESCE(c2.username, ''), ')') ) AS task_user_details
 					FROM users_bin_for_diagnostic a2
 					INNER JOIN warehouse_sub_locations b2 ON b2.id = a2.location_id
@@ -90,7 +90,7 @@ $page_heading 	= "Diagnostic";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'PO No', 'Location', 'User Detail', 'Actions');
+										$table_columns	= array('SNo', 'PO No', 'AssignmentNo', 'Location', 'User Detail', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -127,7 +127,8 @@ $page_heading 	= "Diagnostic";
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$detail_id2 = $data['po_id'];  ?>
+														$detail_id2 			= $data['po_id'];
+														$bin_for_diagnostic_id 	= $data['id'];?>
 														<tr>
 															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php echo $i + 1;
@@ -141,13 +142,17 @@ $page_heading 	= "Diagnostic";
 																<?php echo $data['sub_location_name']; ?>
 																<?php if ($data['sub_location_type'] != "") echo " (" . $data['sub_location_type'] . ")"; ?>
 															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo $data['assignment_no'];  
+																$col_no++;?>
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['task_user_details'];
 																																$col_no++; ?>
 															</td>
 															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php
-																if (po_permisions("Diagnostic") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=10&page=profile&cmd=edit&id=" . $detail_id2 . "&active_tab=tab6") ?>">
+																if (po_permisions2("Diagnostic", 10) == 1) { ?>
+																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=10&page=profile&cmd=edit&id=" . $detail_id2 . "&assignment_id=" . $bin_for_diagnostic_id . "&active_tab=tab6") ?>">
 																		<i class="material-icons dp48">list</i>
 																	</a>
 																<?php }

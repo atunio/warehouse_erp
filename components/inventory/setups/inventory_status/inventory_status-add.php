@@ -25,6 +25,7 @@ if ($cmd == 'edit' && isset($id)) {
 	$result_ee			= $db->query($conn, $sql_ee);
 	$row_ee				= $db->fetch($result_ee);
 	$status_name		= $row_ee[0]['status_name'];
+	$status_type		= $row_ee[0]['status_type'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -34,26 +35,34 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-	if (isset($status_name) && $status_name == "") {
-		$error['status_name']	= "Required";
-		$vender_name_valid 		= "invalid";
+	$field_name = "status_type";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name]		= "Required";
+		${$field_name."_valid"} = "invalid";
 	}
+	$field_name = "status_name";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name]		= "Required";
+		${$field_name."_valid"} = "invalid";
+	} 
 	if (empty($error)) {
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM inventory_status a  WHERE a.status_name	= '" . $status_name . "' ";
+				$sql_dup	= " SELECT a.* FROM inventory_status a
+								WHERE a.status_name	= '" . $status_name . "' 
+								AND a.status_type	= '" . $status_type . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".inventory_status(subscriber_users_id, status_name, add_date, add_by, add_ip)
-							VALUES('" . $subscriber_users_id . "', '" . $status_name . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".inventory_status(subscriber_users_id, status_name, status_type, add_date, add_by, add_ip)
+							VALUES('" . $subscriber_users_id . "', '" . $status_name . "', '" . $status_type . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$status_name = "";
+						$status_name = $status_type = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -65,11 +74,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			if (access("edit_perm") == 0) {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM inventory_status a WHERE a.status_name = '" . $status_name . "' AND a.id != '" . $id . "'";
+				$sql_dup	= " SELECT a.* 
+								FROM inventory_status a 
+								WHERE a.status_name  = '" . $status_name . "'
+								AND a.status_type	 = '" . $status_type . "'
+								AND a.id 			!= '" . $id . "'";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE inventory_status SET status_name	= '" . $status_name . "', 
+															 status_type		= '" . $status_type . "', 
 															 update_date	= '" . $add_date . "',
 															 update_by		= '" . $_SESSION['username'] . "',
 															 update_ip		= '" . $add_ip . "'
@@ -145,7 +159,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						<input type="hidden" name="is_Submit" value="Y" />
 						<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
 						<div class="row">
-							<div class="input-field col m6 s12">
+							<div class="input-field col m3 s12">
 								<?php
 								$field_name 	= "status_name";
 								$field_label 	= "Status";
@@ -162,6 +176,30 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 																} ?>
 									</span>
 								</label>
+							</div>
+							<div class="input-field col m2 s12">
+								<?php
+								$field_name 	= "status_type";
+								$field_label 	= "Type";
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate  <?php if (isset(${$field_name . "_valid"})) {
+																														echo ${$field_name . "_valid"};
+																													} ?>">
+										<option value="">Select</option>
+										<option value="Add Product" <?php if (isset(${$field_name}) && ${$field_name} == 'Add Product') { ?> selected="selected" <?php } ?>>Add Product</option>
+										<option value="General" <?php if (isset(${$field_name}) && ${$field_name} == 'General') { ?> selected="selected" <?php } ?>>General</option>
+ 									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
+																	} ?>
+										</span>
+									</label>
+								</div>
 							</div>
 						</div>
 						<div class="row">

@@ -9,7 +9,7 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-$sql_cl			= " SELECT a.id, a.location_id, b.sub_location_name, b.sub_location_type, 
+$sql_cl			= " SELECT a.id, a.assignment_no, a.location_id, b.sub_location_name, b.sub_location_type, 
 							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(d.first_name, ''), ' ', COALESCE(d.middle_name, ''), ' ', COALESCE(d.last_name, ''), ' (', COALESCE(d.username, ''), ')') ) AS task_user_details,
 							a.add_date
 					FROM users_bin_for_diagnostic a
@@ -84,7 +84,7 @@ $page_heading 	= "Bins For Diagnostic";
 								<div class="row">
 									<div class="text_align_right">
 										<?php 
-										$table_columns	= array('SNo', 'Location / Bin','Task Users','Assign Date','Actions');
+										$table_columns	= array('SNo', 'Location / Bin', 'AssignmentNo', 'Task Users','Assign Date','Actions');
 										$k 				= 0;
 										foreach($table_columns as $data_c1){?>
 											<label>
@@ -121,24 +121,36 @@ $page_heading 	= "Bins For Diagnostic";
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
+														$col_no = 0;
 														$id = $data['id']; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]);?>">
-																<?php
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo $i + 1;  
+																$col_no++;?>
+														</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php $col_no++;
 																echo $data['sub_location_name'];
 																if ($data['sub_location_type'] != "") {
 																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																} ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>">
-																<?php
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo $data['assignment_no'];  
+																$col_no++;?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php $col_no++;
 																if ($data['task_user_details'] != "   ()") {
 																	echo "" . $data['task_user_details'] . "";
 																} ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo "" . dateformat2($data['add_date']) . ""; ?></td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[4]);?>">
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo "" . dateformat2($data['add_date']) . "";  
+																$col_no++; ?>
+															</td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php $col_no++; ?>
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&detail_id=" . $id . "&cmd2=add") ?>">
 																	<i class="material-icons dp48">list</i>
 																</a>

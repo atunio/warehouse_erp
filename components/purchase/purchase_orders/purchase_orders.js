@@ -854,6 +854,23 @@ $(document).ready(function() {
     });
     /////////////////////////////////////////////
 
+
+    
+    /////////////////////////////////////////////
+    $(".show_update_master_profile_tab6").click(function() {  
+
+        $("#master_profile_tab6").show();
+        $(".update_master_profile_show_btn_tab6").hide();
+        $(".update_master_profile_hide_btn_tab6").show();
+
+    });
+    $(".hide_update_master_profile_tab6").click(function() {  
+        $("#master_profile_tab6").hide();
+        $(".update_master_profile_hide_btn_tab6").hide();
+        $(".update_master_profile_show_btn_tab6").show();
+    });
+    /////////////////////////////////////////////
+
     /////////////////////////////////////////////
     $(".show_receive_from_barcode_section_tab7").click(function() {
 

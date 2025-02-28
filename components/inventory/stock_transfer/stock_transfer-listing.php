@@ -168,9 +168,9 @@ $page_heading 	= "List of " . $main_menu_name;
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
 														$id = $data['id'];  
-														$col_no = 1;?>
+														$col_no = 0;?>
 														<tr> 
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo $i + 1; $col_no++;?></td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo $data['product_uniqueid']; $col_no++;?></td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo $data['product_desc']; $col_no++;?></td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>"><?php echo $data['category_name']; $col_no++;?></td>

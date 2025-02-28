@@ -519,6 +519,11 @@ switch ($type) {
                                 VALUES('" . $subscriber_users_id . "', '" . $bin_user_id . "', '" . $bin_id . "',  '" . $order_by . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
+                        $id				= mysqli_insert_id($conn);
+						$assignment_no			= "DIA-" . $id;
+						$sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql6);
+
                     include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
                 } else {
                     echo "Fail";

@@ -2,7 +2,7 @@
 if (!isset($module)) {
 	require_once('../../../conf/functions.php');
 	disallow_direct_school_directory_access();
-}
+} 
 if (isset($test_on_local) && $test_on_local == 1) {
 	if (isset($cmd) && $cmd != 'edit') {
 	}

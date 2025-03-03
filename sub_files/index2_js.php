@@ -353,6 +353,13 @@ if (isset($module) && ($module == 'sub_user_roles')) { ?>
                 $(".checkbox").prop("checked", false);
             }
         });
+        $("#all_checked_subTab").click(function() {
+            if ($(this).prop("checked")) {
+                $(".checkbox").prop("checked", true);
+            } else {
+                $(".checkbox").prop("checked", false);
+            }
+        });
     </script>
 <?php } ?>
 <script type="text/javascript">

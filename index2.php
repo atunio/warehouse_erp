@@ -305,6 +305,10 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				if ($string_data_explode[0] == 'assignment_id') {
 					$assignment_id	= $string_data_explode[1];
 				}
+				if ($string_data_explode[0] == 'active_subtab') {
+					$active_subtab	= $string_data_explode[1];
+				}
+				 
 			}
 			$sql_md 		= "SELECT * FROM menus WHERE id = '" . $module_id . "' ORDER BY id DESC LIMIT 1 ";
 			$result_md 		= $db->query($conn, $sql_md);

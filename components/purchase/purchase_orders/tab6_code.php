@@ -7,7 +7,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 	$phone_check_username				= 'Ctinno2';
 	$serial_no_manual_diagnostic		= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "DMQD7TMFMF3M9", "DMQD7TMFMF3M10", "DMQD7TMFMF3M11", "DMQD7TMFMF3M12", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");
 }
-
+  
 if (isset($cmd6) && $cmd6 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Diagnostic") == 0) {
 		$error6['msg'] = "You do not have add permissions.";
@@ -324,6 +324,72 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 
 			if ($k > 0) {
 				$msg6['msg_success'] = "Totl " . $k . " Serial#s have been maped.";
+			}
+		}
+	} else {
+		$error6['msg'] = "There is error, Please check it.";
+	}
+}
+
+if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') {
+	extract($_POST);
+	if (empty($error6)) {
+		if (access("add_perm") == 0) {
+			$error6['msg'] = "You do not have add permissions.";
+		} else {
+			$k = 0;
+			if (isset($bulkserialNo2) && $bulkserialNo2 != null) {
+				foreach ($bulkserialNo2 as $data) {
+					$phone_check_product_id		= $product_ids[$data];
+					$single_model_no			= $model_nos[$data];
+					$single_price[$k]				= $prices[$data];
+					$product_id_fetched 		= 0;
+
+					if ($phone_check_product_id != "") {
+						$sql_pd01 		= "	SELECT a.id, a.product_id, c.product_category
+											FROM purchase_order_detail a 
+											INNER JOIN purchase_orders b ON b.id = a.po_id
+											INNER JOIN products c ON c.id = a.product_id
+											WHERE 1=1 
+											AND a.po_id = '" . $id . "' 
+											AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+						$result_pd01	= $db->query($conn, $sql_pd01);
+						$count_pd01		= $db->counter($result_pd01);
+						if ($count_pd01 > 0) {
+							$row_pd01						= $db->fetch($result_pd01);
+							$product_category_diagn			= $row_pd01[0]['product_category'];
+							$id_identification_field_name	= "po_detail_id";
+							$id_identification_field_value	= $row_pd01[0]['id'];
+							$product_id_fetched				= $row_pd01[0]['product_id'];
+						} else {
+							$sql_pd011 		= "	SELECT c.id, c.product_category FROM products c WHERE 1=1 AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
+							$result_pd011	= $db->query($conn, $sql_pd011);
+							$count_pd011		= $db->counter($result_pd011);
+							if ($count_pd011 > 0) {
+								$row_pd011						= $db->fetch($result_pd011);
+								$product_category_diagn			= $row_pd011[0]['product_category'];
+								$id_identification_field_name	= "product_id";
+								$id_identification_field_value	= $row_pd011[0]['id'];
+								$product_id_fetched				= $id_identification_field_value;
+							}
+						}
+						
+						$sql_c_up = "UPDATE  purchase_order_detail_receive SET price 						= '" . $single_price[$k] . "',	 
+																	
+																		update_timezone		   	 			= '" . $timezone . "',
+																		update_date			    			= '" . $add_date . "',
+																		update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
+																		update_by			    			= '" . $_SESSION['username'] . "',
+																		update_ip			    			= '" . $add_ip . "',
+																		update_from_module_id				= '" . $module_id . "'
+								WHERE po_id = '".$id."' AND $id_identification_field_name = '".$id_identification_field_value."' AND serial_no_barcode = '".$data."' ";
+						$ok = $db->query($conn, $sql_c_up);
+						if($ok){
+							$msg6['msg_success'] = "Record updated successfully....";
+						}
+					}
+					$k++;
+				}
 			}
 		}
 	} else {
@@ -848,7 +914,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 	}
 }
 if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') {
-	extract($_POST);
+	extract($_POST); 
 	$field_name = "sub_location_id_fetched";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error6[$field_name] = "Required";
@@ -909,15 +975,15 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 							$row_pd01		= $db->fetch($result_pd01);
 							$receive_id_2 	= $row_pd01[0]['id'];
 						} else {
-							$sql = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-									VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							$sql = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+									VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$db->query($conn, $sql);
 							$receive_id_2 = mysqli_insert_id($conn);
 						}
 						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
 																				po_detail_id						= '" . $po_detail_id1 . "', 
 																				serial_no_barcode					= '" . $data . "', 
-
+ 
 																				phone_check_api_data				= '" . $jsonData2 . "',
 																				model_name							= '" . $model_name . "',
 																				make_name							= '" . $make_name . "',

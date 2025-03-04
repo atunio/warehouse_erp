@@ -72,6 +72,7 @@
             <div class="col s12 m12 l12">
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
+                        <input type="hidden" id="first_tab_url" value="<?php echo PROJECT_URL?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab1&id=' . $id); ?>" />
                         <?php
                         if (isset($po_no) && isset($id)) { ?>
                             <h5 class="media-heading">
@@ -85,12 +86,12 @@
                         <?php } ?>
                         <?php
                         if (isset($cmd) && $cmd == 'add') { ?>
-                            <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&cmd=edit&active_tab=tab1&cmd=' . $cmd . '&id=' . $id); ?>">
+                            <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=' . $cmd . '&id=' . $id); ?>">
 
                                 <input type="hidden" name="is_Submit" value="Y" />
                             <?php } ?>
                             <div class="row" style="margin-top: 20px;">
-                                <?php
+                                <?php 
                                 $field_name     = "po_date";
                                 $field_label     = "Order Date (d/m/Y)";
                                 ?>
@@ -277,12 +278,11 @@
             </div>
             <?php
 
-            if (isset($cmd) && $cmd == 'edit') { ?>
+            if (isset($cmd) && $cmd == 'edit' && isset($active_tab) && $active_tab == 'tab1') { ?>
                 <div class="col s12 m12 l12">
                     <div id="Form-advance2" class="card card card-default scrollspy custom_margin_section">
                         <div class="card-content custom_padding_section">
                             <table id="page-length-option1" class="bordered addproducttable" cellpadding="0" cellspacing="0">
-
                                 <?php
                                 if (isset($id) && $id > 0) {
 

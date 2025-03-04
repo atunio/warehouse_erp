@@ -1960,3 +1960,35 @@ function po_permisions2($perm_type, $menu_id)
 	}
 	return $output;
 }
+/*
+$poDetails = [
+    'Product1' => ['ordered' => 5, 'received' => 0, 'price' => 200],
+    'Product2' => ['ordered' => 10, 'received' => 0, 'price' => 300],
+];
+$firstReceipt = receiveProductsMaping(20, $poDetails);
+echo "<br><br>First Receipt: " . implode(", ", $firstReceipt) . "\n";
+*/
+function receiveProductsMaping($quantity, &$poDetails)
+{
+	$receivedDetails = [];
+	$unallocated = 0;
+
+	foreach ($poDetails as $product => &$details) {
+		if ($quantity <= 0) break;
+
+		$remaining = $details['ordered'] - $details['received'];
+		if ($remaining > 0) {
+			$allocated = min($remaining, $quantity);
+			$details['received'] += $allocated;
+			$receivedDetails[] = "$allocated items of $product";
+			$quantity -= $allocated;
+		}
+	}
+
+	if ($quantity > 0) {
+		$unallocated = $quantity;
+		$receivedDetails[] = "$unallocated items unallocated";
+	}
+
+	return $receivedDetails;
+}

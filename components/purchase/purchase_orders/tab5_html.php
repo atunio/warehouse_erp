@@ -1117,7 +1117,7 @@
                          </div>
                      <?php } ?>
                  </form>
-             <?php } ?>
+            <?php } ?> 
              <?php /*?>
                 <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab6_5" value="Y" />

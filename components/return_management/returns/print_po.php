@@ -129,7 +129,7 @@ $mpdf = new \Mpdf\Mpdf([
 	'margin_right' => 5,
 ]);
 
-$sql_ee1 = "SELECT a.*, b.phone_no
+$sql_ee1 = "SELECT a.*
 			FROM subscribers_users a
 			INNER JOIN users b ON b.subscriber_users_id = a.id AND b.user_type = 'Admin'
 			LIMIT 1";
@@ -140,23 +140,22 @@ if ($counter_ee1 > 0) {
 	$company_name			= $row_ee1[0]['company_name'];
 	$company_logo			= $row_ee1[0]['company_logo'];
 	$s_address				= $row_ee1[0]['s_address'];
-	$compnay_phone_no		= $row_ee1[0]['phone_no'];
+	$compnay_phone_no		= $row_ee1[0]['compnay_phone_no'];
 }
- $sql_ee1 = "SELECT  a.*, c.return_no,c.return_date, c.removal_order_id, d.store_name
-			FROM  return_items_detail a
-			INNER JOIN returns c ON c.id = a.return_id
-			INNER JOIN stores d ON d.id = c.store_id 
-			WHERE a.return_id = '" . $id . "'
-			GROUP BY a.id ";
-			
+ $sql_ee1 		= "	SELECT  a.*, c.return_no,c.return_date, c.removal_order_id, d.store_name
+					FROM  return_items_detail a
+					INNER JOIN returns c ON c.id = a.return_id
+					INNER JOIN stores d ON d.id = c.store_id 
+					WHERE a.return_id = '" . $id . "'
+					GROUP BY a.id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
 if ($counter_ee11 > 0) {
 	$row_ee11			= $db->fetch($result_ee11);
-	$return_no				= $row_ee11[0]['return_no'];
+	$return_no			= $row_ee11[0]['return_no'];
 	$po_date			= $row_ee11[0]['return_date'];
-	$store_name		= $row_ee11[0]['store_name'];
-	$return_id				= $row_ee11[0]['return_id'];
+	$store_name			= $row_ee11[0]['store_name'];
+	$return_id			= $row_ee11[0]['return_id'];
 	$removal_order_id	= $row_ee11[0]['removal_order_id'];
 
 	$report_data = '<div class="">

@@ -113,15 +113,16 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 if (!isset($assignment_id)) {
 	$assignment_id = "";
 }
-if (isset($assignment_id) && $assignment_id > 0 && isset($id) && $id > 0) {
+if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != "" && isset($id) && $id > 0) {
 	$sql_ee			= " SELECT a.assignment_no, a.location_id AS sub_location_id, IFNULL(SUM(b.enabled), 0) AS assignment_qty
 						FROM users_bin_for_diagnostic a
 						LEFT JOIN purchase_order_detail_receive b ON a.location_id = b.sub_location_id AND b.po_id = '" . $id . "'
 						WHERE a.id = '" . $assignment_id . "' "; //echo $sql_ee;
 	$result_ee		= $db->query($conn, $sql_ee);
 	$row_ee			= $db->fetch($result_ee);
-	$assignment_qty			=	$row_ee[0]['assignment_qty'];
-	$assignment_no			=  $row_ee[0]['assignment_no']; 
+	$assignment_qty			= $row_ee[0]['assignment_qty'];
+	$assignment_no			= $row_ee[0]['assignment_no']; 
+	$assignment_location_id	= $row_ee[0]['sub_location_id']; 
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {

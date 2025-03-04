@@ -520,7 +520,7 @@ switch ($type) {
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
                         $id				= mysqli_insert_id($conn);
-						$assignment_no			= "DIA-" . $id;
+						$assignment_no  = "A" . $id;
 						$sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 

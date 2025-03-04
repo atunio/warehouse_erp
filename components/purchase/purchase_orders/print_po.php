@@ -129,7 +129,7 @@ $mpdf = new \Mpdf\Mpdf([
 	'margin_right' => 5,
 ]);
 
-$sql_ee1 = "SELECT a.*, b.phone_no
+$sql_ee1 = "SELECT a.*
 			FROM subscribers_users a
 			INNER JOIN users b ON b.subscriber_users_id = a.id AND b.user_type = 'Admin'
 			LIMIT 1";
@@ -140,7 +140,7 @@ if ($counter_ee1 > 0) {
 	$company_name			= $row_ee1[0]['company_name'];
 	$company_logo			= $row_ee1[0]['company_logo'];
 	$s_address				= $row_ee1[0]['s_address'];
-	$compnay_phone_no		= $row_ee1[0]['phone_no'];
+	$compnay_phone_no		= $row_ee1[0]['compnay_phone_no'];
 }
 $sql_ee1 = "SELECT  a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, d.address, d.phone_no
 			FROM  purchase_order_detail a
@@ -171,7 +171,7 @@ if ($counter_ee11 > 0) {
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
 									</td>
 									<td>
-										<p>' . $s_address . ', Phone: ' . $compnay_phone_no . '</p>
+										<p>' . $s_address . ',<br>Phone: ' . $compnay_phone_no . '</p>
 									</td>
 									<td width="2%"></td>
  									<td width="40%">

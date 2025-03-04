@@ -61,30 +61,31 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 		$user_id 				= $_SESSION["user_id"];
 
-		$sql2	= " SELECT distinct a.location_id 
-				FROM users_bin_for_diagnostic a 
-				INNER JOIN users b ON a.bin_user_id = b.id 
-				INNER JOIN warehouse_sub_locations c ON c.id = a.location_id 
-				INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
-				WHERE a.enabled = 1 
-				AND a.is_processing_done = 0
-				AND d.po_id = '".$id."'
-				AND a.bin_user_id = '".$user_id."' ";
+		$sql2		= " SELECT distinct a.location_id 
+						FROM users_bin_for_diagnostic a 
+						INNER JOIN users b ON a.bin_user_id = b.id 
+						INNER JOIN warehouse_sub_locations c ON c.id = a.location_id 
+						INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
+						WHERE a.enabled = 1 
+						AND a.is_processing_done = 0
+						AND d.po_id = '".$id."'
+						AND a.bin_user_id = '".$_SESSION['user_id']."'";
 		$result2	= $db->query($conn, $sql2);
 		$user_no_of_assignments = $db->counter($result2);
 		
 		if (!isset($assignment_id)) {
 			$assignment_id = "";
 		}
-		if (isset($assignment_id) && $assignment_id > 0 && isset($id) && $id > 0) {
+		 
+		if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != "" && isset($id) && $id > 0) {
 			$sql_ee			= " SELECT a.assignment_no, a.location_id AS sub_location_id, IFNULL(SUM(b.enabled), 0) AS assignment_qty
 								FROM users_bin_for_diagnostic a
 								LEFT JOIN purchase_order_detail_receive b ON a.location_id = b.sub_location_id AND b.po_id = '" . $id . "'
-								WHERE a.id = '" . $assignment_id . "' "; //echo $sql_ee;die;
+								WHERE a.id = '" . $assignment_id . "' "; //echo $sql_ee;
 			$result_ee		= $db->query($conn, $sql_ee);
-			$row_ee			= $db->fetch($result_ee); 
-			$assignment_location_id	=  $row_ee[0]['sub_location_id'];
-			$assignment_qty			=  $row_ee[0]['assignment_qty'];
+			$row_ee			= $db->fetch($result_ee);
+			$assignment_qty			= $row_ee[0]['assignment_qty'];
+ 			$assignment_location_id	= $row_ee[0]['sub_location_id']; 
 		}
 
 		$sql_cl = "	SELECT * FROM (
@@ -92,7 +93,6 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 							a.body_grade, a.lcd_grade, a.digitizer_grade,
 							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
 							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
-						
 						FROM purchase_order_detail_receive a
 						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
 						INNER JOIN purchase_orders b1 ON b1.id = b.po_id
@@ -104,12 +104,12 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
 						WHERE a.enabled = 1
 						AND b.po_id = '" . $id . "' "; 
-					if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '' && isset($assignment_qty) && $assignment_qty > 0) {
-						$sql_cl .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
-					}
-					else if ($user_no_of_assignments > 0) {
-						$sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
-					}
+					if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql_cl .= " AND a.assignment_id = '" . $assignment_id . "' ";
+                    }
+                    else if ($user_no_of_assignments > 0) {
+                        $sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
+                    }
 
 					$sql_cl .= "	AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 
@@ -129,16 +129,16 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
 						WHERE a.enabled = 1
 						AND a.po_id =  '" . $id . "' ";
-					if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '' && isset($assignment_qty) && $assignment_qty > 0) {
-						$sql_cl .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
-					}
-					else if ($user_no_of_assignments > 0) {
-						$sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
-					}
+                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql_cl .= " AND a.assignment_id = '" . $assignment_id . "' ";
+                    }
+                    else if ($user_no_of_assignments > 0) {
+                        $sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
+                    }
 
-					$sql_cl .= ") AS t1
-					ORDER BY inventory_status, product_id  ";
-					//echo $sql_cl; die;
+					$sql_cl .= ") AS t1 
+								ORDER BY inventory_status, product_id  ";
+		// echo $sql_cl; die;
 		$result_cl 	= $db->query($conn, $sql_cl);
 		$count_cl 	= $db->counter($result_cl);
 		if ($count_cl > 0) {

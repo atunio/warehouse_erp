@@ -15,7 +15,7 @@ $sql_cl 		= "	SELECT DISTINCT a2.id, a2.assignment_no, b.po_no, a.po_id, b2.sub_
 					FROM users_bin_for_diagnostic a2
 					INNER JOIN warehouse_sub_locations b2 ON b2.id = a2.location_id
 					INNER JOIN users c2 ON c2.id = a2.bin_user_id 
-					INNER JOIN purchase_order_detail_receive a ON a.sub_location_id  = b2.id AND a.is_diagnost = 0 
+					INNER JOIN purchase_order_detail_receive a ON a.sub_location_id  = b2.id
 					INNER JOIN purchase_orders b ON b.id = a.po_id
 					WHERE a.enabled = 1
 					AND a2.id = '" . $detail_id . "' 
@@ -90,7 +90,7 @@ $page_heading 	= "Diagnostic";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'PO No', 'AssignmentNo', 'Location', 'User Detail', 'Actions');
+										$table_columns	= array('SNo', 'AssignmentNo', 'PO No', 'Location', 'User Detail', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -134,6 +134,10 @@ $page_heading 	= "Diagnostic";
 																<?php echo $i + 1;
 																$col_no++; ?>
 															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo $data['assignment_no'];  
+																$col_no++;?>
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['po_no'];
 																																$col_no++; ?>
 															</td>
@@ -141,10 +145,6 @@ $page_heading 	= "Diagnostic";
 																			$col_no++; ?>">
 																<?php echo $data['sub_location_name']; ?>
 																<?php if ($data['sub_location_type'] != "") echo " (" . $data['sub_location_type'] . ")"; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
-																<?php echo $data['assignment_no'];  
-																$col_no++;?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['task_user_details'];
 																																$col_no++; ?>

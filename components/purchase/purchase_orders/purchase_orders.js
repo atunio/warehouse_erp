@@ -4,6 +4,10 @@ $(document).ready(function() {
     updateRemoveButtonVisibility();
     partsUpdateRemoveButtonVisibility();
     // Handle "Add More" button click to show the next hidden row
+    $(document).on('click', '#show_tab1', function(event) {
+        var first_tab_url = $("#first_tab_url").val();
+        window.location.href = first_tab_url;
+    });
     $(document).on('click', '.tab', function(event) {
         updateRemoveButtonVisibility();
         partsUpdateRemoveButtonVisibility();
@@ -853,23 +857,7 @@ $(document).ready(function() {
         $(".update_tested_devices_serial_from_phonechecker_show_btn_tab6").show();
     });
     /////////////////////////////////////////////
-
-
-    
-    /////////////////////////////////////////////
-    $(".show_update_master_profile_tab6").click(function() {  
-
-        $("#master_profile_tab6").show();
-        $(".update_master_profile_show_btn_tab6").hide();
-        $(".update_master_profile_hide_btn_tab6").show();
-
-    });
-    $(".hide_update_master_profile_tab6").click(function() {  
-        $("#master_profile_tab6").hide();
-        $(".update_master_profile_hide_btn_tab6").hide();
-        $(".update_master_profile_show_btn_tab6").show();
-    });
-    /////////////////////////////////////////////
+ 
 
     /////////////////////////////////////////////
     $(".show_receive_from_barcode_section_tab7").click(function() {

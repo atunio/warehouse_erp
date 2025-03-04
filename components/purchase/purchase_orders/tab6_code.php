@@ -188,8 +188,20 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$offset		= 1;  // Optional
 
 			if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
-				$invoiceNo 			= "121824";  // Optional
-				$diagnostic_date1	= "2025-01-28";  // Filter by Date (optional)
+				if($assignment_id == '1'){
+					$invoiceNo 			= "121824";  // Optional
+					$diagnostic_date1	= "2025-01-28";  // Filter by Date (optional)
+				}
+				else if($assignment_id == '2'){
+					$invoiceNo 				= "PO16";  // Optional
+					$diagnostic_date1		= "2025-03-03";  // Filter by Date (optional)
+					$phone_check_username	= "ctinno2";  // Filter by Date (optional)
+				}
+				else if($assignment_id == '3'){
+					$invoiceNo 				= "207";  // Optional
+					$diagnostic_date1		= "2025-02-26";  // Filter by Date (optional)
+					$phone_check_username	= "ctinno5";  // Filter by Date (optional)
+				}
 			}
 
 			$data = [
@@ -250,13 +262,13 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 }
 if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') {
 	extract($_POST);
-	if (empty($error6)) {
+	if (empty($error6)) { 
 		if (access("add_perm") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
-			if (isset($bulkserialNo) && $bulkserialNo != null) {
-				foreach ($bulkserialNo as $data) {
+			if (isset($bulkserialNo) && $bulkserialNo != null) { 
+				foreach ($bulkserialNo as $data) { 
 					$phone_check_product_id		= $product_ids[$data];
 					$single_model_no			= $model_nos[$data];
 					$product_id_fetched 		= 0;
@@ -303,7 +315,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 							$sql = "INSERT INTO purchase_order_detail_receive_diagnostic_fetch (po_id, assignment_id, product_id, " . $id_identification_field_name . ", product_category, serial_no, model_no,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 									VALUES	('" . $id . "', '" . $assignment_id . "', '" . $product_id_fetched . "', '" . $id_identification_field_value . "', '" . $product_category_diagn . "', '" . $data . "', '" . $single_model_no . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
 							$ok = $db->query($conn, $sql);
-							if ($ok) {
+							if ($ok) { 
 								$sql_c_up = "UPDATE  phone_check_api_data SET 	 
 																				is_processed						= '1', 
 
@@ -333,63 +345,158 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 
 if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') {
 	extract($_POST);
+	if (!isset($bulkreceive_id2) || (isset($bulkreceive_id2) && sizeof($bulkreceive_id2) == 0)) {
+		$error6['msg'] = "Select atleast one record";
+	}
 	if (empty($error6)) {
 		if (access("add_perm") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
-			$k = 0;
-			if (isset($bulkserialNo2) && $bulkserialNo2 != null) {
-				foreach ($bulkserialNo2 as $data) {
-					$phone_check_product_id		= $product_ids[$data];
-					$single_model_no			= $model_nos[$data];
-					$single_price[$k]				= $prices[$data];
-					$product_id_fetched 		= 0;
-
-					if ($phone_check_product_id != "") {
-						$sql_pd01 		= "	SELECT a.id, a.product_id, c.product_category
-											FROM purchase_order_detail a 
-											INNER JOIN purchase_orders b ON b.id = a.po_id
-											INNER JOIN products c ON c.id = a.product_id
-											WHERE 1=1 
-											AND a.po_id = '" . $id . "' 
-											AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
-						$result_pd01	= $db->query($conn, $sql_pd01);
-						$count_pd01		= $db->counter($result_pd01);
-						if ($count_pd01 > 0) {
-							$row_pd01						= $db->fetch($result_pd01);
-							$product_category_diagn			= $row_pd01[0]['product_category'];
-							$id_identification_field_name	= "po_detail_id";
-							$id_identification_field_value	= $row_pd01[0]['id'];
-							$product_id_fetched				= $row_pd01[0]['product_id'];
-						} else {
-							$sql_pd011 		= "	SELECT c.id, c.product_category FROM products c WHERE 1=1 AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
-							$result_pd011	= $db->query($conn, $sql_pd011);
-							$count_pd011		= $db->counter($result_pd011);
-							if ($count_pd011 > 0) {
-								$row_pd011						= $db->fetch($result_pd011);
-								$product_category_diagn			= $row_pd011[0]['product_category'];
-								$id_identification_field_name	= "product_id";
-								$id_identification_field_value	= $row_pd011[0]['id'];
-								$product_id_fetched				= $id_identification_field_value;
-							}
-						}
-						
-						$sql_c_up = "UPDATE  purchase_order_detail_receive SET price 						= '" . $single_price[$k] . "',	 
-																	
-																		update_timezone		   	 			= '" . $timezone . "',
-																		update_date			    			= '" . $add_date . "',
-																		update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
-																		update_by			    			= '" . $_SESSION['username'] . "',
-																		update_ip			    			= '" . $add_ip . "',
-																		update_from_module_id				= '" . $module_id . "'
-								WHERE po_id = '".$id."' AND $id_identification_field_name = '".$id_identification_field_value."' AND serial_no_barcode = '".$data."' ";
-						$ok = $db->query($conn, $sql_c_up);
-						if($ok){
-							$msg6['msg_success'] = "Record updated successfully....";
-						}
+			
+			if (isset($bulkreceive_id2) && $bulkreceive_id2 != null) {
+				$k = 0;
+				foreach ($bulkreceive_id2 as $id_for_stock) {  
+					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 	price					= '" . $prices[$id_for_stock] . "',	 
+																			update_timezone			= '" . $timezone . "',
+																			update_date				= '" . $add_date . "',
+																			update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																			update_by				= '" . $_SESSION['username'] . "',
+																			update_ip				= '" . $add_ip . "',
+																			update_from_module_id	= '" . $module_id . "'
+								WHERE id = '".$id_for_stock."' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if($ok){
+						$msg6['msg_success'] = "Record updated successfully....";
 					}
-					$k++;
-				}
+
+					/////////////////////////// Create Stock  START /////////////////////////////
+					$sql_pd1	= "	SELECT * FROM (
+										SELECT 'PO_products' as rec_type, a.*, b.product_id as inv_product_id, c.product_uniqueid, d.logistics_cost
+										FROM purchase_order_detail_receive a
+										INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+										INNER JOIN products c ON c.id = b.product_id
+										INNER JOIN purchase_orders d ON d.id = b.po_id
+										WHERE a.id = '" . $id_for_stock . "'
+
+										UNION ALL 
+
+										SELECT 'non_PO_products' as rec_type, a.*, a.product_id as inv_product_id, c.product_uniqueid, d.logistics_cost
+										FROM purchase_order_detail_receive a
+										INNER JOIN products c ON c.id = a.product_id
+										INNER JOIN purchase_orders d ON d.id = a.po_id
+										WHERE a.id = '" . $id_for_stock . "'
+										) AS t1 ";
+					// echo "<br><br>" . $sql_pd1;
+					$result_pd1	= $db->query($conn, $sql_pd1);
+					$count_pd1	= $db->counter($result_pd1);
+					if ($count_pd1 > 0) {
+
+						$row_pd1 				= $db->fetch($result_pd1);
+						$inv_receive_id			= $row_pd1[0]['id'];
+						$inv_po_id				= $row_pd1[0]['po_id'];
+						$inv_po_detail_id		= $row_pd1[0]['po_detail_id'];
+						$inv_product_id			= $row_pd1[0]['inv_product_id'];
+						$old_base_product_id	= $row_pd1[0]['product_uniqueid'];
+						$inv_serial_no			= $row_pd1[0]['serial_no_barcode'];
+						$inv_sub_location		= $row_pd1[0]['sub_location_id_after_diagnostic'];
+						$inv_battery 			= $row_pd1[0]['battery'];
+						$inv_body_grade 		= $row_pd1[0]['body_grade'];
+						$inv_lcd_grade 			= $row_pd1[0]['lcd_grade'];
+						$inv_digitizer_grade	= $row_pd1[0]['digitizer_grade'];
+						$inv_overall_grade 		= $row_pd1[0]['overall_grade'];
+						$inv_ram 				= $row_pd1[0]['ram'];
+						$inv_storage 			= $row_pd1[0]['storage'];
+						$inv_processor 			= $row_pd1[0]['processor'];
+						$inv_price 				= $row_pd1[0]['price'];
+						$inv_defects_or_notes	= $row_pd1[0]['defects_or_notes'];
+						$inv_inventory_status	= $row_pd1[0]['inventory_status'];
+						$inv_model_name			= $row_pd1[0]['model_name'];
+						$inv_model_no			= $row_pd1[0]['model_no'];
+						$inv_make_name			= $row_pd1[0]['make_name'];
+						$inv_color_name			= $row_pd1[0]['color_name'];
+						$logistics_cost			= $row_pd1[0]['logistics_cost'];
+
+						$po_logistic_cost = $po_receiving_labor = $po_diagnostic_labor = 0;
+						// $po_logistic_cost 		= po_logistic_cost($db, $conn, $inv_po_id, $logistics_cost);
+						// $po_receiving_labor 		= po_receiving_labor($db, $conn, $inv_po_id);
+						// $po_diagnostic_labor 	= po_diagnostic_labor($db, $conn, $inv_po_id);
+						// $inv_price 				= round(($inv_price + $po_receiving_labor + $po_diagnostic_labor + $po_logistic_cost), 2);
+
+						$sql_pd2	= "	SELECT a.id FROM product_stock a WHERE a.receive_id = '" . $inv_receive_id . "' ";
+						// echo "<br><br>" . $sql_pd2;
+						$result_pd2	= $db->query($conn, $sql_pd2);
+						$count_pd2	= $db->counter($result_pd2);
+						if ($count_pd2 == 0) {
+							$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, 
+																p_total_stock, stock_grade, p_inventory_status, sub_location,
+																battery_percentage, ram_size, storage_size, processor_size, defects_or_notes, 
+																model_name, model_no, make_name, color_name, 
+																body_grade, lcd_grade, digitizer_grade,  price,
+																add_by_user_id, add_date,  add_by, add_ip, add_timezone)
+									VALUES('" . $subscriber_users_id . "', '" . $inv_receive_id . "', '" . $inv_product_id . "', '" . $inv_serial_no . "',
+											1, '" . $inv_overall_grade . "', '" . $inv_inventory_status . "', '" . $inv_sub_location . "', 
+											'" . $inv_battery . "',  '" . $inv_ram . "',  '" . $inv_storage . "', '" . $inv_processor . "', '" . $inv_defects_or_notes . "', 
+											'" . $inv_model_name . "', '" . $inv_model_no . "', '" . $inv_make_name . "',  '" . $inv_color_name . "',
+											'" . $inv_body_grade . "', '" . $inv_lcd_grade . "', '" . $inv_digitizer_grade . "', '" . $inv_price . "', 
+											'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+							// echo "<br><br>product_stock: " . $sql6;
+							$db->query($conn, $sql6);
+						} else {
+							$sql_c_up = "UPDATE product_stock SET 	serial_no 			= '" . $inv_serial_no . "',
+																	stock_grade 		= '" . $inv_overall_grade . "',
+																	p_inventory_status	= '" . $inv_inventory_status . "',
+																	sub_location 		= '" . $inv_sub_location . "',
+																	battery_percentage	= '" . $inv_battery . "',
+																	ram_size 			= '" . $inv_ram . "',
+																	storage_size 		= '" . $inv_storage . "',
+																	processor_size 		= '" . $inv_processor . "',
+																	defects_or_notes	= '" . $inv_defects_or_notes . "',
+																	model_name 			= '" . $inv_model_name . "',
+																	model_no 			= '" . $inv_model_no . "',
+																	make_name 			= '" . $inv_make_name . "',
+																	color_name 			= '" . $inv_color_name . "',
+																	body_grade 			= '" . $inv_body_grade . "',
+																	lcd_grade 			= '" . $inv_lcd_grade . "',
+																	digitizer_grade		= '" . $inv_digitizer_grade . "',
+																	price 				= '" . $inv_price . "',
+																	
+																	update_by				= '" . $_SESSION['username'] . "',
+																	update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																	update_timezone			= '" . $timezone . "',
+																	update_date				= '" . $add_date . "',
+																	update_ip				= '" . $add_ip . "',
+																	added_from_module_id	= '" . $module_id . "'
+										WHERE receive_id = '" . $inv_receive_id . "' ";
+							// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
+							$db->query($conn, $sql_c_up);
+						}
+	
+						$sql_c_up = "UPDATE purchase_order_detail_receive 
+																			SET edit_lock 			= '1',
+																				Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',
+																				receiving_labor 	= '" . round($po_receiving_labor, 2) . "',
+																				diagnostic_labor 	= '" . round($po_diagnostic_labor, 2) . "'
+										WHERE id = '" . $inv_receive_id . "' ";
+						// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
+						$db->query($conn, $sql_c_up);
+						if (isset($inv_po_detail_id) && $inv_po_detail_id > 0) {
+							update_po_detail_status($db, $conn, $inv_po_detail_id, $tested_or_graded_status);
+						}
+						update_po_status($db, $conn, $id, $tested_or_graded_status);
+						$disp_status_name = get_status_name($db, $conn, $tested_or_graded_status);
+
+						$k++;
+					}
+					/////////////////////////// Create Stock  END /////////////////////////////
+					
+				} 
+				if ($k > 0) {
+					if ($k == 1) {
+						$msg6['msg_success'] = $k . " record has been deleted successfully.";
+					} else {
+						$msg6['msg_success'] = $k . " records have been deleted successfully.";
+					}
+				} 
 			}
 		}
 	} else {
@@ -940,8 +1047,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 				$product_category_diagn			= $row_pd01[0]['product_category'];
 				$data 							= $row_pd01[0]['serial_no'];
 				$model_no						= $row_pd01[0]['model_no'];
-				$fetched_amount 				= $row_pd01[0]['amount'];
-
+ 
 				$sql_pd01_4 		= "	SELECT  a.*
 										FROM phone_check_api_data a 
 										WHERE a.enabled = 1 
@@ -982,6 +1088,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 						}
 						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
 																				po_detail_id						= '" . $po_detail_id1 . "', 
+																				assignment_id						= '" . $assignment_id . "', 
 																				serial_no_barcode					= '" . $data . "', 
  
 																				phone_check_api_data				= '" . $jsonData2 . "',
@@ -1000,8 +1107,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 																				overall_grade		    			= '" . $overall_grade . "', 
 																				inventory_status					= '" . $inventory_status . "', 
 																				sku_code							= '" . $sku_code . "',
-																				price								= '" . $fetched_amount . "',
-
+ 
 																				sub_location_id_after_diagnostic	= '" . $sub_location_id_fetched . "',
 																				is_diagnost							= '1',
 																				is_import_diagnostic_data			= '1',

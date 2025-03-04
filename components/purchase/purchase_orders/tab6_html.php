@@ -117,10 +117,7 @@
             </div>
         </div>
     <?php
-    } else {
-    ?>
-
-        
+    } else {?>
         <div class="card card card-default scrollspy custom_margin_card_table_bottom" style="background-color:whitesmoke;">
             <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
                 <li class="tab">
@@ -132,23 +129,10 @@
                     <a href="#tab2" class=" <?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab2') {
                                                     echo "active";
                                                 }  ?>"> 
-                        <i class="material-icons">list</i>
-                        <span>Preview Of all processed devices</span>
-                    </a>
-                </li>
-                <li class="tab">
-                    <a href="#tab3" class="<?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab3') {
-                                                    echo "active";
-                                                }  ?>"> 
                         <i class="material-icons">attach_money</i>
-                        <span>Price Mapping</span>
+                        <span>Pricing</span>
                     </a>
-                </li>
-                <li class="tab">
-                    <a href="#tab4"> <i class="material-icons">list</i>
-                        <span>% of Entire PO</span>
-                    </a>
-                </li>
+                </li> 
             </ul> 
             <div id="tab1">
                 <?php
@@ -1178,7 +1162,7 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </form> 
                     <?php
                     $td_padding = "padding:5px 10px !important;";
                     $sql            = " SELECT * FROM (
@@ -1199,8 +1183,8 @@
                                                 WHERE a.enabled = 1
                                                 AND b.enabled = 1
                                                 AND b.po_id = '" . $id . "' ";
-                    if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '' && isset($assignment_qty) && $assignment_qty > 0) {
-                        $sql .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
+                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
                     }
                     else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
@@ -1222,7 +1206,7 @@
                                                 LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                                 WHERE a.po_id = '" . $id . "' ";
-                    if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '' && isset($assignment_qty) && $assignment_qty > 0) {
+                    if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '') {
                         $sql .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
                     }
                     else if ($user_no_of_assignments > 0) {
@@ -1248,8 +1232,8 @@
                                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                                 WHERE a.enabled = 1
                                                 AND a.po_id = '" . $id . "' ";
-                    if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '' && isset($assignment_qty) && $assignment_qty > 0) {
-                        $sql .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
+                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
                     }
                     else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
@@ -1280,10 +1264,10 @@
                                     if (po_permisions("Move as Inventory") == 1) { ?>
                                         <div class="col m2 s12">
                                             <label>
-                                                <input type="checkbox" id="all_checked7" class="filled-in" name="all_checked7" value="1" <?php if (isset($all_checked7) && $all_checked7 == '1') {
-                                                                                                                                                echo "checked";
-                                                                                                                                            } ?> />
-                                                <span></span>
+                                                <!-- <input type="checkbox" id="all_checked7" class="filled-in" name="all_checked7" value="1" <?php //if (isset($all_checked7) && $all_checked7 == '1') {
+                                                                                                                                                //echo "checked";
+                                                                                                                                            //} ?> />
+                                                <span></span> -->
                                             </label>
                                         </div>
                                     <?php }
@@ -1296,7 +1280,7 @@
                                     <div class="col m8 s12">
                                         <div class="text_align_right">
                                             <?php
-                                            $table_columns    = array('SNo', '-', 'Product Detail', 'Qty', 'Serial No', 'Specification', 'Grading', 'Defects', 'Inventory Status');
+                                            $table_columns    = array('SNo', 'Product Detail', 'Qty', 'Serial No', 'Specification', 'Grading', 'Defects', 'Inventory Status');
                                             $k                 = 0;
                                             foreach ($table_columns as $data_c1) { ?>
                                                 <label>
@@ -1320,11 +1304,13 @@
                                                         foreach ($table_columns as $data_c) {
                                                             if ($data_c == 'SNo') {
                                                                 $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
-                                                            } else if ($data_c == '-') {
-                                                                $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
-                                                            } else {
+                                                            } 
+                                                            else {
                                                                 $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
                                                             }
+                                                            // else if ($data_c == '-') {
+                                                            //     $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                                            // } 
                                                         }
                                                         echo $headings;
                                                         $headings2 = ' '; ?>
@@ -1357,21 +1343,24 @@
                                                             $is_diagnost                = $data['is_diagnost'];
                                                             $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                             $is_rma_processed           = $data['is_rma_processed'];
-                                                            $edit_lock                  = $data['edit_lock']; ?>
+                                                            $edit_lock                  = $data['edit_lock']; 
+                                                            $col = 0;?>
                                                             <tr>
-                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
-                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]); ?>">
+                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo $i + 1; $col++; ?></td>
+                                                                <!-- <td style="<?php //$td_padding; ?>; text-align: center;" class="col-<?php //set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
-                                                                    if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
-                                                                        $checkbox_del++; ?>
-                                                                        <label>
-                                                                            <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?= $detail_id2; ?>" class="checkbox7 filled-in" />
-                                                                            <span></span>
-                                                                        </label>
-                                                                    <?php } ?>
-                                                                </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]); ?>">
+                                                                    //$col++;
+                                                                    //if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
+                                                                        //$checkbox_del++; ?>
+                                                                         <label>
+                                                                            <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?php //$detail_id2; ?>" class="checkbox7 filled-in" /> 
+                                                                             <span></span> 
+                                                                        </label> 
+                                                                    <?php // } ?>
+                                                                </td> -->
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
+                                                                    $col++;
                                                                     if ($product_uniqueid_main != "" && $product_uniqueid_main != null) {
                                                                         echo $product_uniqueid_main . "<br>";
                                                                     }
@@ -1389,9 +1378,10 @@
                                                                         echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo "" . $data['total_qty_received']; ?></td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]); ?>">
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo "" . $data['total_qty_received']; $col++; ?></td>
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
+                                                                    $col++;
                                                                     $color          = "purple";
                                                                     $sql            = " SELECT a.* FROM vender_po_data a 
                                                                                             WHERE a.enabled = 1 
@@ -1465,8 +1455,10 @@
                                                                         }
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]); ?>">
-                                                                    <?php if ($battery > '0') {
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
+                                                                    <?php
+                                                                    $col++;
+                                                                     if ($battery > '0') {
                                                                         echo "Battery: " . $battery . "%<br>";
                                                                     } ?>
                                                                     <?php if ($memory != '') {
@@ -1479,8 +1471,9 @@
                                                                         echo "Processor: " . $processor;
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]); ?>">
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
+                                                                    $col++;
                                                                     if ($lcd_grade != '') {
                                                                         echo "LCD: " . $lcd_grade . ", ";
                                                                     }
@@ -1513,15 +1506,17 @@
                                                                         </span>
                                                                     <?php } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]); ?>">
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
+                                                                    $col++;
                                                                     // if ($price != '') { echo "Price: " . number_format($price, 2) . "<br>"; }
                                                                     if ($defectsCode != '') {
                                                                         echo "Defects: " . $defectsCode . "<br>";
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[8]); ?>">
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
+                                                                    $col++;
                                                                     $color  = "purple";
                                                                     if ($count_vebder > 0) {
                                                                         $vender_status = $row_vender[0]['status'];
@@ -1552,18 +1547,15 @@
                                     </div>
                                 </div>
                                 <?php
-                                if (po_permisions("Move as Inventory") == 1 && $checkbox_del > 0) { ?>
+                                //if (po_permisions("Move as Inventory") == 1 && $checkbox_del > 0) { ?>
                                     <div class="row">
                                         <div class="input-field col m12 s12 text_align_center">
-                                            <?php if (isset($id) && $id > 0) { ?>
-                                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button>
-                                            <?php } ?>
+                                            <?php //if (isset($id) && $id > 0) { ?>
+                                                <!-- <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button> -->
+                                            <?php //} ?>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="input-field col m12 s12"></div>
-                                    </div>
-                                <?php } ?>
+                                <?php //} ?>
                             </form>
                         </div>
                     <?php }
@@ -1573,7 +1565,7 @@
                             <div class="col 24 s12"><br>
                                 <div class="card-alert card red lighten-5">
                                     <div class="card-content red-text">
-                                        <p>Nothing receive yet. </p>
+                                        <p>Nothing receive yet... </p>
                                     </div>
                                 </div>
                             </div>
@@ -1583,16 +1575,26 @@
             </div>
             <div id="tab2">
                 <?php
-                if (isset($assignment_id) && $assignment_id > 0) {
-                    $sql_p2 = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price, IFNULL(a.price, '') AS  price, IFNULL(d.id, '0') po_detail_id,a.serial_no_barcode as imei_no
+                    $sql_p2         = " SELECT * FROM(
+                                        SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, d.order_price
                                         FROM purchase_order_detail_receive a
-                                        LEFT JOIN products c ON c.product_model_no = a.model_no 
-                                        LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
-                                        WHERE a.po_id = '1' 
-                                        AND a.is_diagnost = 1
-                                        ORDER BY c.enabled DESC, d.enabled DESC, a.model_no 
-                                        ";
-                    // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
+                                        INNER JOIN purchase_order_detail d ON d.id = a.po_detail_id
+                                        INNER JOIN products d2 ON d2.id = d.`product_id`
+                                        INNER JOIN product_categories e ON e.id = d2.`product_category`
+                                        WHERE  d.enabled = 1 AND a.enabled = 1
+                                        AND a.po_id = '".$id."' 
+
+                                        UNION ALL 
+
+                                        SELECT 'Added During Diagnostic' AS rec_type, d.`product_uniqueid`, d.`product_desc`,  e.`category_name`, a.*, '' AS order_price
+                                        FROM purchase_order_detail_receive a
+                                        INNER JOIN products d ON d.id = a.`product_id`
+                                        INNER JOIN product_categories e ON e.id = d.`product_category`
+                                        WHERE  d.enabled = 1 AND a.enabled = 1
+                                        AND a.po_id = '".$id."'
+                                    ) AS t1
+                                    WHERE edit_lock = 0
+                                    ORDER BY category_name, product_uniqueid DESC";
                     $result_p2    = $db->query($conn, $sql_p2);
                     $count_p2        = $db->counter($result_p2);
                     if ($count_p2 > 0) {
@@ -1601,7 +1603,7 @@
                             <input type="hidden" name="is_Submit6_SubTab2" value="Y" />
                             <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
                                 <div class="card-content custom_padding_card_content_table_top">
-                                    <h6 class="card-title">Preview Fetched Data</h6><br>
+                                    <h6 class="card-title">Pricing</h6><br>
                                     <div class="row">
                                         <table id="page-length-option1" class="display bordered striped addproducttable">
                                             <thead>
@@ -1616,87 +1618,41 @@
                                                         </label>
                                                     </th>
                                                     <th style="text-align: center;">Serial#</th>
-                                                    <th>PO Product ID</th>
-                                                    <th>Diagnostic Product ID</th>
-                                                    <th>Diagnostic Model#</th>
+                                                    <th>Product ID</th> 
+                                                    <th>Product Description</th> 
+                                                    <th>Category</th> 
                                                     <th>Amount</th>
-
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <?php
                                                 $i = 0;
                                                 foreach ($row_p2 as $data2) {
-                                                    $phone_check_product_id = $data2['product_uniqueid'];
-                                                    $phone_check_model_no   = $data2['model_no'];
-                                                    $po_id                  = $data2['po_id'];
-                                                    $po_detail_id           = $data2['po_detail_id'];
-                                                    $product_item_price     = $data2['price'];
-                                                    if($data2['price'] == "" || $data2['price'] == "0"){
-                                                        $product_item_price     = $data2['order_price'];
-                                                    }
-                                                    $item_price             = $data2['price'];
-
-                                                    $bulkserialNo2[]        = $data2['imei_no'];
-                                                    $phone_check_api_data   = $data2['phone_check_api_data'];
-                                                    if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
-                                                        $checked = "";
-                                                        //if ($po_detail_id > 0) {
-                                                            $checked = "checked";
-                                                        //} ?>
-                                                        <tr>
-                                                            <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
-                                                            <td style="width:80px; text-align: center;">
-                                                                <?php
-                                                                if (access("delete_perm") == 1) { ?>
-                                                                    <label>
-                                                                        <input type="checkbox" name="bulkserialNo2[]" id="bulkserialNo2[]" value="<?= $data2['imei_no']; ?>" <?php if (isset($bulkserialNo2) && in_array($data2['imei_no'], $bulkserialNo2)) {
-                                                                                                                                                                                echo $checked;
-                                                                                                                                                                            } ?> class="checkbox10 filled-in" />
-                                                                        <span></span>
-                                                                    </label>
-                                                                <?php } ?>
-                                                            </td>
-                                                            <td style="width:150px;"><?php echo $data2['imei_no']; ?></td>
-                                                            <td>
-                                                                <?php
-                                                                if ($po_detail_id > 0) { ?>
-                                                                    <select name="product_ids[<?= $data2['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
-                                                                        <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
-                                                                    </select>
-                                                                <?php } else { ?>
-                                                                    <select name="product_ids[<?= $data2['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
-                                                                        <option value="">Select</option>
-                                                                        <?php
-                                                                        $sql_pd03       = "	SELECT c.id, c.product_uniqueid, c.product_model_no
-                                                                                                FROM  products c 
-                                                                                                WHERE 1=1 AND c.enabled = 1 ";
-                                                                        $result_pd03    = $db->query($conn, $sql_pd03);
-                                                                        $count_pd03     = $db->counter($result_pd03);
-                                                                        if ($count_pd03 > 0) {
-                                                                            $row_pd03 = $db->fetch($result_pd03);
-                                                                            foreach ($row_pd03 as $data_pd03) { ?>
-                                                                                <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if ($phone_check_model_no == $data_pd03['product_model_no']) {
-                                                                                                                                                    echo " selected ";
-                                                                                                                                                } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
-                                                                        <?php }
-                                                                        } ?>
-                                                                    </select>
-                                                                <?php }
-                                                                $i++;
-                                                                ?>
-                                                            </td>
-                                                            <td><?php echo $phone_check_product_id; ?></td>
-                                                            <td>
-                                                                <input type="hidden" name="model_nos[<?= $data2['imei_no']; ?>]" value="<?php echo $phone_check_model_no; ?>">
-                                                                <?php echo $phone_check_model_no; ?>
-                                                            </td>
-                                                            <td>
-                                                                <input type="text" name="prices[<?= $data2['imei_no']; ?>]" value="<?php echo $product_item_price; ?>">
-                                                            </td>
-                                                        </tr>
-                                                <?php }
-                                                } ?>
+                                                    $receive_id2 = $data2['id'];  ?>
+                                                    <tr>
+                                                        <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
+                                                        <td style="width:80px; text-align: center;">
+                                                            <?php
+                                                            if (access("delete_perm") == 1) { ?>
+                                                                <label>
+                                                                    <input type="checkbox" name="bulkreceive_id2[]" id="bulkreceive_id2[]" value="<?= $receive_id2; ?>" <?php if (isset($bulkreceive_id2) && in_array($receive_id2, $bulkreceive_id2)) {
+                                                                                                                                                                            echo "checked";
+                                                                                                                                                                        } ?> class="checkbox10 filled-in" />
+                                                                    <span></span>
+                                                                </label>
+                                                            <?php } ?>
+                                                        </td>
+                                                        <td><?php echo $data2['serial_no_barcode']; ?></td>
+                                                        <td><?php echo $data2['product_uniqueid']; ?></td>
+                                                        <td><?php echo $data2['product_desc']; ?></td>
+                                                        <td><?php echo $data2['category_name']; ?></td>
+                                                        <td style="width: 150px;">
+                                                            <input type="text" name="prices[<?= $receive_id2; ?>]" value="<?php echo $data2['order_price']; ?>">
+                                                        </td>
+                                                    </tr>
+                                                <?php 
+                                                $i++;
+                                            } ?>
                                             </tbody>
                                         </table>
                                     </div><br><br>
@@ -1713,21 +1669,21 @@
                                 </div>
                             </div>
                         </form>
-                <?php }
-                } ?>
-            </div>
-            <div id="tab3">
-                <div class="card-panel">
-                    <p>Content for General Sub Tab 3</p>
-                </div>
-            </div>
-            <div id="tab4">
-                <div class="card-panel">
-                    <p>Content for General Sub Tab 4</p>
-                </div>
+                <?php } else { ?>
+                    <div class="card-panel custom_padding_card_content_table_top_bottom">
+                        <div class="row">
+                            <div class="col 24 s12"><br>
+                                <div class="card-alert card red lighten-5">
+                                    <div class="card-content red-text">
+                                        <p>Nothing receive yet... </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php } ?>
             </div>
         </div>
-            
     <?php
     } ?>
 </div>

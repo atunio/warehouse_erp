@@ -216,7 +216,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								$field_name 	= "product_category";
 								$field_id 		= "product_category2";
 								$field_label 	= "Category";
-								$sql1 			= "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
+								$sql1 			= "SELECT * FROM product_categories ORDER BY category_name ";
 								$result1 		= $db->query($conn, $sql1);
 								$count1 		= $db->counter($result1);
 								?>

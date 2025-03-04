@@ -117,7 +117,7 @@
             </div>
         </div>
     <?php
-    } else {?>
+    } else { ?>
         <div class="card card card-default scrollspy custom_margin_card_table_bottom" style="background-color:whitesmoke;">
             <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
                 <li class="tab">
@@ -127,13 +127,13 @@
                 </li>
                 <li class="tab">
                     <a href="#tab2" class=" <?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab2') {
-                                                    echo "active";
-                                                }  ?>"> 
+                                                echo "active";
+                                            }  ?>">
                         <i class="material-icons">attach_money</i>
                         <span>Pricing</span>
                     </a>
-                </li> 
-            </ul> 
+                </li>
+            </ul>
             <div id="tab1">
                 <?php
                 $td_padding = "padding:5px 15px !important;";
@@ -143,7 +143,7 @@
                 $result_log     = $db->query($conn, $sql);
                 $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
-                    <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                    <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -307,7 +307,7 @@
                             </div>
                         </div>
                     </form>
-                    <form id="serialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                    <form id="serialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2_1" id="is_Submit_tab6_2_1" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -730,7 +730,7 @@
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
 
-                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                 <input type="hidden" name="is_Submit_tab6_6" value="Y" />
                                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -886,7 +886,7 @@
                                 $count_preview        = $db->counter($result_preview);
                                 if ($count_preview > 0) {
                                     $row_preview = $db->fetch($result_preview); ?>
-                                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                         <input type="hidden" name="is_Submit2_preview" value="Y" />
                                         <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
                                             <div class="card-content custom_padding_card_content_table_top">
@@ -997,7 +997,7 @@
                             } ?>
                         </div>
                     </div>
-                    <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                    <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2_3" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -1088,10 +1088,10 @@
                                                 <?php
                                                 if ($count_r2 > 0) {
                                                     $row_r2    = $db->fetch($result_log2);
-                                                    foreach ($row_r2 as $data_r2) { 
+                                                    foreach ($row_r2 as $data_r2) {
                                                         if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
                                                             <option value="">Select</option>
-                                                        <?php }?>
+                                                        <?php } ?>
                                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                             <?php
                                                             echo "Product: " . $data_r2['product_desc'] . " (" . $data_r2['product_uniqueid'] . ") - ";
@@ -1131,7 +1131,7 @@
                                                 <?php
                                                 if ($count1 > 1) { ?>
                                                     <option value="">Select</option>
-                                                <?php } 
+                                                    <?php }
                                                 if ($count1 > 0) {
                                                     $row1    = $db->fetch($result1);
                                                     foreach ($row1 as $data2) { ?>
@@ -1162,7 +1162,7 @@
                                 </div>
                             </div>
                         </div>
-                    </form> 
+                    </form>
                     <?php
                     $td_padding = "padding:5px 10px !important;";
                     $sql            = " SELECT * FROM (
@@ -1185,8 +1185,7 @@
                                                 AND b.po_id = '" . $id . "' ";
                     if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
                         $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                    }
-                    else if ($user_no_of_assignments > 0) {
+                    } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
                     $sql           .= "     AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
@@ -1208,8 +1207,7 @@
                                                 WHERE a.po_id = '" . $id . "' ";
                     if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '') {
                         $sql .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
-                    }
-                    else if ($user_no_of_assignments > 0) {
+                    } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
                     $sql           .= "     AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
@@ -1234,19 +1232,18 @@
                                                 AND a.po_id = '" . $id . "' ";
                     if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
                         $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                    }
-                    else if ($user_no_of_assignments > 0) {
+                    } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
                     $sql           .= "     
                                         ) AS t1
-                                        ORDER BY record_type, product_category, sub_location_id, serial_no_barcode "; 
+                                        ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
                     // echo $sql;
                     $result_log     = $db->query($conn, $sql);
                     $count_log      = $db->counter($result_log);
                     if ($count_log > 0) { ?>
                         <div class="card-panel custom_padding_card_content_table_top_bottom">
-                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6". "&active_subtab=tab1") ?>" method="post">
+                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                 <input type="hidden" name="is_Submit_tab6_7" value="Y" />
                                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -1266,13 +1263,15 @@
                                             <label>
                                                 <!-- <input type="checkbox" id="all_checked7" class="filled-in" name="all_checked7" value="1" <?php //if (isset($all_checked7) && $all_checked7 == '1') {
                                                                                                                                                 //echo "checked";
-                                                                                                                                            //} ?> />
+                                                                                                                                                //} 
+                                                                                                                                                ?> />
                                                 <span></span> -->
                                             </label>
                                         </div>
                                     <?php }
-                                    if (po_permisions("DiagnosticExport") == '1') { 
-                                    //echo " <br><br><br><br><br> <===> --------------- $assignment_id  "; ?>
+                                    if (po_permisions("DiagnosticExport") == '1') {
+                                        //echo " <br><br><br><br><br> <===> --------------- $assignment_id  "; 
+                                    ?>
                                         <div class="col m2 s12">
                                             <a href="export/export_po_received_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id . "&assignment_id=" . $assignment_id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
                                         </div>
@@ -1304,8 +1303,7 @@
                                                         foreach ($table_columns as $data_c) {
                                                             if ($data_c == 'SNo') {
                                                                 $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
-                                                            } 
-                                                            else {
+                                                            } else {
                                                                 $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
                                                             }
                                                             // else if ($data_c == '-') {
@@ -1343,20 +1341,26 @@
                                                             $is_diagnost                = $data['is_diagnost'];
                                                             $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                             $is_rma_processed           = $data['is_rma_processed'];
-                                                            $edit_lock                  = $data['edit_lock']; 
-                                                            $col = 0;?>
+                                                            $edit_lock                  = $data['edit_lock'];
+                                                            $col = 0; ?>
                                                             <tr>
-                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo $i + 1; $col++; ?></td>
-                                                                <!-- <td style="<?php //$td_padding; ?>; text-align: center;" class="col-<?php //set_table_headings($table_columns[$col]); ?>">
+                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo $i + 1;
+                                                                                                                                                                                    $col++; ?></td>
+                                                                <!-- <td style="<?php //$td_padding; 
+                                                                                ?>; text-align: center;" class="col-<?php //set_table_headings($table_columns[$col]); 
+                                                                                                                    ?>">
                                                                     <?php
                                                                     //$col++;
                                                                     //if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
-                                                                        //$checkbox_del++; ?>
+                                                                    //$checkbox_del++; 
+                                                                    ?>
                                                                          <label>
-                                                                            <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?php //$detail_id2; ?>" class="checkbox7 filled-in" /> 
+                                                                            <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?php //$detail_id2; 
+                                                                                                                                                        ?>" class="checkbox7 filled-in" /> 
                                                                              <span></span> 
                                                                         </label> 
-                                                                    <?php // } ?>
+                                                                    <?php // } 
+                                                                    ?>
                                                                 </td> -->
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
@@ -1378,7 +1382,8 @@
                                                                         echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo "" . $data['total_qty_received']; $col++; ?></td>
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo "" . $data['total_qty_received'];
+                                                                                                                                                                $col++; ?></td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
                                                                     $col++;
@@ -1458,7 +1463,7 @@
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
                                                                     $col++;
-                                                                     if ($battery > '0') {
+                                                                    if ($battery > '0') {
                                                                         echo "Battery: " . $battery . "%<br>";
                                                                     } ?>
                                                                     <?php if ($memory != '') {
@@ -1547,15 +1552,19 @@
                                     </div>
                                 </div>
                                 <?php
-                                //if (po_permisions("Move as Inventory") == 1 && $checkbox_del > 0) { ?>
-                                    <div class="row">
-                                        <div class="input-field col m12 s12 text_align_center">
-                                            <?php //if (isset($id) && $id > 0) { ?>
-                                                <!-- <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button> -->
-                                            <?php //} ?>
-                                        </div>
+                                //if (po_permisions("Move as Inventory") == 1 && $checkbox_del > 0) { 
+                                ?>
+                                <div class="row">
+                                    <div class="input-field col m12 s12 text_align_center">
+                                        <?php //if (isset($id) && $id > 0) { 
+                                        ?>
+                                        <!-- <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Process Diagnostic</button> -->
+                                        <?php //} 
+                                        ?>
                                     </div>
-                                <?php //} ?>
+                                </div>
+                                <?php //} 
+                                ?>
                             </form>
                         </div>
                     <?php }
@@ -1575,14 +1584,14 @@
             </div>
             <div id="tab2">
                 <?php
-                    $sql_p2         = " SELECT * FROM(
+                $sql_p2         = " SELECT * FROM(
                                         SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, d.order_price
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN purchase_order_detail d ON d.id = a.po_detail_id
                                         INNER JOIN products d2 ON d2.id = d.`product_id`
                                         INNER JOIN product_categories e ON e.id = d2.`product_category`
                                         WHERE  d.enabled = 1 AND a.enabled = 1
-                                        AND a.po_id = '".$id."' 
+                                        AND a.po_id = '" . $id . "' 
 
                                         UNION ALL 
 
@@ -1591,91 +1600,91 @@
                                         INNER JOIN products d ON d.id = a.`product_id`
                                         INNER JOIN product_categories e ON e.id = d.`product_category`
                                         WHERE  d.enabled = 1 AND a.enabled = 1
-                                        AND a.po_id = '".$id."'
+                                        AND a.po_id = '" . $id . "'
                                     ) AS t1
                                     WHERE edit_lock = 0
                                     ORDER BY category_name, product_uniqueid DESC";
-                    $result_p2    = $db->query($conn, $sql_p2);
-                    $count_p2        = $db->counter($result_p2);
-                    if ($count_p2 > 0) {
-                        $row_p2 = $db->fetch($result_p2); ?>
-                        <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>" method="post">
-                            <input type="hidden" name="is_Submit6_SubTab2" value="Y" />
-                            <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
-                                <div class="card-content custom_padding_card_content_table_top">
-                                    <h6 class="card-title">Pricing</h6><br>
-                                    <div class="row">
-                                        <table id="page-length-option1" class="display bordered striped addproducttable">
-                                            <thead>
-                                                <tr>
-                                                    <th style="text-align: center;">S.No</th>
-                                                    <th style="text-align: center;">
-                                                        <label>
-                                                            <input type="checkbox" id="all_checked10" class="filled-in" name="all_checked10" value="1" <?php if (isset($all_checked10) && $all_checked10 == '1') {
+                $result_p2    = $db->query($conn, $sql_p2);
+                $count_p2        = $db->counter($result_p2);
+                if ($count_p2 > 0) {
+                    $row_p2 = $db->fetch($result_p2); ?>
+                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>" method="post">
+                        <input type="hidden" name="is_Submit6_SubTab2" value="Y" />
+                        <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
+                            <div class="card-content custom_padding_card_content_table_top">
+                                <h6 class="card-title">Pricing</h6><br>
+                                <div class="row">
+                                    <table id="page-length-option1" class="display bordered striped addproducttable">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">S.No</th>
+                                                <th style="text-align: center;">
+                                                    <label>
+                                                        <input type="checkbox" id="all_checked10" class="filled-in" name="all_checked10" value="1" <?php if (isset($all_checked10) && $all_checked10 == '1') {
                                                                                                                                                         echo "checked";
                                                                                                                                                     } ?> />
-                                                            <span></span>
-                                                        </label>
-                                                    </th>
-                                                    <th style="text-align: center;">Serial#</th>
-                                                    <th>Product ID</th> 
-                                                    <th>Product Description</th> 
-                                                    <th>Category</th> 
-                                                    <th>Amount</th>
+                                                        <span></span>
+                                                    </label>
+                                                </th>
+                                                <th style="text-align: center;">Serial#</th>
+                                                <th>Product ID</th>
+                                                <th>Product Description</th>
+                                                <th>Category</th>
+                                                <th>Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $i = 0;
+                                            foreach ($row_p2 as $data2) {
+                                                $receive_id2 = $data2['id'];  ?>
+                                                <tr>
+                                                    <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
+                                                    <td style="width:80px; text-align: center;">
+                                                        <?php
+                                                        if (access("delete_perm") == 1) { ?>
+                                                            <label>
+                                                                <input type="checkbox" name="bulkreceive_id2[]" id="bulkreceive_id2[]" value="<?= $receive_id2; ?>" <?php if (isset($bulkreceive_id2) && in_array($receive_id2, $bulkreceive_id2)) {
+                                                                                                                                                                        echo "checked";
+                                                                                                                                                                    } ?> class="checkbox10 filled-in" />
+                                                                <span></span>
+                                                            </label>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?php echo $data2['serial_no_barcode']; ?></td>
+                                                    <td><?php echo $data2['product_uniqueid']; ?></td>
+                                                    <td><?php echo $data2['product_desc']; ?></td>
+                                                    <td><?php echo $data2['category_name']; ?></td>
+                                                    <td style="width: 150px;">
+                                                        <input type="text" name="prices[<?= $receive_id2; ?>]" value="<?php echo $data2['order_price']; ?>">
+                                                    </td>
                                                 </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                $i = 0;
-                                                foreach ($row_p2 as $data2) {
-                                                    $receive_id2 = $data2['id'];  ?>
-                                                    <tr>
-                                                        <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
-                                                        <td style="width:80px; text-align: center;">
-                                                            <?php
-                                                            if (access("delete_perm") == 1) { ?>
-                                                                <label>
-                                                                    <input type="checkbox" name="bulkreceive_id2[]" id="bulkreceive_id2[]" value="<?= $receive_id2; ?>" <?php if (isset($bulkreceive_id2) && in_array($receive_id2, $bulkreceive_id2)) {
-                                                                                                                                                                            echo "checked";
-                                                                                                                                                                        } ?> class="checkbox10 filled-in" />
-                                                                    <span></span>
-                                                                </label>
-                                                            <?php } ?>
-                                                        </td>
-                                                        <td><?php echo $data2['serial_no_barcode']; ?></td>
-                                                        <td><?php echo $data2['product_uniqueid']; ?></td>
-                                                        <td><?php echo $data2['product_desc']; ?></td>
-                                                        <td><?php echo $data2['category_name']; ?></td>
-                                                        <td style="width: 150px;">
-                                                            <input type="text" name="prices[<?= $receive_id2; ?>]" value="<?php echo $data2['order_price']; ?>">
-                                                        </td>
-                                                    </tr>
-                                                <?php 
+                                            <?php
                                                 $i++;
                                             } ?>
-                                            </tbody>
-                                        </table>
-                                    </div><br><br>
-                                    <div class="row">
-                                        <div class="input-field col m2 s12">
-                                            <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
-                                                <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
-                                                    <i class="material-icons right">send</i>
-                                                </button>
-                                            <?php } ?>
-                                        </div>
+                                        </tbody>
+                                    </table>
+                                </div><br><br>
+                                <div class="row">
+                                    <div class="input-field col m2 s12">
+                                        <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                            <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
+                                                <i class="material-icons right">send</i>
+                                            </button>
+                                        <?php } ?>
                                     </div>
-
                                 </div>
+
                             </div>
-                        </form>
+                        </div>
+                    </form>
                 <?php } else { ?>
                     <div class="card-panel custom_padding_card_content_table_top_bottom">
                         <div class="row">
                             <div class="col 24 s12"><br>
                                 <div class="card-alert card red lighten-5">
                                     <div class="card-content red-text">
-                                        <p>Nothing receive yet... </p>
+                                        <p>Nothing data for pricing... </p>
                                     </div>
                                 </div>
                             </div>
@@ -1690,15 +1699,14 @@
 <script>
     function autoSubmit2(event) {
         var keycode_value = event.keyCode;
-        if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {
-        } else {
+        if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {} else {
             document.getElementById('barcodeForm2').submit();
         }
     }
+
     function autoSubmit2_1(event) {
         var keycode_value = event.keyCode;
-        if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {
-        } else {
+        if (keycode_value === 8 || keycode_value === 37 || keycode_value === 38 || keycode_value === 39 || keycode_value === 40 || keycode_value === 46 || keycode_value === 17 || keycode_value === 16 || keycode_value === 18 || keycode_value === 20 || keycode_value === 110 || (event.ctrlKey && (keycode_value === 65 || keycode_value === 67 || keycode_value === 88 || keycode_value === 88))) {} else {
             document.getElementById('barcodeForm2_1').submit();
         }
     }

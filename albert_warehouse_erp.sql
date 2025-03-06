@@ -2418,6 +2418,7 @@ DROP TABLE IF EXISTS `product_packages`;
 
 CREATE TABLE `product_packages` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscriber_users_id` int(11) DEFAULT 1,
   `product_id` int(11) DEFAULT 0,
   `package_id` int(11) DEFAULT 0,
   `is_mandatory` varchar(10) DEFAULT NULL,
@@ -2439,13 +2440,13 @@ CREATE TABLE `product_packages` (
 
 /*Data for the table `product_packages` */
 
-insert  into `product_packages`(`id`,`product_id`,`package_id`,`is_mandatory`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,1,'Yes','2025-01-14 11:38:02','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(2,212,1,'Yes','2025-01-29 21:12:42','admin_albert',1,'::1','Asia/Karachi',0,'2025-01-29 21:12:49','admin_albert',1,'::1','Asia/Karachi',0,1),
-(3,3,56,'No','2025-02-04 21:45:05','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(4,3,54,'Yes','2025-02-04 21:45:10','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(5,1,58,'No','2025-02-04 21:59:52','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(6,3,1,'No','2025-02-04 22:00:24','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
+insert  into `product_packages`(`id`,`subscriber_users_id`,`product_id`,`package_id`,`is_mandatory`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,1,1,'Yes','2025-01-14 11:38:02','admin_albert',1,'202.47.32.158','America/New_York',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(2,1,212,1,'Yes','2025-01-29 21:12:42','admin_albert',1,'::1','Asia/Karachi',0,'2025-01-29 21:12:49','admin_albert',1,'::1','Asia/Karachi',0,1),
+(3,1,3,56,'No','2025-02-04 21:45:05','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(4,1,3,54,'Yes','2025-02-04 21:45:10','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(5,1,1,58,'No','2025-02-04 21:59:52','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
+(6,1,3,1,'No','2025-02-04 22:00:24','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `product_stock` */
 
@@ -10833,7 +10834,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -10866,7 +10867,9 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (26,'Admin',1,'Login','2025-02-27 16:02:19',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (27,'Admin',1,'Login','2025-02-27 20:01:42',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (28,'Admin',1,'Login','2025-03-03 19:42:15',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(29,'Admin',1,'Login','2025-03-04 12:20:09',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(29,'Admin',1,'Login','2025-03-04 12:20:09',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(30,'Admin',1,'Login','2025-03-04 20:33:07',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(31,'Admin',1,'Login','2025-03-06 16:20:16',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -10980,7 +10983,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-03-04 12:20:09','::1',3492134,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-03-06 16:20:16','::1',2317155,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab11@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Repair,Diagnostic',1,'2024-11-18 06:22:47','::1',9103992,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2025-02-13 20:42:45','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2025-02-13 20:42:32','admin_albert',1,'::1',0,1);
 

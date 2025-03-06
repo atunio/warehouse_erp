@@ -222,8 +222,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".product_packages(product_id, package_id, is_mandatory, add_date, add_by, add_by_user_id, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $package_id . "', '" . $is_mandatory  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".product_packages(subscriber_users_id, product_id, package_id, is_mandatory, add_date, add_by, add_by_user_id, add_ip, add_timezone)
+							 VALUES('" . $subscriber_users_id . "', '" . $id . "', '" . $package_id . "', '" . $is_mandatory  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error2['msg'])) unset($error2['msg']);

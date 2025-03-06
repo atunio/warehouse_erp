@@ -152,9 +152,9 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 			}
 			if ($k > 0) {
 				if ($k == 1) {
-					$msg6['msg_success'] = $k . " record has been deleted successfully.";
+					$msg6['msg_success'] = $k . " record has been added successfully.";
 				} else {
-					$msg6['msg_success'] = $k . " records have been deleted successfully.";
+					$msg6['msg_success'] = $k . " records have been added successfully.";
 				}
 			}
 		}
@@ -365,10 +365,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 																			update_from_module_id	= '" . $module_id . "'
 								WHERE id = '".$id_for_stock."' ";
 					$ok = $db->query($conn, $sql_c_up);
-					if($ok){
-						$msg6['msg_success'] = "Record updated successfully....";
-					}
-
+				
 					/////////////////////////// Create Stock  START /////////////////////////////
 					$sql_pd1	= "	SELECT * FROM (
 										SELECT 'PO_products' as rec_type, a.*, b.product_id as inv_product_id, c.product_uniqueid, d.logistics_cost
@@ -492,9 +489,9 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 				} 
 				if ($k > 0) {
 					if ($k == 1) {
-						$msg6['msg_success'] = $k . " record has been deleted successfully.";
+						$msg6['msg_success'] = $k . " record has been updated successfully.";
 					} else {
-						$msg6['msg_success'] = $k . " records have been deleted successfully.";
+						$msg6['msg_success'] = $k . " records have been updated successfully.";
 					}
 				} 
 			}

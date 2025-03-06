@@ -85,7 +85,10 @@ $page_heading 	= "List of Products";
 										<?php }
 										if (access("add_perm") == 1) { ?>
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
-												Import
+												Import Product
+											</a> &nbsp;&nbsp;
+											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_packages") ?>">
+												Import Packages
 											</a>
 										<?php } ?>
 									</div>

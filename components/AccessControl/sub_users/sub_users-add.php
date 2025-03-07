@@ -40,8 +40,9 @@ if (access("delete_perm") == 0) {
 	}
 }
 if ($cmd == 'edit' && isset($id)) {
-	$sql_ee 	= "SELECT a.* 
+	$sql_ee 	= "SELECT a.*,  b.hourly_rate
 					FROM users a 
+					INNER JOIN employee_profile b ON b.user_id = a.id
 					WHERE a.id = '" . $id . "' 
 					AND a.subscriber_users_id ='" . $subscriber_users_id . "' ";
 	// echo $sql_ee;
@@ -52,6 +53,7 @@ if ($cmd == 'edit' && isset($id)) {
 	$last_name 					= $row_ee[0]['last_name'];
 	$email 						= $row_ee[0]['email'];
 	$username 					= $row_ee[0]['username'];
+	$hourly_rate				= $row_ee[0]['hourly_rate'];
 	$a_password 				= $row_ee[0]['a_password'];
 	$user_sections				= explode(",", $row_ee[0]['user_sections']);
 }
@@ -140,7 +142,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		}
 	} else if ($cmd == 'edit') {
 		$sql1 		= "	SELECT * FROM users 
-							WHERE username = '" . $username . "' AND id != '" . $id . "' ";
+						WHERE username = '" . $username . "' AND id != '" . $id . "' ";
 		$result1 	= $db->query($conn, $sql1);
 		$count2 	= $db->counter($result1);
 		if ($count2 > 0) {
@@ -154,9 +156,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			$error['email'] = "Sorry! This Email is already exist, try another.";
 			$email_valid 	= "invalid";
 		}
+
 		$sql1 		= "	SELECT * FROM employee_profile a
 						INNER JOIN users b ON b.id = a.user_id 
-						WHERE e_email = '" . $email . "'  AND id != '" . $id . "' ";
+						WHERE a.e_email = '" . $email . "'  
+						AND b.id != '" . $id . "' ";
+		// echo 	"<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" . $sql1;
 		$result1 	= $db->query($conn, $sql1);
 		$count2 	= $db->counter($result1);
 		if ($count2 > 0) {
@@ -165,7 +170,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		}
 	}
 	if (empty($error)) {
-
 		$user_sections_str = implode(",", $user_sections);
 		if ($hourly_rate == "") $hourly_rate = 0;
 		$a_password_md5 = md5($a_password);
@@ -208,7 +212,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 												update_by 					= '" . $_SESSION['username'] . "',
 												update_by_user_id			= '" . $_SESSION['user_id'] . "',
 												update_ip 					= '" . $add_ip . "'
-							WHERE id = '" . $id . "'   ";
+							WHERE id = '" . $id . "'   "; // echo "<br><br><br><br><br><br><br>" . $sql_c_up;
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {
 					$sql_c_up = "UPDATE employee_profile SET 	hourly_rate			= '" . $hourly_rate . "', 
@@ -219,7 +223,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 																update_by			= '" . $_SESSION['username'] . "',
 																update_by_user_id	= '" . $_SESSION['user_id'] . "',
 																update_ip			= '" . $add_ip . "'
-								WHERE user_id = '" . $id . "'   ";
+								WHERE user_id = '" . $id . "'   "; // echo "<br>" . $sql_c_up;
 					$ok = $db->query($conn, $sql_c_up);
 					$msg['msg_success'] = "Record Updated Successfully.";
 				} else {
@@ -234,9 +238,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -246,11 +250,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">

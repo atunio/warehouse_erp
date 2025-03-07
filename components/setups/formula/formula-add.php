@@ -200,6 +200,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 										<option value="Processing" <?php if (isset(${$field_name}) && ${$field_name} == 'Processing') { ?> selected="selected" <?php } ?>>Processing</option>
 										<option value="Repair" <?php if (isset(${$field_name}) && ${$field_name} == 'Repair') { ?> selected="selected" <?php } ?>>Repair</option>
 										<option value="Diagnostic" <?php if (isset(${$field_name}) && ${$field_name} == 'Diagnostic') { ?> selected="selected" <?php } ?>>Diagnostic</option>
+										<option value="Receive" <?php if (isset(${$field_name}) && ${$field_name} == 'Receive') { ?> selected="selected" <?php } ?>>Receive</option>
 									</select>
 									<label for="<?= $field_name; ?>">
 										<?= $field_label; ?>

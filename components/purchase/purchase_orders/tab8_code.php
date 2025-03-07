@@ -7,7 +7,8 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 		if (po_permisions("PriceSetup") == 0) {
 			$error8['msg'] = "You do not have add permissions.";
 		} else {
-			$sql_8_p1		= "  SELECT * FROM temp_po_pricing a WHERE po_id = '" . $id . "' AND uniq_session_id = '" . $uniq_session_id . "' "; // echo $sql_8_p1;
+			$sql_8_p1		= "	SELECT * FROM temp_po_pricing a 
+								WHERE po_id = '" . $id . "' AND uniq_session_id = '" . $uniq_session_id . "' "; // echo $sql_8_p1;
 			$result_8_p1 	= $db->query($conn, $sql_8_p1);
 			$count_8_p1  	= $db->counter($result_8_p1);
 			if ($count_8_p1 > 0) {
@@ -15,6 +16,7 @@ if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 				foreach ($row_8_p1 as $data_8_p1) {
 					$po_product_uniq_id = $data_8_p1['po_product_uniq_id'];
 					$po_detail_id_prc2	= $data_8_p1['po_detail_id'];
+					$product_id_prc2	= $data_8_p1['product_id'];
 					$price_grade 		= $data_8_p1['price_grade'];
 					$suggested_price 	= $data_8_p1['suggested_price'];
 					$sql_c_up = "	UPDATE product_stock a

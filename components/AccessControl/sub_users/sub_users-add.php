@@ -40,7 +40,7 @@ if (access("delete_perm") == 0) {
 	}
 }
 if ($cmd == 'edit' && isset($id)) {
-	$sql_ee 	= "SELECT a.*,  b.hourly_rate
+	$sql_ee 	= " SELECT a.*,  b.hourly_rate
 					FROM users a 
 					INNER JOIN employee_profile b ON b.user_id = a.id
 					WHERE a.id = '" . $id . "' 

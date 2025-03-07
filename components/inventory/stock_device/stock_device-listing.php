@@ -38,61 +38,82 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $sql_cl		= "	SELECT * FROM (
-					SELECT  GROUP_CONCAT(DISTINCT b.po_id) AS po_id, 
-							GROUP_CONCAT(DISTINCT a.po_no) AS po_no, 
-							GROUP_CONCAT(DISTINCT e.status_name) AS po_status_name, 
-							SUM(1) AS po_order_qty, 
-							c.id, b.product_id, c.product_uniqueid, c.product_desc, c.product_category, '' AS sub_location, 
-							d.category_name, SUM(1) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type,
-							'' AS serial_no, '' AS p_inventory_status, '' AS stock_grade, ROUND(SUM(b.price)/SUM(1), 2) AS avg_price
-					FROM `purchase_orders` a 
-					INNER JOIN purchase_order_detail_receive b ON b.`po_id` = a.id
-					INNER JOIN purchase_order_detail c1 ON c1.id = b.`po_detail_id`
-					INNER JOIN products c ON c.id = c1.`product_id` 
-					LEFT JOIN product_categories d ON  d.id = c.`product_category`
-					INNER JOIN inventory_status e ON e.id = a.order_status
-					WHERE a.enabled = 1
-					AND order_status IN(3, 5, 6)
-					AND a.is_pricing_done = 0
-					GROUP BY c1.product_id
 
-					UNION ALL
+					SELECT * FROM (
+						SELECT 
+							'' as po_id, '' as po_no, '' as po_status_name, '' as po_order_qty, id, product_id,   
+							product_uniqueid, product_desc, product_category, '' as sub_location, category_name,
+							SUM(po_order_qty) AS total_qty, 'Untested/Not Graded' AS status_name, '' as is_final_pricing, 'Non Stock' as r_type,
+							'' as serial_no, '' as p_inventory_status, '' as stock_grade,
+							ROUND(SUM(total_price) / SUM(po_order_qty), 4) AS avg_price,
+							GROUP_CONCAT(
+								CONCAT(po_no, ' ', po_status_name, ' (', po_order_qty, ')')
+								ORDER BY po_no
+							) AS po_details 
 
-					SELECT  GROUP_CONCAT(DISTINCT b.po_id) AS po_id, 
-						GROUP_CONCAT(DISTINCT a.po_no) AS po_no, 
-						GROUP_CONCAT(DISTINCT e.status_name) AS po_status_name, 
-						SUM(1) AS po_order_qty, 
-						c.id, b.product_id, c.product_uniqueid, c.product_desc, c.product_category, '' AS sub_location, 
-						d.category_name, SUM(1) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type,
-						'' AS serial_no, '' AS p_inventory_status, '' AS stock_grade, ROUND(SUM(b.price)/SUM(1), 2) AS avg_price
-					FROM `purchase_orders` a 
-					INNER JOIN purchase_order_detail_receive b ON b.`po_id` = a.id
-					INNER JOIN products c ON c.id = b.`product_id`
-					LEFT JOIN product_categories d ON  d.id = c.`product_category`
-					INNER JOIN inventory_status e ON e.id = a.order_status
-					WHERE a.enabled = 1
-					AND order_status IN(3, 5, 6)
-					AND a.is_pricing_done = 0
-					GROUP BY b.product_id
+						FROM (
+ 							SELECT  
+								c.product_uniqueid, c.id, c1.product_id,
+								c.product_desc,
+								d.category_name, c.product_category,
+								a.po_no,
+								e.status_name AS po_status_name,
+								SUM(1) AS po_order_qty,
+								SUM(b.price) AS total_price
+							FROM `purchase_orders` a 
+							INNER JOIN purchase_order_detail_receive b ON b.`po_id` = a.id
+							INNER JOIN purchase_order_detail c1 ON c1.id = b.`po_detail_id`
+							INNER JOIN products c ON c.id = c1.`product_id`
+							LEFT JOIN product_categories d ON d.id = c.`product_category`
+							INNER JOIN inventory_status e ON e.id = a.order_status
+							WHERE a.enabled = 1
+							AND a.order_status IN (3, 5, 6)
+							AND a.is_pricing_done = 0
+							AND b.is_rma_processed = 0
+							GROUP BY c1.product_id, b.po_id
 
-					UNION ALL
-					
-					SELECT  GROUP_CONCAT(b.po_id) AS po_id, 
-							GROUP_CONCAT(a.po_no) AS po_no, 
-							GROUP_CONCAT(e.status_name) AS po_status_name, 
-							GROUP_CONCAT(b.order_qty) AS po_order_qty, 
-							c.id, b.product_id, c.product_uniqueid, c.product_desc, c.product_category, '' AS sub_location, 
-							d.category_name, SUM(b.order_qty) AS total_qty, 'Untested/Not Graded' AS status_name, '0' AS is_final_pricing, 'Non Stock' AS r_type,
-						'' AS serial_no, '' AS p_inventory_status, '' AS stock_grade, ROUND(SUM(b.order_price*b.order_qty)/SUM(b.order_qty), 2) AS avg_price
-					FROM `purchase_orders` a 
-					INNER JOIN purchase_order_detail b ON b.`po_id` = a.id
-					INNER JOIN products c ON c.id = b.`product_id`
-					LEFT JOIN product_categories d ON  d.id = c.`product_category`
-					INNER JOIN inventory_status e ON e.id = a.order_status
-					WHERE a.enabled = 1
-					AND order_status IN(1, 3, 4, 11, 12) 
-					AND a.is_pricing_done = 0
-					GROUP BY b.product_id 
+							UNION ALL
+
+							SELECT   
+								c.product_uniqueid, c.id, b.product_id,
+								c.product_desc,
+								d.category_name, c.product_category,
+								a.po_no,
+								e.status_name AS po_status_name,
+								SUM(1) AS po_order_qty,
+								SUM(b.price) AS total_price
+
+							FROM `purchase_orders` a 
+							INNER JOIN purchase_order_detail_receive b ON b.`po_id` = a.id
+							INNER JOIN products c ON c.id = b.`product_id`
+							LEFT JOIN product_categories d ON  d.id = c.`product_category`
+							INNER JOIN inventory_status e ON e.id = a.order_status
+							WHERE a.enabled = 1
+							AND order_status IN(3, 5, 6)
+							AND a.is_pricing_done = 0
+							GROUP BY b.product_id, b.po_id
+							
+							UNION ALL
+							
+							SELECT  c.product_uniqueid, c.id, b.product_id,
+								c.product_desc,
+								d.category_name, c.product_category,
+								a.po_no,
+								e.status_name AS po_status_name,
+								SUM(b.order_qty) AS po_order_qty,
+								SUM(b.order_qty*order_price) AS total_price
+							FROM `purchase_orders` a 
+							INNER JOIN purchase_order_detail b ON b.`po_id` = a.id
+							INNER JOIN products c ON c.id = b.`product_id`
+							LEFT JOIN product_categories d ON  d.id = c.`product_category`
+							INNER JOIN inventory_status e ON e.id = a.order_status
+							WHERE a.enabled = 1
+							AND order_status IN(1, 3, 4, 11, 12) 
+							AND a.is_pricing_done = 0
+							GROUP BY b.product_id, b.po_id
+						) AS combined_data
+						GROUP BY product_uniqueid, product_desc, category_name
+					) as t1_2
 
 					UNION ALL
 
@@ -101,7 +122,7 @@ $sql_cl		= "	SELECT * FROM (
 						b.category_name, '' AS total_qty, c.status_name, a2.is_final_pricing, 'Stock' AS r_type, 
 						GROUP_CONCAT(DISTINCT CONCAT('', a2.serial_no)) AS serial_no,
 						GROUP_CONCAT(DISTINCT CONCAT('', a2.p_inventory_status)) AS p_inventory_status,
-						GROUP_CONCAT(DISTINCT CONCAT('', a2.stock_grade)) AS stock_grade, '' as avg_price
+						GROUP_CONCAT(DISTINCT CONCAT('', a2.stock_grade)) AS stock_grade, '' as avg_price, '' as po_details
 					FROM products a
 					LEFT JOIN product_stock a2 ON a2.product_id = a.id AND a2.enabled = 1 
 					LEFT JOIN product_categories b ON b.id = a.product_category
@@ -138,7 +159,7 @@ if (isset($flt_stock_grade) && $flt_stock_grade != '') {
 }
 
 $sql_cl		   .= " ORDER BY product_uniqueid, r_type";
-// echo "<br><br><br><br><br>" . $sql_cl;
+//  echo "<br><br><br><br><br>" . $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 $page_heading 	= "Stock Summary";
@@ -519,6 +540,7 @@ $page_heading 	= "Stock Summary";
 														$id 				= $data['id'];
 														$po_id 				= $data['po_id'];
 														$po_no 				= $data['po_no'];
+														$po_details			= $data['po_details'];
 														$po_order_qty		= $data['po_order_qty'];
 														$po_status_name		= $data['po_status_name'];
 														$product_uniqueid	= $data['product_uniqueid'];
@@ -575,21 +597,16 @@ $page_heading 	= "Stock Summary";
 																<td class="col-<?= strtolower($table_columns[6]);?>">
 																	In transit
 																	<?php
-																	$po_id_array 			= explode(",", $po_id);
-																	$po_no_array 			= explode(",", $po_no);
-																	$po_status_name_array 	= explode(",", $po_status_name);
-																	$po_order_qty_array 	= explode(",", $po_order_qty);
+																	$po_detail_array		= explode(",", $po_details); 
 																	$po_module_permision 	=  check_module_permission($db, $conn, 10, $_SESSION["user_id"], $_SESSION["user_type"]);
 																	if ($po_module_permision != "") {
 																		$m = 0;
-																		foreach ($po_id_array as $data_po) { ?>
+																		foreach ($po_detail_array as $po_detail_data) { ?>
 																			<br>
 																			<a target="_blank" href="?string=<?php echo encrypt("module_id=10&page=profile&cmd=edit&id=" . $data_po . "&active_tab=tab1") ?>">
-																				<?php echo $po_no_array[$m]; ?>
+																				<?php echo $po_detail_data; ?>
 																			</a>
 																	<?php
-																			echo " " . $po_status_name_array[$m];
-																			echo " (" . $po_order_qty_array[$m] . ")";
 																			$m++;
 																		}
 																	} else {

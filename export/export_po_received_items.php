@@ -91,7 +91,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		$sql_cl = "	SELECT * FROM (
 						SELECT a.id as record_id, c.product_uniqueid as product_id, serial_no_barcode AS `serial`, a.battery ,
 							a.body_grade, a.lcd_grade, a.digitizer_grade,
-							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
+							a.overall_grade, a.ram, a.storage, a.processor,
 							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
 						FROM purchase_order_detail_receive a
 						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
@@ -117,7 +117,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 
 						SELECT a.id AS record_id, c.product_uniqueid as product_id, serial_no_barcode AS `serial`, a.battery,
 							a.body_grade, a.lcd_grade, a.digitizer_grade,
-							a.overall_grade, a.ram, a.storage, a.processor, a.warranty, a.price,
+							a.overall_grade, a.ram, a.storage, a.processor, 
 							a.defects_or_notes, h.status_name AS inventory_status, g.sub_location_name
 						FROM purchase_order_detail_receive a
 						INNER JOIN purchase_orders b1 ON b1.id = a.po_id

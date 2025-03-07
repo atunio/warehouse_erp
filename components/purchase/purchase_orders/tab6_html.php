@@ -125,14 +125,17 @@
                         <span>Master Profile</span>
                     </a>
                 </li>
-                <li class="tab">
-                    <a href="#tab2" class=" <?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab2') {
-                                                echo "active";
-                                            }  ?>">
-                        <i class="material-icons">attach_money</i>
-                        <span>Pricing</span>
-                    </a>
-                </li>
+                <?php 
+                if (po_permisions("Pricing") == '1') {?>
+                    <li class="tab">
+                        <a href="#tab2" class=" <?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab2') {
+                                                    echo "active";
+                                                }  ?>">
+                            <i class="material-icons">attach_money</i>
+                            <span>Pricing</span>
+                        </a>
+                    </li>
+                <?php }?>
             </ul>
             <div id="tab1">
                 <?php
@@ -1656,6 +1659,9 @@
                                                     <td><?php echo $data2['product_desc']; ?></td>
                                                     <td><?php echo $data2['category_name']; ?></td>
                                                     <td style="width: 150px;">
+                                                        <?php if(isset($error6["price".$receive_id2])){ 
+                                                            echo "<span class='color-red'>".$error6["price".$receive_id2]."</span>";
+                                                        }?>
                                                         <input type="text" name="prices[<?= $receive_id2; ?>]" value="<?php echo $data2['order_price']; ?>">
                                                     </td>
                                                 </tr>

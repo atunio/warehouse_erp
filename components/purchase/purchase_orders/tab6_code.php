@@ -348,11 +348,17 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 	if (!isset($bulkreceive_id2) || (isset($bulkreceive_id2) && sizeof($bulkreceive_id2) == 0)) {
 		$error6['msg'] = "Select atleast one record";
 	}
+	else{
+		foreach ($bulkreceive_id2 as $receive_id) {   
+			if(!isset($prices[$receive_id]) || (isset($prices[$receive_id]) && ($prices[$receive_id] == '' || $prices[$receive_id] == '0'))){
+				$error6["price".$receive_id] = "Required";
+			}
+		}
+	}
 	if (empty($error6)) {
 		if (access("add_perm") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
-			
 			if (isset($bulkreceive_id2) && $bulkreceive_id2 != null) {
 				$k = 0;
 				foreach ($bulkreceive_id2 as $id_for_stock) {  
@@ -489,16 +495,14 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 				} 
 				if ($k > 0) {
 					if ($k == 1) {
-						$msg6['msg_success'] = $k . " record has been updated successfully.";
+						$msg6['msg_success'] = $k . " record pricing has been done successfully.";
 					} else {
-						$msg6['msg_success'] = $k . " records have been updated successfully.";
+						$msg6['msg_success'] = $k . " records pricing have been done successfully.";
 					}
 				} 
 			}
 		}
-	} else {
-		$error6['msg'] = "There is error, Please check it.";
-	}
+	}  
 }
 
 /*

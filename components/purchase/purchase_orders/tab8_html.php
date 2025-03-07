@@ -69,7 +69,7 @@
                 $td_padding = "padding:5px 10px !important;";
                 $sql        = " WITH cte AS (
                                     SELECT * FROM (
-                                        SELECT  a.po_detail_id, c.product_uniqueid, 
+                                        SELECT  a.po_detail_id, a.product_id, c.product_uniqueid, 
                                             c2.stock_grade,
                                             b.order_price,
                                             COUNT(c2.id) AS total_qty, 
@@ -92,7 +92,7 @@
                                         
                                         UNION ALL 
                                         
-                                        SELECT  a.po_detail_id, c.product_uniqueid, 
+                                        SELECT  a.po_detail_id, a.product_id, c.product_uniqueid, 
                                             c2.stock_grade,
                                             a.price AS  order_price,
                                             COUNT(c2.id) AS total_qty, 
@@ -197,6 +197,7 @@
                                                     }
                                                     foreach ($row_cl1 as $data) {
                                                         $po_detail_id_prc       = $data['po_detail_id'];
+                                                        $product_id_prc         = $data['product_id'];
                                                         $product_uniqueid       = $data['product_uniqueid'];
                                                         $product_total_price    = $data['product_total_price'];
                                                         $total_cost             = ($data['total_price']);
@@ -348,10 +349,10 @@
 
                                                                     $price_grade    = $data["stock_grade"];
                                                                     if (!isset($is_Submit_tab8)) {
-                                                                        $sql = "INSERT INTO temp_po_pricing (uniq_session_id, po_id, po_detail_id, po_product_uniq_id, price_grade, suggested_price,
+                                                                        $sql = "INSERT INTO temp_po_pricing (uniq_session_id, po_id, po_detail_id, product_id, po_product_uniq_id, price_grade, suggested_price,
                                                                                                         logistic_percentage_per_item, receiving_percentage_per_item, diagnostic_percentage_per_item, distributed_percentage_per_item, 
                                                                                                         add_by_user_id, add_date,  add_by, add_ip, add_timezone, added_from_module_id) 
-                                                                                VALUES( '" . $uniq_session_id . "', '" . $id . "', '" . $po_detail_id_prc . "', '" . $product_uniqueid . "', '" . $price_grade . "', '" . round($suggested_price, 2) . "',
+                                                                                VALUES( '" . $uniq_session_id . "', '" . $id . "', '" . $po_detail_id_prc . "', '" . $product_id_prc . "', '" . $product_uniqueid . "', '" . $price_grade . "', '" . round($suggested_price, 2) . "',
                                                                                     '" . $logistic_percentage_per_item . "', '" . $receiving_percentage_per_item . "', '" . $diagnostic_percentage_per_item . "', '" . $distributed_percentage_per_item . "',
                                                                                     '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                                                                         $db->query($conn, $sql);

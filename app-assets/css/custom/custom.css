@@ -116,3 +116,10 @@
 	max-height: 92% !important;
 	top: 30px !important;
 }
+.custom_font_size_table{
+	font-size: 12px !important;
+}
+.custom_sytel_menu_link{
+	font-size: 12px !important;
+	color: #000 !important;
+}

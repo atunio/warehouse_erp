@@ -351,7 +351,7 @@ $page_heading 	= "List Purchase Orders ";
 									</div>
 									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display pagelength50">
+											<table id="page-length-option" class="display pagelength50 custom_font_size_table">
 												<thead>
 													<tr>
 														<?php

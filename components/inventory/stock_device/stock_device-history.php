@@ -357,48 +357,55 @@ $page_heading 	= "Stock Hisotry";
 				</div>
 			</div>
 		</div>
-		<!-- Puchase Listing -->
-		<div class="col s12 m12 l12">
-			<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-				<div class="card-content custom_padding_card_content_table_top">
-					<h4 class="card-title">Purchase History</h4>
-					<?php
-					$sql_cl		= "	SELECT * FROM (
-										SELECT '' AS offer_no, aa.po_no, 
-												aa2.*, 
-												aa.id AS po_id_master, aa2.id AS po_detail_id,
-												c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name
-										FROM purchase_orders aa
-										LEFT JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
-										LEFT JOIN venders c ON c.id = aa.vender_id
-										INNER JOIN inventory_status e ON e.id = aa.order_status
-										WHERE 1=1 
-										AND (aa.offer_id IS NULL || aa.offer_id = '0' )
-										
-										UNION ALL 
-										
-										SELECT 	a.offer_no AS offer_no, aa.po_no, 
-												aa2.*, 
-												aa.id AS po_id_master, aa2.id AS po_detail_id, 
-												c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name 
-										FROM purchase_orders aa
-										INNER JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
-										INNER JOIN offers a ON a.id = aa.offer_id
-										INNER JOIN offer_detail a1 ON a1.offer_id = a.id AND a1.id = aa2.offer_detail_id
-										INNER JOIN venders c ON c.id = a.vender_id
-										INNER JOIN inventory_status e ON e.id = aa.order_status
-										WHERE 1=1 
-										AND aa.offer_id >0
-									) AS t1
-									WHERE 1=1 ";
-					if (isset($id) && $id > 0) {
-						$sql_cl		.= "AND t1.product_id = '" . $id . "' ";
-					}
-					$sql_cl		.= " ORDER BY  t1.po_id_master DESC, t1.po_detail_id DESC ";
-					// echo $sql_cl;
-					$result_cl	= $db->query($conn, $sql_cl);
-					$count_cl	= $db->counter($result_cl);
-					if ($count_cl > 0) { ?>
+		<?php
+		$sql_cl		= "	SELECT  po_id, po_no, po_date, order_enabled, product_id, vender_name, status_name, 
+								receive_id, SUM(order_qty) AS order_qty, SUM(avg_price)/SUM(total_rec) AS avg_price
+						FROM (
+							SELECT  b1.po_id, aa.po_no, aa.po_date, aa.enabled AS order_enabled,
+									aa2.product_id, c.vender_name, e.status_name, b1.id AS receive_id, SUM(b1.enabled) AS order_qty, 
+									SUM(b1.price)/SUM(b1.enabled) AS avg_price,
+									COUNT(DISTINCT aa.id) AS total_rec
+							FROM purchase_orders aa
+							INNER JOIN  purchase_order_detail_receive b1 ON b1.po_id = aa.id
+							INNER JOIN purchase_order_detail aa2 ON aa2.id = b1.po_detail_id 
+							LEFT JOIN venders c ON c.id = aa.vender_id
+							INNER JOIN inventory_status e ON e.id = aa.order_status
+							WHERE 1=1 
+							AND aa.enabled = 1
+							AND b1.enabled = 1
+							AND aa2.product_id = '" . $id . "'
+							AND (aa.offer_id IS NULL || aa.offer_id = '0' )
+							GROUP BY b1.po_id 
+							
+							UNION ALL 
+							
+							SELECT  b1.po_id, aa.po_no, aa.po_date, aa.enabled AS order_enabled,
+									b1.product_id, c.vender_name, e.status_name, b1.id AS receive_id, SUM(b1.enabled) AS order_qty, 
+									SUM(b1.price)/SUM(b1.enabled) AS avg_price,
+									COUNT(DISTINCT aa.id) AS total_rec
+							FROM purchase_orders aa
+							INNER JOIN  purchase_order_detail_receive b1 ON b1.po_id = aa.id
+							INNER JOIN products aa2 ON aa2.id = b1.product_id 
+							LEFT JOIN venders c ON c.id = aa.vender_id
+							INNER JOIN inventory_status e ON e.id = aa.order_status
+							WHERE 1=1 
+							AND aa.enabled = 1
+							AND b1.enabled = 1
+							AND b1.product_id = '" . $id . "'
+							AND (aa.offer_id IS NULL || aa.offer_id = '0' )
+							GROUP BY b1.po_id
+						) AS t1
+						WHERE 1=1 ";
+		$sql_cl		.= " GROUP BY po_id ORDER BY receive_id DESC ";
+		// echo $sql_cl;
+		$result_cl	= $db->query($conn, $sql_cl);
+		$count_cl	= $db->counter($result_cl);
+		if ($count_cl > 0) { ?>
+			<!-- Puchase Listing -->
+			<div class="col s12 m12 l12">
+				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top">
+						<h4 class="card-title">Purchase History</h4>
 						<div class="section section-data-tables">
 							<div class="row">
 								<div class="col s12">
@@ -411,7 +418,7 @@ $page_heading 	= "Stock Hisotry";
 																<th>PO Date</th>
 																<th>Vender</th> 
 																<th>Quantity</th>
-																<th>Price</th>';
+																<th>Avg Price</th>';
 												echo $headings;
 												?>
 											</tr>
@@ -421,8 +428,7 @@ $page_heading 	= "Stock Hisotry";
 											$i = 0;
 											if ($count_cl > 0) {
 												$row_cl = $db->fetch($result_cl);
-												foreach ($row_cl as $data) {
-													$id 		= $data['id'];
+												foreach ($row_cl as $data) { 
 													$product_id = $data['product_id'];  ?>
 													<tr>
 														<td style="text-align: center;"><?php echo $i + 1; ?></td>
@@ -430,7 +436,7 @@ $page_heading 	= "Stock Hisotry";
 														<td><?php echo dateformat2($data['po_date']); ?></td>
 														<td><?php echo $data['vender_name']; ?></td>
 														<td><?php echo $data['order_qty']; ?></td>
-														<td><?php echo $data['order_price']; ?></td>
+														<td><?php echo $data['avg_price']; ?></td>
 													</tr>
 											<?php $i++;
 												}
@@ -439,62 +445,51 @@ $page_heading 	= "Stock Hisotry";
 								</div>
 							</div>
 						</div>
-					<?php } else { ?>
-						<div class="row">
-							<div class="col 24 s12">
-								<div class="card-alert card red lighten-5">
-									<div class="card-content red-text">
-										<p>No record found yet</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					<?php } ?>
+					</div>
 				</div>
 			</div>
-		</div>
-		<!-- Sales Listing -->
-		<div class="col s12 m12 l12">
-			<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-				<div class="card-content custom_padding_card_content_table_top">
-					<h4 class="card-title">Sales History</h4>
-					<?php
-					$sql_cl		= "	SELECT * FROM (
-										SELECT '' AS offer_no, aa.po_no, 
-												aa2.*, 
-												aa.id AS po_id_master, aa2.id AS po_detail_id,
-												c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name
-										FROM purchase_orders aa
-										LEFT JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
-										LEFT JOIN venders c ON c.id = aa.vender_id
-										INNER JOIN inventory_status e ON e.id = aa.order_status
-										WHERE 1=1 
-										AND aa.offer_id IS NULL
-										
-										UNION ALL 
-										
-										SELECT 	a.offer_no AS offer_no, aa.po_no, 
-												aa2.*, 
-												aa.id AS po_id_master, aa2.id AS po_detail_id, 
-												c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name 
-										FROM purchase_orders aa
-										INNER JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
-										INNER JOIN offers a ON a.id = aa.offer_id
-										INNER JOIN offer_detail a1 ON a1.offer_id = a.id AND a1.id = aa2.offer_detail_id
-										INNER JOIN venders c ON c.id = a.vender_id
-										INNER JOIN inventory_status e ON e.id = aa.order_status
-										WHERE 1=1 
-										AND aa.offer_id IS NOT NULL
-									) AS t1
-									WHERE 1=1 ";
-					if (isset($id) && $id > 0) {
-						$sql_cl		.= "AND t1.product_id = '" . $id . "1111111111111111111111111111111111111' ";
-					}
-					$sql_cl		.= " ORDER BY  t1.po_id_master DESC, t1.po_detail_id DESC ";
-					//echo $sql_cl;
-					$result_cl	= $db->query($conn, $sql_cl);
-					$count_cl	= $db->counter($result_cl);
-					if ($count_cl > 0) { ?>
+		<?php }
+		$sql_cl		= "	SELECT * FROM (
+							SELECT '' AS offer_no, aa.po_no, 
+									aa2.*, 
+									aa.id AS po_id_master, aa2.id AS po_detail_id,
+									c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name
+							FROM purchase_orders aa
+							LEFT JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
+							LEFT JOIN venders c ON c.id = aa.vender_id
+							INNER JOIN inventory_status e ON e.id = aa.order_status
+							WHERE 1=1 
+							AND aa.offer_id IS NULL
+							
+							UNION ALL 
+							
+							SELECT 	a.offer_no AS offer_no, aa.po_no, 
+									aa2.*, 
+									aa.id AS po_id_master, aa2.id AS po_detail_id, 
+									c.vender_name, aa.po_date, aa.enabled AS order_enabled, e.status_name 
+							FROM purchase_orders aa
+							INNER JOIN purchase_order_detail aa2 ON aa.id = aa2.po_id 
+							INNER JOIN offers a ON a.id = aa.offer_id
+							INNER JOIN offer_detail a1 ON a1.offer_id = a.id AND a1.id = aa2.offer_detail_id
+							INNER JOIN venders c ON c.id = a.vender_id
+							INNER JOIN inventory_status e ON e.id = aa.order_status
+							WHERE 1=1 
+							AND aa.offer_id IS NOT NULL
+						) AS t1
+						WHERE 1=1 ";
+		if (isset($id) && $id > 0) {
+			$sql_cl		.= "AND t1.product_id = '" . $id . "' ";
+		}
+		$sql_cl		.= " ORDER BY  t1.po_id_master DESC, t1.po_detail_id DESC ";
+		//echo $sql_cl;
+		$result_cl	= $db->query($conn, $sql_cl);
+		$count_cl	= $db->counter($result_cl);
+		if ($count_cl > 0) { ?>
+			<!-- Sales Listing -->
+			<div class="col s12 m12 l12">
+				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
+					<div class="card-content custom_padding_card_content_table_top">
+						<h4 class="card-title">Sales History</h4>
 						<div class="section section-data-tables">
 							<div class="row">
 								<div class="col s12">
@@ -536,20 +531,10 @@ $page_heading 	= "Stock Hisotry";
 								</div>
 							</div>
 						</div>
-					<?php } else { ?>
-						<div class="row">
-							<div class="col 24 s12">
-								<div class="card-alert card red lighten-5">
-									<div class="card-content red-text">
-										<p>No record found yet</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					<?php } ?>
+					</div>
 				</div>
 			</div>
-		</div>
+		<?php } ?>
 		<!-- START RIGHT SIDEBAR NAV -->
 		<?php include('sub_files/right_sidebar.php'); ?>
 		<div class="content-overlay"></div>

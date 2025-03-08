@@ -113,7 +113,7 @@
                                     <a class="dropdown-menu" href="Javascript:void(0)" data-target="<?php echo $module_id_sitebar; ?>">
                                         <i class="material-icons"><?php echo $icon_name; ?></i>
                                         <span>
-                                            <span class="dropdown-title" data-i18n="<?php echo $menu_name; ?>"><?php echo $menu_name; ?></span>
+                                            <span class="dropdown-title custom_sytel_menu_link" data-i18n="<?php echo $menu_name; ?>"><?php echo $menu_name; ?></span>
                                             <i class="material-icons right">keyboard_arrow_down</i>
                                         </span>
                                     </a>
@@ -152,7 +152,7 @@
                                                         <li class="dropdown dropdown-submenu" data-menu="dropdown-submenu">
                                                             <a class="dropdownSub-menu" href="Javascript:void(0)" data-target="<?php echo $module_id_sitebar; ?>">
                                                                  <span>
-                                                                    <span class="dropdown-title" data-i18n="<?php echo $menu_name; ?>"><?php echo $menu_name; ?></span>
+                                                                    <span class="dropdown-title custom_sytel_menu_link" data-i18n="<?php echo $menu_name; ?>"><?php echo $menu_name; ?></span>
                                                                     <i class="material-icons right">chevron_right</i>
                                                                 </span>
                                                             </a>

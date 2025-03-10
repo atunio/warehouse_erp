@@ -35,22 +35,23 @@ $sql_cl .= "GROUP BY a.sub_location
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
-
-$sql_u 			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Repair' , user_sections) > 0 "; //echo $sql_u;
+ $sql_u 		= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name 
+					FROM users 
+					WHERE FIND_IN_SET(  'Repair' , user_sections) > 0 
+					AND enabled = 1"; //echo $sql_u;
 $result_u		= $db->query($conn, $sql_u);
 $count_u		= $db->counter($result_u);
-
-$sql_cl2			= " SELECT DISTINCT a3.id, a3.category_name, 
-							COUNT(a.id) AS qty, IFNULL(devices_per_user_per_day, 0) AS devices_per_user_per_day,
-							IFNULL((COUNT(a.id) / (devices_per_user_per_day*" . $count_u . ")), 0) AS estimated_time_hours
-						FROM product_stock a 
-						INNER JOIN  products a2 ON a2.id = a.product_id
-						INNER JOIN product_categories a3 ON a3.id = a2.product_category
-						INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location
-						LEFT JOIN formula_category c ON c.product_category = a2.product_category AND c.formula_type = 'Repair' AND c.enabled = 1
-						WHERE a.p_total_stock > 0 
-						AND a.p_inventory_status =  '$module_status'
-						GROUP BY a3.id ";
+$sql_cl2		= " SELECT DISTINCT a3.id, a3.category_name, 
+						COUNT(a.id) AS qty, IFNULL(devices_per_user_per_day, 0) AS devices_per_user_per_day,
+						IFNULL((COUNT(a.id) / (devices_per_user_per_day*" . $count_u . ")), 0) AS estimated_time_hours
+					FROM product_stock a 
+					INNER JOIN  products a2 ON a2.id = a.product_id
+					INNER JOIN product_categories a3 ON a3.id = a2.product_category
+					INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location
+					LEFT JOIN formula_category c ON c.product_category = a2.product_category AND c.formula_type = 'Repair' AND c.enabled = 1
+					WHERE a.p_total_stock > 0 
+					AND a.p_inventory_status =  '$module_status'
+					GROUP BY a3.id ";
 $result_cl2		= $db->query($conn, $sql_cl2);
 $count_cl2		= $db->counter($result_cl2);
 $page_heading 	= "List of Bins For Repair ( Manager View)";

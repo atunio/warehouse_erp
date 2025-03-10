@@ -15,16 +15,33 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
+
+if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
+	$error['msg'] = "You do not have edit permissions.";
+} else {
+	if (isset($cmd) && $cmd == 'disabled') {
+		$sql_c_upd = "DELETE FROM " . $selected_db_name . ".users_bin_for_diagnostic WHERE id = '$id ' AND is_processing_done = 0 ";
+		$ok = $db->query($conn, $sql_c_upd);
+		$enabe_ok = $db->query($conn, $sql_c_upd);
+		if ($enabe_ok) {
+			$msg['msg_success'] = "Record has been removed.";
+		} else {
+			$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+		}
+	}
+}
 $module_status = 5;
-$sql_cl = " SELECT DISTINCT a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
+$sql_cl = " SELECT DISTINCT IFNULL(e.id, 0) AS bin_id, e.id as bin_id, a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
 					GROUP_CONCAT(DISTINCT CONCAT('<br>PO#: ', COALESCE(c.po_no, 'N/A'), ', Vendor Name: ', COALESCE(a2.vender_name, 'N/A')) ORDER BY c.po_no SEPARATOR '') AS po_detail,
 					GROUP_CONCAT(DISTINCT date_format(a.add_date, '%Y-%m-%d') ORDER BY a.add_date SEPARATOR '') AS received_dates
 			FROM purchase_order_detail_receive a
 			INNER JOIN purchase_orders c ON c.id = a.po_id
 			INNER JOIN venders a2 ON a2.id = c.vender_id
 			INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+ 			LEFT JOIN users_bin_for_diagnostic e ON e.location_id = a.sub_location_id AND e.is_processing_done = 0
 			WHERE 1= 1 
-			AND is_diagnost = 0 ";
+			AND is_diagnost = 0 
+			AND IFNULL(e.id, 0) = 0 ";
 if (isset($flt_bin_id) && $flt_bin_id != "") {
 	$sql_cl .= " AND a.sub_location_id = '" . $flt_bin_id . "' ";
 }
@@ -33,16 +50,20 @@ if (isset($flt_product_category) && $flt_product_category != "") {
 }
 
 $sql_cl .= " GROUP BY a.sub_location_id
+			 HAVING COUNT(*)> 0
 			 ORDER BY a.sub_location_id ";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 
-$sql_u 			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Diagnostic' , user_sections) > 0 "; //echo $sql_u;
+$sql_u 			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name 
+					FROM users 
+					WHERE FIND_IN_SET(  'Diagnostic' , user_sections) > 0 
+					AND enabled = 1"; //echo $sql_u;
 $result_u		= $db->query($conn, $sql_u);
 $count_u		= $db->counter($result_u);
 
-$sql_cl2			= " SELECT  DISTINCT a3.id, a3.category_name, 
+$sql_cl2			= " SELECT  DISTINCT IFNULL(f.id, 0) AS bin_id, a3.id, a3.category_name, 
 								COUNT(a.id) AS qty, IFNULL(e.devices_per_user_per_day, 0) AS devices_per_user_per_day,
 								IFNULL((COUNT(a.id) / (e.devices_per_user_per_day*" . $count_u . ")), 0) AS estimated_time_hours 
 						FROM purchase_order_detail_receive a
@@ -50,9 +71,11 @@ $sql_cl2			= " SELECT  DISTINCT a3.id, a3.category_name,
  						INNER JOIN product_categories a3 ON a3.id = a.recevied_product_category
 						INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
 						LEFT JOIN formula_category e ON e.product_category = a.recevied_product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
+ 						LEFT JOIN users_bin_for_diagnostic f ON f.location_id = a.sub_location_id AND f.is_processing_done = 0
 						WHERE 1=1
 						AND a.is_diagnost = 0 
-						GROUP BY a.recevied_product_category ";
+						AND IFNULL(f.id, 0) = 0
+						GROUP BY a.recevied_product_category "; //echo $sql_cl2;
 $result_cl2		= $db->query($conn, $sql_cl2);
 $count_cl2		= $db->counter($result_cl2);
 $page_heading 	= "List of Bins For Diagnostic ( Manager View)";

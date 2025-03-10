@@ -19,14 +19,17 @@ $(document).ready(function() {
                 if (spanElement.length === 1) {
                     const toastHTML = 'Bin has been removed.';
                     showToast(toastHTML, "");
+                    location.reload();
                 } 
                 else if (response === "Fail") {
                     var toastHTML = 'There is some Error.';
                     showToast(toastHTML, "Fail");
+                    location.reload();
                 } 
                 else{
                     var toastHTML = 'Bin has been assigned successfully.';
                     showToast(toastHTML, "Success");
+                    location.reload();
                 } 
                 $(".bin_users").html(response);
             },
@@ -34,7 +37,8 @@ $(document).ready(function() {
                 alert('Error processing request.');
             }
         });
-    }); 
+    });
+     
     function showToast(message, type) {
         var toastClass = type === 'Success' ? 'green' : 'red';
         M.toast({

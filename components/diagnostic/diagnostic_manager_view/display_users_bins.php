@@ -8,6 +8,7 @@
                 INNER JOIN users_bin_for_diagnostic b1 ON a.sub_location_id = b1.location_id AND b1.is_processing_done = '0'
                 WHERE 1=1
                 AND is_diagnost = 0 
+                AND b1.enabled = 1
                 GROUP BY a.sub_location_id, b1.id
                 ORDER BY b1.order_by ASC";
         $result1 = $db->query($conn, $sql1);
@@ -46,7 +47,7 @@
                                     INNER JOIN products a2 ON a2.id = b.product_id
                                     INNER JOIN product_categories a3 ON a3.id = a2.product_category
                                     INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
-                                    INNER JOIN users_bin_for_diagnostic d1 ON d1.location_id = a.sub_location_id AND d1.`is_processing_done` = 0
+                                    INNER JOIN users_bin_for_diagnostic d1 ON d1.location_id = a.sub_location_id AND d1.`is_processing_done` = 0 
                                     LEFT JOIN formula_category e ON e.product_category = a2.product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
                                     WHERE 1=1
                                     AND is_diagnost = 0
@@ -63,14 +64,19 @@
                         } ?>
                         <div style="text-align:center;" class="user" draggable="true" data-id="<?php echo $data_2['id']; ?>">
                             <img src="app-assets/images/logo/<?php echo $data_2['profile_pic']; ?>" alt="images" style="height:100px !important;" class="circle z-depth-2 responsive-img" />
-                            <h6 class=" lighten-4"><?php echo $data_2['user_full_name']; ?></h6>
+                           
+                            <h6 class=" lighten-4"><?php echo $data_2['user_full_name']; ?>  </h6>
+                            
                             <h5 class=" lighten-4">
                                 <?php echo $sub_location_name;
                                 if ($sub_location_type != "") {
                                     echo "(" . $sub_location_type . ")";
                                 } ?>
                             </h5>
-                            <h6 class=" lighten-4"><?php echo round($total_estimated_time, 2); ?> Days</h6>
+                            <h6 class=" lighten-4"><?php echo round($total_estimated_time, 2); ?> Days</h6> &nbsp;&nbsp;
+                            <a class="btn-floating waves-effect waves-light gradient-45deg-purple-deep-orange" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $detail_id2) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
+                                <i class="material-icons dp48">delete</i>
+                            </a>
                         </div>
         <?php }
                 }

@@ -58,7 +58,10 @@ $sql_cl .= "GROUP BY a.sub_location
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 
-$sql_u 			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
+$sql_u 			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name 
+					FROM users 
+					WHERE FIND_IN_SET(  'Processing' , user_sections) > 0 
+					AND enabled = 1"; //echo $sql_u;
 $result_u		= $db->query($conn, $sql_u);
 $count_u		= $db->counter($result_u);
 
@@ -480,7 +483,11 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																		$field_id     	= "bin_user_id-" . $id;
 																		$field_label    = "Users";
 
-																		$sql_u1			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name FROM users WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
+																		$sql_u1			= " SELECT id,CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name 
+																							FROM users 
+																							WHERE 1=1 
+																							AND enabled = 1 
+																							AND FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
 																		$result_u1		= $db->query($conn, $sql_u1);
 																		$count_u1		= $db->counter($result_u1);
 																		?>

@@ -1853,9 +1853,12 @@ CREATE TABLE `package_materials_order_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail` */
+
+insert  into `package_materials_order_detail`(`id`,`po_id`,`offer_detail_id`,`package_id`,`order_qty`,`order_price`,`order_case_pack`,`product_po_desc`,`order_product_status`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,0,1,20,10.5,11,'',1,0,'2025-03-10 08:21:58','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `package_materials_order_detail_logistics` */
 
@@ -1973,9 +1976,12 @@ CREATE TABLE `package_materials_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_orders` */
+
+insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`stage_status`,`logistics_cost`,`sub_user_id`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'PPO1','20250310081932',1,0,'2025-03-10',NULL,'','',1,'Draft',0,0,0,'2025-03-10 08:19:34','admin_albert',1,'::1','Asia/Karachi',34,'2025-03-10 08:21:58','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_stock` */
 
@@ -2232,7 +2238,8 @@ CREATE TABLE `phone_check_api_data_return` (
 DROP TABLE IF EXISTS `phone_check_users`;
 
 CREATE TABLE `phone_check_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL,
+  `subscriber_users_id` int(11) DEFAULT 1,
   `username` varchar(255) DEFAULT NULL,
   `full_name` varchar(255) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
@@ -2247,19 +2254,50 @@ CREATE TABLE `phone_check_users` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `phone_check_users` */
 
-insert  into `phone_check_users`(`id`,`username`,`full_name`,`last_login`,`last_login_ip`,`add_date`,`add_by`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,'Ctinno1','User 1',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(2,'Ctinno2','User 2',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(3,'Ctinno3','User 3',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(4,'Ctinno4','User 4',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(5,'Ctinno5','User 5',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(6,'Ctinno7','User 6',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(7,'Ctinno8','User 7',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
-(8,'Ctinno15','User 15',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1);
+insert  into `phone_check_users`(`id`,`subscriber_users_id`,`username`,`full_name`,`last_login`,`last_login_ip`,`add_date`,`add_by`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_ip`,`update_from_module_id`,`enabled`) values 
+(1,1,'Ctinno1','User 1',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(2,1,'Ctinno2','User 2',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(3,1,'Ctinno3','User 3',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(4,1,'Ctinno4','User 4',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(5,1,'Ctinno5','User 5',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(6,1,'Ctinno7','User 6',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(7,1,'Ctinno8','User 7',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1),
+(8,1,'Ctinno15','User 15',NULL,NULL,NULL,NULL,NULL,0,NULL,NULL,NULL,0,1);
+
+/*Table structure for table `processors` */
+
+DROP TABLE IF EXISTS `processors`;
+
+CREATE TABLE `processors` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `subscriber_users_id` int(11) DEFAULT 0,
+  `processor_name` varchar(255) DEFAULT NULL,
+  `editable` smallint(1) DEFAULT 1,
+  `add_date` datetime DEFAULT NULL,
+  `add_by` varchar(255) DEFAULT NULL,
+  `add_by_user_id` int(11) DEFAULT NULL,
+  `add_ip` varchar(15) DEFAULT NULL,
+  `add_timezone` varchar(255) DEFAULT NULL,
+  `added_from_module_id` int(11) DEFAULT 0,
+  `update_date` datetime DEFAULT NULL,
+  `update_by` varchar(255) DEFAULT NULL,
+  `update_by_user_id` int(11) DEFAULT NULL,
+  `update_ip` varchar(15) DEFAULT NULL,
+  `update_timezone` varchar(255) DEFAULT NULL,
+  `update_from_module_id` int(11) DEFAULT 0,
+  `enabled` smallint(1) DEFAULT 1,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+/*Data for the table `processors` */
+
+insert  into `processors`(`id`,`subscriber_users_id`,`processor_name`,`editable`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'core i7',1,'2025-01-29 13:46:04','admin_albert',NULL,'::1',NULL,0,'2025-01-29 15:18:41','admin_albert',NULL,'::1',NULL,0,1),
+(2,1,'PR-20250310-171733',1,'2025-03-10 17:17:35','admin_albert',NULL,'::1',NULL,0,'2025-03-10 17:17:39','admin_albert',NULL,'::1',NULL,0,1);
 
 /*Table structure for table `product_categories` */
 
@@ -2626,8 +2664,8 @@ CREATE TABLE `purchase_order_detail` (
 /*Data for the table `purchase_order_detail` */
 
 insert  into `purchase_order_detail`(`id`,`po_id`,`offer_detail_id`,`product_id`,`order_qty`,`order_price`,`package_id`,`package_material_qty`,`package_material_qty_received`,`is_tested`,`is_wiped`,`is_imaged`,`product_po_desc`,`order_product_status`,`product_condition`,`expected_status`,`is_fk_serial_generated`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,0,2987,5,200,0,0,0,NULL,NULL,NULL,NULL,3,'A',5,0,0,'2025-03-03 20:07:45','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-03 20:08:07','admin_albert',1,'::1','Asia/Karachi',0,1),
-(2,1,0,2989,10,300,0,0,0,NULL,NULL,NULL,NULL,12,'A',5,0,0,'2025-03-03 20:07:45','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-03 20:07:57','admin_albert',1,'::1','Asia/Karachi',0,1);
+(1,1,0,2987,5,200.56,0,0,0,NULL,NULL,NULL,NULL,3,'A',5,0,0,'2025-03-03 20:07:45','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-10 08:18:28','admin_albert',1,'::1','Asia/Karachi',0,1),
+(2,1,0,2989,10,300.54,0,0,0,NULL,NULL,NULL,NULL,12,'A',5,0,0,'2025-03-03 20:07:45','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-10 08:18:28','admin_albert',1,'::1','Asia/Karachi',0,1);
 
 /*Table structure for table `purchase_order_detail_logistics` */
 
@@ -3026,7 +3064,7 @@ CREATE TABLE `purchase_orders` (
 /*Data for the table `purchase_orders` */
 
 insert  into `purchase_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`po_desc`,`po_desc_public`,`order_status`,`stage_status`,`logistics_cost`,`sub_user_id`,`is_tested_po`,`is_wiped_po`,`is_imaged_po`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PO1','20250303200741',1,0,'2025-03-03','purchase order desc : 20250303200742','',3,'Draft',20.5,0,'Yes','Yes','Yes',0,0,'2025-03-03 20:07:42','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-03 20:08:07','admin_albert',1,'::1','Asia/Karachi',0,1);
+(1,1,'PO1','20250303200741',1,0,'2025-03-03','purchase order desc : 20250303200742','',3,'Draft',20.5,0,'Yes','Yes','Yes',0,0,'2025-03-03 20:07:42','admin_albert',1,'::1','Asia/Karachi',0,'2025-03-10 16:30:52','admin_albert',1,'::1','Asia/Karachi',10,1);
 
 /*Table structure for table `qty_and_estimated_time_for_processing` */
 
@@ -3446,9 +3484,12 @@ CREATE TABLE `returns` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `returns` */
+
+insert  into `returns`(`id`,`subscriber_users_id`,`return_no`,`return_type`,`removal_order_id`,`return_date`,`store_id`,`public_note`,`internal_note`,`return_status`,`stage_status`,`logistics_cost`,`is_pricing_done`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'RO1','Shipstation','20250310082320','2025-03-10',4,NULL,NULL,1,'Draft',NULL,0,0,'2025-03-10 08:23:26','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `rma_order_detail` */
 
@@ -3942,9 +3983,12 @@ CREATE TABLE `sales_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `sales_orders` */
+
+insert  into `sales_orders`(`id`,`subscriber_users_id`,`so_no`,`customer_id`,`source_id`,`order_date`,`origin_id`,`estimated_ship_date`,`customer_invoice_no`,`fullfilment_id`,`terms_id`,`requested_shipment_id`,`batch_id`,`public_note`,`internal_note`,`order_status`,`stage_status`,`logistics_cost`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'SO1',1,1,'2025-03-10',1,NULL,'20250310082218',1,1,1,'1','public_note 20250310082224','internal_note 20250310082224',1,'Draft',0,0,'2025-03-10 08:22:24','admin_albert',1,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `scale_levels` */
 
@@ -10514,6 +10558,7 @@ CREATE TABLE `temp_po_pricing` (
   `uniq_session_id` text DEFAULT NULL,
   `po_id` int(11) DEFAULT 0,
   `po_detail_id` int(11) DEFAULT 0,
+  `product_id` int(11) DEFAULT 0,
   `po_product_uniq_id` varchar(255) DEFAULT NULL,
   `price_grade` varchar(25) DEFAULT NULL,
   `suggested_price` double DEFAULT 0,
@@ -10544,66 +10589,66 @@ CREATE TABLE `temp_po_pricing` (
 
 /*Data for the table `temp_po_pricing` */
 
-insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_detail_id`,`po_product_uniq_id`,`price_grade`,`suggested_price`,`logistic_percentage_per_item`,`receiving_percentage_per_item`,`diagnostic_percentage_per_item`,`distributed_percentage_per_item`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
-(119,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(120,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(121,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(125,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(126,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(127,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(137,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(138,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(139,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(143,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(144,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(145,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(146,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(147,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(148,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(149,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(150,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(151,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(152,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(153,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(154,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(158,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(159,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(160,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(170,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(171,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(172,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(173,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(174,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(175,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(338,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD1-64C-GY','A',222,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(339,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD5-32W-GY','A',121.38,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(340,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,'IPAD5-32W-GY','B',110.34,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1060,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32C-GY','B',101.63,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1061,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32C-GY','C',91.46,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1062,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'32W-GY','C',204.53,0.45470102185498,0,0,1.7601329878257,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1063,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'IPAD5-32W-GY','C',124.53,0.74680799807275,0,0,2.890869669959,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1064,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,'IPADM2-W-32GY','C',304.53,0.30538863166191,0,0,1.1821495419171,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1221,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32C-GY','B',685.83,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1222,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32C-GY','C',617.24,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1223,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'32W-GY','C',805.42,0,0,0,0.6729408259045,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1224,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,'IPAD5-32W-GY','C',755.42,0,0,0,0.71748166582828,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1279,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,1,'32C-GY','A',200,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1280,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1281,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,1,'32C-GY','A',200,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1282,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,2,'W-32GY','A',300,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1300,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,1,'32C-GY','A',214.83,0,0,0,6.9031327095843,'2025-02-08 18:28:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1301,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,2,'W-32GY','A',314.83,0,0,0,4.7104786710288,'2025-02-08 18:28:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1425,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,2,'32W-GY','A',325.35,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1426,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,2,'32W-GY','C',266.2,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1427,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','A',224.49,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1428,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','B',204.08,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1429,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,'IPAD5-32W-GY','C',183.67,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1627,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,6,'32W-GY','C',300,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1628,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,'iPad2WiFi32GBSpaceGray','C',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1629,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','A',227.59,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1630,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','B',206.9,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1631,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,'IPAD5-32W-GY','C',186.21,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
-(1632,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,'P200234GHJI9L1','B',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
+insert  into `temp_po_pricing`(`id`,`uniq_session_id`,`po_id`,`po_detail_id`,`product_id`,`po_product_uniq_id`,`price_grade`,`suggested_price`,`logistic_percentage_per_item`,`receiving_percentage_per_item`,`diagnostic_percentage_per_item`,`distributed_percentage_per_item`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
+(119,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(120,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(121,'676126fa45ae8bsg7hii6gv2ot7rlhqaqpcvp74',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-18 18:16:06','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(125,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(126,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(127,'676557df76e51530imk9fufvhud8rs5mpbbgljf',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-20 16:42:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(137,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(138,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(139,'676959eb50f516ajg80cj32e0sk8tafd8l4pcfp',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-23 22:57:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(143,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(144,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(145,'676a55543808e1be4bpinqc0k89lqssuhfpkd5t',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2024-12-24 17:06:24','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(146,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(147,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(148,'677b9d2caa2a2paabcmbkb5nd0q4c1p9a4fgqnu',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-06 16:00:17','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(149,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(150,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(151,'677fe6e1da8a8su09jo49orh2v8bt9kgf8on7vn',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 20:10:25','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(152,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(153,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(154,'677ff1d73b564lsh41lrvn1814hqkrtqmrlumcv',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-09 21:05:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(158,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(159,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(160,'6784cd2b6e19b9a34mmdg4n4pld5d8pa941m1jq',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-13 15:18:15','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(170,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(171,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(172,'6788bef099cb8680tbeq2965h8ukg8k1toh14t8',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-18 16:30:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(173,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,0,'iPad2WiFi32GBSpaceGray','A',501.43,0.0019942963125461,0,0,0.28229517387379,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(174,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,0,'iPad2WiFi64GBSpaceGray','A',501.38,0.0019944951932666,0,0,0.27308628186206,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(175,'6793a87501531680tbeq2965h8ukg8k1toh14t8',1,0,0,'IPAD6-32W-GY','A',501.39,0.0019944554139492,0,0,0.27523484712499,'2025-01-24 23:24:52','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(338,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,0,'IPAD1-64C-GY','A',222,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(339,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,0,'IPAD5-32W-GY','A',121.38,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(340,'679b461f8f589mrm9ip4crtp9qsnf0rasgsb4bv',1,0,0,'IPAD5-32W-GY','B',110.34,0,0,0,0,'2025-01-30 15:13:44','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1060,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,0,'32C-GY','B',101.63,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1061,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,0,'32C-GY','C',91.46,0.88969673777863,0,0,3.4439873720463,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1062,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,0,'32W-GY','C',204.53,0.45470102185498,0,0,1.7601329878257,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1063,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,0,'IPAD5-32W-GY','C',124.53,0.74680799807275,0,0,2.890869669959,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1064,'679b5a2d97ab6d2lmg6eqsvkas32s0na78uaeeg',1,0,0,'IPADM2-W-32GY','C',304.53,0.30538863166191,0,0,1.1821495419171,'2025-01-30 22:11:53','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1221,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,0,'32C-GY','B',685.83,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1222,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,0,'32C-GY','C',617.24,0,0,0,0.76833659380227,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1223,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,0,'32W-GY','C',805.42,0,0,0,0.6729408259045,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1224,'679c728f833ba2ml1oim1psu3q7m0g2e0lnj5bt',1,0,0,'IPAD5-32W-GY','C',755.42,0,0,0,0.71748166582828,'2025-02-01 20:35:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1279,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,1,0,'32C-GY','A',200,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1280,'67a1ce09258383ks0pffjgdvhmfrbsmhbf30lo3',1,2,0,'W-32GY','A',300,0,0,0,0,'2025-02-05 19:25:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1281,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,1,0,'32C-GY','A',200,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1282,'67a4db3a6a246sh2lt46d07idq7b59q1293lknp',1,2,0,'W-32GY','A',300,0,0,0,0,'2025-02-06 20:54:34','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1300,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,1,0,'32C-GY','A',214.83,0,0,0,6.9031327095843,'2025-02-08 18:28:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1301,'67a5efc58f6ecmlcutmr1aape3me1k89l7s62sg',1,2,0,'W-32GY','A',314.83,0,0,0,4.7104786710288,'2025-02-08 18:28:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1425,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,2,0,'32W-GY','A',325.35,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1426,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,2,0,'32W-GY','C',266.2,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1427,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,0,'IPAD5-32W-GY','A',224.49,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1428,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,0,'IPAD5-32W-GY','B',204.08,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1429,'67ab0271075bca7m0n0830fe2i5h33pb4sh6dbe',1,1,0,'IPAD5-32W-GY','C',183.67,0,0,0,0,'2025-02-12 22:00:05','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1627,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,6,0,'32W-GY','C',300,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1628,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,0,'iPad2WiFi32GBSpaceGray','C',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1629,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,0,'IPAD5-32W-GY','A',227.59,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1630,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,0,'IPAD5-32W-GY','B',206.9,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1631,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,5,0,'IPAD5-32W-GY','C',186.21,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(1632,'67b5d38da842cruqd7n6sfdmoeah6dj4dp065qm',1,0,0,'P200234GHJI9L1','B',250,0,0,0,0,'2025-02-19 20:30:35','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `terms` */
 
@@ -10834,7 +10879,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -10869,7 +10914,11 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (28,'Admin',1,'Login','2025-03-03 19:42:15',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (29,'Admin',1,'Login','2025-03-04 12:20:09',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (30,'Admin',1,'Login','2025-03-04 20:33:07',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(31,'Admin',1,'Login','2025-03-06 16:20:16',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(31,'Admin',1,'Login','2025-03-06 16:20:16',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(32,'Admin',1,'Login','2025-03-07 11:46:25',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(33,'Admin',1,'Login','2025-03-08 10:02:57',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(34,'Admin',1,'Login','2025-03-10 07:41:58',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(35,'Admin',1,'Login','2025-03-10 14:25:55',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -10983,7 +11032,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-03-06 16:20:16','::1',2317155,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-03-10 14:25:55','::1',8901618,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab11@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Repair,Diagnostic',1,'2024-11-18 06:22:47','::1',9103992,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2025-02-13 20:42:45','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2025-02-13 20:42:32','admin_albert',1,'::1',0,1);
 

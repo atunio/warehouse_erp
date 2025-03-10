@@ -16,9 +16,12 @@ foreach ($_POST as $key => $value) {
 	}
 }
 $module_status = 5;
-$sql_cl = " SELECT DISTINCT a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type 
+$sql_cl = " SELECT DISTINCT a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
+					GROUP_CONCAT(DISTINCT CONCAT('<br>PO#: ', COALESCE(c.po_no, 'N/A'), ', Vendor Name: ', COALESCE(a2.vender_name, 'N/A')) ORDER BY c.po_no SEPARATOR '') AS po_detail,
+					GROUP_CONCAT(DISTINCT date_format(a.add_date, '%Y-%m-%d') ORDER BY a.add_date SEPARATOR '') AS received_dates
 			FROM purchase_order_detail_receive a
 			INNER JOIN purchase_orders c ON c.id = a.po_id
+			INNER JOIN venders a2 ON a2.id = c.vender_id
 			INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
 			WHERE 1= 1 
 			AND is_diagnost = 0 ";
@@ -29,8 +32,8 @@ if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl .= "  AND FIND_IN_SET(  '" . $flt_product_category . "' , a.recevied_product_category) > 0 ";
 }
 
-$sql_cl .= "GROUP BY a.sub_location_id
-			ORDER BY a.sub_location_id ";
+$sql_cl .= " GROUP BY a.sub_location_id
+			 ORDER BY a.sub_location_id ";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
@@ -252,7 +255,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'Location / Bin', 'Details', 'Total Qty', 'Assign User');
+										$table_columns	= array('SNo', 'Location / Bin', 'PO Detail', 'Received Date', 'Warranty Remaining', 'Details', 'Total Qty', 'Assign User');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -285,22 +288,45 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 											<tbody>
 												<?php
 												$i = 0;
+												$column_no = 0;
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$id = $data['sub_location'];
-												?>
+														$id = $data['sub_location']; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]); ?>">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
+																echo $i + 1;
+																$column_no++;
+																?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php
+																$column_no++;
 																echo $data['sub_location_name'];
 																if ($data['sub_location_type'] != "") {
 																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																} ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[2]); ?>">
+															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
+																echo $data['po_detail'];
+																$column_no++; ?>
+															</td>
+															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php
+																echo dateformat2($data['received_dates']);
+																$column_no++; ?>
+															</td>
+															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php
+
+																$column_no++; ?>
+															</td>
+
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php
+																$column_no++;
 																$total_qty = 0;
 																$sql_cl3 = "SELECT COUNT(*) AS qty, a3.category_name  
 																				FROM purchase_order_detail_receive a
@@ -323,11 +349,16 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																	}
 																} ?>
 															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $total_qty; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[4]); ?>">
+															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php
+																echo $total_qty;
+																$column_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<div class="input-field col m12 s12">
 																	<div class="select2div">
 																		<?php
+																		$column_no++;
 																		$sql_u13			= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
 																		$result_u13		= $db->query($conn, $sql_u13);
 																		$count_u13		= $db->counter($result_u13);

@@ -15,6 +15,7 @@ $sql_cl			= " SELECT a.id, a.assignment_no, a.location_id, b.sub_location_name, 
 					FROM users_bin_for_diagnostic a
 					INNER JOIN warehouse_sub_locations b ON b.id = a.location_id
 					INNER JOIN users d ON d.id = a.bin_user_id 
+					INNER JOIN purchase_order_detail_receive e ON e.sub_location_id = a.location_id
 					WHERE 1 = 1 ";
 if (po_permisions("ALL Bins") != '1') {
 	$sql_cl	.= " AND a.bin_user_id = '" . $_SESSION['user_id'] . "' ";
@@ -35,7 +36,7 @@ $page_heading 	= "Bins For Diagnostic";
 				<div class="row">
 					<div class="col s12">
 						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top_bottom"> 
+							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
 									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
@@ -83,17 +84,17 @@ $page_heading 	= "Bins For Diagnostic";
 								<br>
 								<div class="row">
 									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Location / Bin', 'AssignmentNo', 'Task Users','Assign Date','Actions');
+										<?php
+										$table_columns	= array('SNo', 'Location / Bin', 'AssignmentNo', 'Task Users', 'Assign Date', 'Actions');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) { ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
+										} ?>
 									</div>
 								</div>
 								<div class="row">
@@ -103,14 +104,13 @@ $page_heading 	= "Bins For Diagnostic";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -124,32 +124,32 @@ $page_heading 	= "Bins For Diagnostic";
 														$col_no = 0;
 														$id = $data['id']; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]);?>">
-																<?php echo $i + 1;  
-																$col_no++;?>
-														</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $i + 1;
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php $col_no++;
 																echo $data['sub_location_name'];
 																if ($data['sub_location_type'] != "") {
 																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																} ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
-																<?php echo $data['assignment_no'];  
-																$col_no++;?>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['assignment_no'];
+																$col_no++; ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php $col_no++;
 																if ($data['task_user_details'] != "   ()") {
 																	echo "" . $data['task_user_details'] . "";
 																} ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
-																<?php echo "" . dateformat2($data['add_date']) . "";  
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo "" . dateformat2($data['add_date']) . "";
 																$col_no++; ?>
 															</td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]);?>">
+															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php $col_no++; ?>
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&detail_id=" . $id . "&cmd2=add") ?>">
 																	<i class="material-icons dp48">list</i>

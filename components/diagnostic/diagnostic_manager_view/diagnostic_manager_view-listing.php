@@ -31,9 +31,9 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 $module_status = 5;
-$sql_cl = " SELECT DISTINCT IFNULL(e.id, 0) AS bin_id, e.id as bin_id, a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
+$sql_cl = " SELECT DISTINCT IFNULL(e.id, 0) AS bin_id, a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
 					GROUP_CONCAT(DISTINCT CONCAT('<br>PO#: ', COALESCE(c.po_no, 'N/A'), ', Vendor Name: ', COALESCE(a2.vender_name, 'N/A')) ORDER BY c.po_no SEPARATOR '') AS po_detail,
-					GROUP_CONCAT(DISTINCT date_format(a.add_date, '%Y-%m-%d') ORDER BY a.add_date SEPARATOR '') AS received_dates
+					GROUP_CONCAT(DISTINCT date_format(a.add_date, '%Y-%m-%d') ORDER BY a.add_date SEPARATOR '<br>') AS received_dates
 			FROM purchase_order_detail_receive a
 			INNER JOIN purchase_orders c ON c.id = a.po_id
 			INNER JOIN venders a2 ON a2.id = c.vender_id
@@ -338,7 +338,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 															</td>
 															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
-																echo dateformat2($data['received_dates']);
+																echo ($data['received_dates']);
 																$column_no++; ?>
 															</td>
 															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
@@ -395,7 +395,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																		$field_label    = "Users";
 
 																		$sql_u1			= " SELECT id, CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name
-																		 					FROM users WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
+																		 					FROM users 
+																							WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
 																		$result_u1		= $db->query($conn, $sql_u1);
 																		$count_u1		= $db->counter($result_u1);
 																		?>
@@ -404,7 +405,6 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																																																				} ?>">
 																			<option value="">Assign User</option>
 																			<?php
-
 																			if ($count_u1 > 0) {
 																				$row_u1 = $db->fetch($result_u1);
 																				foreach ($row_u1 as $data_u1) { ?>
@@ -420,6 +420,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 												<?php $i++;
 													}
 												} ?>
+											</tbody>
 											<tfoot>
 												<tr>
 													<?php echo $headings; ?>

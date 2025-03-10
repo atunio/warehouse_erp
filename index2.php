@@ -1366,8 +1366,10 @@ include("sub_files/index2_js.php");?>
 			var columnClass = '.col-' + $(this).data('column');
 			if ($(this).is(':checked')) {
 				$(columnClass).show();
+				$(columnClass).removeClass("display_none");
 			} else {
 				$(columnClass).hide();
+				$(this).addClass("display_none");
 			}
 		}); 
 	});

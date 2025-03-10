@@ -97,6 +97,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		if (isset($flt_bin_id) && $flt_bin_id > 0) {
 			$sql_cl		.= " AND a2.sub_location = '" . $flt_bin_id . "' ";
 		}
+		
 		$sql_cl		.= " ORDER BY a.product_uniqueid, a2.stock_grade, a2.serial_no, d.sub_location_name";
 		// echo $sql_cl;die;
 		$result_cl 	= $db->query($conn, $sql_cl);

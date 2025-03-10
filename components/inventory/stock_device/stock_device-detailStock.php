@@ -425,7 +425,7 @@ $page_heading 	= "Stock Detail";
 									</label>
 								</div>
 							</div>
-							<div class="input-field col m3 s12">
+							<div class="input-field col m2 s12">
 								<?php
 								$field_name 	= "is_final_inventory";
 								$field_label 	= "Type";

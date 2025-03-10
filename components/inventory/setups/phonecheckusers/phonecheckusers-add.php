@@ -48,7 +48,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".PhoneCheck Users(subscriber_users_id, username,  full_name, add_date, add_by, add_ip)
+					$sql6 = "INSERT INTO " . $selected_db_name . ".phone_check_users(subscriber_users_id, username,  full_name, add_date, add_by, add_ip)
 							VALUES('" . $subscriber_users_id . "', '" . $username . "','" . $full_name . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {

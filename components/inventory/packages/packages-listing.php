@@ -9,6 +9,10 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
+if (!isset($is_enabled_disabled)) {
+	$is_enabled_disabled	 = 1;
+}
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -51,6 +55,9 @@ if (isset($sku_code) && $sku_code != "") {
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
+}
+if (isset($is_enabled_disabled) && $is_enabled_disabled != "") {
+	$sql_cl			.= " AND a.enabled = '" . $is_enabled_disabled . "' ";
 }
 $sql_cl	.= " GROUP BY a.id 
 			 ORDER BY a.enabled DESC, b.category_name, a.package_name "; // echo $sql_cl;
@@ -231,6 +238,30 @@ $page_heading 	= "List of Packages / Parts";
 												</label>
 											</div>
 										</div>
+										<div class="input-field col m1 s12">
+											<?php
+											$field_name 	= "is_enabled_disabled";
+											$field_label 	= "Active";
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">All</option>
+													<option value="1" <?php if (isset(${$field_name}) && ${$field_name} == "1") { ?> selected="selected" <?php } ?>>Yes</option>
+													<option value="0" <?php if (isset(${$field_name}) && ${$field_name} == "0") { ?> selected="selected" <?php } ?>>No </option>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
 										<div class="input-field col m2 s12">
 											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp; &nbsp;
 											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
@@ -246,9 +277,8 @@ $page_heading 	= "List of Packages / Parts";
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) {
 											$checked = "checked";
-											if ($data_c1 == $hide_column) {
-												// echo "<br>" . $data_c1 . " _ " . $hide_column;
-												$checked == "";
+											if ($data_c1 == $hide_column) { 
+												$checked = "";
 											} ?>
 											<label>
 												<input type="checkbox" value="<?= $k ?>" name="table_columns1[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" <?= $checked; ?>>

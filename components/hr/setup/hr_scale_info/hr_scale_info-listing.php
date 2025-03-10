@@ -8,6 +8,10 @@ $selected_db_name 	= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 	= $_SESSION["user_id"];
 
+if (!isset($is_enabled_disabled)) {
+	$is_enabled_disabled	 = 1;
+}
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -41,20 +45,17 @@ $sql_cl 		= "	SELECT a.*, b.level_name
 					FROM " . $selected_db_name . ".hr_scales a
 					INNER JOIN scale_levels b ON b.id = a.scale_level
 					WHERE a.subscriber_users_id = '" . $subscriber_users_id . "'
-					ORDER BY a.enabled DESC, b.level_name, a.scale_name "; //echo $sql_cl;
+					"; //echo $sql_cl;
+if (isset($flt_hr_scales) && $flt_hr_scales != "") {
+	$sql_cl 	.= " AND a.id = '" . trim($flt_hr_scales) . "' ";
+}
+if (isset($is_enabled_disabled) && $is_enabled_disabled != "") {
+	$sql_cl			.= " AND a.enabled = '" . $is_enabled_disabled . "' ";
+}
+$sql_cl	.= " ORDER BY a.enabled DESC, b.level_name, a.scale_name   "; // echo $sql_cl;
 $result_cl 		= $db->query($conn, $sql_cl);
 $count_cl 		= $db->counter($result_cl);
-$page_heading = "Scales";
-function custom_echo($x, $length)
-{
-	$x = strip_tags($x);
-	if (strlen($x) <= $length) {
-		echo $x;
-	} else {
-		$y = substr($x, 0, $length) . '...';
-		echo $y;
-	}
-} ?>
+$page_heading = "Scales";  ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
@@ -90,6 +91,75 @@ function custom_echo($x, $length)
 						<div class="card custom_margin_card_table_top">
 							<div class="card-content custom_padding_card_content_table_top">
 								<br>
+								<form method="post" autocomplete="off" enctype="multipart/form-data">
+									<input type="hidden" name="is_Submit" value="Y" />
+									<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
+									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																						echo encrypt($_SESSION['csrf_session']);
+																					} ?>">
+									<div class="row">
+										<div class="input-field col m2 s12">
+											<?php
+											$field_name 	= "flt_hr_scales";
+											$field_label 	= "Scales";
+											$sql1 			= "SELECT a.* FROM hr_scales a WHERE a.subscriber_users_id = '" . $subscriber_users_id . "'  ORDER BY scale_name ";
+											$result1 		= $db->query($conn, $sql1);
+											$count1 		= $db->counter($result1);
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">ALL</option>
+													<?php
+													if ($count1 > 0) {
+														$row1	= $db->fetch($result1);
+														foreach ($row1 as $data2) { ?>
+															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['scale_name']; ?></option>
+													<?php }
+													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
+										<div class="input-field col m1 s12">
+											<?php
+											$field_name 	= "is_enabled_disabled";
+											$field_label 	= "Active";
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">All</option>
+													<option value="1" <?php if (isset(${$field_name}) && ${$field_name} == "1") { ?> selected="selected" <?php } ?>>Yes</option>
+													<option value="0" <?php if (isset(${$field_name}) && ${$field_name} == "0") { ?> selected="selected" <?php } ?>>No </option>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
+										<div class="input-field col m2 s12">
+											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp; &nbsp;
+											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
+										</div>
+									</div>
+								</form>
 								<div class="row">
 									<div class="text_align_right">
 										<?php 

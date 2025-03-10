@@ -9,6 +9,10 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
+if (!isset($is_enabled_disabled)) {
+	$is_enabled_disabled	 = 1;
+}
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -44,6 +48,9 @@ $sql_cl		= "	SELECT a.*, b.category_name, c.repair_type_name
 				WHERE 1=1  ";
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
+}
+if (isset($is_enabled_disabled) && $is_enabled_disabled != "") {
+	$sql_cl			.= " AND a.enabled = '" . $is_enabled_disabled . "' ";
 }
 $sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
@@ -141,6 +148,30 @@ $page_heading 	= "List of Formula";
 															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['category_name']; ?></option>
 													<?php }
 													} ?>
+												</select>
+												<label for="<?= $field_name; ?>">
+													<?= $field_label; ?>
+													<span class="color-red"> <?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+													</span>
+												</label>
+											</div>
+										</div>
+										<div class="input-field col m1 s12">
+											<?php
+											$field_name 	= "is_enabled_disabled";
+											$field_label 	= "Active";
+											?>
+											<i class="material-icons prefix">question_answer</i>
+											<div class="select2div">
+												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																													echo ${$field_name . "_valid"};
+																																												} ?>">
+													<option value="">All</option>
+													<option value="1" <?php if (isset(${$field_name}) && ${$field_name} == "1") { ?> selected="selected" <?php } ?>>Yes</option>
+													<option value="0" <?php if (isset(${$field_name}) && ${$field_name} == "0") { ?> selected="selected" <?php } ?>>No </option>
 												</select>
 												<label for="<?= $field_name; ?>">
 													<?= $field_label; ?>

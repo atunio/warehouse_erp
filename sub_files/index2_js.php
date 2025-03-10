@@ -10,11 +10,10 @@
             }
         });
 
-
         function handleButtonAction(originalAction, e, dt, button, config) {
             // Get Visible Columns
             var visibleColumns = [];
-            dt.columns(':visible').every(function () {
+            dt.columns(':visible').every(function() {
                 visibleColumns.push(this.header().textContent);
             });
 
@@ -22,14 +21,13 @@
             originalAction.call(this, e, dt, button, config);
         }
 
-        buttons: [
-            {
+        buttons: [{
                 extend: 'copy',
                 text: 'Copy',
                 exportOptions: {
                     columns: ':visible' // Export only visible columns
                 },
-                action: function (e, dt, button, config) {
+                action: function(e, dt, button, config) {
                     handleButtonAction($.fn.dataTable.ext.buttons.copyHtml5.action, e, dt, button, config);
                 }
             },
@@ -40,7 +38,7 @@
                 exportOptions: {
                     columns: ':visible' // Export only visible columns
                 },
-                action: function (e, dt, button, config) {
+                action: function(e, dt, button, config) {
                     handleButtonAction($.fn.dataTable.ext.buttons.excelHtml5.action, e, dt, button, config);
                 }
             },
@@ -49,9 +47,9 @@
                 text: 'PDF',
                 filename: 'pdf_export',
                 exportOptions: {
-                    columns: ':visible'  // Export only visible columns
+                    columns: ':visible' // Export only visible columns
                 },
-                action: function (e, dt, button, config) {
+                action: function(e, dt, button, config) {
                     handleButtonAction($.fn.dataTable.ext.buttons.pdfHtml5.action, e, dt, button, config);
                 }
             },
@@ -61,7 +59,7 @@
                 exportOptions: {
                     columns: ':visible' // Export only visible columns
                 },
-                action: function (e, dt, button, config) {
+                action: function(e, dt, button, config) {
                     handleButtonAction($.fn.dataTable.ext.buttons.print.action, e, dt, button, config);
                 }
             }
@@ -74,7 +72,7 @@
                 [10, 25, 50, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength100").dataTable().fnDestroy();
         $('table.pagelength100').DataTable({
@@ -84,7 +82,7 @@
                 [100, 150, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50").dataTable().fnDestroy();
         $('table.pagelength50').DataTable({
@@ -94,9 +92,9 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
-     
+
         $("table.pagelength50_2").dataTable().fnDestroy();
         $('table.pagelength50_2').DataTable({
             "responsive": true,
@@ -105,7 +103,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_3").dataTable().fnDestroy();
         $('table.pagelength50_3').DataTable({
@@ -115,7 +113,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_4").dataTable().fnDestroy();
         $('table.pagelength50_4').DataTable({
@@ -125,7 +123,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_5").dataTable().fnDestroy();
         $('table.pagelength50_5').DataTable({
@@ -135,7 +133,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_6").dataTable().fnDestroy();
         $('table.pagelength50_6').DataTable({
@@ -145,7 +143,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_7").dataTable().fnDestroy();
         $('table.pagelength50_7').DataTable({
@@ -155,7 +153,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_8").dataTable().fnDestroy();
         $('table.pagelength50_8').DataTable({
@@ -165,7 +163,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_9").dataTable().fnDestroy();
         $('table.pagelength50_9').DataTable({
@@ -175,7 +173,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50_10").dataTable().fnDestroy();
         $('table.pagelength50_10').DataTable({
@@ -185,7 +183,7 @@
                 [50, 100, 200, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.simpledatatable_pagelength100").dataTable().fnDestroy();
         $('table.simpledatatable_pagelength100').DataTable({
@@ -195,7 +193,7 @@
                 [100, 250, 500, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            <?php include('sub_files/export_datatable_button_action_code.php')?>
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.simpledatatable_pagelength1000_1").dataTable().fnDestroy();
         $('table.simpledatatable_pagelength1000_1').DataTable({
@@ -205,23 +203,21 @@
                 [1000, 2000, 3000, "All"]
             ],
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
-            buttons: [
-                {
+            buttons: [{
                     extend: 'copy',
                     text: 'Copy',
                     exportOptions: {
-                        columns: function (idx, data, node) {
+                        columns: function(idx, data, node) {
                             // Export only visible columns except the first one (index 0)
-                            <?php 
-                            if(isset($module_id) && $module_id == '18'){?>
-                               return idx !== 0 && $(node).is(':visible');
-                            <?php }
-                            else{?>
+                            <?php
+                            if (isset($module_id) && $module_id == '18') { ?>
+                                return idx !== 0 && $(node).is(':visible');
+                            <?php } else { ?>
                                 return $(node).is(':visible');
-                            <?php } ?>  
+                            <?php } ?>
                         },
                         format: {
-                            body: function (data, row, column, node) {
+                            body: function(data, row, column, node) {
                                 // Create a temporary div with the cell's HTML content
                                 var tempDiv = $('<td>').html(data);
                                 // Find all anchor tags and replace them with their inner text
@@ -233,10 +229,10 @@
                             }
                         }
                     },
-                    action: function (e, dt, button, config) {
+                    action: function(e, dt, button, config) {
                         // Get Visible Columns excluding the first one (index 0)
                         var visibleColumns = [];
-                        dt.columns(':visible').every(function (index) {
+                        dt.columns(':visible').every(function(index) {
                             if (index !== 0) {
                                 visibleColumns.push(this.header().textContent);
                             }
@@ -250,21 +246,20 @@
                     text: 'Excel',
                     filename: 'stock_excel_export',
                     exportOptions: {
-                        columns: function (idx, data, node) {
+                        columns: function(idx, data, node) {
                             // Export only visible columns except the first one (index 0)
-                            <?php 
-                            if(isset($module_id) && $module_id == '18'){?>
-                               return idx !== 0 && $(node).is(':visible');
-                            <?php }
-                            else{?>
+                            <?php
+                            if (isset($module_id) && $module_id == '18') { ?>
+                                return idx !== 0 && $(node).is(':visible');
+                            <?php } else { ?>
                                 return $(node).is(':visible');
-                            <?php } ?>  
+                            <?php } ?>
                         }
                     },
-                    action: function (e, dt, button, config) {
+                    action: function(e, dt, button, config) {
                         // Get Visible Columns excluding the first one (index 0)
                         var visibleColumns = [];
-                        dt.columns(':visible').every(function (index) {
+                        dt.columns(':visible').every(function(index) {
                             visibleColumns.push(this.header().textContent);
                         });
                         // Call the original action for Excel export
@@ -276,21 +271,20 @@
                     text: 'PDF',
                     filename: 'pdf_export',
                     exportOptions: {
-                        columns: function (idx, data, node) {
+                        columns: function(idx, data, node) {
                             // Export only visible columns except the first one (index 0)
-                            <?php 
-                            if(isset($module_id) && $module_id == '18'){?>
-                               return idx !== 0 && $(node).is(':visible');
-                            <?php }
-                            else{?>
+                            <?php
+                            if (isset($module_id) && $module_id == '18') { ?>
+                                return idx !== 0 && $(node).is(':visible');
+                            <?php } else { ?>
                                 return $(node).is(':visible');
-                            <?php } ?> 
+                            <?php } ?>
                         }
                     },
-                    action: function (e, dt, button, config) {
+                    action: function(e, dt, button, config) {
                         // Get Visible Columns excluding the first one (index 0)
                         var visibleColumns = [];
-                        dt.columns(':visible').every(function (index) {
+                        dt.columns(':visible').every(function(index) {
                             visibleColumns.push(this.header().textContent);
                         });
                         // Call the original action for PDF export
@@ -301,21 +295,20 @@
                     extend: 'print',
                     text: 'Print',
                     exportOptions: {
-                        columns: function (idx, data, node) {
+                        columns: function(idx, data, node) {
                             // Export only visible columns except the first one (index 0)
-                            <?php 
-                            if(isset($module_id) && $module_id == '18'){?>
-                               return idx !== 0 && $(node).is(':visible');
-                            <?php }
-                            else{?>
+                            <?php
+                            if (isset($module_id) && $module_id == '18') { ?>
+                                return idx !== 0 && $(node).is(':visible');
+                            <?php } else { ?>
                                 return $(node).is(':visible');
-                            <?php } ?> 
+                            <?php } ?>
                         }
                     },
-                    action: function (e, dt, button, config) {
+                    action: function(e, dt, button, config) {
                         // Get Visible Columns excluding the first one (index 0)
                         var visibleColumns = [];
-                        dt.columns(':visible').every(function (index) {
+                        dt.columns(':visible').every(function(index) {
                             visibleColumns.push(this.header().textContent);
                         });
                         // Call the original action for Print
@@ -326,6 +319,8 @@
             ordering: false
         });
 
+        // timepicker
+        $('.timepicker').timepicker();
     });
 </script>
 <?php
@@ -362,11 +357,6 @@ if (isset($module) && ($module == 'sub_user_roles')) { ?>
         });
     </script>
 <?php } ?>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('.timepicker').timepicker();
-    });
-</script>
 <?php
 if (isset($module)) { ?>
     <script type="text/javascript">
@@ -513,8 +503,6 @@ if (isset($module)) { ?>
                 }
             );
         }
-    </script>
-    <script>
         $(document).ready(function() {
             $(".sno_width_30").css("width", "30px");
             $(".sno_width_40").css("width", "40px");
@@ -539,6 +527,6 @@ if (isset($module)) { ?>
             var numberDecimal1 = this.value;
             var numberDecima2 = numberDecimal1.match(/^\d+\.?\d{0,0}/);
             $(this).val(numberDecima2);
-        }); 
+        });
     </script>
 <?php }

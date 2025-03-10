@@ -28,9 +28,11 @@
 .text_align_center {
 	text-align: center !important;
 }
+
 .text_align_left {
 	text-align: left !important;
 }
+
 .text_align_right {
 	text-align: right !important;
 }
@@ -89,37 +91,50 @@
 .width_heading_table_custom_col {
 	width: 200px !important;
 }
-.custom_btn_size{
+
+.custom_btn_size {
 	height: 30px !important;
 	line-height: 28px !important;
 	padding: 0 1rem !important;
 }
-.custom_padding_card_content_table_top{
+
+.custom_padding_card_content_table_top {
 	padding-top: 10px !important;
 }
-.custom_padding_card_content_table_top{
+
+.custom_padding_card_content_table_top {
 	padding-top: 10px !important;
 }
-.custom_margin_card_table_bottom{
+
+.custom_margin_card_table_bottom {
 	margin-bottom: 5px !important;
 }
-.custom_padding_card_content_table_top_bottom{
+
+.custom_padding_card_content_table_top_bottom {
 	padding-top: 5px !important;
 	padding-bottom: 5px !important;
 }
-.custom_margin_card_table_top{
+
+.custom_margin_card_table_top {
 	margin-top: 0px !important;
 }
-.modal_95_perc{
+
+.modal_95_perc {
 	width: 96% !important;
 	height: 100% !important;
 	max-height: 92% !important;
 	top: 30px !important;
 }
-.custom_font_size_table{
+
+.custom_font_size_table {
 	font-size: 12px !important;
 }
-.custom_sytel_menu_link{
+
+.custom_sytel_menu_link {
 	font-size: 12px !important;
 	color: #000 !important;
+}
+
+.display_none {
+	display: none !important;
 }

@@ -55,7 +55,7 @@ $page_heading = "List of Sub Users";
 				<div class="row">
 					<div class="col s12">
 						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top_bottom"> 
+							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
 									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
@@ -63,12 +63,12 @@ $page_heading = "List of Sub Users";
 										</h6>
 									</div>
 									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-										<?php  
+										<?php
 										if (access("add_perm") == 1) { ?>
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 												New
 											</a>
-										<?php }?>
+										<?php } ?>
 									</div>
 								</div>
 							</div>
@@ -111,17 +111,17 @@ $page_heading = "List of Sub Users";
 								<br>
 								<div class="row">
 									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Name / Email','Username','User Type','User Sections','Status','Actions');
+										<?php
+										$table_columns	= array('SNo', 'Name / Email', 'Username', 'Role Name', 'Department', 'Status', 'Actions');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) { ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
+										} ?>
 									</div>
 								</div>
 								<div class="row">
@@ -131,14 +131,13 @@ $page_heading = "List of Sub Users";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -150,15 +149,15 @@ $page_heading = "List of Sub Users";
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) { ?>
 														<tr>
-															<td class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]);?>">
+															<td class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																<?php echo $data['first_name'] . " " . $data['last_name']; ?><br>
 																<?php echo $data['email']; ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['username']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['user_type']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['user_sections'] ?? ""; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[5]);?>">
+															<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo $data['username']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $data['user_type']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['user_sections'] ?? ""; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[5]); ?>">
 																<?php
 																if ($data['enabled'] == 1) { ?>
 																	<span class="chip green lighten-5">
@@ -168,7 +167,7 @@ $page_heading = "List of Sub Users";
 																	<span class="chip red lighten-5"><span class="red-text">Disabled</span></span>
 																<?php } ?>
 															</td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[6]);?>">
+															<td class="text-align-center col-<?= set_table_headings($table_columns[6]); ?>">
 																<?php
 																if (access("view_perm") == 1) {
 																	if ($data['enabled'] == 1) { ?>
@@ -193,7 +192,7 @@ $page_heading = "List of Sub Users";
 												} ?>
 											<tfoot>
 												<tr>
-													<?php echo  $headings;?>
+													<?php echo  $headings; ?>
 												</tr>
 											</tfoot>
 										</table>

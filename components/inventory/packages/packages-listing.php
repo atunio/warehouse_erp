@@ -237,21 +237,27 @@ $page_heading 	= "List of Packages / Parts";
 										</div>
 									</div>
 								</form>
-								
-								<div class="row"> 
+
+								<div class="row">
 									<div class="text_align_right">
-										<?php 
+										<?php
+										$hide_column 	= "Devices Compatible";
 										$table_columns	= array('SNo', 'SKU Code', 'Package Name / Description', 'Category', 'Category Type', 'Devices Compatible', 'Quantity', 'Avg Cost', 'Case Pack', 'Action');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) {
+											$checked = "checked";
+											if ($data_c1 == $hide_column) {
+												// echo "<br>" . $data_c1 . " _ " . $hide_column;
+												$checked == "";
+											} ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns1[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" <?= $checked; ?>>
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
-									</div> 
+										} ?>
+									</div>
 								</div>
 								<div class="row">
 									<div class="col s12">
@@ -260,14 +266,18 @@ $page_heading 	= "List of Packages / Parts";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															if ($data_c == $hide_column) {
+																$additional_class = "display_none";
+															} else {
+																$additional_class = "";
+															}
+															$headings .= '<th class="col-' . set_table_headings($data_c) . ' ' . $additional_class . '" >' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -278,18 +288,18 @@ $page_heading 	= "List of Packages / Parts";
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$id = $data['id'];  ?>
+														$id = $data['id']; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['sku_code']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['package_name']; ?></br><?php echo $data['package_desc']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['category_name']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['category_type']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['compatible_product_uniqueids']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo $data['stock_in_hand']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo $data['avg_price']; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[8]);?>"><?php echo $data['case_pack']; ?></td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[9]);?>" >
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[1]); ?>"><?php echo $data['sku_code']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo $data['package_name']; ?></br><?php echo $data['package_desc']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $data['category_name']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['category_type']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[5]); ?> display_none"><?php echo $data['compatible_product_uniqueids']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[6]); ?>"><?php echo $data['stock_in_hand']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[7]); ?>"><?php echo $data['avg_price']; ?></td>
+															<td class="col-<?= set_table_headings($table_columns[8]); ?>"><?php echo $data['case_pack']; ?></td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[9]); ?>">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>" title="Edit">

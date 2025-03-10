@@ -26,6 +26,7 @@ $sql_cl = " SELECT DISTINCT a.sub_location, b.sub_location_name, b.sub_location_
 			INNER JOIN purchase_orders d4 ON d4.id = d3.po_id
 			INNER JOIN venders d5 ON d5.id = d4.vender_id
             WHERE a.p_total_stock > 0
+			AND a.is_final_pricing = 1
             AND a.p_inventory_status =  '$module_status' ";
 $flt_field_name = "flt_bin_id";
 if (isset(${$flt_field_name}) && ${$flt_field_name} != "") {
@@ -70,6 +71,7 @@ $sql_cl2		= " SELECT DISTINCT a3.id, a3.category_name,
 					INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location
 					LEFT JOIN formula_category c ON c.product_category = a2.product_category AND c.formula_type = 'Processing' AND c.enabled = 1
  					WHERE a.p_total_stock > 0 
+					AND a.is_final_pricing = 1
 					AND a.p_inventory_status =  '$module_status'  ";
 $sql_cl2 .= " GROUP BY a3.id ";
 // echo $sql_cl2;
@@ -227,6 +229,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																	INNER JOIN product_stock b ON b.product_id = a2.id
 																	WHERE  1=1 AND a2.enabled = 1 
 																	AND b.p_total_stock > 0
+																	AND b.is_final_pricing = 1
 																	AND b.p_inventory_status = '$module_status' 
 																	ORDER BY a2.product_uniqueid ";
 												$result11       = $db->query($conn, $sql11);
@@ -260,6 +263,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																	INNER JOIN product_stock b ON b.product_id = a2.id 
 																	WHERE a2.product_desc != '' 
  																	AND b.p_total_stock > 0
+																	AND b.is_final_pricing > 0
 																	AND b.p_inventory_status = '$module_status' 
 																	AND a2.enabled = 1 
 																	ORDER BY a2.product_desc  ";
@@ -294,6 +298,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																	INNER JOIN  products a2 ON a2.id = a.product_id
 																	INNER JOIN product_categories a3 ON a3.id = a2.product_category 
 																	WHERE a.p_total_stock > 0
+																	AND a.is_final_pricing > 0
 																	AND a.p_inventory_status =  '$module_status' 
 																	ORDER BY a3.category_name ";
 												$result11       = $db->query($conn, $sql11);
@@ -350,6 +355,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
  																INNER JOIN warehouse_sub_locations b ON b.id = a.sub_location 
 																WHERE 1=1 
 																AND a.p_total_stock > 0
+																AND a.is_final_pricing > 0
 																AND a.p_inventory_status =  '$module_status'
 																ORDER BY b.sub_location_name, b.sub_location_type ";
 												$result1	= $db->query($conn, $sql1);
@@ -383,17 +389,17 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 								</form>
 								<div class="row">
 									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Location / Bin','Details','Total Qty','Assign User');
+										<?php
+										$table_columns	= array('SNo', 'Location / Bin', 'Details', 'Total Qty', 'Assign User');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) { ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
+										} ?>
 									</div>
 								</div>
 								<div class="row">
@@ -403,14 +409,13 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="text_align_center sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="text_align_center sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															$headings .= '<th class="text_align_center col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="text_align_center col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -423,8 +428,8 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 													foreach ($row_cl as $data) {
 														$id = $data['sub_location']; ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[1]);?>">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+															<td class="text_align_center col-<?= set_table_headings($table_columns[1]); ?>">
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=bin_detail&cmd=edit&id=" . $id) ?>">
 																	<?php
 																	echo $data['sub_location_name'];
@@ -433,7 +438,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																	} ?>
 																</a>
 															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[2]);?>">
+															<td class="text_align_center col-<?= set_table_headings($table_columns[2]); ?>">
 																<?php
 																$total_qty = 0;
 																$sql_cl3 = "SELECT COUNT(*) AS qty, a3.category_name  
@@ -441,6 +446,7 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																				INNER JOIN products a2 ON a2.id = a.product_id
 																				INNER JOIN product_categories a3 ON a3.id = a2.product_category
 																				WHERE a.p_total_stock > 0
+																				AND a.is_final_pricing > 0
 																				AND a.p_inventory_status =  '$module_status' 
 																				AND a.sub_location = '" . $id . "' 
 																				GROUP BY a3.category_name
@@ -457,8 +463,8 @@ $page_heading 	= "List of Bins For Processing ( Manager View)";
 																	}
 																} ?>
 															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[3]);?>"><?php echo $total_qty; ?></td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[4]);?>">
+															<td class="text_align_center col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $total_qty; ?></td>
+															<td class="text_align_center col-<?= set_table_headings($table_columns[4]); ?>">
 																<div class="input-field col m12 s12">
 																	<div class="select2div">
 																		<?php

@@ -6,7 +6,7 @@
     <input type="hidden" id="module_id" value="<?= $module_id; ?>" />
     <input type="hidden" id="id" value="<?= $id; ?>" />
     <input type="hidden" id="previous_stage_status" value="<?= $stage_status; ?>" />
-    
+
     <?php
     if (isset($cmd) && $cmd == 'edit') { ?>
         <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=edit&id=' . $id); ?>">
@@ -28,19 +28,19 @@
                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
                         <?php
                         $sql1 = "SELECT * FROM stages_status WHERE enabled = 1";
-                        if(!isset($cmd) || (isset($cmd) && $cmd == 'add' )){
+                        if (!isset($cmd) || (isset($cmd) && $cmd == 'add')) {
                             $sql1 .= " AND status_name = 'Draft' ";
                         }
                         echo  $sql1 .= " ORDER BY sort_by ";
                         $result1         = $db->query($conn, $sql1);
-                        $count1         = $db->counter($result1); 
+                        $count1         = $db->counter($result1);
                         if ($count1 > 0) {
                             $row1    = $db->fetch($result1);
                             foreach ($row1 as $data2) { ?>
                                 <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                            <?php  
+                        <?php
                             }
-                        } ?> 
+                        } ?>
                     </select>
                 </div>
                 <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
@@ -51,16 +51,17 @@
                     </a>  &nbsp;&nbsp;
                 <?php */ ?>
                     <?php
-                    if (isset($po_no) && isset($id)) {  
+                    if (isset($po_no) && isset($id)) {
                         if (access("edit_perm") == 1) { ?>
                             <button class="btn cyan waves-effect waves-light green custom_btn_size" type="submit" name="action">
                                 Save changes
                             </button>
                             <?php
-                            //if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { ?>
-                                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
-                                    Import Products
-                                </a>
+                            //if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { 
+                            ?>
+                            <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
+                                Import Products
+                            </a>
                     <?php   //}
                         }
                     }
@@ -72,7 +73,7 @@
             <div class="col s12 m12 l12">
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
-                        <input type="hidden" id="first_tab_url" value="<?php echo PROJECT_URL?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab1&id=' . $id); ?>" />
+                        <input type="hidden" id="first_tab_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab1&id=' . $id); ?>" />
                         <?php
                         if (isset($po_no) && isset($id)) { ?>
                             <h5 class="media-heading">
@@ -91,7 +92,7 @@
                                 <input type="hidden" name="is_Submit" value="Y" />
                             <?php } ?>
                             <div class="row" style="margin-top: 20px;">
-                                <?php 
+                                <?php
                                 $field_name     = "po_date";
                                 $field_label     = "Order Date (d/m/Y)";
                                 ?>
@@ -355,12 +356,12 @@
                                                     <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         Add Packages / Parts
                                                     </a>
-                                                <?php 
+                                                    <?php
                                                 } ?>&nbsp;&nbsp;
                                                     <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                         <i class="material-icons  dp48 md-36">add_circle</i>
                                                     </a>
-                                        <?php } ?>
+                                                <?php } ?>
                                         </th>
                                         <th style="width: 100px;">Pkg Stock</th>
                                         <th style="width: 120px;">Pkg Needed</th>
@@ -434,112 +435,113 @@
                                             $order_qty_val = $order_qty[$i - 1];
                                         }
                                         $pkg_stock_of_product_needed = $order_qty_val - $pkg_stock_in_hand;
-                                        //if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { ?>
-                                            <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
-                                                <td>
-                                                    <select <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product-select <?= $field_name ?>_<?= $i ?>">
-                                                        <option value="">Select a product</option>
-                                                        <?php
-                                                        if ($count1 > 0) {
-                                                            $row1    = $db->fetch($result1);
-                                                            foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?></option>
-                                                        <?php }
-                                                        } ?>
-                                                        <option value="product_add_modal">+Add New Product</option>
-                                                    </select>
-                                                </td>
-                                                <td><span id="pkg_stock_of_product_<?= $i; ?>"><?php if ($pkg_stock_in_hand > 0) echo $pkg_stock_in_hand; ?></span></td>
-                                                <td><span id="pkg_stock_of_product_needed_<?= $i; ?>"><?php echo $pkg_stock_of_product_needed > 0 ? $pkg_stock_of_product_needed : "0"; ?></span></td>
-                                                <td>
+                                        //if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { 
+                                    ?>
+                                        <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
+                                            <td>
+                                                <select <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product-select <?= $field_name ?>_<?= $i ?>">
+                                                    <option value="">Select a product</option>
                                                     <?php
-                                                    $field_name     = "order_qty";
-                                                    $field_id       = "orderqty_" . $i;
-                                                    $field_label     = "Quantity";
-                                                    ?>
-                                                    <input <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset($order_qty_val)) {
-                                                                                                                                                            echo $order_qty_val;
-                                                                                                                                                        } ?>" class="validate custom_input order_qty">
-                                                </td>
-                                                <td>
+                                                    if ($count1 > 0) {
+                                                        $row1    = $db->fetch($result1);
+                                                        foreach ($row1 as $data2) { ?>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?></option>
+                                                    <?php }
+                                                    } ?>
+                                                    <option value="product_add_modal">+Add New Product</option>
+                                                </select>
+                                            </td>
+                                            <td><span id="pkg_stock_of_product_<?= $i; ?>"><?php if ($pkg_stock_in_hand > 0) echo $pkg_stock_in_hand; ?></span></td>
+                                            <td><span id="pkg_stock_of_product_needed_<?= $i; ?>"><?php echo $pkg_stock_of_product_needed > 0 ? $pkg_stock_of_product_needed : "0"; ?></span></td>
+                                            <td>
+                                                <?php
+                                                $field_name     = "order_qty";
+                                                $field_id       = "orderqty_" . $i;
+                                                $field_label     = "Quantity";
+                                                ?>
+                                                <input <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset($order_qty_val)) {
+                                                                                                                                                        echo $order_qty_val;
+                                                                                                                                                    } ?>" class="validate custom_input order_qty">
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $field_name     = "order_price";
+                                                $field_id       = "orderprice_" . $i;
+                                                $field_label     = "Unit Price";
+                                                ?>
+                                                <input <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="text" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                        echo ${$field_name}[$i - 1];
+                                                                                                                                                    } ?>" class="twoDecimalNumber validate custom_input order_price">
+                                            </td>
+                                            <td class="text_align_right">
+                                                <span id="value_<?= $i; ?>">
                                                     <?php
-                                                    $field_name     = "order_price";
-                                                    $field_id       = "orderprice_" . $i;
-                                                    $field_label     = "Unit Price";
-                                                    ?>
-                                                    <input <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
-                                                                                                                                                            echo ${$field_name}[$i - 1];
-                                                                                                                                                        } ?>" class="validate custom_input order_price">
-                                                </td>
-                                                <td class="text_align_right">
-                                                    <span id="value_<?= $i; ?>">
-                                                        <?php
-                                                        $value = 0;
-                                                        if (isset($order_qty[$i - 1]) && isset($order_price[$i - 1])) {
-                                                            $value =  ($order_price[$i - 1] * $order_qty[$i - 1]);
-                                                            $sum_price += $order_price[$i - 1];
-                                                            $sum_qty += $order_qty[$i - 1];
-                                                        }
-                                                        echo number_format($value, 2);
-                                                        $sum_value += $value; ?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <?php
-                                                    $field_name     = "product_condition";
-                                                    $field_id       = "productcondition_" . $i;
-                                                    $field_label     = "Product Condition";
-                                                    ?>
+                                                    $value = 0;
+                                                    if (isset($order_qty[$i - 1]) && isset($order_price[$i - 1])) {
+                                                        $value =  ($order_price[$i - 1] * $order_qty[$i - 1]);
+                                                        $sum_price += $order_price[$i - 1];
+                                                        $sum_qty += $order_qty[$i - 1];
+                                                    }
+                                                    echo number_format($value, 2);
+                                                    $sum_value += $value; ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $field_name     = "product_condition";
+                                                $field_id       = "productcondition_" . $i;
+                                                $field_label     = "Product Condition";
+                                                ?>
 
-                                                    <select <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
-                                                        <option value="">N/A</option>
-                                                        <option value="A" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "A") { ?> selected="selected" <?php } ?>>A</option>
-                                                        <option value="B" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "B") { ?> selected="selected" <?php } ?>>B</option>
-                                                        <option value="C" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "C") { ?> selected="selected" <?php } ?>>C</option>
-                                                        <option value="D" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "D") { ?> selected="selected" <?php } ?>>D</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <?php
-                                                    $field_name     = "expected_status";
-                                                    $field_id       = "expectedstatus_" . $i;
-                                                    $field_label    = "Status";
-                                                    $sql_status     = " SELECT id, status_name
+                                                <select <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
+                                                    <option value="">N/A</option>
+                                                    <option value="A" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "A") { ?> selected="selected" <?php } ?>>A</option>
+                                                    <option value="B" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "B") { ?> selected="selected" <?php } ?>>B</option>
+                                                    <option value="C" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "C") { ?> selected="selected" <?php } ?>>C</option>
+                                                    <option value="D" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "D") { ?> selected="selected" <?php } ?>>D</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $field_name     = "expected_status";
+                                                $field_id       = "expectedstatus_" . $i;
+                                                $field_label    = "Status";
+                                                $sql_status     = " SELECT id, status_name
                                                                         FROM  inventory_status b 
                                                                         WHERE enabled = 1
                                                                         AND status_type = 'Add Product' ";
-                                                    $result_status  = $db->query($conn, $sql_status);
-                                                    $count_status   = $db->counter($result_status);
-                                                    ?>
+                                                $result_status  = $db->query($conn, $sql_status);
+                                                $count_status   = $db->counter($result_status);
+                                                ?>
 
-                                                    <select <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
-                                                        <option value="">N/A</option>
-                                                        <?php
-                                                        if ($count_status > 0) {
-                                                            $row_status    = $db->fetch($result_status);
-                                                            foreach ($row_status as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                                        <?php }
-                                                        } ?>
-                                                    </select>
-                                                </td>
-                                                <td>
+                                                <select <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="browser-default custom_condition_class">
+                                                    <option value="">N/A</option>
                                                     <?php
-                                                    if (isset($stage_status) && $stage_status != "Committed") { ?>
-                                                        <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
-                                                            <i class="material-icons dp48">cancel</i>
-                                                        </a> &nbsp;
-                                                        <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
-                                                            <i class="material-icons dp48">add_circle</i>
-                                                        </a>&nbsp;&nbsp;
-                                                    <?php } ?>
-                                                </td>
-                                            </tr>
+                                                    if ($count_status > 0) {
+                                                        $row_status    = $db->fetch($result_status);
+                                                        foreach ($row_status as $data2) { ?>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                                    <?php }
+                                                    } ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                                    <a class="remove-row btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="remove-row^<?= $i ?>" href="javascript:void(0)">
+                                                        <i class="material-icons dp48">cancel</i>
+                                                    </a> &nbsp;
+                                                    <a class="add-more add-more-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="add-more^<?= $i ?>" href="javascript:void(0)">
+                                                        <i class="material-icons dp48">add_circle</i>
+                                                    </a>&nbsp;&nbsp;
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
                                     <?php //}
                                     } ?>
                                     <tr>
@@ -627,7 +629,9 @@
                                                         if ($count1 > 0) {
                                                             $row1    = $db->fetch($result1);
                                                             foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
+                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
+                                                                                                                                                                                                                                                                                                                        echo "SKU Code: " . $data2['sku_code'];
+                                                                                                                                                                                                                                                                                                                    } ?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>
@@ -679,13 +683,13 @@
                                                 <td>
                                                     <span id="total_case_pack_<?= $i; ?>">
                                                         <?php
-                                                        if (isset($case_pack[$i - 1]) && $case_pack[$i - 1]>0 && isset($order_part_qty[$i - 1]) && $order_part_qty[$i - 1]>0) {
+                                                        if (isset($case_pack[$i - 1]) && $case_pack[$i - 1] > 0 && isset($order_part_qty[$i - 1]) && $order_part_qty[$i - 1] > 0) {
                                                             echo ceil($order_part_qty[$i - 1] / $case_pack[$i - 1]);
                                                         } ?>
                                                     </span>
                                                 </td>
                                                 <td colspan="3">
-                                                    <?php 
+                                                    <?php
                                                     if (isset($stage_status) && $stage_status != "Committed") { ?>
                                                         <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
                                                             <i class="material-icons dp48">cancel</i>

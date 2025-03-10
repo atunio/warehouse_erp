@@ -250,7 +250,13 @@ $page_heading 	= "Stock Detail";
 								<?php
 								$field_name 	= "flt_serial_no";
 								$field_label 	= "Serial#";
-								$sql1 			= "SELECT DISTINCT serial_no FROM product_stock WHERE enabled = 1 ORDER BY serial_no  ";
+								$sql1 			= "	SELECT DISTINCT serial_no 
+													FROM product_stock 
+													WHERE enabled = 1 
+													AND serial_no !=''
+													AND p_total_stock >0
+													AND is_final_pricing = 1
+													ORDER BY serial_no  ";
 								$result1 		= $db->query($conn, $sql1);
 								$count1 		= $db->counter($result1);
 								?>
@@ -462,17 +468,17 @@ $page_heading 	= "Stock Detail";
 						<div class="section section-data-tables">
 							<div class="row">
 								<div class="text_align_right">
-									<?php 
+									<?php
 									$table_columns	= array('SNo',  'Product ID / Product Detail', 'Vendor Type', 'Status', 'Condition', 'Serial No', 'Model No', 'Battery', 'RAM', 'Storage', 'Price', 'Sub Location', 'Cosmetic Grade');
 									$k 				= 0;
-									foreach($table_columns as $data_c1){?>
+									foreach ($table_columns as $data_c1) { ?>
 										<label>
-											<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-											<span><?= $data_c1?></span>
+											<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+											<span><?= $data_c1 ?></span>
 										</label>&nbsp;&nbsp;
-									<?php 
+									<?php
 										$k++;
-									}?> 
+									} ?>
 								</div>
 							</div>
 							<div class="row">
@@ -484,14 +490,13 @@ $page_heading 	= "Stock Detail";
 												<tr>
 													<?php
 													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													foreach ($table_columns as $data_c) {
+														if ($data_c == 'SNo') {
+															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
+													}
 													echo $headings;
 													?>
 												</tr>
@@ -509,8 +514,8 @@ $page_heading 	= "Stock Detail";
 													$is_packed			= $data['is_packed'];
 												?>
 													<tr>
-														<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[1]);?>">
+														<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 															<?php
 															if (access("edit_perm") == 1) { ?>
 																<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2) ?>" title="Detail Stock View">
@@ -535,13 +540,13 @@ $page_heading 	= "Stock Detail";
 																} ?> (<?php echo $data['category_name']; ?>)
 															<?php } ?>
 														</td>
-														<td class="col-<?= set_table_headings($table_columns[2]);?>">
+														<td class="col-<?= set_table_headings($table_columns[2]); ?>">
 															<?php
 															if ($data['type_name'] != "") {
 																echo ucwords(strtolower($data['type_name']));
 															} ?>
 														</td>
-														<td class="col-<?= set_table_headings($table_columns[3]);?>">
+														<td class="col-<?= set_table_headings($table_columns[3]); ?>">
 															<?php
 															$status_name = $data['status_name'];
 															if ($status_name == 'Defective') { ?>
@@ -610,20 +615,20 @@ $page_heading 	= "Stock Detail";
 																}
 															} ?>
 														</td>
-														<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['stock_grade']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['serial_no']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo $data['model_no']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[7]);?>">
+														<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['stock_grade']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[5]); ?>"><?php echo $data['serial_no']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[6]); ?>"><?php echo $data['model_no']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[7]); ?>">
 															<?php
 															if ($data['battery_percentage'] != "") {
 																echo $data['battery_percentage'] . "%";
 															} ?>
 														</td>
-														<td class="col-<?= set_table_headings($table_columns[8]);?>"><?php echo $data['ram_size']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[9]);?>"><?php echo $data['storage_size']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[10]);?>"><?php echo number_format($data['price'], 2); ?></td>
-														<td class="col-<?= set_table_headings($table_columns[11]);?>"><?php echo $data['sub_location_name']; ?></td>
-														<td class="col-<?= set_table_headings($table_columns[12]);?>"><?php echo $data['cosmetic_grade']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[8]); ?>"><?php echo $data['ram_size']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[9]); ?>"><?php echo $data['storage_size']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[10]); ?>"><?php echo number_format($data['price'], 2); ?></td>
+														<td class="col-<?= set_table_headings($table_columns[11]); ?>"><?php echo $data['sub_location_name']; ?></td>
+														<td class="col-<?= set_table_headings($table_columns[12]); ?>"><?php echo $data['cosmetic_grade']; ?></td>
 													</tr>
 												<?php
 													$i++;

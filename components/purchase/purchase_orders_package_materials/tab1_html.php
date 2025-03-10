@@ -23,23 +23,23 @@
                     <?php
                     $field_name     = "stage_status";
                     $field_label     = "Stage Status";
-                    ?> 
+                    ?>
                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
                         <?php
                         $sql1 = "SELECT * FROM stages_status WHERE enabled = 1";
-                        if(!isset($cmd) || (isset($cmd) && $cmd == 'add' )){
+                        if (!isset($cmd) || (isset($cmd) && $cmd == 'add')) {
                             $sql1 .= " AND status_name = 'Draft' ";
                         }
                         echo  $sql1 .= " ORDER BY sort_by ";
                         $result1         = $db->query($conn, $sql1);
-                        $count1         = $db->counter($result1); 
+                        $count1         = $db->counter($result1);
                         if ($count1 > 0) {
                             $row1    = $db->fetch($result1);
                             foreach ($row1 as $data2) { ?>
                                 <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                            <?php  
+                        <?php
                             }
-                        } ?> 
+                        } ?>
                     </select>
                 </div>
                 <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
@@ -233,13 +233,12 @@
                                                 $product_po_desc[]      = $data2['product_po_desc'];
                                                 $case_pack[]            = $data2['order_case_pack'];
                                             }
-                                        }
-                                        else{
+                                        } else {
                                             if (isset($test_on_local) && $test_on_local == 1) {
                                                 $package_ids[] = 10;
                                                 $package_ids[] = 6;
                                                 $package_ids[] = 12;
-                                                
+
                                                 $order_price[] = 10;
                                                 $order_price[] = 10;
                                                 $order_price[] = 10;
@@ -247,7 +246,7 @@
                                                 $order_qty[] = 20;
                                                 $order_qty[] = 18;
                                                 $order_qty[] = 20;
-                                                
+
                                                 $case_pack[] = 10;
                                                 $case_pack[] = 6;
                                                 $case_pack[] = 5;
@@ -306,7 +305,9 @@
                                                     if ($count1 > 0) {
                                                         $row1    = $db->fetch($result1);
                                                         foreach ($row1 as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo ucwords(strtolower($data2['package_name'])); ?> (<?php echo $data2['category_name']; ?>) - <?php if($data2['sku_code'] !=""){ echo "SKU Code: ".$data2['sku_code'];}?></option>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo ucwords(strtolower($data2['package_name'])); ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
+                                                                                                                                                                                                                                                                                                                                            echo "SKU Code: " . $data2['sku_code'];
+                                                                                                                                                                                                                                                                                                                                        } ?></option>
                                                     <?php }
                                                     } ?>
                                                     <option value="package_add_modal">+Add New Package/Part</option>
@@ -339,9 +340,9 @@
                                                 $field_id       = "orderprice_" . $i;
                                                 ?>
                                                 <input <?php echo $disabled;
-                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="text" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
                                                                                                                                                         echo ${$field_name}[$i - 1];
-                                                                                                                                                    } ?>" class="validate custom_input order_price">
+                                                                                                                                                    } ?>" class="twoDecimalNumber validate custom_input order_price">
                                             </td>
                                             <td class="text_align_right">
                                                 <span id="value_<?= $i; ?>">

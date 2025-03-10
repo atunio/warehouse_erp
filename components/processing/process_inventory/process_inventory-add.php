@@ -246,8 +246,7 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 											LEFT JOIN warehouse_sub_locations c ON c.id = a.sub_location 
 											INNER JOIN purchase_order_detail_receive d ON d.id = a.receive_id
  											INNER JOIN purchase_orders f ON f.id = d.po_id
-											WHERE a.id = '" . $stock_id . "' ";
-			// echo $sql_ee;die;
+											WHERE a.id = '" . $stock_id . "' "; // echo $sql_ee;die;
 			$result_ee					= $db->query($conn, $sql_ee);
 			$count_ee     				= $db->counter($result_ee);
 			if ($count_ee > 0) {
@@ -344,7 +343,10 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 						$response = sendPostRequestFinale($apiUrl, $data1);
 						if (isset($response['scanKey']) && $response['scanKey'] != "") {
 						} else {
-							$error2['msg'] = "Issue Addding Product Lookup.";
+							// $error2['msg'] = "Issue Addding Product Lookup.";
+							echo "<br><br><br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: " . $serial_no;
+							echo "<br><br><pre>";
+							print_r($response);
 						}
 						///////////////////////////////////// Add Product lOOKUP In Finale END /////////////////////////////////
 					}
@@ -883,6 +885,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 														INNER JOIN product_categories b ON b.id = a.product_category
  														WHERE a.enabled = 1
 														AND a1.p_total_stock > 0
+														AND a1.is_final_pricing = 1
 														AND a1.p_inventory_status = 5
 														AND a1.sub_location = '" . $id . "'
 														AND a1.is_move_finale = 0
@@ -1100,7 +1103,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 													<h4 class="card-title">Processed Products</h4>
 												</div>
 												<div class="col m8 s12">
-													
+
 												</div>
 												<div class="col m2 s12">
 													<div class="text_align_right">
@@ -1110,17 +1113,17 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 											</div>
 											<div class="row">
 												<div class="text_align_right">
-													<?php 
-													$table_columns	= array('SNo', 'Product ID / Product Detail', 'Serial No', 'Finale ProductID / Processed Date', 'Finale Grade','Parts / Package / Materials','Price','Labor Cost','Parts / Package / Materials Cost','Final Price');
+													<?php
+													$table_columns	= array('SNo', 'Product ID / Product Detail', 'Serial No', 'Finale ProductID / Processed Date', 'Finale Grade', 'Parts / Package / Materials', 'Price', 'Labor Cost', 'Parts / Package / Materials Cost', 'Final Price');
 													$k 				= 0;
-													foreach($table_columns as $data_c1){?>
+													foreach ($table_columns as $data_c1) { ?>
 														<label>
-															<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-															<span><?= $data_c1?></span>
+															<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+															<span><?= $data_c1 ?></span>
 														</label>&nbsp;&nbsp;
-													<?php 
+													<?php
 														$k++;
-													}?> 
+													} ?>
 												</div>
 											</div>
 											<?php
@@ -1148,13 +1151,13 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 													<table id="page-length-option" class="display pagelength50_2">
 														<thead>
 															<tr>
-																
+
 																<?php
-																
+
 																$headings = "";
-																foreach($table_columns as $data_c){
-																	if($data_c == 'SNo'){ ?>
-																		
+																foreach ($table_columns as $data_c) {
+																	if ($data_c == 'SNo') { ?>
+
 																		<th class="sno_width_60 col-sno">SNo
 																			<?php
 																			if (po_permisions("Move to Finale") == 1) { ?>
@@ -1166,12 +1169,11 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				</label>
 																			<?php } ?>
 																		</th>
-																	<?php
+																<?php
+																	} else {
+																		$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 																	}
-																	else{
-																		$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-																	}
-																} 
+																}
 																echo $headings;
 																?>
 															</tr>
@@ -1189,7 +1191,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																	$total_price					= $data['price_finale'];
 																	$is_processed					= $data['is_processed']; ?>
 																	<tr>
-																		<td class="col-<?= set_table_headings($table_columns[0]);?>">
+																		<td class="col-<?= set_table_headings($table_columns[0]); ?>">
 																			<?php echo $i + 1;
 																			if (po_permisions("Move to Finale") == 1 && $is_processed == "0") { ?>
 																				<label style="margin-left: 25px;">
@@ -1201,7 +1203,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				</label>
 																			<?php } ?>
 																		</td>
-																		<td class="col-<?= set_table_headings($table_columns[1]);?>">
+																		<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																			<?php echo $data['product_uniqueid']; ?></br>
 																			<?php
 																			echo ucwords(strtolower($data['product_desc']));
@@ -1209,19 +1211,19 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				echo "(" . $data['category_name'] . ")";
 																			} ?>
 																		</td>
-																		<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['serial_no']; ?></td>
-																		<td class="col-<?= set_table_headings($table_columns[3]);?>">
+																		<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo $data['serial_no']; ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[3]); ?>">
 																			<?php echo $data['finale_product_unique_id']; ?>
 																			<br>
 																			<?php echo dateformat1_with_time($data['processed_date']); ?>
 																		</td>
-																		<td class="col-<?= set_table_headings($table_columns[4]);?>">
+																		<td class="col-<?= set_table_headings($table_columns[4]); ?>">
 																			<?php echo $data['finale_condition']; ?> &nbsp;&nbsp;
 																			<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/printlabels_pdf.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&detail_id=" . $detail_id2) ?>" target="_blank">
 																				<i class="material-icons dp48">print</i>
 																			</a>
 																		</td>
-																		<td class="col-<?= set_table_headings($table_columns[5]);?>">
+																		<td class="col-<?= set_table_headings($table_columns[5]); ?>">
 																			<?php
 																			$m = 1;
 																			if ($data['package_name1'] != '') {
@@ -1237,10 +1239,10 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																				$m++;
 																			} ?>
 																		</td>
-																		<td class="col-<?= set_table_headings($table_columns[6]);?>"><?php echo number_format($price, 2); ?></td>
-																		<td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo number_format($device_processing_labor, 2); ?></td>
-																		<td class="col-<?= set_table_headings($table_columns[8]);?>"><?php echo number_format(($device_processing_parts_price), 2); ?></td>
-																		<td class="col-<?= set_table_headings($table_columns[9]);?>"><?php echo number_format(($total_price), 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[6]); ?>"><?php echo number_format($price, 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[7]); ?>"><?php echo number_format($device_processing_labor, 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[8]); ?>"><?php echo number_format(($device_processing_parts_price), 2); ?></td>
+																		<td class="col-<?= set_table_headings($table_columns[9]); ?>"><?php echo number_format(($total_price), 2); ?></td>
 																	</tr>
 															<?php $i++;
 																}
@@ -1272,7 +1274,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 							</div>
 							<!-- Multi Select -->
 						</div><!-- START RIGHT SIDEBAR NAV -->
-						
+
 					</form>
 					<?php include('sub_files/right_sidebar.php'); ?>
 				</div>

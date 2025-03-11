@@ -71,14 +71,14 @@
                                     SELECT * FROM (
                                         SELECT  a.po_detail_id, a.product_id, c.product_uniqueid, 
                                             c2.stock_grade,
-                                            b.order_price,
+                                            a.price AS order_price,
                                             COUNT(c2.id) AS total_qty, 
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
                                             ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
                                             ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * b.order_price), 2) total_price
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * a.price), 2) total_price
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN products c ON c.id = b.product_id

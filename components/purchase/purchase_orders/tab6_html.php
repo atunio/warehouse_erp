@@ -11,6 +11,9 @@
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_pricing&id=" . $id) ?>">
+                    Import Pricing
+                </a>
                 <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>">
                     Import Diagnostic Data
                 </a>
@@ -139,14 +142,11 @@
             </ul>
             <div id="tab1">
                 <?php
-                $td_padding = "padding:5px 15px !important;";
-                $sql        = " SELECT a.id
-                                    FROM purchase_order_detail_receive a
-                                    WHERE a.po_id = '" . $id . "' "; // echo $sql; 
+                $td_padding     = "padding:5px 15px !important;";
+                $sql            = " SELECT a.id FROM purchase_order_detail_receive a WHERE a.po_id = '" . $id . "' ";   //echo $sql; 
                 $result_log     = $db->query($conn, $sql);
                 $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
-
                     <div class="card-panel custom_padding_card_content_table_top_bottom">
                         <div class="row">
                             <div class="col m8 s12">
@@ -1242,7 +1242,6 @@
                     $sql           .= "     
                                         ) AS t1
                                         ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
-                    // echo $sql;
                     $result_log     = $db->query($conn, $sql);
                     $count_log      = $db->counter($result_log);
                     if ($count_log > 0) { ?>
@@ -1589,7 +1588,7 @@
             <div id="tab2">
                 <?php
                 $sql_p2         = " SELECT * FROM(
-                                        SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, d.order_price
+                                        SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, IF(a.price = 0, d.order_price, a.price) AS order_price
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN purchase_order_detail d ON d.id = a.po_detail_id
                                         INNER JOIN products d2 ON d2.id = d.`product_id`
@@ -1599,7 +1598,7 @@
 
                                         UNION ALL 
 
-                                        SELECT 'Added During Diagnostic' AS rec_type, d.`product_uniqueid`, d.`product_desc`,  e.`category_name`, a.*, '' AS order_price
+                                        SELECT 'Added During Diagnostic' AS rec_type, d.`product_uniqueid`, d.`product_desc`,  e.`category_name`, a.*, a.price AS order_price
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN products d ON d.id = a.`product_id`
                                         INNER JOIN product_categories e ON e.id = d.`product_category`
@@ -1616,7 +1615,20 @@
                         <input type="hidden" name="is_Submit6_SubTab2" value="Y" />
                         <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
                             <div class="card-content custom_padding_card_content_table_top">
-                                <h6 class="card-title">Pricing</h6><br>
+                                <div class="row">
+                                        <div class="col m6 s12"><h6 class="card-title">Pricing</h6></div>
+                                        <?php
+                                        if (po_permisions("DiagnosticExport") == '1') {
+                                            //echo " <br><br><br><br><br> <===> --------------- $assignment_id  "; 
+                                        ?>
+                                            <div class="col m2 s12">
+                                                <a href="export/export_po_diagnostic_pricing_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id . "&assignment_id=" . $assignment_id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
+                                            </div>
+                                        <?php } ?>
+                                    
+                                    <div class="col m4 s12"></div>
+                                </div>
+                                <br>
                                 <div class="row">
                                     <table id="page-length-option1" class="display bordered striped addproducttable">
                                         <thead>

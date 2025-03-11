@@ -19,17 +19,21 @@ $(document).ready(function() {
                 if (spanElement.length === 1) {
                     const toastHTML = 'Bin has been removed.';
                     showToast(toastHTML, "");
-                    location.reload();
+                    var module_url = $("#module_url").val();
+                    window.location.href = module_url; // Redirect to the URL
                 } 
                 else if (response === "Fail") {
                     var toastHTML = 'There is some Error.';
                     showToast(toastHTML, "Fail");
-                    location.reload();
+                    var module_url = $("#module_url").val();
+                    window.location.href = module_url; // Redirect to the URL
                 } 
                 else{
                     var toastHTML = 'Bin has been assigned successfully.';
                     showToast(toastHTML, "Success");
                     location.reload();
+                    var module_url = $("#module_url").val();
+                    window.location.href = module_url; // Redirect to the URL
                 } 
                 $(".bin_users").html(response);
             },

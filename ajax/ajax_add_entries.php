@@ -22,14 +22,13 @@ switch ($type) {
                         WHERE a.store_name	= '" . $store_name . "' ";
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
-            if ($count == 0) { 
+            if ($count == 0) {
                 $sql    = "INSERT INTO stores(subscriber_users_id, store_name, add_date, add_by, add_ip)
                             VALUES('" . $subscriber_users_id . "', '" . $store_name . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
                 $ok     = $db->query($conn, $sql);
                 if ($ok) {
-                    $id = mysqli_insert_id($conn);  
+                    $id = mysqli_insert_id($conn);
                     echo '<option value="' . $id . '" selected="selected">' . $store_name . '</option>';
-
                 } else {
                     echo "Fail";
                 }
@@ -81,56 +80,56 @@ switch ($type) {
             echo 'Select';
         }
         break;
-        case 'add_category':
-            if ($category_name != "") {
-                $count  = 0;
-                $sql    = " SELECT a.* FROM product_categories a  WHERE a.category_name    = '" . $category_name . "' ";
-                $result = $db->query($conn, $sql);
-                $count  = $db->counter($result);
-                if ($count == 0) {
-                    $sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+    case 'add_category':
+        if ($category_name != "") {
+            $count  = 0;
+            $sql    = " SELECT a.* FROM product_categories a  WHERE a.category_name    = '" . $category_name . "' ";
+            $result = $db->query($conn, $sql);
+            $count  = $db->counter($result);
+            if ($count == 0) {
+                $sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
                              VALUES('" . $subscriber_users_id . "',  '" . $category_name  . "',  'Device',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-                    $ok = $db->query($conn, $sql6);
-                    if ($ok) {
-                        $id = mysqli_insert_id($conn);
-                        echo '<option value="' . $id . '" selected="selected">' . $category_name . ' </option>';
-                    } else {
-                        echo "Fail";
-                    }
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    $id = mysqli_insert_id($conn);
+                    echo '<option value="' . $id . '" selected="selected">' . $category_name . ' </option>';
                 } else {
-                    $row    = $db->fetch($result);
-                    $id     = $row[0]['id'];
-                    $category_name  = $row[0]['category_name'];
-                    echo '<option value="' . $id . '" selected="selected">' . $category_name . '</option>';
+                    echo "Fail";
                 }
             } else {
-                echo 'Select';
+                $row    = $db->fetch($result);
+                $id     = $row[0]['id'];
+                $category_name  = $row[0]['category_name'];
+                echo '<option value="' . $id . '" selected="selected">' . $category_name . '</option>';
             }
-            break;
-        case 'add_productid':
-            if ($product_id != "") {
-                $count  = 0;
-                $sql    = " SELECT a.* FROM product_ids a  WHERE a.product_id    = '" . $product_id . "' ";
-                $result = $db->query($conn, $sql);
-                $count  = $db->counter($result);
-                if ($count == 0) {
-                    $sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
+        } else {
+            echo 'Select';
+        }
+        break;
+    case 'add_productid':
+        if ($product_id != "") {
+            $count  = 0;
+            $sql    = " SELECT a.* FROM product_ids a  WHERE a.product_id    = '" . $product_id . "' ";
+            $result = $db->query($conn, $sql);
+            $count  = $db->counter($result);
+            if ($count == 0) {
+                $sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
                                 VALUES('" . $subscriber_users_id . "',  '" . $product_id  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-                    $ok = $db->query($conn, $sql6);
-                    if ($ok) { 
-                        echo '<option value="' . $product_id . '" selected="selected">' . $product_id . ' </option>';
-                    } else {
-                        echo "Fail";
-                    }
+                $ok = $db->query($conn, $sql6);
+                if ($ok) {
+                    echo '<option value="' . $product_id . '" selected="selected">' . $product_id . ' </option>';
                 } else {
-                    $row            = $db->fetch($result);
-                    $product_id     = $row[0]['product_id'];
-                     echo '<option value="' . $product_id . '" selected="selected">' . $product_id . '</option>';
+                    echo "Fail";
                 }
             } else {
-                echo 'Select';
+                $row            = $db->fetch($result);
+                $product_id     = $row[0]['product_id'];
+                echo '<option value="' . $product_id . '" selected="selected">' . $product_id . '</option>';
             }
-            break;
+        } else {
+            echo 'Select';
+        }
+        break;
     case 'add_customer':
         if ($customer_name != "" && $phone_primary != "") {
             $count  = 0;
@@ -265,11 +264,11 @@ switch ($type) {
         break;
     case 'add_package':
 
-        if ($package_name != "" && $product_category != "" && $sku_code != "") { 
-            if(!isset($case_pack)){
+        if ($package_name != "" && $product_category != "" && $sku_code != "") {
+            if (!isset($case_pack)) {
                 $case_pack = "0";
             }
-            if(!isset($pack_desc)){
+            if (!isset($pack_desc)) {
                 $pack_desc = "";
             }
             $count = 0;
@@ -519,10 +518,10 @@ switch ($type) {
                                 VALUES('" . $subscriber_users_id . "', '" . $bin_user_id . "', '" . $bin_id . "',  '" . $order_by . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
-                        $id				= mysqli_insert_id($conn);
-						$assignment_no  = "A" . $id;
-						$sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id . "' ";
-						$db->query($conn, $sql6);
+                    $id                = mysqli_insert_id($conn);
+                    $assignment_no  = "A" . $id;
+                    $sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id . "' ";
+                    $db->query($conn, $sql6);
 
                     include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
                 } else {
@@ -617,7 +616,7 @@ switch ($type) {
         } else {
             echo "";
         }
-    break;
+        break;
     case 'update_po_stage_status':
         if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
             $sql6 = "UPDATE " . $selected_db_name . ".purchase_orders SET  stage_status             = '" . $stage_status . "',
@@ -635,7 +634,7 @@ switch ($type) {
         } else {
             echo "Fail";
         }
-    break;
+        break;
     case 'update_so_stage_status':
         if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
             $sql6 = "UPDATE " . $selected_db_name . ".sales_orders SET  stage_status             = '" . $stage_status . "',
@@ -653,7 +652,7 @@ switch ($type) {
         } else {
             echo "Fail";
         }
-    break;
+        break;
     case 'update_ro_stage_status':
         if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
             $sql6 = "UPDATE " . $selected_db_name . ".returns SET  stage_status             = '" . $stage_status . "',
@@ -671,7 +670,7 @@ switch ($type) {
         } else {
             echo "Fail";
         }
-    break;
+        break;
     case 'update_ppo_stage_status':
         if (isset($stage_status) && $stage_status != "" && $stage_status != "0" && isset($id) && $id != "" && $id != "0") {
             $sql6 = "UPDATE " . $selected_db_name . ".package_materials_orders SET  stage_status             = '" . $stage_status . "',
@@ -689,5 +688,5 @@ switch ($type) {
         } else {
             echo "Fail";
         }
-    break;
+        break;
 }

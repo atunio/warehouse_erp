@@ -82,13 +82,43 @@ if (!isset($insert_bin_and_po_id_fields)) {
     $insert_bin_and_po_id_fields = "";
     $insert_bin_and_po_id_values = "";
 }
-if ($serial_no_barcode != "" && $serial_no_barcode != NULL) {
-    $sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, model_name, model_no, make_name, sku_code,
-                carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, etching, 
-                `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-            VALUES	(" . $insert_bin_and_po_id_values . " '" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', '" . $sku_code . "', 
-                '" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "','" . $etching . "', 
-                '" . $ram . "', '" . $memory . "',  '" . $defectsCode . "',  '" . $overall_grade . "', '" . $jsonData2 . "', 
-                '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
-    $db->query($conn, $sql);
+if(isset($phone_check_api_data_id) && $phone_check_api_data_id > 0){
+    $sql6 = "UPDATE phone_check_api_data SET
+                                                model_name              = '" . $model_name . "',
+                                                model_no                = '" . $model_no . "',
+                                                make_name               = '" . $make_name . "',
+                                                sku_code                = '" . $sku_code . "',
+                                                carrier_name            = '" . $carrier_name . "',
+                                                color_name              = '" . $color_name . "',
+                                                battery                 = '" . $battery . "',
+                                                body_grade              = '" . $body_grade . "',
+                                                lcd_grade               = '" . $lcd_grade . "',
+                                                digitizer_grade         = '" . $digitizer_grade . "',
+                                                etching                 = '" . $etching . "',
+                                                ram                     = '" . $ram . "',
+                                                memory                  = '" . $memory . "',
+                                                defectsCode             = '" . $defectsCode . "',
+                                                overall_grade           = '" . $overall_grade . "',
+                                                phone_check_api_data    = '" . $jsonData2 . "',
+
+                                                update_date 			= '" . $add_date . "', 
+                                                update_by 				= '" . $_SESSION['username'] . "', 
+                                                update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+                                                update_ip 				= '" . $add_ip . "', 
+                                                update_timezone 		= '" . $timezone . "', 
+                                                update_from_module_id 	= '" . $module_id . "'
+                WHERE id 	= '" . $phone_check_api_data_id . "'  "; //echo "<br><br>".$sql6;
+    $db->query($conn, $sql6);
 }
+else{
+    if ($serial_no_barcode != "" && $serial_no_barcode != NULL) {
+         $sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, model_name, model_no, make_name, sku_code,
+                    carrier_name, color_name, battery, body_grade, lcd_grade, digitizer_grade, etching, 
+                    `ram`, `memory`, defectsCode, overall_grade, phone_check_api_data, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+                VALUES	(" . $insert_bin_and_po_id_values . " '" . $serial_no_barcode . "', '" . $model_name . "', '" . $model_no . "','" . $make_name . "', '" . $sku_code . "', 
+                    '" . $carrier_name . "', '" . $color_name . "','" . $battery . "', '" . $body_grade . "', '" . $lcd_grade . "', '" . $digitizer_grade . "','" . $etching . "', 
+                    '" . $ram . "', '" . $memory . "',  '" . $defectsCode . "',  '" . $overall_grade . "', '" . $jsonData2 . "', 
+                    '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
+        $db->query($conn, $sql);
+    }
+} 

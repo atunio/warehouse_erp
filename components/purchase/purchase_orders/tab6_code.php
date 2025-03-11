@@ -246,6 +246,20 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 							}
 							$k++;
 						}
+						else{
+							$row_pd01					= $db->fetch($result_pd01_4);
+							$phone_check_api_data_prev 	= $row_pd01[0]['phone_check_api_data'];
+							$phone_check_api_data_id 	= $row_pd01[0]['id'];
+							if($phone_check_api_data_prev == '' || $phone_check_api_data_prev == NULL){
+								$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+								$device_detail_array 	= getinfo_phonecheck_imie($data);
+								$jsonData2				= json_encode($device_detail_array);
+								if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
+									include("components/purchase/purchase_orders/process_phonecheck_response.php");
+								}
+								$k++;
+							}
+						}
 					}
 				}
 			}
@@ -253,7 +267,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 				$error6['msg'] = "No Serial# is avaible again this PO# in the date.";
 			}
 			if ($k > 0) {
-				$msg6['msg_success'] = "Total " . $k . " Serial# have been updated successfully.";
+				$msg6['msg_success'] = "Total " . $k . " Serial# have been fetched successfully.";
 			}
 		}
 	} else {

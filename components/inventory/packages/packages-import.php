@@ -120,12 +120,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$modified_array[$i]["is_insert"] = $data;
 		$i++; // increment the index
 	}
-
 	$all_data = $modified_array;
-
+	$package_ids_already = array();
 	if (empty($error)) {
-		$duplicate_data_array = array();
-		if (isset($all_data) && sizeof($all_data) > 0) {
+ 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values_category 	= array_unique(array_column($all_data, "category"));
 				$duplicate_colum_values 			= array_unique(array_column($all_data, $dup_data));
@@ -136,20 +134,22 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
-						$duplicate_data_array[] = $duplicate_colum_values1;
-						if (!isset($error['msg'])) {
-							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
-						} else {
-							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						$row_dp1 = $db->fetch($result1);
+						foreach($row_dp1 as $data_dp11){
+ 							$package_ids_already[] = $duplicate_colum_values1; 
 						}
+ 						// if (!isset($error['msg'])) {
+						// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// } else {
+						// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// }
 					}
 				}
 			}
-			foreach ($all_data  as $data1) {
-				// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Modified Array:" . $data1[$dup_data];
-				$duplicate_data_array = array_unique($duplicate_data_array);
-				if (!in_array($data1[$dup_data], $duplicate_data_array)) {
-					$columns = $column_data = "";
+			foreach ($all_data  as $data1) { 
+				if (isset($data1['sku_code']) && $data1['sku_code'] != '' && $data1['sku_code'] != NULL && $data1['sku_code'] != 'blank') {
+					$sku_code2 	= $data1['sku_code'];
+					$columns 	= $column_data = $update_column  = "";
 					foreach ($data1 as $key => $data) {
 
 						if ($key != "") {
@@ -157,10 +157,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if ($key == 'category') {
 								$key = "product_category";
 							}
-							if ($key == 'sku') {
-								$key = "product_sku";
-							}
-
+							  
 							if ($key != 'is_insert') {
 								if ($key == 'product_category') {
 									$table = "product_categories";
@@ -172,6 +169,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$row1 = $db->fetch($result1);
 											$columns 		.= ", " . $key;
 											$column_data 	.= ", '" . $row1[0]['id'] . "'";
+
+ 											$update_column	.= ", " . $key." = '".$row1[0]['id']."'";
 										} else {
 											$sql6 = "INSERT INTO " . $selected_db_name . "." . $table . "(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 													 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $data1['category_type'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
@@ -180,6 +179,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												$category_id = mysqli_insert_id($conn);
 												$columns 		.= ", " . $key;
 												$column_data 	.= ", '" . $category_id . "'";
+
+												$update_column	.= ", " . $key." = '".$category_id."'";
 											}
 										}
 									}
@@ -200,26 +201,48 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$product_ids = implode(",", $all_product_ids_array);
 										$columns 		.= ", product_ids";
 										$column_data 	.= ", '" . $product_ids . "'";
+
+										$update_column	.= ", product_ids = '".$product_ids."'";
 									}
 								} else {
 									if ($key != "category_type" && $key != "compatible_product_ids") {
 										$columns 		.= ", " . $key;
 										$column_data 	.= ", '" . $data . "'";
+										if ($key != 'sku_code') {
+											$update_column	.= ", " . $key." = '".$data."'";
+										}
 									}
 								}
 							}
 						}
 					}
 
-					$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-						VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-					$ok = $db->query($conn, $sql6);
-					if ($ok) {
-						$id			= mysqli_insert_id($conn);
-						$package_no	= "Pkg" . $id;
-						$sql6		= "UPDATE " . $master_table . " SET package_no = '" . $package_no . "' WHERE id = '" . $id . "' ";
-						$db->query($conn, $sql6);
-						$added++;
+					if(isset($package_ids_already) && isset($sku_code2) && in_array($sku_code2, $package_ids_already)){
+						$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
+																							update_by 				= '" . $_SESSION['username'] . "', 
+																							update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																							update_ip 				= '" . $add_ip . "', 
+																							update_timezone 		= '" . $timezone . "', 
+																							update_from_module_id 	= '" . $module_id . "'
+																							" . $update_column . " 
+								WHERE sku_code 	= '".$sku_code2."' ";
+						//echo "<br><br>".$sql6;
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$added++;
+						}
+					}
+					else{
+						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+								 VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$id			= mysqli_insert_id($conn);
+							$package_no	= "Pkg" . $id;
+							$sql6		= "UPDATE " . $master_table . " SET package_no = '" . $package_no . "' WHERE id = '" . $id . "' ";
+							$db->query($conn, $sql6);
+							$added++;
+						}
 					}
 				}
 			}

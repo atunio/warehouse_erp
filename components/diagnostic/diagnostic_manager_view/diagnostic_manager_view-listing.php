@@ -107,7 +107,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 						<div class="card custom_margin_card_table_top">
 							<div class="card-content custom_padding_card_content_table_top">
 								<h4 class="card-title">Categories Wise Detail</h4>
-								<form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page) ?>" enctype="multipart/form-data">
+								<form method="post" autocomplete="off" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" enctype="multipart/form-data">
 									<input type="hidden" name="is_Submit2" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -190,7 +190,9 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 									</div>
 								<?php } ?>
 								<h4 class="card-title">Bins / Locations</h4>
-								<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page) ?>">
+								<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>">
+									
+									<input type="hidden" id="module_url" value="<?= PROJECT_URL;?>/home?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" />
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -271,7 +273,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 										<div class="input-field col m3 s12">
 											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
 											&nbsp;&nbsp;
-											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
+											<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">All</a>
 										</div>
 									</div>
 								</form>

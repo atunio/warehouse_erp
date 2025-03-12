@@ -219,6 +219,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			if (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) > 0) {
 				$m = 1;
 				foreach ($all_devices_info['imei'] as $data) {
+					$phone_check_api_data_id = 0;
 					// $data = "DMTPD5R1FK10";
 					if ($data != "" && $data != null) {
 
@@ -231,12 +232,15 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 											WHERE a.enabled = 1 
 											AND a.imei_no = '" . $data . "'
 											ORDER BY a.id DESC LIMIT 1";
+						// echo "<br>".$sql_pd01_4;
 						$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 						$count_pd01_4	= $db->counter($result_pd01_4);
 						if ($count_pd01_4 == 0) {
+							// echo "<br>".$sql_pd01_4;  
 							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 							$device_detail_array 	= getinfo_phonecheck_imie($data);
 							$jsonData2				= json_encode($device_detail_array);
+							
 							if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
 								include("components/purchase/purchase_orders/process_phonecheck_response.php");
 							} else {
@@ -945,6 +949,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 						$c_product_condition2		= $data_ee1['product_condition'];
 						$c_expected_status2			= $data_ee1['expected_status'];
 						$product_category2			= $data_ee1['product_category'];
+						$order_price2				= $data_ee1['order_price'];
 
 						$sql_pd01		= " SELECT a.* 
 											FROM purchase_order_detail_receive a
@@ -982,7 +987,9 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 
 										$sql_c_up = "UPDATE purchase_order_detail_receive SET 	
 																								po_detail_id						= '" . $po_detail_id . "',
+																								po_id								= '" . $id . "',
 																								serial_no_barcode					= '" . $serial_no_fake . "',
+																								price								= '" . $order_price2 . "',
 																								edit_lock 							= '1',
 																								is_import_diagnostic_data			= '1',
 																								is_diagnost							= '1',
@@ -991,14 +998,13 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 																								sub_location_id_after_diagnostic 	= '" . $sub_location_id . "',
 																								is_diagnostic_bypass 				= 1,
 																								duplication_check_token2 			= '" . $duplication_check_token . "',
-																								
 
-																								update_by				= '" . $_SESSION['username'] . "',
-																								update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																								update_timezone			= '" . $timezone . "',
-																								update_date				= '" . $add_date . "',
-																								update_ip				= '" . $add_ip . "',
-																								update_from_module_id	= '" . $module_id . "'
+																								update_by							= '" . $_SESSION['username'] . "',
+																								update_by_user_id					= '" . $_SESSION['user_id'] . "',
+																								update_timezone						= '" . $timezone . "',
+																								update_date							= '" . $add_date . "',
+																								update_ip							= '" . $add_ip . "',
+																								update_from_module_id				= '" . $module_id . "'
 													WHERE id = '" . $receive_id_2 . "' ";
 										$db->query($conn, $sql_c_up);
 										$k++;
@@ -1018,7 +1024,8 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 											WHERE id = '" . $po_detail_id . "' ";
 								$db->query($conn, $sql_c_up);
 							}
-						} else {
+						} 
+						else {
 							$error6['msg'] = "No product receive yet for the product's Category.";
 						}
 					}

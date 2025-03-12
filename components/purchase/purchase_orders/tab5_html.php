@@ -1437,10 +1437,11 @@
                                         LEFT JOIN users e ON e.id = a.add_by_user_id
                                         LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                         WHERE a.po_id = '" . $id . "'
-                                        AND (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL)
+                                        AND (a.is_diagnost = 1 || (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL))
+                                        AND a.po_detail_id = 0
                                         GROUP BY a.recevied_product_category, sub_location_id
                                     ) AS t1
-                                    ORDER BY product_type DESC, record_type, product_category, sub_location_id, serial_no_barcode ";
+                                    ORDER BY product_type DESC, record_type, product_category, sub_location_id, serial_no_barcode ";  //echo $sql;
                 $result_log     = $db->query($conn, $sql);
                 $count_log      = $db->counter($result_log);
                 if ($count_log > 0) { ?>
@@ -1588,7 +1589,7 @@
                             <div class="col m10 s12">
                                 <div class="text_align_right">
                                     <?php 
-                                    $table_columns	= array('SNo', '-', 'Type', 'Serial NO', 'Product Base ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
+                                    $table_columns	= array('SNo', '-', 'Type', 'Serial NO', 'Product ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
                                     $k 				= 0;
                                     foreach($table_columns as $data_c1){?>
                                         <label>

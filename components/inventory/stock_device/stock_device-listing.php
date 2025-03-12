@@ -761,8 +761,8 @@ $page_heading 	= "Stock Summary";
 															<td style="text-align: center;" class="col-<?= strtolower($table_columns[0]); ?>">
 																<?php
 																if ($count_cl2 > 0) { ?>
-																	<a href="javascript:void(0)" class="plus_icon <?= "plus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
-																	<a href="javascript:void(0)" class="minus_icon <?= "minus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
+																	<a href="javascript:void(0)" class="plus_icon <?= "plus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48" style="font-size: 20px;">add_circle_outline</i></a>
+																	<a href="javascript:void(0)" class="minus_icon <?= "minus_" . $id; ?>" id="<?= $id; ?>"><i class="material-icons dp48" style="font-size: 20px;">remove_circle_outline</i></a>
 																<?php } ?>
 															</td>
 															<td class="col-<?= strtolower($table_columns[1]); ?>">
@@ -823,8 +823,8 @@ $page_heading 	= "Stock Summary";
 																		<?php
 																		if ($id2 > 0) { ?>
 																			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-																			<a href="javascript:void(0)" class="plus_icon_sub <?= "sub_plus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">add_circle_outline</i></a>
-																			<a href="javascript:void(0)" class="minus_icon_sub <?= "sub_minus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48">remove_circle_outline</i></a>
+																			<a href="javascript:void(0)" class="plus_icon_sub <?= "sub_plus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48" style="font-size: 20px;">add_circle_outline</i></a>
+																			<a href="javascript:void(0)" class="minus_icon_sub <?= "sub_minus_" . $id2; ?>" id="<?= $id2; ?>"><i class="material-icons dp48" style="font-size: 20px;">remove_circle_outline</i></a>
 																		<?php } ?>
 																	</td>
 																	<td class="col-<?= strtolower($table_columns[1]); ?>">
@@ -871,7 +871,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[7]); ?> text_align_right">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" style="">
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" >
 																				<?php echo $data2['p_total_stock']; ?>
 																			</a>
 																			<?php } else {
@@ -882,7 +882,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[9]); ?>">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" >
 																				<?php echo number_format($data2['avg_price'], 2); ?>
 																			</a> &nbsp;&nbsp;
 																		<?php } else {
@@ -908,7 +908,7 @@ $page_heading 	= "Stock Summary";
 																	$sql_cl3 .= " AND a2.serial_no = '" . $flt_serial_no . "'";
 																}
 																$sql_cl3	.= " ORDER BY a2.serial_no, d.sub_location_name";
-																// echo "<br>".$sql_cl3;
+																//echo "<br>".$sql_cl3;
 																$result_cl3	= $db->query($conn, $sql_cl3);
 																$count_cl3	= $db->counter($result_cl3);
 																if ($count_cl3 > 0) {
@@ -935,14 +935,14 @@ $page_heading 	= "Stock Summary";
 																				*/ ?>
 																			</td>
 																			<td class="col-<?= set_table_headings($table_columns[8]); ?>">
-																				<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail" style="padding: 20px;">
+																				<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail">
 																					<?php echo $data3['serial_no']; ?>
 																				</a> &nbsp;&nbsp;
 																			</td>
 																			<td class="col-<?= set_table_headings($table_columns[9]); ?>">
 																				<?php
 																				if (access("edit_perm") == 1) { ?>
-																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" >
 																						<?php echo number_format($data3['price'], 2); ?>
 																					</a> &nbsp;&nbsp;
 																				<?php } else {

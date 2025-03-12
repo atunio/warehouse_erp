@@ -51,7 +51,7 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 					}
 
 					$sql_c_up 	= "	UPDATE product_stock SET p_inventory_status = '" . $p_inventory_status . "' ";
-					if ($status_id_upd == '19' || $status_id_upd == '18') {
+					if ($status_id_upd == '18' || $status_id_upd == '19' || $status_id_upd == '22' || $status_id_upd == '23' || $status_id_upd == '24') {
 						$sql_c_up 	.= ", price 			= '" . $new_value_upd . "', 
 										  sub_location 		= '" . $sub_location_id_upd . "' ";
 					} else {

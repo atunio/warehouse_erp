@@ -191,8 +191,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 								<?php } ?>
 								<h4 class="card-title">Bins / Locations</h4>
 								<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>">
-									
-									<input type="hidden" id="module_url" value="<?= PROJECT_URL;?>/home?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" />
+
+									<input type="hidden" id="module_url" value="<?= PROJECT_URL; ?>/home?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" />
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -398,7 +398,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 
 																		$sql_u1			= " SELECT id, CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name
 																		 					FROM users 
-																							WHERE  FIND_IN_SET(  'Processing' , user_sections) > 0 "; //echo $sql_u;
+																							WHERE  FIND_IN_SET('Diagnostic' , user_sections) > 0 "; //echo $sql_u;
 																		$result_u1		= $db->query($conn, $sql_u1);
 																		$count_u1		= $db->counter($result_u1);
 																		?>

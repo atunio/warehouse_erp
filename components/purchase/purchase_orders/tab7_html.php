@@ -152,8 +152,8 @@
                                     e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
                                     i.sub_location_name AS sub_location_name_after_diagnostic,
                                     c1.order_price, h.status_name, c.product_uniqueid
-                                FROM purchase_order_detail_receive_rma a1
-                                INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
+                                FROM purchase_order_detail_receive a
+	                            LEFT JOIN purchase_order_detail_receive_rma  a1 ON a.id = a1.receive_id
                                 INNER JOIN purchase_order_detail c1 ON c1.id = a.po_detail_id
                                 INNER JOIN purchase_orders d1 ON d1.id = c1.po_id
                                 LEFT JOIN inventory_status h ON h.id = a1.status_id 
@@ -174,8 +174,8 @@
                                     e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
                                     i.sub_location_name AS sub_location_name_after_diagnostic,
                                     a.price, h.status_name, c.product_uniqueid
-                                FROM purchase_order_detail_receive_rma a1
-                                INNER JOIN purchase_order_detail_receive a ON a.id = a1.receive_id
+                                FROM purchase_order_detail_receive a
+	                            LEFT JOIN purchase_order_detail_receive_rma  a1 ON a.id = a1.receive_id
                                 INNER JOIN purchase_orders d1 ON d1.id = a.po_id
                                 LEFT JOIN inventory_status h ON h.id = a1.status_id 
                                 LEFT JOIN warehouse_sub_locations i ON i.id = a1.sub_location_id
@@ -816,18 +816,24 @@
                                                                     echo $string_text . "<br>";
                                                                 } else if ($status_name == $vender_status) {
                                                                     $color  = "green";
-                                                                } else { ?>
-                                                                    <span class="chip orange lighten-5">
-                                                                        <span class="orange-text">Vendor Status: <?php echo $vender_status; ?></span>
-                                                                    </span><br>
-                                                            <?php }
+                                                                } else {
+                                                                    if ($vender_status != '') { ?>
+                                                                        <span class="chip orange lighten-5">
+                                                                            <span class="orange-text">Vendor Status: <?php echo $vender_status; ?></span>
+                                                                        </span><br>
+                                                            <?php 
+                                                                    }
+                                                                }
                                                             } else {
                                                                 echo $string_text . "<br>";
-                                                            } ?>
-                                                            <span class="chip <?= $color; ?> lighten-5">
-                                                                <span class="<?= $color; ?>-text"><?php echo $status_name; ?></span>
-                                                            </span>
-                                                        <?php } ?>
+                                                            } 
+                                                            if ($status_name != '') { ?>
+                                                                <span class="chip <?= $color; ?> lighten-5">
+                                                                    <span class="<?= $color; ?>-text"><?php echo $status_name; ?></span>
+                                                                </span>
+                                                            <?php 
+                                                                } 
+                                                            }?>
                                                     </td>
                                                     <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]); ?>">
                                                         <?php if ($battery > '0') {

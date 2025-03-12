@@ -562,31 +562,13 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 									if ($ok) {
 										
 										$receive_id = mysqli_insert_id($conn);
+										/*
 										if ($data3_rv['is_tested_po'] == 'No' && $data3_rv['is_wiped_po'] == 'No' && $data3_rv['is_imaged_po'] == 'No') {
-
 											$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
 													VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_manual . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-											$db->query($conn, $sql6);
-											$serial_no_fake = "GEN" . $receive_id;
-
-											$sql_c_up = "UPDATE purchase_order_detail_receive SET 	serial_no_barcode			= '" . $serial_no_fake . "',
-																									overall_grade				= '" . $c_product_condition2 . "',
-																									inventory_status			= '" . $c_expected_status2 . "',
-																									edit_lock 					= '1',
-																									is_import_diagnostic_data	= '1',
-																									is_diagnost					= '1',
-																									is_diagnostic_bypass 		= 1,
-
-																									update_by				= '" . $_SESSION['username'] . "',
-																									update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																									update_timezone			= '" . $timezone . "',
-																									update_date				= '" . $add_date . "',
-																									update_ip				= '" . $add_ip . "',
-																									update_from_module_id	= '" . $module_id . "'
-														WHERE id = '" . $receive_id . "' ";
-											$db->query($conn, $sql_c_up);
+											$db->query($conn, $sql6); 
 										}
-
+										*/
 										$k++;
 										update_po_detail_status($db, $conn, $key, $receive_status_dynamic);
 									}

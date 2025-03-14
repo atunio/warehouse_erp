@@ -139,21 +139,23 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							// if ($dup_data == 'product_id') {
 							// 	$db_column = "product_uniqueid";
 							// }
-							$sql1		= "	SELECT * FROM " . $master_table . " 
-											WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' 
-											AND po_id = '" . $id . "' ";
-							$result1	= $db->query($conn, $sql1);
-							$count1		= $db->counter($result1);
-							if ($count1 > 0) {
-								$row_dp1 = $db->fetch($result1);
-								foreach ($row_dp1 as $data_dp11) {
-									$ids_already[] = $duplicate_colum_values1;
+							if ($duplicate_colum_values1  != "") {
+								$sql1		= "	SELECT * FROM " . $master_table . " 
+												WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' 
+												AND po_id = '" . $id . "' ";
+								$result1	= $db->query($conn, $sql1);
+								$count1		= $db->counter($result1);
+								if ($count1 > 0) {
+									$row_dp1 = $db->fetch($result1);
+									foreach ($row_dp1 as $data_dp11) {
+										$ids_already[] = $duplicate_colum_values1;
+									}
+									// if (!isset($error['msg'])) {
+									// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+									// } else {
+									// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+									// }
 								}
-								// if (!isset($error['msg'])) {
-								// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
-								// } else {
-								// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
-								// }
 							}
 						}
 					}
@@ -201,11 +203,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																										, enabled = '1' 
 											WHERE id 	= '" . $vender_data_id . "'
 											AND po_id 			= '" . $id . "' ";
-									//echo "<br><br>".$sql6;
+									// echo "<br><br>" . $sql6;
 									$ok = $db->query($conn, $sql6);
 								} else {
 									$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id, po_id " . $columns . ", add_date, add_by, add_ip)
-										VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+											VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+
+									// echo "<br><br>" . $sql6;
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 										$added++;

@@ -125,9 +125,8 @@ $page_heading 	= "List of Status";
 											</div>
 										</div>
 									<?php } ?><br>
-									<form method="post" autocomplete="off" enctype="multipart/form-data">
+									<form method="post" autocomplete="off" enctype="multipart/form-data"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 										<input type="hidden" name="is_Submit" value="Y" />
-										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
 										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																							echo encrypt($_SESSION['csrf_session']);
 																						} ?>">

@@ -1243,7 +1243,8 @@
                                         ) AS t1
                                          
                                         ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
-                    // echo $sql; 
+                    // echo $sql;
+                    // BrokenDevice
                     $result_log     = $db->query($conn, $sql);
                     $count_log      = $db->counter($result_log);
                     if ($count_log > 0) { ?>

@@ -121,7 +121,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$i++; // increment the index
 	}
 	$all_data = $modified_array;
-	$package_ids_already = array();
+	$package_ids_already = array(); 
 	if (empty($error)) {
  		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
@@ -224,7 +224,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																							update_ip 				= '" . $add_ip . "', 
 																							update_timezone 		= '" . $timezone . "', 
 																							update_from_module_id 	= '" . $module_id . "'
-																							" . $update_column . " 
+																							" . $update_column . "
+																							, enabled = '1' 
 								WHERE sku_code 	= '".$sku_code2."' ";
 						//echo "<br><br>".$sql6;
 						$ok = $db->query($conn, $sql6);

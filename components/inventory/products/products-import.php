@@ -234,6 +234,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																							update_timezone 		= '" . $timezone . "', 
 																							update_from_module_id 	= '" . $module_id . "'
 																							" . $update_column . " 
+																							, enabled = '1'
 								WHERE id 	= '".$product_table_id."'  ";
 						//echo "<br><br>".$sql6;
 						$ok = $db->query($conn, $sql6);

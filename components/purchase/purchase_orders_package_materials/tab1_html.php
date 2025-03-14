@@ -196,7 +196,9 @@
                                             </a> 
                                             <?php 
                                             */ ?>
-                                                &nbsp;&nbsp;
+                                                <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_package_part_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
+                                                    Import
+                                                </a> &nbsp;&nbsp;
                                                 <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
                                                     <i class="material-icons  dp48 md-36">add_circle</i>
                                                 </a>

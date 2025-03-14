@@ -124,10 +124,9 @@ $page_heading 	= "List of Product IDs";
 											</div>
 										</div>
 									<?php } ?><br>
-									<form method="post" autocomplete="off" enctype="multipart/form-data">
+									<form method="post" autocomplete="off" enctype="multipart/form-data" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 										<input type="hidden" name="is_Submit" value="Y" />
-										<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
-										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+ 										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																							echo encrypt($_SESSION['csrf_session']);
 																						} ?>">
 										<div class="row">
@@ -135,7 +134,7 @@ $page_heading 	= "List of Product IDs";
 												<?php
 												$field_name     = "flt_product_id";
 												$field_label	= "ProductID";
-												$sql1			= "SELECT DISTINCT product_uniqueid FROM products WHERE 1=1 ";
+												$sql1			= "SELECT DISTINCT product_id FROM product_ids WHERE 1=1 ";
 												$result1		= $db->query($conn, $sql1);
 												$count1         = $db->counter($result1);
 												?>
@@ -149,7 +148,7 @@ $page_heading 	= "List of Product IDs";
 														if ($count1 > 0) {
 															$row1    = $db->fetch($result1);
 															foreach ($row1 as $data2) { ?>
-																<option value="<?php echo $data2['product_uniqueid']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_uniqueid']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_uniqueid']; ?></option>
+																<option value="<?php echo $data2['product_id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_id']; ?></option>
 														<?php }
 														} ?>
 													</select>

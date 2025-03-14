@@ -302,7 +302,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="input-field col m12 s12 text_align_center">
-                                        <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                             <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Fetch Data</button>
                                         <?php } ?>
                                     </div>
@@ -371,7 +371,7 @@
                                                                         <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
                                                                         <td style="width:80px; text-align: center;">
                                                                             <?php
-                                                                            if (access("delete_perm") == 1) { ?>
+                                                                            if (po_permisions("Diagnostic")) { ?>
                                                                                 <label>
                                                                                     <input type="checkbox" name="bulkserialNo[]" id="bulkserialNo[]" value="<?= $data['imei_no']; ?>" <?php if (isset($bulkserialNo) && in_array($data['imei_no'], $bulkserialNo)) {
                                                                                                                                                                                             echo $checked;
@@ -384,11 +384,11 @@
                                                                         <td>
                                                                             <?php
                                                                             if ($po_detail_id > 0) { ?>
-                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="">
+                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>" class="fetched_productids1">
                                                                                     <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
                                                                                 </select>
                                                                             <?php } else { ?>
-                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="fetched_productids_<?php echo $i; ?>" class="select2 browser-default select2-hidden-accessible ">
+                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>" class="fetched_productids1 select2 browser-default select2-hidden-accessible ">
                                                                                     <option value="">Select</option>
                                                                                     <?php
                                                                                     $sql_pd03       = "	SELECT c.id, c.product_uniqueid, c.product_model_no
@@ -411,7 +411,7 @@
                                                                         </td>
                                                                         <td><?php echo $phone_check_product_id; ?></td>
                                                                         <td>
-                                                                            <input type="hidden" name="model_nos[<?= $data['imei_no']; ?>]" value="<?php echo $phone_check_model_no; ?>">
+                                                                            <input type="hidden" name="modelNo_<?= $data['imei_no']; ?>" id="modelNo_<?= $data['imei_no']; ?>" value="<?php echo $phone_check_model_no; ?>">
                                                                             <?php echo $phone_check_model_no; ?>
                                                                         </td>
                                                                     </tr>
@@ -422,7 +422,7 @@
                                                 </div><br><br>
                                                 <div class="row">
                                                     <div class="input-field col m2 s12">
-                                                        <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                                             <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
                                                                 <i class="material-icons right">send</i>
                                                             </button>
@@ -595,7 +595,7 @@
                                         </div>
                                     </div>
                                     <div class="input-field col m2 s12">
-                                        <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                             <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Submit</button>
                                         <?php } ?>
                                     </div>
@@ -759,7 +759,7 @@
                                         </div>
                                     </div>
                                     <div class="input-field col m2 s12">
-                                        <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                             <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Submit</button>
                                         <?php } ?>
                                     </div>
@@ -1159,7 +1159,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="input-field col m12 s12 text_align_center">
-                                        <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                             <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                                         <?php } ?>
                                     </div>
@@ -1666,7 +1666,7 @@
                                                     <td style="width:100px; text-align: center;"><?php echo $i + 1; ?></td>
                                                     <td style="width:80px; text-align: center;">
                                                         <?php
-                                                        if (access("delete_perm") == 1) { ?>
+                                                        if (po_permisions("Diagnostic")) { ?>
                                                             <label>
                                                                 <input type="checkbox" name="bulkreceive_id2[]" id="bulkreceive_id2[]" value="<?= $receive_id2; ?>" <?php if (isset($bulkreceive_id2) && in_array($receive_id2, $bulkreceive_id2)) {
                                                                                                                                                                         echo "checked";
@@ -1694,7 +1694,7 @@
                                 </div><br><br>
                                 <div class="row">
                                     <div class="input-field col m2 s12">
-                                        <?php if (($cmd == 'add' && access("add_perm") == 1)  || ($cmd == 'edit' && access("edit_perm") == 1)) { ?>
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
                                             <button class="btn cyan waves-effect waves-light right" type="submit" name="action" value="update_info">Process
                                                 <i class="material-icons right">send</i>
                                             </button>

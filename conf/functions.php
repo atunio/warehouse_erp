@@ -1933,7 +1933,7 @@ function set_replace_string_char($data)
 }
 function set_table_headings($heading)
 {
-	$heading = strtolower(str_replace(array(' ', "</br>", "<br>", "/"), '', $heading));
+	$heading = is_string($heading) ? strtolower(str_replace(array(' ', "</br>", "<br>", "/"), '', $heading)) : '';
 	return $heading;
 }
 function po_permisions2($perm_type, $menu_id)

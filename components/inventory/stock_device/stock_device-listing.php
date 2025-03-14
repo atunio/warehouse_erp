@@ -527,7 +527,7 @@ $page_heading 	= "Stock Summary";
 														$id 				= $data['id'];
 														$product_uniqueid	= $data['product_uniqueid'];
 														$category_name		= $data['category_name'];
-														$product_desc 		= ucwords(strtolower(substr($data['product_desc'], 0, 50) . ""));
+														$product_desc 		= ucwords(strtolower(substr((string) ($data['product_desc'] ?? ''), 0, 50)));
 														$total_stock_p 		= 0;
 														$avg_price 			= 0;
 
@@ -871,7 +871,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[7]); ?> text_align_right">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" >
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																				<?php echo $data2['p_total_stock']; ?>
 																			</a>
 																			<?php } else {
@@ -882,7 +882,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[9]); ?>">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View" >
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																				<?php echo number_format($data2['avg_price'], 2); ?>
 																			</a> &nbsp;&nbsp;
 																		<?php } else {
@@ -942,7 +942,7 @@ $page_heading 	= "Stock Summary";
 																			<td class="col-<?= set_table_headings($table_columns[9]); ?>">
 																				<?php
 																				if (access("edit_perm") == 1) { ?>
-																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" >
+																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																						<?php echo number_format($data3['price'], 2); ?>
 																					</a> &nbsp;&nbsp;
 																				<?php } else {

@@ -336,17 +336,17 @@ $page_heading 	= "List Purchase Orders ";
 									</form>
 									<div class="row">
 										<div class="text_align_right">
-											<?php 
-											$table_columns	= array('SNo', 'PONo', 'PO Date', 'To Be', 'Vendor / InvoiceNo / OfferID', 'Category Wise Qty', 'Tracking / Pro No','Actions');
+											<?php
+											$table_columns	= array('SNo', 'PONo', 'PO Date', 'To Be', 'Vendor / InvoiceNo / OfferID', 'Category Wise Qty', 'Tracking / Pro No', 'Actions');
 											$k 				= 0;
-											foreach($table_columns as $data_c1){?>
+											foreach ($table_columns as $data_c1) { ?>
 												<label>
-													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-													<span><?= $data_c1?></span>
+													<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+													<span><?= $data_c1 ?></span>
 												</label>&nbsp;&nbsp;
-											<?php 
+											<?php
 												$k++;
-											}?> 
+											} ?>
 										</div>
 									</div>
 									<div class="row">
@@ -356,14 +356,13 @@ $page_heading 	= "List Purchase Orders ";
 													<tr>
 														<?php
 														$headings = "";
-														foreach($table_columns as $data_c){
-															if($data_c == 'SNo'){
-																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														foreach ($table_columns as $data_c) {
+															if ($data_c == 'SNo') {
+																$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+															} else {
+																$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 															}
-															else{
-																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-															}
-														} 
+														}
 														echo $headings;
 														?>
 													</tr>
@@ -383,8 +382,8 @@ $page_heading 	= "List Purchase Orders ";
 															// for ($m = 0; $m < 200; $m++) { 
 													?>
 															<tr>
-																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[1]);?>">
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
@@ -397,7 +396,7 @@ $page_heading 	= "List Purchase Orders ";
 																		<span class="green-text">
 																			<?php
 																			echo $data['po_status_name'];
-																			
+
 																			///*
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
@@ -485,18 +484,18 @@ $page_heading 	= "List Purchase Orders ";
 																				}
 																			}
 																			//*/ 
-																			
+
 																			?>
 																		</span>
 																	</span>
 																	<span class="chip blue lighten-5">
 																		<span class="blue-text">
-																			<?php echo "".$data['stage_status']; ?>
+																			<?php echo "" . $data['stage_status']; ?>
 																		</span>
 																	</span>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[2]);?>"> <?php echo dateformat2($data['po_date']); ?></td>
-																<td class="col-<?= set_table_headings($table_columns[3]);?>">
+																<td class="col-<?= set_table_headings($table_columns[2]); ?>"> <?php echo dateformat2($data['po_date']); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]); ?>">
 																	<?php
 																	if ($data['is_tested_po'] == 'Yes') {
 																		echo "<b>Tested, </b>";
@@ -508,12 +507,12 @@ $page_heading 	= "List Purchase Orders ";
 																		echo "<b>Imaged</b>";
 																	} ?>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[4]);?>">
+																<td class="col-<?= set_table_headings($table_columns[4]); ?>">
 																	<b>Vender: </b><?php echo $data['vender_name']; ?></br>
 																	<b>Invoice#: </b><?php echo $data['vender_invoice_no']; ?></br>
 																	<?php if ($data['offer_no'] != '') echo "<b>Offer#: </b>" . $data['offer_no']; ?>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[5]);?>">
+																<td class="col-<?= set_table_headings($table_columns[5]); ?>">
 																	<?php
 																	$sql3		= " SELECT   d.category_name, sum(aa2.order_qty) as order_qty
 																					FROM  purchase_order_detail aa2 
@@ -537,7 +536,7 @@ $page_heading 	= "List Purchase Orders ";
 																		}
 																	} ?>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[6]);?>">
+																<td class="col-<?= set_table_headings($table_columns[6]); ?>">
 																	<?php
 																	$j = 0;
 																	if ($total_logistics > 0) {
@@ -568,7 +567,7 @@ $page_heading 	= "List Purchase Orders ";
 																		}
 																	} ?>
 																</td>
-																<td class="text-align-center col-<?= set_table_headings($table_columns[7]);?>">
+																<td class="text-align-center col-<?= set_table_headings($table_columns[7]); ?>">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("print_perm") == 1) { ?>
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">

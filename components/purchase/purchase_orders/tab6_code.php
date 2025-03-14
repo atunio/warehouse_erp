@@ -1,5 +1,5 @@
 <?php
- 
+
 if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 	$product_id_barcode_diagnostic 		= "5";
 	$product_id_manual_diagnostic 		= "5";
@@ -7,7 +7,7 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 	$phone_check_username				= 'Ctinno2';
 	$serial_no_manual_diagnostic		= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "DMQD7TMFMF3M9", "DMQD7TMFMF3M10", "DMQD7TMFMF3M11", "DMQD7TMFMF3M12", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");
 }
-  
+
 if (isset($cmd6) && $cmd6 == 'delete' && isset($detail_id)) {
 	if (po_permisions("Diagnostic") == 0) {
 		$error6['msg'] = "You do not have add permissions.";
@@ -58,7 +58,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 					$inv_po_detail_id		= $row_pd1[0]['po_detail_id'];
 					$inv_product_id			= $row_pd1[0]['inv_product_id'];
 					$old_base_product_id	= $row_pd1[0]['product_uniqueid'];
- 					$inv_serial_no			= $row_pd1[0]['serial_no_barcode'];
+					$inv_serial_no			= $row_pd1[0]['serial_no_barcode'];
 					$inv_sub_location		= $row_pd1[0]['sub_location_id_after_diagnostic'];
 					$inv_battery 			= $row_pd1[0]['battery'];
 					$inv_body_grade 		= $row_pd1[0]['body_grade'];
@@ -131,7 +131,7 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 						// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
 						$db->query($conn, $sql_c_up);
 					}
- 
+
 					$sql_c_up = "UPDATE purchase_order_detail_receive 
 																		SET edit_lock 			= '1',
 																			Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',
@@ -181,23 +181,21 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$sql_as1		= " SELECT a.assignment_no FROM users_bin_for_diagnostic a WHERE a.id = '" . $assignment_id . "'  "; // echo $sql_ee;
 			$result_as1		= $db->query($conn, $sql_as1);
 			$row_as1		= $db->fetch($result_as1);
- 			$assignment_no	=  $row_as1[0]['assignment_no']; 
+			$assignment_no	=  $row_as1[0]['assignment_no'];
 
 			$invoiceNo 	= $assignment_no;
 			$limit		= 500;  // Optional, max 500 records
 			$offset		= 1;  // Optional
 
 			if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
-				if($assignment_id == '1'){
+				if ($assignment_id == '1') {
 					$invoiceNo 			= "121824";  // Optional
 					$diagnostic_date1	= "2025-01-28";  // Filter by Date (optional)
-				}
-				else if($assignment_id == '2'){
+				} else if ($assignment_id == '2') {
 					$invoiceNo 				= "PO16";  // Optional
 					$diagnostic_date1		= "2025-03-03";  // Filter by Date (optional)
 					$phone_check_username	= "ctinno2";  // Filter by Date (optional)
-				}
-				else if($assignment_id == '3'){
+				} else if ($assignment_id == '3') {
 					$invoiceNo 				= "207";  // Optional
 					$diagnostic_date1		= "2025-02-26";  // Filter by Date (optional)
 					$phone_check_username	= "ctinno5";  // Filter by Date (optional)
@@ -240,7 +238,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 							$device_detail_array 	= getinfo_phonecheck_imie($data);
 							$jsonData2				= json_encode($device_detail_array);
-							
+
 							if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
 								include("components/purchase/purchase_orders/process_phonecheck_response.php");
 							} else {
@@ -249,12 +247,11 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 								$db->query($conn, $sql);
 							}
 							$k++;
-						}
-						else{
+						} else {
 							$row_pd01					= $db->fetch($result_pd01_4);
 							$phone_check_api_data_prev 	= $row_pd01[0]['phone_check_api_data'];
 							$phone_check_api_data_id 	= $row_pd01[0]['id'];
-							if($phone_check_api_data_prev == '' || $phone_check_api_data_prev == NULL){
+							if ($phone_check_api_data_prev == '' || $phone_check_api_data_prev == NULL) {
 								$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 								$device_detail_array 	= getinfo_phonecheck_imie($data);
 								$jsonData2				= json_encode($device_detail_array);
@@ -280,13 +277,13 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 }
 if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') {
 	extract($_POST);
-	if (empty($error6)) { 
+	if (empty($error6)) {
 		if (access("add_perm") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
-			if (isset($bulkserialNo) && $bulkserialNo != null) { 
-				foreach ($bulkserialNo as $data) { 
+			if (isset($bulkserialNo) && $bulkserialNo != null) {
+				foreach ($bulkserialNo as $data) {
 					$phone_check_product_id		= $product_ids[$data];
 					$single_model_no			= $model_nos[$data];
 					$product_id_fetched 		= 0;
@@ -333,7 +330,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 							$sql = "INSERT INTO purchase_order_detail_receive_diagnostic_fetch (po_id, assignment_id, product_id, " . $id_identification_field_name . ", product_category, serial_no, model_no,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 									VALUES	('" . $id . "', '" . $assignment_id . "', '" . $product_id_fetched . "', '" . $id_identification_field_value . "', '" . $product_category_diagn . "', '" . $data . "', '" . $single_model_no . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
 							$ok = $db->query($conn, $sql);
-							if ($ok) { 
+							if ($ok) {
 								$sql_c_up = "UPDATE  phone_check_api_data SET 	 
 																				is_processed						= '1', 
 
@@ -365,11 +362,10 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 	extract($_POST);
 	if (!isset($bulkreceive_id2) || (isset($bulkreceive_id2) && sizeof($bulkreceive_id2) == 0)) {
 		$error6['msg'] = "Select atleast one record";
-	}
-	else{
-		foreach ($bulkreceive_id2 as $receive_id) {   
-			if(!isset($prices[$receive_id]) || (isset($prices[$receive_id]) && ($prices[$receive_id] == '' || $prices[$receive_id] == '0'))){
-				$error6["price".$receive_id] = "Required";
+	} else {
+		foreach ($bulkreceive_id2 as $receive_id) {
+			if (!isset($prices[$receive_id]) || (isset($prices[$receive_id]) && ($prices[$receive_id] == '' || $prices[$receive_id] == '0'))) {
+				$error6["price" . $receive_id] = "Required";
 			}
 		}
 	}
@@ -379,7 +375,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 		} else {
 			if (isset($bulkreceive_id2) && $bulkreceive_id2 != null) {
 				$k = 0;
-				foreach ($bulkreceive_id2 as $id_for_stock) {  
+				foreach ($bulkreceive_id2 as $id_for_stock) {
 					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 	price					= '" . $prices[$id_for_stock] . "',	 
 																			update_timezone			= '" . $timezone . "',
 																			update_date				= '" . $add_date . "',
@@ -387,9 +383,9 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 																			update_by				= '" . $_SESSION['username'] . "',
 																			update_ip				= '" . $add_ip . "',
 																			update_from_module_id	= '" . $module_id . "'
-								WHERE id = '".$id_for_stock."' ";
+								WHERE id = '" . $id_for_stock . "' ";
 					$ok = $db->query($conn, $sql_c_up);
-				
+
 					/////////////////////////// Create Stock  START /////////////////////////////
 					$sql_pd1	= "	SELECT * FROM (
 										SELECT 'PO_products' as rec_type, a.*, b.product_id as inv_product_id, c.product_uniqueid, d.logistics_cost
@@ -491,7 +487,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 							// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
 							$db->query($conn, $sql_c_up);
 						}
-	
+
 						$sql_c_up = "UPDATE purchase_order_detail_receive 
 																			SET edit_lock 			= '1',
 																				Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',
@@ -509,18 +505,18 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 						$k++;
 					}
 					/////////////////////////// Create Stock  END /////////////////////////////
-					
-				} 
+
+				}
 				if ($k > 0) {
 					if ($k == 1) {
 						$msg6['msg_success'] = $k . " record pricing has been done successfully.";
 					} else {
 						$msg6['msg_success'] = $k . " records pricing have been done successfully.";
 					}
-				} 
+				}
 			}
 		}
-	}  
+	}
 }
 
 /*
@@ -680,7 +676,7 @@ if (isset($_POST['is_Submit_tab6_4']) && $_POST['is_Submit_tab6_4'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 	extract($_POST);
-	$phone_check_product_id = "";
+	$phone_check_product_id = $phone_check_model_no = "";
 	if (!isset($sub_location_id_barcode_diagnostic) || (isset($sub_location_id_barcode_diagnostic)  && ($sub_location_id_barcode_diagnostic == "0" || $sub_location_id_barcode_diagnostic == ""))) {
 		$error6['sub_location_id_barcode_diagnostic'] = "Required";
 	}
@@ -698,7 +694,6 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 			$row_pd01_4					= $db->fetch($result_pd01_4);
 			$phone_check_model_no		= $row_pd01_4[0]['model_no'];
 		} else {
-			// DMPHTE3SDFHW
 			$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
 			$device_detail_array	= getinfo_phonecheck_imie($serial_no_barcode_diagnostic);
 			$jsonData2				= json_encode($device_detail_array);
@@ -707,7 +702,6 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 			}
 		}
 	}
-	// $phone_check_product_id = "iPad2WiFi64GBSpaceGray";
 	if ($phone_check_model_no != "") {
 		$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
 							FROM purchase_order_detail a 
@@ -768,6 +762,7 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 																				serial_no_barcode					= '" . $serial_no_barcode_diagnostic . "',
 																				sub_location_id_after_diagnostic	= '" . $sub_location_id_barcode_diagnostic . "',
 																				is_diagnost							= '1',
+																				diagnostic_type						= 'UpdateSNO',
 																				diagnose_by_user					= '" . $_SESSION['username'] . "',
 																				diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
 																				diagnose_timezone					= '" . $timezone . "',
@@ -886,6 +881,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 
 																			is_diagnost							= '1',
 																			is_import_diagnostic_data			= '1',
+																			diagnostic_type						= 'BrokenDevice',
 
 																			diagnose_by_user					= '" . $_SESSION['username'] . "',
 																			diagnose_by_user_id					= '" . $_SESSION['user_id'] . "',
@@ -1024,8 +1020,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 											WHERE id = '" . $po_detail_id . "' ";
 								$db->query($conn, $sql_c_up);
 							}
-						} 
-						else {
+						} else {
 							$error6['msg'] = "No product receive yet for the product's Category.";
 						}
 					}
@@ -1043,7 +1038,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 	}
 }
 if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') {
-	extract($_POST); 
+	extract($_POST);
 	$field_name = "sub_location_id_fetched";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error6[$field_name] = "Required";
@@ -1069,7 +1064,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 				$product_category_diagn			= $row_pd01[0]['product_category'];
 				$data 							= $row_pd01[0]['serial_no'];
 				$model_no						= $row_pd01[0]['model_no'];
- 
+
 				$sql_pd01_4 		= "	SELECT  a.*
 										FROM phone_check_api_data a 
 										WHERE a.enabled = 1 

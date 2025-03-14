@@ -68,15 +68,15 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
 						WHERE a.enabled = 1 
 						AND a.is_processing_done = 0
-						AND d.po_id = '".$id."'
-						AND a.bin_user_id = '".$_SESSION['user_id']."'";
+						AND d.po_id = '" . $id . "'
+						AND a.bin_user_id = '" . $_SESSION['user_id'] . "'";
 		$result2	= $db->query($conn, $sql2);
 		$user_no_of_assignments = $db->counter($result2);
-		
+
 		if (!isset($assignment_id)) {
 			$assignment_id = "";
 		}
-		 
+
 		if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != "" && isset($id) && $id > 0) {
 			$sql_ee			= " SELECT a.assignment_no, a.location_id AS sub_location_id, IFNULL(SUM(b.enabled), 0) AS assignment_qty
 								FROM users_bin_for_diagnostic a
@@ -85,7 +85,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 			$result_ee		= $db->query($conn, $sql_ee);
 			$row_ee			= $db->fetch($result_ee);
 			$assignment_qty			= $row_ee[0]['assignment_qty'];
- 			$assignment_location_id	= $row_ee[0]['sub_location_id']; 
+			$assignment_location_id	= $row_ee[0]['sub_location_id'];
 		}
 
 		$sql_cl = "	SELECT * FROM (
@@ -103,15 +103,14 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						LEFT JOIN inventory_status h ON h.id = a.inventory_status
 						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
 						WHERE a.enabled = 1
-						AND b.po_id = '" . $id . "' "; 
-					if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                        $sql_cl .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                    }
-                    else if ($user_no_of_assignments > 0) {
-                        $sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
-                    }
+						AND b.po_id = '" . $id . "' ";
+		if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+			$sql_cl .= " AND (a.assignment_id = '" . $assignment_id . "' || a.diagnostic_type = 'UpdateSNO' || a.diagnostic_type = 'BrokenDevice') ";
+		} else if ($user_no_of_assignments > 0) {
+			$sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
+		}
 
-					$sql_cl .= "	AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
+		$sql_cl .= "	AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 
 						UNION ALL 
 
@@ -129,14 +128,13 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 						LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
 						WHERE a.enabled = 1
 						AND a.po_id =  '" . $id . "' ";
-                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                        $sql_cl .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                    }
-                    else if ($user_no_of_assignments > 0) {
-                        $sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
-                    }
+		if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+			$sql_cl .= " AND (a.assignment_id = '" . $assignment_id . "' || a.diagnostic_type = 'UpdateSNO' || a.diagnostic_type = 'BrokenDevice') ";
+		} else if ($user_no_of_assignments > 0) {
+			$sql_cl .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
+		}
 
-					$sql_cl .= ") AS t1 
+		$sql_cl .= ") AS t1 
 								ORDER BY inventory_status, product_id  ";
 		// echo $sql_cl; die;
 		$result_cl 	= $db->query($conn, $sql_cl);
@@ -181,7 +179,9 @@ function enclose_in_quotes($value)
 
 function prevent_excel_date_format($value, $column_name)
 {
-	$value = str_replace(',', '', $value);
+	if ($value != "") {
+		$value = str_replace(',', '', $value);
+	}
 	if ($column_name == 'body_grade' || $column_name == 'lcd_grade' || $column_name == 'digitizer_grade') {
 		if ($value != "") {
 			$position_s = strpos($value, "-");

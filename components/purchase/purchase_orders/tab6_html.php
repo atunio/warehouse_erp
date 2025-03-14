@@ -528,10 +528,10 @@
                                                 <?php
                                                 if ($count_r2 > 0) {
                                                     $row_r2    = $db->fetch($result_log2);
-                                                    foreach ($row_r2 as $data_r2) {
-                                                        if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
-                                                            <option value="">Select</option>
-                                                        <?php } ?>
+                                                    if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
+                                                        <option value="">Select</option>
+                                                    <?php }
+                                                    foreach ($row_r2 as $data_r2) { ?>
                                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                             <?php
                                                             echo "Product: " . $data_r2['product_desc'] . " (" . $data_r2['product_uniqueid'] . ") - ";
@@ -742,7 +742,7 @@
                                                             if ($data_r2['category_name'] != "") {
                                                                 echo " (" . $data_r2['category_name'] . ") ";
                                                             }
-                                                            echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
+                                                            echo " - Order QTY: " . $order_qty; ?>
                                                         </option>
                                                 <?php
                                                     }
@@ -846,7 +846,7 @@
                                                             if ($data_r2['category_name'] != "") {
                                                                 echo " (" . $data_r2['category_name'] . ") ";
                                                             }
-                                                            echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
+                                                            echo " - Order QTY: " . $order_qty; ?>
                                                         </option>
                                                 <?php
                                                     }
@@ -1188,7 +1188,7 @@
                                                 AND b.enabled = 1
                                                 AND b.po_id = '" . $id . "' ";
                     if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
+                        $sql .= " AND (a.assignment_id = '" . $assignment_id . "' || a.diagnostic_type = 'UpdateSNO' || a.diagnostic_type = 'BrokenDevice') ";
                     } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
@@ -1210,7 +1210,7 @@
                                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                                 WHERE a.po_id = '" . $id . "' ";
                     if (isset($assignment_location_id) && $assignment_location_id > 0 && $assignment_location_id != '') {
-                        $sql .= " AND a.sub_location_id = '" . $assignment_location_id . "' ";
+                        $sql .= " AND (a.sub_location_id = '" . $assignment_location_id . "' || a.diagnostic_type = 'UpdateSNO' || a.diagnostic_type = 'BrokenDevice') ";
                     } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
@@ -1223,7 +1223,7 @@
                                                         a.*,  c.product_uniqueid, c.product_desc, d.category_name, 
                                                         e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, 
                                                         i.sub_location_name as sub_location_name_after_diagnostic, i.sub_location_type AS sub_location_type_after_diagnostic,
-                                                        h.status_name, c.product_category 
+                                                        h.status_name, c.product_category
                                                 FROM purchase_order_detail_receive a
                                                 INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                                 INNER JOIN products c ON c.id = a.product_id
@@ -1235,13 +1235,15 @@
                                                 WHERE a.enabled = 1
                                                 AND a.po_id = '" . $id . "' ";
                     if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
+                        $sql .= " AND (a.assignment_id = '" . $assignment_id . "' || a.diagnostic_type = 'UpdateSNO' || a.diagnostic_type = 'BrokenDevice') ";
                     } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
                     $sql           .= "     
                                         ) AS t1
+                                         
                                         ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
+                    // echo $sql; 
                     $result_log     = $db->query($conn, $sql);
                     $count_log      = $db->counter($result_log);
                     if ($count_log > 0) { ?>
@@ -1340,31 +1342,32 @@
                                                             $serial_no_barcode          = $data['serial_no_barcode'];
                                                             $processor                  = $data['processor'];
                                                             $warranty                   = $data['warranty'];
-                                                            $price                = $data['price'];
+                                                            $price                      = $data['price'];
                                                             $is_diagnost                = $data['is_diagnost'];
                                                             $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                             $is_rma_processed           = $data['is_rma_processed'];
                                                             $edit_lock                  = $data['edit_lock'];
                                                             $col = 0; ?>
                                                             <tr>
-                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo $i + 1;
-                                                                                                                                                                                    $col++; ?></td>
-                                                                <!-- <td style="<?php //$td_padding; 
-                                                                                ?>; text-align: center;" class="col-<?php //set_table_headings($table_columns[$col]); 
-                                                                                                                    ?>">
+                                                                <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
-                                                                    //$col++;
-                                                                    //if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
-                                                                    //$checkbox_del++; 
-                                                                    ?>
-                                                                         <label>
+                                                                    echo $i + 1;
+                                                                    $col++; ?>
+                                                                </td>
+                                                                <?php /* ?>
+                                                                <td style="<?php $td_padding; ?>; text-align: center;" class="col-<?php set_table_headings($table_columns[$col]); ?>">
+                                                                    <?php
+                                                                    $col++;
+                                                                    if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("Move as Inventory") == 1 && $edit_lock == "0" && $is_diagnost == "1") {
+                                                                        $checkbox_del++; ?>
+                                                                        <label>
                                                                             <input type="checkbox" name="ids_for_stock[]" id="ids_for_stock[]" value="<?php //$detail_id2; 
-                                                                                                                                                        ?>" class="checkbox7 filled-in" /> 
-                                                                             <span></span> 
-                                                                        </label> 
-                                                                    <?php // } 
-                                                                    ?>
-                                                                </td> -->
+                                                                                                                                                        ?>" class="checkbox7 filled-in" />
+                                                                            <span></span>
+                                                                        </label>
+                                                                    <?php  } ?>
+                                                                </td>
+                                                                <?php */ ?>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
                                                                     $col++;
@@ -1385,8 +1388,10 @@
                                                                         echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                                     } ?>
                                                                 </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>"><?php echo "" . $data['total_qty_received'];
-                                                                                                                                                                $col++; ?></td>
+                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
+                                                                    <?php echo "" . $data['total_qty_received'];
+                                                                    $col++; ?>
+                                                                </td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php
                                                                     $col++;
@@ -1468,14 +1473,14 @@
                                                                     $col++;
                                                                     if ($battery > '0') {
                                                                         echo "Battery: " . $battery . "%<br>";
-                                                                    } ?>
-                                                                    <?php if ($memory != '') {
+                                                                    }
+                                                                    if ($memory != '') {
                                                                         echo "Storage: " . $memory . "<br>";
-                                                                    } ?>
-                                                                    <?php if ($ram != '') {
+                                                                    }
+                                                                    if ($ram != '') {
                                                                         echo "RAM: " . $ram . "<br>";
-                                                                    } ?>
-                                                                    <?php if ($processor != '') {
+                                                                    }
+                                                                    if ($processor != '') {
                                                                         echo "Processor: " . $processor;
                                                                     } ?>
                                                                 </td>
@@ -1616,16 +1621,18 @@
                         <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
                             <div class="card-content custom_padding_card_content_table_top">
                                 <div class="row">
-                                        <div class="col m6 s12"><h6 class="card-title">Pricing</h6></div>
-                                        <?php
-                                        if (po_permisions("DiagnosticExport") == '1') {
-                                            //echo " <br><br><br><br><br> <===> --------------- $assignment_id  "; 
-                                        ?>
-                                            <div class="col m2 s12">
-                                                <a href="export/export_po_diagnostic_pricing_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id . "&assignment_id=" . $assignment_id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
-                                            </div>
-                                        <?php } ?>
-                                    
+                                    <div class="col m6 s12">
+                                        <h6 class="card-title">Pricing</h6>
+                                    </div>
+                                    <?php
+                                    if (po_permisions("DiagnosticExport") == '1') {
+                                        //echo " <br><br><br><br><br> <===> --------------- $assignment_id  "; 
+                                    ?>
+                                        <div class="col m2 s12">
+                                            <a href="export/export_po_diagnostic_pricing_items.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id . "&assignment_id=" . $assignment_id) ?>" target="_blank" class="waves-effect waves-light  btn gradient-45deg-light-blue-cyan box-shadow-none border-round mr-1 mb-12">Export</a>
+                                        </div>
+                                    <?php } ?>
+
                                     <div class="col m4 s12"></div>
                                 </div>
                                 <br>

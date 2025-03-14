@@ -388,8 +388,27 @@ $page_heading 	= "List Purchase Orders ";
 																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
 																<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																	<?php
-																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
+
+																	$activ_tab = "";
+																	if (access("add_perm") == 1) {
+																		$activ_tab = "tab1";
+																	} else if (po_permisions("Vendor Data")) {
+																		$activ_tab = "tab4";
+																	} else if (po_permisions("Logistics")) {
+																		$activ_tab = "tab2";
+																	} else if (po_permisions("Arrival")) {
+																		$activ_tab = "tab3";
+																	} else if (po_permisions("Receive")) {
+																		$activ_tab = "tab6";
+																	} else if (po_permisions("Diagnostic")) {
+																		$activ_tab = "tab6";
+																	} else if (po_permisions("RMA")) {
+																		$activ_tab = "tab7";
+																	} else if (po_permisions("PriceSetup")) {
+																		$activ_tab = "tab8";
+																	}
+																	if ($data['order_enabled'] == 1 && $activ_tab != "") { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=" . $activ_tab) ?>">
 																			<?php echo $data['po_no']; ?>
 																		</a>
 																	<?php } else {
@@ -576,11 +595,6 @@ $page_heading 	= "List Purchase Orders ";
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_po.php?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																	<?php }
-																	if (access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-																			<i class="material-icons dp48">edit</i>
-																		</a> &nbsp;&nbsp;
 																		<?php }
 																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 0 && access("edit_perm") == 1) { ?>

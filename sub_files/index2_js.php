@@ -326,28 +326,12 @@
 <?php
 if (isset($module) && ($module == 'sub_user_roles')) { ?>
     <script language="JavaScript">
-        $(".checkbox").click(function() {
-            var className = $(this).attr('class');
-            var result = className.split(" ");
-            $.each(result, function(key, value) {
-                if (value != 'checkbox') {
-                    $("#" + value).prop("checked", true);
-                }
-            });
-            var menu_id = $(this).attr("id");
-            if ($(this).prop("checked")) {
-                $("." + menu_id).prop("checked", true);
-            } else {
-                $("." + menu_id).prop("checked", false);
-            }
-        });
-        $("#all_checked").click(function() {
-            if ($(this).prop("checked")) {
-                $(".checkbox").prop("checked", true);
-            } else {
-                $(".checkbox").prop("checked", false);
-            }
-        });
+
+    </script>
+<?php } ?>
+<?php
+if (isset($module)) { ?>
+    <script type="text/javascript">
         $("#all_checked_subTab").click(function() {
             if ($(this).prop("checked")) {
                 $(".checkbox").prop("checked", true);
@@ -355,12 +339,8 @@ if (isset($module) && ($module == 'sub_user_roles')) { ?>
                 $(".checkbox").prop("checked", false);
             }
         });
-    </script>
-<?php } ?>
-<?php
-if (isset($module)) { ?>
-    <script type="text/javascript">
         $(".checkbox").click(function() {
+            // $("#38").prop("checked", true);
             var className = $(this).attr('class');
             var result = className.split(" ");
             $.each(result, function(key, value) {
@@ -375,6 +355,7 @@ if (isset($module)) { ?>
                 $("." + menu_id).prop("checked", false);
             }
         });
+
         $("#all_checked").click(function() {
             if ($(this).prop("checked")) {
                 $(".checkbox").prop("checked", true);

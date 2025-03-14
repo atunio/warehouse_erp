@@ -41,7 +41,7 @@ foreach ($_POST as $key => $value) {
 }
 
 $supported_column_titles	= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
-$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "product_status"); 
+$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
 $duplication_columns 		= array("product_id");
 $required_columns			= array("product_id", "order_qty", "order_price");
 
@@ -119,7 +119,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	// Initialize the new modified array
 	$modified_array 		= array();
-	$product_ids_already 	= array();
+	$ids_already 	= array();
 
 	$i 				= 0;
 	foreach ($all_data as $value1) {
@@ -155,8 +155,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
 						$row_dp1 = $db->fetch($result1);
-						foreach($row_dp1 as $data_dp11){
- 							$product_ids_already[] = $data_dp11['product_id']; 
+						foreach ($row_dp1 as $data_dp11) {
+							$ids_already[] = $data_dp11['product_id'];
 						}
 						/*
 						if (!isset($error['msg'])) {
@@ -166,7 +166,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						}
 						*/
 					}
-				} 
+				}
 			}
 		}
 		if (empty($error)) {
@@ -189,17 +189,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$data = "";
 							}
 							if ($key != "" && $key != 'is_insert') {
-	
+
 								$insert_db_field_id		= $key;
 								${$insert_db_field_id} 	= $data;
-								
+
 								if ($key == 'product_id') {
- 									$columns 		.= ", " . $insert_db_field_id;
+									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . $product_id2 . "'";
 
- 									$update_column	.= ", " . $insert_db_field_id." = '".$product_id2."'";
-								}
-								else if ($key == 'product_status') {
+									$update_column	.= ", " . $insert_db_field_id . " = '" . $product_id2 . "'";
+								} else if ($key == 'product_status') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 										$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
 										$result1	= $db->query($conn, $sql1);
@@ -207,30 +206,28 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if ($count1 > 0) {
 											$row1 = $db->fetch($result1);
 											$columns 		.= ", expected_status";
-											$column_data 	.= ", '" . $row1[0]['id'] . "'"; 
+											$column_data 	.= ", '" . $row1[0]['id'] . "'";
 
-											$update_column	.= ", expected_status = '".$row1[0]['id']."'";
+											$update_column	.= ", expected_status = '" . $row1[0]['id'] . "'";
 										}
 									}
-								}
-								else if ($key == 'product_condition') {
-									if(${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D'){
+								} else if ($key == 'product_condition') {
+									if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
 										$columns 		.= ", " . $insert_db_field_id;
 										$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 
-										$update_column	.= ", " . $insert_db_field_id." = '".${$insert_db_field_id}."'";
+										$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 									}
-								}
-								else{
+								} else {
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 
- 									$update_column	.= ", " . $insert_db_field_id." = '".${$insert_db_field_id}."'"; 
+									$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 								}
 							}
-						} 
+						}
 
-						if(isset($product_ids_already) && isset($product_id2) && in_array($product_id2, $product_ids_already)){
+						if (isset($ids_already) && isset($product_id2) && in_array($product_id2, $ids_already)) {
 							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																								update_by 				= '" . $_SESSION['username'] . "', 
 																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
@@ -239,20 +236,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																								update_from_module_id 	= '" . $module_id . "'
 																								" . $update_column . " 
 																								, enabled = '1' 
-									WHERE product_id 	= '".$product_id2."'
-									AND po_id 			= '".$id."' ";
+									WHERE product_id 	= '" . $product_id2 . "'
+									AND po_id 			= '" . $id . "' ";
 							//echo "<br><br>".$sql6;
 							$ok = $db->query($conn, $sql6);
-						}
-						else{
+						} else {
 							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(po_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 									VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$ok = $db->query($conn, $sql6);
-						} 
+						}
 						if ($ok) {
 							$added++;
 						}
-					} 
+					}
 				}
 			}
 		}
@@ -278,9 +274,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -290,16 +286,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 									PO List
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 									PO Profile
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div>  
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-panel custom_padding_card_content_table_top">
@@ -406,7 +402,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										}
 										if (strtolower($s_heading) == 'order_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
 											$cell_format = "Number";
-										}  
+										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>
@@ -590,7 +586,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
 															<?php
 															} ?>
- 														<?php
+														<?php
 														} else {
 															$row_color = "color-green";  ?>
 															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">

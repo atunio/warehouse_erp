@@ -12,15 +12,17 @@
 </style>
 <div class="row">
     <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-        <li class="tab" id="show_tab1">
-            <a href="#tab1_html" class="<?php if (isset($active_tab) && $active_tab == 'tab1') {
-                                            echo "active";
-                                        } ?>">
-                <i class="material-icons">receipt</i>
-                <span>Purchase</a></span>
-            </a>
-        </li>
         <?php
+        if (po_permisions("PO Detail") == 1) { ?>
+            <li class="tab" id="show_tab1">
+                <a href="#tab1_html" class="<?php if (isset($active_tab) && $active_tab == 'tab1') {
+                                                echo "active";
+                                            } ?>">
+                    <i class="material-icons">receipt</i>
+                    <span>Purchase</a></span>
+                </a>
+            </li>
+        <?php }
         if (po_permisions("Vendor Data") == 1) { ?>
             <li class="tab">
                 <a href="#tab4_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab4')) {

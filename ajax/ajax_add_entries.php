@@ -690,24 +690,21 @@ switch ($type) {
             echo "Fail";
         }
     break;
-    case 'update_fetched_modelno':
-        if ((isset($modalNo) && $modalNo != "" && $modalNo != "0") && (isset($serial_no) && $serial_no != "" && $serial_no != "0") && (isset($product_id) && $product_id != "" && $product_id != "0") &&  (isset($id) && $id != "" && $id != "0")) {
-            echo "Successfully done response back to you...";
-            
-            // $sql6 = "UPDATE " . $selected_db_name . ".package_materials_orders SET  stage_status             = '" . $stage_status . "',
-                                                                                    
-            //                                                                 update_date             = '" . $add_date . "', 
-            //                                                                 update_by               = '" . $_SESSION['username'] . "', 
-            //                                                                 update_by_user_id       = '" . $_SESSION['user_id'] . "', 
-            //                                                                 update_ip               = '" . $add_ip . "',
-            //                                                                 update_from_module_id   = '" . $module_id . "'
-            // WHERE id = '$id ' ";
-            // $ok = $db->query($conn, $sql6);
-            // if ($ok) {
-            //     echo "Success";
-            // }
+    case 'update_product_modelno':
+        if ((isset($modalNo) && $modalNo != "" && $modalNo != "0") && (isset($product_id) && $product_id != "" && $product_id != "0")) {
+            $sql6 = "UPDATE     products SET    product_model_no            = '" . $modalNo . "',
+                                                    update_date             = '" . $add_date . "', 
+                                                    update_by               = '" . $_SESSION['username'] . "', 
+                                                    update_by_user_id       = '" . $_SESSION['user_id'] . "', 
+                                                    update_ip               = '" . $add_ip . "',
+                                                    update_from_module_id   = '" . $module_id . "'
+                    WHERE product_uniqueid = '".$product_id."' ";
+            $ok = $db->query($conn, $sql6);
+            if ($ok) {
+                echo "Success";
+            }
         } else {
-            //echo "Fail";
+            echo "Fail";
         }
     break;
     

@@ -384,7 +384,7 @@
                                                                         <td>
                                                                             <?php
                                                                             if ($po_detail_id > 0) { ?>
-                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>" class="fetched_productids1">
+                                                                                <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>">
                                                                                     <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
                                                                                 </select>
                                                                             <?php } else { ?>
@@ -411,12 +411,15 @@
                                                                         </td>
                                                                         <td><?php echo $phone_check_product_id; ?></td>
                                                                         <td>
-                                                                            <input type="hidden" name="modelNo_<?= $data['imei_no']; ?>" id="modelNo_<?= $data['imei_no']; ?>" value="<?php echo $phone_check_model_no; ?>">
-                                                                            <?php echo $phone_check_model_no; ?>
+                                                                        <input type="hidden" name="modelNo_<?= $data['imei_no']; ?>" id="modelNo_<?= $data['imei_no']; ?>" value="<?php echo $phone_check_model_no; ?>">
+                                                                        <input type="hidden" id="product_id_update_modelno" value="">
+                                                                        <input type="hidden" id="modelno_update_productid" value="">
+                                                                        <?php echo $phone_check_model_no; ?>
                                                                         </td>
                                                                     </tr>
                                                             <?php }
                                                             } ?>
+                                                            <input type="hidden" id="programmaticChange" value="">
                                                         </tbody>
                                                     </table>
                                                 </div><br><br>
@@ -1417,10 +1420,10 @@
                                                                         if ($is_import_diagnostic_data == '0' && ($data['phone_check_api_data'] == NULL || $data['phone_check_api_data'] == "[]" || $data['phone_check_api_data'] == "" || $data['phone_check_api_data'] == '(NULL)' || $data['phone_check_api_data'] == '{"msg":"Failed to get device info results"}')) {
                                                                             $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $etching = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
                                                                             $sql_pd01_4         = "	SELECT  a.*
-                                                                                                        FROM phone_check_api_data a 
-                                                                                                        WHERE a.enabled = 1 
-                                                                                                        AND a.imei_no = '" . $serial_no_barcode . "'
-                                                                                                        ORDER BY a.id DESC LIMIT 1";
+                                                                                                    FROM phone_check_api_data a 
+                                                                                                    WHERE a.enabled = 1 
+                                                                                                    AND a.imei_no = '" . $serial_no_barcode . "'
+                                                                                                    ORDER BY a.id DESC LIMIT 1";
                                                                             $result_pd01_4    = $db->query($conn, $sql_pd01_4);
                                                                             $count_pd01_4    = $db->counter($result_pd01_4);
                                                                             if ($count_pd01_4 > 0) {

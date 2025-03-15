@@ -676,7 +676,8 @@ if (isset($_POST['is_Submit_tab6_4']) && $_POST['is_Submit_tab6_4'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 	extract($_POST);
-	$phone_check_product_id = $phone_check_model_no = "";
+	$phone_check_product_id = 0;
+	$phone_check_model_no = "";
 	if (!isset($sub_location_id_barcode_diagnostic) || (isset($sub_location_id_barcode_diagnostic)  && ($sub_location_id_barcode_diagnostic == "0" || $sub_location_id_barcode_diagnostic == ""))) {
 		$error6['sub_location_id_barcode_diagnostic'] = "Required";
 	}

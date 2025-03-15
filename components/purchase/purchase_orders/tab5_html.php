@@ -526,6 +526,63 @@
                              <div class="input-field col m12 s12"> </div>
                          </div>
                          <div class="row">
+                             <div class="input-field col m2 s12">
+                                 <?php
+                                    $field_name     = "serial_no_barcode";
+                                    $field_label    = "BarCode";
+                                    ?>
+                                 <i class="material-icons prefix">description</i>
+                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>" onkeyup="autoSubmit(event)" autofocus>
+                                 <label for="<?= $field_name; ?>">
+                                     <?= $field_label; ?>
+                                     <span class="color-red">* <?php
+                                                                if (isset($error[$field_name])) {
+                                                                    echo $error[$field_name];
+                                                                } ?>
+                                     </span>
+                                 </label>
+                             </div>
+                             <div class="input-field col m2 s12">
+                                 <?php
+                                    $field_name     = "sub_location_id_barcode";
+                                    $field_label    = "Location";
+                                    $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
+                                    $result1        = $db->query($conn, $sql1);
+                                    $count1         = $db->counter($result1);
+                                    ?>
+                                 <i class="material-icons prefix">question_answer</i>
+                                 <div class="select2div">
+                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                         <option value="">Select</option>
+                                         <?php
+                                            if ($count1 > 0) {
+                                                $row1    = $db->fetch($result1);
+                                                foreach ($row1 as $data2) { ?>
+                                                 <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                     <?php echo $data2['sub_location_name'];
+                                                        if ($data2['sub_location_type'] != "") {
+                                                            echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                        } ?>
+                                                 </option>
+                                         <?php }
+                                            } ?>
+                                     </select>
+                                     <label for="<?= $field_name; ?>">
+                                         <?= $field_label; ?>
+                                         <span class="color-red">* <?php
+                                                                    if (isset($error5[$field_name])) {
+                                                                        echo $error5[$field_name];
+                                                                    } ?>
+                                         </span>
+                                     </label>
+                                 </div>
+                             </div>
                              <div class="input-field col m6 s12">
                                  <?php
                                     $field_name     = "product_id_barcode";
@@ -580,7 +637,7 @@
                                      </select>
                                      <label for="<?= $field_name; ?>">
                                          <?= $field_label; ?>
-                                         <span class="color-red">* <?php
+                                         <span class="color-red"><?php
                                                                     if (isset($error5[$field_name])) {
                                                                         echo $error5[$field_name];
                                                                     } ?>
@@ -588,64 +645,7 @@
                                      </label>
                                  </div>
                              </div>
-                             <div class="input-field col m2 s12">
-                                 <?php
-                                    $field_name     = "sub_location_id_barcode";
-                                    $field_label    = "Location";
-                                    $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-                                    $result1        = $db->query($conn, $sql1);
-                                    $count1         = $db->counter($result1);
-                                    ?>
-                                 <i class="material-icons prefix">question_answer</i>
-                                 <div class="select2div">
-                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                         <option value="">Select</option>
-                                         <?php
-                                            if ($count1 > 0) {
-                                                $row1    = $db->fetch($result1);
-                                                foreach ($row1 as $data2) { ?>
-                                                 <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                     <?php echo $data2['sub_location_name'];
-                                                        if ($data2['sub_location_type'] != "") {
-                                                            echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                        } ?>
-                                                 </option>
-                                         <?php }
-                                            } ?>
-                                     </select>
-                                     <label for="<?= $field_name; ?>">
-                                         <?= $field_label; ?>
-                                         <span class="color-red">* <?php
-                                                                    if (isset($error5[$field_name])) {
-                                                                        echo $error5[$field_name];
-                                                                    } ?>
-                                         </span>
-                                     </label>
-                                 </div>
-                             </div>
-                             <div class="input-field col m2 s12">
-                                 <?php
-                                    $field_name     = "serial_no_barcode";
-                                    $field_label    = "Product Bar Code";
-                                    ?>
-                                 <i class="material-icons prefix">description</i>
-                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                    echo ${$field_name};
-                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                        } ?>" onkeyup="autoSubmit(event)" autofocus>
-                                 <label for="<?= $field_name; ?>">
-                                     <?= $field_label; ?>
-                                     <span class="color-red">* <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                     </span>
-                                 </label>
-                             </div>
-                             <div class="input-field col m2 s12">
+                             <div class="input-field col m1 s12">
                                  <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
                                      <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive</button>
                                  <?php } ?>
@@ -1640,6 +1640,11 @@
                                                          <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
                                                          <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
                                                              <?php
+                                                            //  echo ", edit_lock:".$data['edit_lock'];
+                                                            //  echo ", is_diagnost:".$data['is_diagnost'];
+                                                            //  echo ", is_diagnostic_bypass:".$data['is_diagnostic_bypass'];
+                                                            //  echo ", is_pricing_done:".$data['is_pricing_done'];
+                                                            //  echo ", delete_perm:".access("delete_perm");
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
                                                                  <label>

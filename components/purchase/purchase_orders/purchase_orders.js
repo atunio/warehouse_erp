@@ -1103,51 +1103,58 @@ $(document).on('change', '#stage_status', function(event) {
     }
 });
 
+$(document).on('select2:open', '.fetched_productids1', function() {
+    $("#programmaticChange").val('');
+});
 $(document).on('change', '.fetched_productids1', function(event) {
-  
-    var fetched_productid = $(this).val();
-    var serial_no = $(this).attr('id'); 
-    var modalNo = $("#modelNo_"+serial_no).val(); 
-   
-    
-    var id = $("#id").val();
-    var module_id = $("#module_id").val();
-    if(stage_status != "" && id != ""){
-        var dataString = 'type=update_fetched_modelno&product_id=' + fetched_productid + '&serial_no=' + serial_no + '&modalNo=' + modalNo + '&id=' + id + '&module_id=' + module_id;
-        $.ajax({
-            type: "POST",
-            url: "ajax/ajax_add_entries.php",
-            data: dataString,
-            cache: false,
-            success: function(response) {
-                if (response) {
-                    // alert(response);
-                    // if (response === "Fail") {
-                    //     var toastHTML = 'Some errors check.';
-                    //     showToast(toastHTML, "Fail");
-                    // } 
-                    // else{
-                    //     var toastHTML = "Stage status updated successfully.";
-                    //     showToast(toastHTML, "Success");
-                    //     if((stage_status == 'Committed' && previous_stage_status != 'Committed') ){
-                            
-                    //         location.reload();
-                            
-                    //     }else if((stage_status != 'Committed' && previous_stage_status == 'Committed')){
-                           
-                    //         location.reload();
-                            
-                    //     }
-                    // }
+    var programmaticChange = $("#programmaticChange").val();
+    if(programmaticChange == ""){
+        var fetched_productid = $(this).val();
+        var fetched_productid = $(this).val();
+        var serial_no = $(this).attr('id'); 
+        var modalNo = $("#modelNo_"+serial_no).val(); 
+        var module_id = $("#module_id").val();
+        $("#product_id_update_modelno").val(fetched_productid) ;
+        $("#modelno_update_productid").val(modalNo) ;
+        if(fetched_productid != "" && modalNo != ""){
+            var dataString = 'type=update_product_modelno&product_id=' + fetched_productid + '&modalNo=' + modalNo + '&module_id=' + module_id;
+            $.ajax({
+                type: "POST",
+                url: "ajax/ajax_add_entries.php",
+                data: dataString,
+                cache: false,
+                success: function(response) {
+                    if (response) {
+                        // alert(response);
+                        if (response === "Fail") {
+                            // var toastHTML = 'Select Product';
+                            // showToast(toastHTML, "Fail");
+                        } 
+                        else{
+                            // var toastHTML = "Model No updated successfully.";
+                            // showToast(toastHTML, "Success");
+                            var product_id_update_modelno = $("#product_id_update_modelno").val();
+                            var modelno_update_productid = $("#modelno_update_productid").val();
+                            $(this).find("option[value='" + product_id_update_modelno + "']").text("ProductID: "+product_id_update_modelno+", Model#: "+modelno_update_productid);
+
+                            $(".fetched_productids1").each(function() {
+                                var serial_no2 = $(this).attr('id');
+                                var phone_check_model_no = $("#modelNo_"+serial_no2).val(); 
+                                $("#"+serial_no2).find("option[value='" + product_id_update_modelno + "']").text("ProductID: "+product_id_update_modelno+", Model#: "+modelno_update_productid);
+                                if(modelno_update_productid == phone_check_model_no){
+                                    $("#"+serial_no2).val(product_id_update_modelno).change();
+                                }
+                            }); 
+                        }
+                        $("#programmaticChange").val("Changed");
+                    }
+                },
+                error: function() {
                     
                 }
-            },
-            error: function() {
-                
-            }
-        });
-    }
-    
+            });
+        }
+    } 
 });
 
 

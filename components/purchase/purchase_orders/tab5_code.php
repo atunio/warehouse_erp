@@ -372,12 +372,47 @@ if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 */
 if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 	extract($_POST);
-
-	if (!isset($serial_no_barcode) || (isset($serial_no_barcode)  && ($serial_no_barcode == "0" || $serial_no_barcode == ""))) {
-		$error5['serial_no_barcode'] = "Required";
-	}
 	if (!isset($sub_location_id_barcode) || (isset($sub_location_id_barcode)  && ($sub_location_id_barcode == "0" || $sub_location_id_barcode == ""))) {
 		$error5['sub_location_id_barcode'] = "Required";
+	} 
+	
+	if (!isset($serial_no_barcode) || (isset($serial_no_barcode)  && ($serial_no_barcode == "0" || $serial_no_barcode == ""))) {
+		$error5['serial_no_barcode'] = "Required";
+	} else {
+		$phone_check_model_no = "";
+		$sql_pd01_4		= "	SELECT  a.*
+							FROM phone_check_api_data a 
+							WHERE a.enabled = 1 
+							AND a.imei_no = '" . $serial_no_barcode . "'
+							ORDER BY a.id DESC LIMIT 1";
+		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+		$count_pd01_4	= $db->counter($result_pd01_4);
+		if ($count_pd01_4 > 0) {
+			$row_pd01_4					= $db->fetch($result_pd01_4);
+			$phone_check_model_no		= $row_pd01_4[0]['model_no'];
+		} else {
+			$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
+			$device_detail_array	= getinfo_phonecheck_imie($serial_no_barcode);
+			$jsonData2				= json_encode($device_detail_array);
+			if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
+				include("process_phonecheck_response.php");
+			}
+		}
+	}
+	if ($phone_check_model_no != "") {
+		$sql_pd01 		= "	SELECT a.*, c.product_desc, c.product_uniqueid
+							FROM purchase_order_detail a 
+							INNER JOIN purchase_orders b ON b.id = a.po_id
+							INNER JOIN products c ON c.id = a.product_id
+							WHERE 1=1 
+							AND a.po_id = '" . $id . "' 
+							AND c.product_model_no = '" . $phone_check_model_no . "'  ";
+		$result_pd01	= $db->query($conn, $sql_pd01);
+		$count_pd01		= $db->counter($result_pd01);
+		if ($count_pd01 > 0) {
+			$row_pd01			= $db->fetch($result_pd01);
+			$product_id_barcode = $row_pd01[0]['id'];
+		}
 	}
 	if (!isset($product_id_barcode) || (isset($product_id_barcode)  && ($product_id_barcode == "0" || $product_id_barcode == ""))) {
 		$error5['product_id_barcode'] = "Required";
@@ -418,8 +453,8 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 					$c_product_condition2 			= $row_pd3[0]['product_condition'];
 					$c_expected_status2     		= $row_pd3[0]['expected_status'];
 
-					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, is_diagnost, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+							 VALUES('" . $id . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_barcode . "', '1', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 
@@ -459,7 +494,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
 						/////////////////////////// Create Stock  END /////////////////////////////
 						$msg5['msg_success']	= "Product with barcode has been received successfully.";
-						$serial_no_barcode		=  "";
+						$serial_no_barcode		=  $product_id_barcode = "";
 						// $serial_no_barcode	= $sub_location_id_barcode = "";
 					}
 				}

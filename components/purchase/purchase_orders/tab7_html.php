@@ -211,36 +211,44 @@
                             </tr>
                             <?php
                             $sql        = " SELECT (
-                                                SELECT SUM(b.order_qty)
+                                                SELECT IFNULL(SUM(b.order_qty), 0)
                                                     FROM purchase_order_detail b 
                                                     WHERE b.po_id = a.id
                                                 ) AS total_ordered,
-                                                COUNT(DISTINCT c.id) AS received,
-                                                COUNT(DISTINCT f1.id) AS expected_a_grade,
-                                                COUNT(DISTINCT f2.id) AS expected_b_grade,
-                                                COUNT(DISTINCT f3.id) AS expected_c_grade,
-                                                COUNT(DISTINCT f4.id) AS expected_defected,
+                                                IFNULL(COUNT(DISTINCT c.id), 0) AS received,
+                                                IFNULL(COUNT(DISTINCT f1.id), 0) AS expected_a_grade,
+                                                IFNULL(COUNT(DISTINCT f2.id), 0) AS expected_b_grade,
+                                                IFNULL(COUNT(DISTINCT f3.id), 0) AS expected_c_grade,
+                                                IFNULL(COUNT(DISTINCT f4.id), 0) AS expected_defected,
 
-                                                COUNT(DISTINCT g.id) AS tested_defected,
+                                                IFNULL(COUNT(DISTINCT g.id), 0) AS tested_defected,
                                                 
-                                                COUNT(DISTINCT i.id) AS tested_a_grade,
-                                                COUNT(DISTINCT j.id) AS tested_b_grade,
-                                                COUNT(DISTINCT k.id) AS tested_c_grade
+                                                IFNULL(COUNT(DISTINCT i.id), 0) AS tested_a_grade,
+                                                IFNULL(COUNT(DISTINCT j.id), 0) AS tested_b_grade,
+                                                IFNULL(COUNT(DISTINCT k.id), 0) AS tested_c_grade,
 
-                                                FROM purchase_orders a
-                                                LEFT JOIN purchase_order_detail b ON b.po_id = a.id
-                                                LEFT JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
-                                                LEFT JOIN purchase_order_detail_receive g ON g.id = c.id AND g.inventory_status = 6 
-                                                LEFT JOIN vender_po_data f1 ON f1.po_id = a.id AND (f1.overall_grade = 'A' || f1.overall_grade = 'A Grade')
-                                                LEFT JOIN vender_po_data f2 ON f2.po_id = a.id AND (f2.overall_grade = 'B' || f2.overall_grade = 'B Grade')
-                                                LEFT JOIN vender_po_data f3 ON f3.po_id = a.id AND (f3.overall_grade = 'C' || f3.overall_grade = 'C Grade')
-                                                LEFT JOIN vender_po_data f4 ON f4.po_id = a.id AND f4.`status` = 'Defective'
+                                                IFNULL(SUM(DISTINCT m1.order_qty), 0) AS po_expected_a_grade,
+                                                IFNULL(SUM(DISTINCT m2.order_qty), 0) AS po_expected_b_grade,
+                                                IFNULL(SUM(DISTINCT m3.order_qty), 0) AS po_expected_c_grade
 
-                                                LEFT JOIN purchase_order_detail_receive i ON i.id = c.id AND i.overall_grade = 'A' 
-                                                LEFT JOIN purchase_order_detail_receive j ON j.id = c.id AND j.overall_grade = 'B' 
-                                                LEFT JOIN purchase_order_detail_receive k ON k.id = c.id AND k.overall_grade = 'C' 
+                                            FROM purchase_orders a
+                                            LEFT JOIN purchase_order_detail b ON b.po_id = a.id
+                                            LEFT JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
+                                            LEFT JOIN purchase_order_detail_receive g ON g.id = c.id AND g.inventory_status = 6 
+                                            LEFT JOIN vender_po_data f1 ON f1.po_id = a.id AND (f1.overall_grade = 'A' || f1.overall_grade = 'A Grade')
+                                            LEFT JOIN vender_po_data f2 ON f2.po_id = a.id AND (f2.overall_grade = 'B' || f2.overall_grade = 'B Grade')
+                                            LEFT JOIN vender_po_data f3 ON f3.po_id = a.id AND (f3.overall_grade = 'C' || f3.overall_grade = 'C Grade')
+                                            LEFT JOIN vender_po_data f4 ON f4.po_id = a.id AND f4.`status` = 'Defective'
 
-                                                WHERE a.id = '" . $id . "' ";
+                                            LEFT JOIN purchase_order_detail_receive i ON i.id = c.id AND i.overall_grade = 'A' 
+                                            LEFT JOIN purchase_order_detail_receive j ON j.id = c.id AND j.overall_grade = 'B' 
+                                            LEFT JOIN purchase_order_detail_receive k ON k.id = c.id AND k.overall_grade = 'C' 
+
+                                            LEFT JOIN purchase_order_detail m1 ON m1.po_id = a.id AND m1.product_condition = 'A' 
+                                            LEFT JOIN purchase_order_detail m2 ON m2.po_id = a.id AND m2.product_condition = 'B' 
+                                            LEFT JOIN purchase_order_detail m3 ON m3.po_id = a.id AND m3.product_condition = 'C' 
+
+                                            WHERE a.id = '" . $id . "' ";
                             $result_t1  = $db->query($conn, $sql);
                             $count_t1   = $db->counter($result_t1);
                             if ($count_t1 > 0) {
@@ -264,10 +272,10 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo $data_t1['expected_a_grade']; ?></span>
+                                                <span class="green-text"><?php  echo ($data_t1['expected_a_grade'] > 0) ? $data_t1['expected_a_grade'] : $data_t1['po_expected_a_grade'];  ?></span>
                                             </span> vs &nbsp;
                                             <?php
-                                            if ($data_t1['expected_a_grade'] != $data_t1['tested_a_grade']) { ?>
+                                            if (($data_t1['expected_a_grade'] > 0 && $data_t1['expected_a_grade'] != $data_t1['tested_a_grade']) || ($data_t1['po_expected_a_grade'] > 0 && $data_t1['po_expected_a_grade'] != $data_t1['tested_a_grade'])) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_a_grade']; ?></span>
                                                 </span>
@@ -279,10 +287,10 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo $data_t1['expected_b_grade']; ?></span>
-                                            </span> vs&nbsp;
+                                                <span class="green-text"><?php  echo ($data_t1['expected_b_grade'] > 0) ? $data_t1['expected_b_grade'] : $data_t1['po_expected_b_grade'];  ?></span>
+                                            </span> vs &nbsp;
                                             <?php
-                                            if ($data_t1['expected_b_grade'] != $data_t1['tested_b_grade']) { ?>
+                                            if (($data_t1['expected_b_grade'] > 0 && $data_t1['expected_b_grade'] != $data_t1['tested_b_grade']) || ($data_t1['po_expected_b_grade'] > 0 && $data_t1['po_expected_b_grade'] != $data_t1['tested_b_grade'])) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_b_grade']; ?></span>
                                                 </span>
@@ -293,11 +301,12 @@
                                             <?php } ?>
                                         </td>
                                         <td>
-                                            <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo $data_t1['expected_c_grade']; ?></span>
+                                            
+                                        <span class="chip green lighten-5">
+                                                <span class="green-text"><?php  echo ($data_t1['expected_c_grade'] > 0) ? $data_t1['expected_c_grade'] : $data_t1['po_expected_c_grade'];  ?></span>
                                             </span> vs &nbsp;
                                             <?php
-                                            if ($data_t1['expected_c_grade'] != $data_t1['tested_c_grade']) { ?>
+                                            if (($data_t1['expected_c_grade'] > 0 && $data_t1['expected_c_grade'] != $data_t1['tested_c_grade']) || ($data_t1['po_expected_c_grade'] > 0 && $data_t1['po_expected_c_grade'] != $data_t1['tested_c_grade'])) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_c_grade']; ?></span>
                                                 </span>

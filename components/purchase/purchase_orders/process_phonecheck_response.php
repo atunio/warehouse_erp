@@ -14,6 +14,7 @@ foreach ($device_detail_array as $key1 => $data_api) {
         }
         if ($key2 == 'Model#') {
             $model_no = $data2;
+            $phone_check_model_no = $model_no;
         }
         if ($key2 == 'Make') {
             $make_name = $data2;

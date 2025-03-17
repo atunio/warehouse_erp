@@ -55,11 +55,10 @@
         $td_padding     = "padding:5px 15px !important;";
         $sql            = " SELECT a.id
                             FROM purchase_order_detail_receive a 
-                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                             INNER JOIN product_stock c ON a.id = c.receive_id
                             WHERE a.enabled = 1 
                             AND a.is_diagnost = 1
-                            AND b.po_id = '" . $id . "' ";
+                            AND a.po_id = '" . $id . "' ";
         // echo $sql; 
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
@@ -145,36 +144,35 @@
                         <div class="card-panel">
                             <div class="section section-data-tables">
                                 <div class="row">
-									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Product ID / Product Detail', 'Grade', 'Qty', 'Suggested Price', 'Total');
-										$k 				= 0;
- 										foreach($table_columns as $data_c1){?>
-											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
-											</label>&nbsp;&nbsp;
-										<?php 
-											$k++;
-										}?> 
-									</div>
-								</div>
+                                    <div class="text_align_right">
+                                        <?php
+                                        $table_columns    = array('SNo', 'Product ID / Product Detail', 'Grade', 'Qty', 'Suggested Price', 'Total');
+                                        $k                 = 0;
+                                        foreach ($table_columns as $data_c1) { ?>
+                                            <label>
+                                                <input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+                                                <span><?= $data_c1 ?></span>
+                                            </label>&nbsp;&nbsp;
+                                        <?php
+                                            $k++;
+                                        } ?>
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col m12 s12">
                                         <table id="page-length-option" class=" display pagelength50_4 dataTable dtr-inline">
                                             <thead>
                                                 <tr>
-                                                <?php
-													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
-														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
-													echo $headings;
+                                                    <?php
+                                                    $headings = "";
+                                                    foreach ($table_columns as $data_c) {
+                                                        if ($data_c == 'SNo') {
+                                                            $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                                        } else {
+                                                            $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
+                                                        }
+                                                    }
+                                                    echo $headings;
                                                     $headings2 = ' '; ?>
                                                 </tr>
                                             </thead>
@@ -255,7 +253,7 @@
                                                         }
                                                         $pricing_table_trs = ""; ?>
                                                         <tr>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
                                                                 <?php echo $i + 1;
                                                                 if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6 && $is_rma_processed == 0 && $is_rma_added == 1) { ?>
                                                                     <label style="margin-left: 25px;" id="checkbox_no_<?= $detail_id2; ?>">
@@ -266,16 +264,16 @@
                                                                     </label>
                                                                 <?php } ?>
                                                             </td>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[1]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[1]); ?>">
                                                                 <?php echo $product_uniqueid; ?>
                                                             </td>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]); ?>">
                                                                 <?php echo $data['stock_grade']; ?>
                                                             </td>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]); ?>">
                                                                 <?php echo $total_qty; ?>
                                                             </td>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]); ?>">
                                                                 <a class="modal-trigger" href="#<?= $product_uniqueid; ?>_<?= $data['stock_grade']; ?>">
                                                                     <?php
                                                                     $suggested_price = 0;
@@ -375,7 +373,7 @@
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>">
+                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]); ?>">
                                                                 <?php echo round($suggested_price * $data['total_qty'], 2); ?>
                                                             </td>
                                                         </tr>

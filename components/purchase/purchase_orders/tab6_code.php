@@ -285,7 +285,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 			if (isset($bulkserialNo) && $bulkserialNo != null) {
 				foreach ($bulkserialNo as $data) {
 					$phone_check_product_id		= $product_ids[$data];
-					$single_model_no			= $model_nos[$data];
+					$single_model_no			= ${"modelNo_" . $data};
 					$product_id_fetched 		= 0;
 
 					if ($phone_check_product_id != "") {

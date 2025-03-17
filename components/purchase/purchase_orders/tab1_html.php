@@ -15,7 +15,7 @@
     } ?>
         <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
             <div class="row">
-                <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+                <div class="input-field col m5 s12" style="margin-top: 3px; margin-bottom: 3px;">
                     <h6 class="media-heading">
                         <?= $general_heading; ?> => Master Info
                     </h6>
@@ -43,13 +43,7 @@
                         } ?>
                     </select>
                 </div>
-                <div class="input-field col m5 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                    <?php /*?>
-                    <a href="javascript:void(0)" class="btn cyan waves-effect waves-light ">
-                        <i class="material-icons ">print</i>
-                        Print
-                    </a>  &nbsp;&nbsp;
-                <?php */ ?>
+                <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                     <?php
                     if (isset($po_no) && isset($id)) {
                         if (access("edit_perm") == 1) { ?>
@@ -57,13 +51,16 @@
                                 Save changes
                             </button>
                             <?php
-                            //if (isset($order_status) && ($order_status == 1 || $order_status == 4 || $order_status == 10 || $order_status == 12)) { 
-                            ?>
+                            if (po_permisions("Vendor Data") == 1) { ?>
+                                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=importvender_data&id=" . $id) ?>">
+                                    Import Vendor Data
+                                </a>
+                            <?php
+                            } ?>
                             <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
                                 Import Products
                             </a>
-                    <?php   //}
-                        }
+                    <?php }
                     }
                     include("tab_action_btns.php"); ?>
                 </div>

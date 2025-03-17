@@ -21,7 +21,7 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles	= array("product_id",  "serial_no", "overall_grade", "defects_or_notes");
+$supported_column_titles	= array("product_id",  "serial_no", "overall_grade", "defects_or_notes", "status", "price");
 $duplication_columns 		= array("serial_no");
 $required_columns 			= array("product_id", "serial_no");
 
@@ -160,7 +160,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						}
 					}
 					foreach ($all_data  as $data1) {
-						$update_master = $columns = $column_data = $update_column = "";
+						$update_master = $columns = $column_data = $update_column = $po_detail_data =  $po_detail_column = $update_po_detail = "";
 						if (
 							isset($data1['product_id']) && $data1['product_id'] != '' && $data1['product_id'] != NULL && $data1['product_id'] != 'blank'
 							&& isset($data1['serial_no']) && $data1['serial_no'] != '' && $data1['serial_no'] != NULL && $data1['serial_no'] != 'blank'
@@ -170,6 +170,23 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$result1	= $db->query($conn, $sql1);
 							$count1		= $db->counter($result1);
 							if ($count1 > 0) {
+
+								$row1			= $db->fetch($result1);
+								$product_id2 	= $row1[0]['id'];
+
+								$product_po_detail_id = $po_order_qty = 0;
+								$sql_po_d			= " SELECT * FROM purchase_order_detail 
+														WHERE  product_id = '" . $product_id2 . "'
+														AND po_id =  '" . $id . "' ";
+								// echo "<br><br><br><br>" . $product_id2;die;
+								$result_po_d		= $db->query($conn, $sql_po_d);
+								$count_po_d			= $db->counter($result_po_d);
+								if ($count_po_d > 0) {
+									$row_po_d				= $db->fetch($result_po_d);
+									$product_po_detail_id 	= $row_po_d[0]['id'];
+									$po_order_qty 			= $row_po_d[0]['order_qty'];
+								}
+
 								$vender_data_id = 0;
 								$sql1			= " SELECT * FROM " . $master_table . " 
 													WHERE  serial_no = '" . $data1['serial_no'] . "'
@@ -183,12 +200,50 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								foreach ($data1 as $key => $data) {
 									if ($key != "" && $key != 'is_insert') {
 										if ($key == 'product_id') {
-											$key = "product_uniqueid";
+											$key2 = "product_uniqueid";
+										} else {
+											$key2 = $key;
 										}
-										$columns 		.= ", " . $key;
+										$columns 		.= ", " . $key2;
 										$column_data 	.= ", '" . $data . "'";
 
-										$update_column	.= ", " . $key . " = '" . $data . "'";
+										$update_column	.= ", " . $key2 . " = '" . $data . "'";
+										if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price') {
+
+											if ($key == 'price') {
+												$key = "order_price";
+
+												$po_detail_column	.= ", " . $key;
+												$po_detail_data		.= ", '" . $data . "'";
+												$update_po_detail	.= ", " . $key . " = '" . $data . "'";
+											} else if ($key == 'product_id') {
+												$data = $product_id2;
+												$po_detail_column	.= ", " . $key;
+												$po_detail_data		.= ", '" . $data . "'";
+												$update_po_detail	.= ", " . $key . " = '" . $data . "'";
+											} else if ($key == 'status') {
+												if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+													$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
+													$result1	= $db->query($conn, $sql1);
+													$count1		= $db->counter($result1);
+													if ($count1 > 0) {
+														$row1 = $db->fetch($result1);
+
+														$po_detail_column	.= ", expected_status";
+														$po_detail_data 	.= ", '" . $row1[0]['id'] . "'";
+														$update_po_detail	.= ", expected_status = '" . $row1[0]['id'] . "'";
+													}
+												}
+											} else if ($key == 'overall_grade') {
+												$insert_db_field_id = "product_condition";
+												${$insert_db_field_id} = $data;
+												if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
+													$po_detail_column	.= ", " . $insert_db_field_id;
+													$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
+													$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+												}
+											}
+										}
 									}
 								}
 
@@ -205,15 +260,34 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											AND po_id 			= '" . $id . "' ";
 									// echo "<br><br>" . $sql6;
 									$ok = $db->query($conn, $sql6);
+									if ($ok) {
+										$added++;
+									}
 								} else {
 									$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id, po_id " . $columns . ", add_date, add_by, add_ip)
-											VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
-
+											 VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 									// echo "<br><br>" . $sql6;
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 										$added++;
 									}
+								}
+								if ($count_po_d > 0) {
+									$sql6 = "UPDATE " . $selected_db_name . ".purchase_order_detail SET update_date 			= '" . $add_date . "', 
+																										update_by 				= '" . $_SESSION['username'] . "', 
+																										update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																										update_ip 				= '" . $add_ip . "', 
+																										update_timezone 		= '" . $timezone . "', 
+																										update_from_module_id 	= '" . $module_id . "',
+																										order_qty 				= '" . ($po_order_qty + 1) . "'
+																										" . $update_po_detail . " 
+																										, enabled = '1' 
+											WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
+									$db->query($conn, $sql6);
+								} else {
+									$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail(po_id " . $po_detail_column . ", order_qty, add_date, add_by, add_ip)
+											 VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
+									$db->query($conn, $sql6);
 								}
 							} else {
 								if (!isset($error['msg'])) {

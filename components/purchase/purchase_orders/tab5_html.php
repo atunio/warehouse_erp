@@ -526,27 +526,7 @@
                              <div class="input-field col m12 s12"> </div>
                          </div>
                          <div class="row">
-                             <div class="input-field col m2 s12">
-                                 <?php
-                                    $field_name     = "serial_no_barcode";
-                                    $field_label    = "BarCode";
-                                    ?>
-                                 <i class="material-icons prefix">description</i>
-                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                    echo ${$field_name};
-                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                        } ?>" onkeyup="autoSubmit(event)" autofocus>
-                                 <label for="<?= $field_name; ?>">
-                                     <?= $field_label; ?>
-                                     <span class="color-red">* <?php
-                                                                if (isset($error[$field_name])) {
-                                                                    echo $error[$field_name];
-                                                                } ?>
-                                     </span>
-                                 </label>
-                             </div>
-                             <div class="input-field col m2 s12">
+                             <div class="input-field col m4 s12">
                                  <?php
                                     $field_name     = "sub_location_id_barcode";
                                     $field_label    = "Location";
@@ -583,6 +563,27 @@
                                      </label>
                                  </div>
                              </div>
+                             <div class="input-field col m4 s12">
+                                 <?php
+                                    $field_name     = "serial_no_barcode";
+                                    $field_label    = "BarCode";
+                                    ?>
+                                 <i class="material-icons prefix">description</i>
+                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>" onkeyup="autoSubmit(event)" autofocus>
+                                 <label for="<?= $field_name; ?>">
+                                     <?= $field_label; ?>
+                                     <span class="color-red">* <?php
+                                                                if (isset($error5[$field_name])) {
+                                                                    echo $error5[$field_name];
+                                                                } ?>
+                                     </span>
+                                 </label>
+                             </div>
+                             <?php /*?>
                              <div class="input-field col m6 s12">
                                  <?php
                                     $field_name     = "product_id_barcode";
@@ -645,6 +646,7 @@
                                      </label>
                                  </div>
                              </div>
+                             <?php */ ?>
                              <div class="input-field col m1 s12">
                                  <?php if (isset($id) && $id > 0 && (($cmd5 == 'add' || $cmd5 == '') && access("add_perm") == 1)  || ($cmd5 == 'edit' && access("edit_perm") == 1) || ($cmd5 == 'delete' && access("delete_perm") == 1)) { ?>
                                      <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Receive</button>
@@ -1117,7 +1119,7 @@
                          </div>
                      <?php } ?>
                  </form>
-            <?php } ?> 
+             <?php } ?>
              <?php /*?>
                 <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                     <input type="hidden" name="is_Submit_tab6_5" value="Y" />
@@ -1578,29 +1580,29 @@
                          <?php */ ?>
                          <br>
                          <div class="row">
-                            <div class="col m2 s12">
-                                <label>
-                                    <input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
-                                                                                                                                echo "checked";
-                                                                                                                            } ?> />
-                                    <span></span>
-                                </label>
-                            </div>
-                            <div class="col m10 s12">
-                                <div class="text_align_right">
-                                    <?php 
-                                    $table_columns	= array('SNo', '-', 'Type', 'Serial NO', 'Product ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
-                                    $k 				= 0;
-                                    foreach($table_columns as $data_c1){?>
-                                        <label>
-                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-                                            <span><?= $data_c1?></span>
-                                        </label>&nbsp;&nbsp;
-                                    <?php 
-                                        $k++;
-                                    }?> 
-                                </div>
-                            </div>
+                             <div class="col m2 s12">
+                                 <label>
+                                     <input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
+                                                                                                                                    echo "checked";
+                                                                                                                                } ?> />
+                                     <span></span>
+                                 </label>
+                             </div>
+                             <div class="col m10 s12">
+                                 <div class="text_align_right">
+                                     <?php
+                                        $table_columns    = array('SNo', '-', 'Type', 'Serial NO', 'Product ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
+                                        $k                 = 0;
+                                        foreach ($table_columns as $data_c1) { ?>
+                                         <label>
+                                             <input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+                                             <span><?= $data_c1 ?></span>
+                                         </label>&nbsp;&nbsp;
+                                     <?php
+                                            $k++;
+                                        } ?>
+                                 </div>
+                             </div>
                          </div>
                          <div class="section section-data-tables">
                              <div class="row">
@@ -1609,19 +1611,18 @@
                                          <thead>
                                              <tr>
                                                  <?php
-													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
-														}else if($data_c == '-'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
-														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
-													echo $headings;
-													
+                                                    $headings = "";
+                                                    foreach ($table_columns as $data_c) {
+                                                        if ($data_c == 'SNo') {
+                                                            $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                                        } else if ($data_c == '-') {
+                                                            $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                                        } else {
+                                                            $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
+                                                        }
+                                                    }
+                                                    echo $headings;
+
                                                     $headings2 = ' '; ?>
                                              </tr>
                                          </thead>
@@ -1637,14 +1638,14 @@
                                                             $detail_id2 = $data['product_category'];
                                                         } ?>
                                                      <tr>
-                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]); ?>">
                                                              <?php
-                                                            //  echo ", edit_lock:".$data['edit_lock'];
-                                                            //  echo ", is_diagnost:".$data['is_diagnost'];
-                                                            //  echo ", is_diagnostic_bypass:".$data['is_diagnostic_bypass'];
-                                                            //  echo ", is_pricing_done:".$data['is_pricing_done'];
-                                                            //  echo ", delete_perm:".access("delete_perm");
+                                                                //  echo ", edit_lock:".$data['edit_lock'];
+                                                                //  echo ", is_diagnost:".$data['is_diagnost'];
+                                                                //  echo ", is_diagnostic_bypass:".$data['is_diagnostic_bypass'];
+                                                                //  echo ", is_pricing_done:".$data['is_pricing_done'];
+                                                                //  echo ", delete_perm:".access("delete_perm");
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
                                                                  <label>
@@ -1653,8 +1654,8 @@
                                                                  </label>
                                                              <?php } ?>
                                                          </td>
-                                                         <td class="col-<?= set_table_headings($table_columns[2]);?>" style="<?= $td_padding; ?>"><?php echo $data['product_type']; ?></td>
-                                                         <td class="col-<?= set_table_headings($table_columns[3]);?>" style="<?= $td_padding; ?>">
+                                                         <td class="col-<?= set_table_headings($table_columns[2]); ?>" style="<?= $td_padding; ?>"><?php echo $data['product_type']; ?></td>
+                                                         <td class="col-<?= set_table_headings($table_columns[3]); ?>" style="<?= $td_padding; ?>">
                                                              <?php
                                                                 $color              = "color-red";
                                                                 $serial_no_barcode  = $data['serial_no_barcode'];
@@ -1672,8 +1673,8 @@
                                                                     echo "<span class='" . $color . "'>" . $serial_no_barcode . "</span>";
                                                                 } ?>
                                                          </td>
-                                                         <td class="col-<?= set_table_headings($table_columns[4]);?>" style="<?= $td_padding; ?>"><?php echo $data['product_uniqueid']; ?></td>
-                                                         <td class="col-<?= set_table_headings($table_columns[5]);?>" style="<?= $td_padding; ?>">
+                                                         <td class="col-<?= set_table_headings($table_columns[4]); ?>" style="<?= $td_padding; ?>"><?php echo $data['product_uniqueid']; ?></td>
+                                                         <td class="col-<?= set_table_headings($table_columns[5]); ?>" style="<?= $td_padding; ?>">
                                                              <?php echo $data['product_desc']; ?>
                                                              <?php
                                                                 if ($data['category_name'] != "") {
@@ -1684,16 +1685,16 @@
                                                                     }
                                                                 } ?>
                                                          </td>
-                                                         <td class="col-<?= set_table_headings($table_columns[6]);?>" style="<?= $td_padding; ?>">
+                                                         <td class="col-<?= set_table_headings($table_columns[6]); ?>" style="<?= $td_padding; ?>">
                                                              <?php echo $data['sub_location_name']; ?>
                                                              <?php
                                                                 if ($data['sub_location_type'] != "") {
                                                                     echo " (" . $data['sub_location_type'] . ")";
                                                                 } ?>
                                                          </td>
-                                                         <td class="col-<?= set_table_headings($table_columns[7]);?>" style="<?= $td_padding; ?>"><?php echo $data['total_qty_received']; ?></td>
-                                                         <td class="col-<?= set_table_headings($table_columns[8]);?>" style="<?= $td_padding; ?>"><?php echo $data['first_name']; ?></td>
-                                                         <td class="col-<?= set_table_headings($table_columns[9]);?>" style="<?= $td_padding; ?>">
+                                                         <td class="col-<?= set_table_headings($table_columns[7]); ?>" style="<?= $td_padding; ?>"><?php echo $data['total_qty_received']; ?></td>
+                                                         <td class="col-<?= set_table_headings($table_columns[8]); ?>" style="<?= $td_padding; ?>"><?php echo $data['first_name']; ?></td>
+                                                         <td class="col-<?= set_table_headings($table_columns[9]); ?>" style="<?= $td_padding; ?>">
                                                              <?php echo dateformat1_with_time($data['add_date']); ?>
                                                          </td>
                                                      </tr>

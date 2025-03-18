@@ -30,24 +30,24 @@ if (isset($cmd3) && $cmd3 == 'delete' && isset($detail_id)) {
 			$counter_ee1	= $db->counter($result_ee1);
 			if ($counter_ee1 == 0) {
 				$sql_c_up = "UPDATE  purchase_order_detail
-							SET 	
-								order_product_status	= '" . $logistic_status_dynamic . "',
+								SET 	
+									order_product_status	= '" . $logistic_status_dynamic . "',
 
-								update_timezone			= '" . $timezone . "',
-								update_date				= '" . $add_date . "',
-								update_by				= '" . $_SESSION['username'] . "',
-								update_ip				= '" . $add_ip . "'
-						WHERE po_id = '" . $id . "' ";
+									update_timezone			= '" . $timezone . "',
+									update_date				= '" . $add_date . "',
+									update_by				= '" . $_SESSION['username'] . "',
+									update_ip				= '" . $add_ip . "'
+							WHERE po_id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 
 				$sql_c_up = "UPDATE  purchase_orders
-							SET 	
-								order_status		= '" . $logistic_status_dynamic . "',
+								SET 	
+									order_status		= '" . $logistic_status_dynamic . "',
 
-								update_timezone		= '" . $timezone . "',
-								update_date			= '" . $add_date . "',
-								update_by			= '" . $_SESSION['username'] . "',
-								update_ip			= '" . $add_ip . "'
+									update_timezone		= '" . $timezone . "',
+									update_date			= '" . $add_date . "',
+									update_by			= '" . $_SESSION['username'] . "',
+									update_ip			= '" . $add_ip . "'
 						WHERE id = '" . $id . "' ";
 				$db->query($conn, $sql_c_up);
 				$disp_status_name = get_status_name($db, $conn, $logistic_status_dynamic);

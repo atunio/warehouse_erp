@@ -301,7 +301,7 @@ $page_heading 	= "List Purchase Orders ";
 											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<?php
 												if (!isset($flt_stage_status)) {
-													$flt_stage_status = array('Draft', 'Completed');
+													$flt_stage_status = array('Draft', 'Committed');
 												}
 												$field_name     = "flt_stage_status";
 												$field_label	= "Stage";

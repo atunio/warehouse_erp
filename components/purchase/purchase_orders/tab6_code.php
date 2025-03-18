@@ -1097,17 +1097,18 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 											AND b.id 						= '" . $product_assignment_id . "'
 											AND a.recevied_product_category = '" . $product_category_diagn . "'
 											AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
-											LIMIT 1 ";
+											LIMIT 1 "; // echo "<br><br>" . $sql_pd01;
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
-						if ($count_pd01 > 0) { 
+						if ($count_pd01 > 0) {
 							$row_pd01		= $db->fetch($result_pd01);
-							$receive_id_2 	= $row_pd01[0]['id']; 
+							$receive_id_2 	= $row_pd01[0]['id'];
 						} else {
 
 							$sql = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
 									VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$db->query($conn, $sql);
+							// echo "<br><br>" . $sql;
 							$receive_id_2 = mysqli_insert_id($conn);
 							/*
 							$sql_c_up = "	UPDATE purchase_order_detail_receive a
@@ -1128,16 +1129,16 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 							*/
 						}
 
-						$update_product_id= "";
-						if($po_detail_id1 == '0' && $product_id_not_in_po > 0){
-							$update_product_id = " product_id = ".$product_id_not_in_po.", ";
+						$update_product_id = "";
+						if ($po_detail_id1 == '0' && $product_id_not_in_po > 0) {
+							$update_product_id = " product_id = " . $product_id_not_in_po . ", ";
 						}
 
 						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
 																				po_detail_id						= '" . $po_detail_id1 . "', 
 																				assignment_id						= '" . $assignment_id . "', 
 																				serial_no_barcode					= '" . $data . "', 
-																				".$update_product_id."
+																				" . $update_product_id . "
  
 																				phone_check_api_data				= '" . $jsonData2 . "',
 																				model_name							= '" . $model_name . "',

@@ -136,8 +136,7 @@
 
                                             $sql_pd1                = "	SELECT a.*
                                                                         FROM purchase_order_detail_receive a
-                                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                                                        WHERE b.po_id = '" . $id . "' ";
+                                                                        WHERE a.po_id = '" . $id . "' ";
                                             $result_pd1             = $db->query($conn, $sql_pd1);
                                             $is_po_item_received    = $db->counter($result_pd1); ?>
                                             <tr>
@@ -208,6 +207,52 @@
                 <div class="card-panel">
                     <br>
                     <div class="row">
+                        <?php /*?>
+                        <div class="input-field col m3 s12">
+                            <?php
+                            $field_name     = "logistics_id";
+                            $field_label    = "Tracking#";
+                            $sql            = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
+                                                FROM purchase_order_detail_logistics a
+                                                LEFT JOIN inventory_status c ON c.id = a.logistics_status
+                                                LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+                                                WHERE a.po_id = '" . $id . "'";
+                            if (isset($detail_id) && $detail_id != "" && isset($cmd3) && $cmd3 == "add") {
+                                $sql        .= " AND a.tracking_no = '" . $detail_id . "'";
+                            }
+                            $sql           .= " AND a.arrived_date IS NOT NULL
+                                                ORDER BY a.tracking_no ";
+                            echo $sql;
+                            $result1        = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1);
+                            ?>
+                            <i class="material-icons prefix">question_answer</i>
+                            <div class="select2div">
+                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                                                } ?>">
+                                    <option value="">Select</option>
+                                    <?php
+                                    if ($count1 > 0) {
+                                        $row1    = $db->fetch($result1);
+                                        foreach ($row1 as $data2) { ?>
+                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                <?php echo $data2['tracking_no']; ?>
+                                            </option>
+                                    <?php }
+                                    } ?>
+                                </select>
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red">* <?php
+                                                                if (isset($error3[$field_name])) {
+                                                                    echo $error3[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <?php */ ?>
                         <div class="input-field col m3 s12">
                             <?php
                             $field_name     = "sub_location_id";
@@ -269,6 +314,26 @@
                             </label>
                         </div>
                         <?php
+                        $field_name     = "no_of_box_arried";
+                        $field_label     = "No of Boxes";
+                        ?>
+                        <div class="input-field col m2 s12">
+                            <i class="material-icons prefix">question_answer</i>
+                            <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                echo ${$field_name};
+                                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                    } ?>">
+                            <label for="<?= $field_name; ?>">
+                                <?= $field_label; ?>
+                                <span class="color-red"> *<?php
+                                                            if (isset($error3[$field_name])) {
+                                                                echo $error3[$field_name];
+                                                            } ?>
+                                </span>
+                            </label>
+                        </div>
+                        <?php
                         $field_name     = "bill_of_landing";
                         $field_label     = "Bill of Landing";
                         ?>
@@ -287,7 +352,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="input-field col m2 s12"><br>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m4 s12">&nbsp;</div>
+                        <div class="input-field col m2 s12">
                             <?php if (isset($id) && $id > 0 && (($cmd3 == 'add' || $cmd3 == '') && access("add_perm") == 1)  || ($cmd3 == 'edit' && access("edit_perm") == 1) || ($cmd3 == 'delete' && access("delete_perm") == 1)) { ?>
                                 <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Update</button>
                             <?php } ?>

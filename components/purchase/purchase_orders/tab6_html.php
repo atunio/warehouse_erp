@@ -414,10 +414,10 @@
                                                                         </td>
                                                                         <td><?php echo $phone_check_product_id; ?></td>
                                                                         <td>
-                                                                        <input type="hidden" name="modelNo_<?= $data['imei_no']; ?>" id="modelNo_<?= $data['imei_no']; ?>" value="<?php echo $phone_check_model_no; ?>">
-                                                                        <input type="hidden" id="product_id_update_modelno" value="">
-                                                                        <input type="hidden" id="modelno_update_productid" value="">
-                                                                        <?php echo $phone_check_model_no; ?>
+                                                                            <input type="hidden" name="modelNo_<?= $data['imei_no']; ?>" id="modelNo_<?= $data['imei_no']; ?>" value="<?php echo $phone_check_model_no; ?>">
+                                                                            <input type="hidden" id="product_id_update_modelno" value="">
+                                                                            <input type="hidden" id="modelno_update_productid" value="">
+                                                                            <?php echo $phone_check_model_no; ?>
                                                                         </td>
                                                                     </tr>
                                                             <?php }
@@ -1383,7 +1383,11 @@
                                                                     }
                                                                     echo $data['product_desc'];
                                                                     if ($data['category_name'] != "") {
-                                                                        echo " (" . $data['category_name'] . ")";
+                                                                        if ($data['record_type'] == "CateogryReceived") {
+                                                                            echo "" . $data['category_name'] . "";
+                                                                        } else {
+                                                                            echo " (" . $data['category_name'] . ")";
+                                                                        }
                                                                     } ?>
                                                                     <br>
                                                                     <?php

@@ -168,7 +168,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																								update_ip 				= '" . $add_ip . "', 
 																								update_timezone 		= '" . $timezone . "', 
 																								update_from_module_id 	= '" . $module_id . "'
-																								, enabled = '1'
+																								".$update_column."
 									WHERE product_id 	= '".$product_id2."' "; //echo "<br><br>".$sql6;
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {

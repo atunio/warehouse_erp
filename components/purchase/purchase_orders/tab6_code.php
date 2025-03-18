@@ -299,6 +299,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
 						if ($count_pd01 > 0) {
+							$id_identification_field_value = 0;
 							$row_pd01						= $db->fetch($result_pd01);
 							$product_category_diagn			= $row_pd01[0]['product_category'];
 							$id_identification_field_name	= "po_detail_id";
@@ -309,6 +310,7 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 							$result_pd01	= $db->query($conn, $sql_pd01);
 							$count_pd01		= $db->counter($result_pd01);
 							if ($count_pd01 > 0) {
+								$id_identification_field_value = 0;
 								$row_pd01						= $db->fetch($result_pd01);
 								$product_category_diagn			= $row_pd01[0]['product_category'];
 								$id_identification_field_name	= "product_id_not_in_po";
@@ -332,14 +334,14 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 							$ok = $db->query($conn, $sql);
 							if ($ok) {
 								$sql_c_up = "UPDATE  phone_check_api_data SET 	 
-																				is_processed						= '1', 
+																			is_processed						= '1', 
 
-																				update_timezone		   	 			= '" . $timezone . "',
-																				update_date			    			= '" . $add_date . "',
-																				update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
-																				update_by			    			= '" . $_SESSION['username'] . "',
-																				update_ip			    			= '" . $add_ip . "',
-																				update_from_module_id				= '" . $module_id . "'
+																			update_timezone		   	 			= '" . $timezone . "',
+																			update_date			    			= '" . $add_date . "',
+																			update_by_user_id	   	 			= '" . $_SESSION['user_id'] . "',
+																			update_by			    			= '" . $_SESSION['username'] . "',
+																			update_ip			    			= '" . $add_ip . "',
+																			update_from_module_id				= '" . $module_id . "'
 										WHERE imei_no = '" . $data . "' ";
 								$db->query($conn, $sql_c_up);
 								$k++;
@@ -1065,6 +1067,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 				$product_category_diagn			= $row_pd01[0]['product_category'];
 				$data 							= $row_pd01[0]['serial_no'];
 				$model_no						= $row_pd01[0]['model_no'];
+				$product_assignment_id			= $row_pd01[0]['assignment_id'];
 
 				$sql_pd01_4 		= "	SELECT  a.*
 										FROM phone_check_api_data a 
@@ -1088,26 +1091,53 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 					if ($count_pd01 == 0) {
 						$sql_pd01 		= "	SELECT a.* 
 											FROM purchase_order_detail_receive a 
-											WHERE a.enabled = 1 
+											INNER JOIN users_bin_for_diagnostic b ON b.location_id = a.sub_location_id
+											WHERE a.enabled 				= 1
+ 											AND a.po_id 					= '" . $id . "'
+											AND b.id 						= '" . $product_assignment_id . "'
 											AND a.recevied_product_category = '" . $product_category_diagn . "'
-											AND a.po_id = '" . $id . "' 
 											AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '')
 											LIMIT 1 ";
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
-						if ($count_pd01 > 0 && $product_id_not_in_po == '0') {
+						if ($count_pd01 > 0) { 
 							$row_pd01		= $db->fetch($result_pd01);
-							$receive_id_2 	= $row_pd01[0]['id'];
+							$receive_id_2 	= $row_pd01[0]['id']; 
 						} else {
+
 							$sql = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
 									VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$db->query($conn, $sql);
 							$receive_id_2 = mysqli_insert_id($conn);
+							/*
+							$sql_c_up = "	UPDATE purchase_order_detail_receive a
+											INNER JOIN users_bin_for_diagnostic b ON b.location_id = a.sub_location_id
+											SET a.enabled 				= 0,
+												a.update_timezone		= '" . $timezone . "',
+												a.update_date			= '" . $add_date . "',
+												a.update_by_user_id		= '" . $_SESSION['user_id'] . "',
+												a.update_by				= '" . $_SESSION['username'] . "',
+												a.update_ip				= '" . $add_ip . "',
+												a.update_from_module_id	= '" . $module_id . "'
+											WHERE a.po_id = '" . $id . "'
+											AND b.id = '" . $product_assignment_id . "'
+											AND a.recevied_product_category = '" . $product_category_diagn . "'
+											AND (a.serial_no_barcode IS NULL OR a.serial_no_barcode = '') 
+											LIMIT 1 ";
+							$db->query($conn, $sql_c_up);
+							*/
 						}
+
+						$update_product_id= "";
+						if($po_detail_id1 == '0' && $product_id_not_in_po > 0){
+							$update_product_id = " product_id = ".$product_id_not_in_po.", ";
+						}
+
 						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
 																				po_detail_id						= '" . $po_detail_id1 . "', 
 																				assignment_id						= '" . $assignment_id . "', 
 																				serial_no_barcode					= '" . $data . "', 
+																				".$update_product_id."
  
 																				phone_check_api_data				= '" . $jsonData2 . "',
 																				model_name							= '" . $model_name . "',

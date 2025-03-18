@@ -1441,6 +1441,7 @@
                                         WHERE a.po_id = '" . $id . "'
                                         AND (a.is_diagnost = 1 || (a.serial_no_barcode = '' || a.serial_no_barcode IS NULL))
                                         AND a.po_detail_id = 0
+                                        AND a.product_id = 0
                                         GROUP BY a.recevied_product_category, sub_location_id
                                     ) AS t1
                                     ORDER BY product_type DESC, record_type, product_category, sub_location_id, serial_no_barcode ";  //echo $sql;

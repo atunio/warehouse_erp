@@ -313,9 +313,10 @@
                             </form>
                             <?php
                             if (isset($assignment_id) && $assignment_id > 0) {
-                                $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id
+                                $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name
                                                     FROM phone_check_api_data a
                                                     LEFT JOIN products c ON c.product_model_no = a.model_no 
+                                                    LEFT JOIN product_categories c2 ON c2.id = c.product_category
                                                     LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
                                                     WHERE a.po_id = '" . $id . "' 
                                                     AND a.assignment_id = '" . $assignment_id . "' 
@@ -362,6 +363,7 @@
                                                                 $product_item_price     = $data['order_price'];
                                                                 $bulkserialNo[]         = $data['imei_no'];
                                                                 $phone_check_api_data   = $data['phone_check_api_data'];
+                                                                $product_category_name  = $data['category_name'];
                                                                 if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
                                                                     $checked = "";
                                                                     if ($po_detail_id > 0) {
@@ -385,15 +387,16 @@
                                                                             <?php
                                                                             if ($po_detail_id > 0) { ?>
                                                                                 <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>">
-                                                                                    <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?></option>
+                                                                                    <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?> (<?php echo $product_category_name; ?>)</option>
                                                                                 </select>
                                                                             <?php } else { ?>
                                                                                 <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>" class="fetched_productids1 select2 browser-default select2-hidden-accessible ">
                                                                                     <option value="">Select</option>
                                                                                     <?php
-                                                                                    $sql_pd03       = "	SELECT c.id, c.product_uniqueid, c.product_model_no
-                                                                                                            FROM  products c 
-                                                                                                            WHERE 1=1 AND c.enabled = 1 ";
+                                                                                    $sql_pd03       = "	SELECT c.id, c.product_uniqueid, c.product_model_no, d.category_name
+                                                                                                        FROM  products c 
+                                                                                                        LEFT JOIN product_categories d ON d.id = c.product_category
+                                                                                                        WHERE 1=1 AND c.enabled = 1 ";
                                                                                     $result_pd03    = $db->query($conn, $sql_pd03);
                                                                                     $count_pd03     = $db->counter($result_pd03);
                                                                                     if ($count_pd03 > 0) {
@@ -401,7 +404,7 @@
                                                                                         foreach ($row_pd03 as $data_pd03) { ?>
                                                                                             <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if ($phone_check_model_no == $data_pd03['product_model_no']) {
                                                                                                                                                                 echo " selected ";
-                                                                                                                                                            } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?></option>
+                                                                                                                                                            } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?>, (<?php echo $data_pd03['category_name']; ?> )</option>
                                                                                     <?php }
                                                                                     } ?>
                                                                                 </select>

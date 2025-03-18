@@ -493,7 +493,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
 																		sub_location_id, is_diagnost, duplication_check_token, 
 																		add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $product_id_barcode . "', '" . $serial_no_barcode . "',  '" . $order_price . "', '" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 
+							 VALUES('" . $id . "', '" . $product_id_barcode . "',  '" . $serial_no_barcode . "', '" . $order_price . "', '" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 
 							 			1, 1, 1,
 							 		'" . $sub_location_id_barcode . "', '1', '" . $duplication_check_token . "', 
 							 		'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
@@ -504,8 +504,8 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						/////////////////////////// Create Stock  START /////////////////////////////
 
 						//if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
-						$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
-									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, serial_no, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
+									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $serial_no_barcode . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$db->query($conn, $sql6);
 						/*
 						$sql_c_up = "UPDATE purchase_order_detail_receive SET 	 

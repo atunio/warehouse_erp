@@ -72,7 +72,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			if (access("edit_perm") == 0) {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM product_categories a WHERE a.category_name = '" . $category_name . "' AND a.id != '" . $id . "'";
+				$sql_dup	= " SELECT a.* FROM product_categories a 
+								WHERE a.category_name 	= '" . $category_name . "' 
+								 AND a.category_type	= '" . $category_type . "'
+								AND a.id 				!= '" . $id . "'";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {

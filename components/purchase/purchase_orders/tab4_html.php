@@ -86,10 +86,12 @@
                                 <tr>
                                     <?php
                                     $headings = '	<th class="sno_width_60">S.No</th>
-                                                        <th>Product ID</th>
-                                                        <th>Serial#</th>
-                                                        <th>Overall Grade</th>
-                                                        <th>Defects Or Notes</th> ';
+                                                    <th>Product ID</th>
+                                                    <th>Serial#</th>
+                                                    <th>Overall Grade</th>
+                                                    <th>Defects Or Notes</th> 
+                                                    <th>Status</th>
+                                                    <th>Price</th>';
                                     echo $headings;
                                     $headings2 = ' '; ?>
                                 </tr>
@@ -107,6 +109,8 @@
                                             <td style="<?= $td_padding; ?>"><?php echo $data['serial_no']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['overall_grade']; ?></td>
                                             <td style="<?= $td_padding; ?>"><?php echo $data['defects_or_notes']; ?></td>
+                                            <td style="<?= $td_padding; ?>"><?php echo $data['status']; ?></td>
+                                            <td style="<?= $td_padding; ?>"><?php echo $data['price']; ?></td>
                                         </tr>
                                 <?php
                                         $i++;

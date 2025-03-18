@@ -259,6 +259,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
+			$order_qty = array_values(array_filter($order_qty));
+			$order_price = array_values(array_filter($order_price));
+			$product_condition = array_values(array_filter($product_condition));
+			$expected_status = array_values(array_filter($expected_status));
+			///echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaa <pre>"; print_r($filtered_product_ids);  print_r($order_qty); print_r($order_price); print_r($product_condition);die;
 			foreach ($filtered_product_ids as $data_p) {
 				if($data_p !=""){
 					$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
@@ -315,6 +320,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 				$ii = 0; // Initialize the counter before the loop
 				$rr = 1;
+				$order_part_qty = (array_values(array_filter($order_part_qty)));
+				$order_part_price = (array_values(array_filter($order_part_price)));
 				foreach ($filtered_id as $package_id) {
 					$sql_dup	= " SELECT a.* 
 									FROM purchase_order_packages_detail a 

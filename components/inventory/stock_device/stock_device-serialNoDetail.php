@@ -172,7 +172,7 @@ $page_heading 	= "Serial# Detail";
 													<th>LCD</th>
 													<th>Body</th>
 													<th>Digitilizer</th>
-													<th>Condition</th>
+													<th>Overall Grade</th>
 													<th>Storage</th>
 													<th>Cost</th>
 													<th>Defective Note 1</th>

@@ -199,6 +199,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								foreach ($data1 as $key => $data) {
 									if ($key != "" && $key != 'is_insert') {
+										if($data == '-'){
+											$data = "";
+										}
 										if ($key == 'product_id') {
 											$key2 = "product_uniqueid";
 										} else {

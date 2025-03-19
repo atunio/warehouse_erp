@@ -29,6 +29,7 @@ if ($cmd == 'edit' && isset($id)) {
 	$purpose			= $row_ee[0]['purpose'];
 	$sub_location_type	= $row_ee[0]['sub_location_type'];
 	$is_mobile			= $row_ee[0]['is_mobile'];
+	$total_capacity		= $row_ee[0]['total_capacity'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -49,6 +50,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
+	$field_name = "total_capacity";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error[$field_name] 		= "Required";
+		${$field_name . "_valid"} 	= "invalid";
+	}
 
 	if (empty($error)) {
 		if ($cmd == 'add') {
@@ -61,13 +67,13 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".warehouse_sub_locations(warehouse_id, sub_location_name, purpose, sub_location_type, is_mobile, add_date, add_by, add_ip)
-							VALUES('" . $warehouse_id . "', '" . $sub_location_name . "', '" . $purpose . "', '" . $sub_location_type . "', '" . $is_mobile . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".warehouse_sub_locations(warehouse_id, sub_location_name, total_capacity, purpose, sub_location_type, is_mobile, add_date, add_by, add_ip)
+							VALUES('" . $warehouse_id . "', '" . $sub_location_name . "', '" . $total_capacity . "', '" . $purpose . "', '" . $sub_location_type . "', '" . $is_mobile . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$sub_location_name = $warehouse_id =  $purpose =  $sub_location_type =  $is_mobile = "";
+						$sub_location_name = $warehouse_id = $total_capacity = $purpose =  $sub_location_type =  $is_mobile = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -88,6 +94,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE warehouse_sub_locations SET warehouse_id		= '" . $warehouse_id . "',
 																	sub_location_name	= '" . $sub_location_name . "', 
+																	total_capacity		= '" . $total_capacity . "', 
 																	purpose				= '" . $purpose . "', 
 																	sub_location_type	= '" . $sub_location_type . "', 
 																	is_mobile			= '" . $is_mobile . "', 
@@ -219,6 +226,31 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
+							<div class="input-field col m4 s12">
+								<?php
+								$field_name 	= "total_capacity";
+								$field_label 	= "Capacity";
+								?>
+								<i class="material-icons prefix">description</i>
+								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red">* <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="input-field col m12 s12">
+							</div>
+						</div>
+						<div class="row">
 
 							<div class="input-field col m4 s12">
 								<?php
@@ -238,12 +270,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-						</div>
-						<div class="row">
-							<div class="input-field col m12 s12">
-							</div>
-						</div>
-						<div class="row">
 							<div class="input-field col m4 s12">
 								<?php
 								$field_name 	= "sub_location_type";

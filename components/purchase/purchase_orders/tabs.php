@@ -51,19 +51,28 @@
                     <i class="material-icons">add_shopping_cart</i>
                     <span> Arrival
                         <?php
-                        $sql2                = "SELECT a.*
+                        $total_logistics = 0;
+                        $sql2               = " SELECT ifnull(sum(a.no_of_boxes), 0) as total_no_of_boxes
                                                 FROM purchase_order_detail_logistics a
                                                 WHERE a.po_id = '" . $id . "'";
-                        $result2            = $db->query($conn, $sql2);
-                        $total_logistics    = $db->counter($result2);
+                        $result_logistics1  = $db->query($conn, $sql2);
+                        $ct_logistics       = $db->counter($result_logistics1);
+                        if($ct_logistics >0){
+                            $row_logistics1     = $db->fetch($result_logistics1);
+                            $total_logistics    = $row_logistics1[0]['total_no_of_boxes'];
+                        }
 
-                        $j              = 0;
-                        $sql3           = " SELECT a.*
-                                            FROM purchase_order_detail_logistics a
-                                            WHERE a.po_id = '" . $id . "'
-                                            AND arrived_date IS NOT NULL ";
-                        $result3        = $db->query($conn, $sql3);
-                        $total_arrived  = $db->counter($result3);
+                        $total_arrived = 0;
+                        $sql2               = " SELECT ifnull(sum(a.no_of_box_arried), 0) as total_no_of_box_arried
+                                                FROM purchase_order_detail_logistics_receiving a
+                                                WHERE a.po_id = '" . $id . "'";
+                        $result_logistics1  = $db->query($conn, $sql2);
+                        $ct_logistics       = $db->counter($result_logistics1);
+                        if($ct_logistics >0){
+                            $row_logistics1     = $db->fetch($result_logistics1);
+                            $total_arrived      = $row_logistics1[0]['total_no_of_box_arried'];
+                        }
+
                         if ($total_logistics > 0 && $total_arrived > 0) {
                             $total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
                             if ($total_arrival_percentage > 0) {

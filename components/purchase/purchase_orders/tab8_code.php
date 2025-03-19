@@ -3,6 +3,12 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
 }
 if (isset($_POST['is_Submit_tab8']) && $_POST['is_Submit_tab8'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (empty($error8)) {
 		if (po_permisions("PriceSetup") == 0) {
 			$error8['msg'] = "You do not have add permissions.";

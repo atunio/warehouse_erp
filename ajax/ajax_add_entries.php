@@ -521,9 +521,21 @@ switch ($type) {
                 if ($ok) {
                         $id				= mysqli_insert_id($conn);
 						$assignment_no  = "A" . $id;
+
+                        $sql_dup	= " SELECT a.* FROM users_bin_for_diagnostic a WHERE  assignment_no	= '" . $assignment_no . "' ";
+                        $result_dup	= $db->query($conn, $sql_dup);
+                        $count_dup	= $db->counter($result_dup);
+                        if ($count_dup > 0) {
+                            $assignment_no  = "A" . $assignment_no;
+                            $sql_dup	= " SELECT a.* FROM users_bin_for_diagnostic a WHERE  assignment_no	= '" . $assignment_no . "' ";
+                            $result_dup	= $db->query($conn, $sql_dup);
+                            $count_dup	= $db->counter($result_dup);
+                            if ($count_dup > 0) {
+                                $assignment_no  = "AA" . $assignment_no;
+                            }
+                        }
 						$sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
-
                     include('../components/diagnostic/diagnostic_manager_view/display_users_bins.php');
                 } else {
                     echo "Fail";

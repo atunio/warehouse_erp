@@ -13,6 +13,9 @@ if (!isset($cmd2_2)) {
 if (!isset($cmd3)) {
 	$cmd3 = "";
 }
+if (!isset($cmd2)) {
+	$cmd2 = "";
+}
 if (!isset($cmd4)) {
 	$cmd4 = "add";
 }

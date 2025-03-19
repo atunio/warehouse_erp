@@ -83,18 +83,22 @@ if ($counter_ee1 > 0) {
 		$po_no			= $data['po_no'];
 		$arrived_date	= dateformat2($data['arrived_date']);
 		$no_of_boxes	= $data['no_of_boxes'];
+		$no_of_boxes	= $data['no_of_boxes'];
 
-		$sql_ee12 		= "	SELECT IFNULL(SUM(a.no_of_boxes), 0) as total_boxes
+		$sql_ee12 		= "	SELECT no_of_boxes as total_boxes, IFNULL(SUM(b.no_of_box_arried), 0) as total_boxes_arried
 							FROM purchase_order_detail_logistics a
-							WHERE a.po_id = '" . $id . "' ";
+							LEFT JOIN  purchase_order_detail_logistics_receiving b ON b.logistics_id = a.id
+							WHERE a.po_id = '" . $id . "'
+							GROUP BY a.id, a.no_of_boxes ";
 		$result_ee12 	= $db->query($conn, $sql_ee12);
 		$counter_ee12	= $db->counter($result_ee12);
-		$total_boxes 	= 0;
+		$total_boxes 	= $total_boxes_arried = 0;
 		if ($counter_ee12 > 0) {
-			$row_ee12		= $db->fetch($result_ee12);
-			$total_boxes	= $row_ee12[0]['total_boxes'];
+			$row_ee12			= $db->fetch($result_ee12);
+			$total_boxes		= $row_ee12[0]['total_boxes'];
+			$total_boxes_arried	= $row_ee12[0]['total_boxes_arried'];
 		}
-		for ($i = 1; $i <= $no_of_boxes; $i++) {
+		for ($i = 1; $i <= $total_boxes_arried; $i++) {
 			$report_data = '
 				<div class="text_align_center main_font">
 					<br>

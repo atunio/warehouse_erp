@@ -16,6 +16,12 @@ if (isset($cmd7) && $cmd7 == 'delete' && isset($detail_id)) {
 }
 if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($ids_for_rma) || (isset($ids_for_rma) && sizeof($ids_for_rma) == 0)) {
 		$error7['msg'] = "Select atleast one record";
 	}
@@ -123,6 +129,12 @@ if (isset($_POST['is_Submit_tab7_3']) && $_POST['is_Submit_tab7_3'] == 'Y') {
 }
 if (isset($_POST['is_Submit_tab7_2']) && $_POST['is_Submit_tab7_2'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	$field_name = "status_id_rma";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error7[$field_name] = "Required";

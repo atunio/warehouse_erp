@@ -1992,3 +1992,15 @@ function receiveProductsMaping($quantity, &$poDetails)
 
 	return $receivedDetails;
 }
+function bin_item_count($db, $conn, $location_id)
+{
+	$total_capacity = 0;
+	$sql			= " SELECT a.* FROM warehouse_sub_locations a  WHERE a.id = '" . $location_id . "'  ";
+	$result     	= $db->query($conn, $sql);
+	$count      	= $db->counter($result);
+	if ($count > 0) {
+		$row = $db->fetch($result);
+		$total_capacity = $row[0]['total_capacity'];
+	}
+	return $total_capacity;
+}

@@ -247,8 +247,7 @@
         if ($count_log > 0) { ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />
@@ -288,12 +287,12 @@
                                     if ($count_log > 0) {
                                         $row_cl1 = $db->fetch($result_log);
                                         foreach ($row_cl1 as $data) {
-                                            $detail_id2     = $data['id'];
-                                            $arrived_date_11   = $data['arrived_date']; ?>
+                                            $detail_id2 = $data['id'];
+                                            $edit_lock  = $data['edit_lock']; ?>
                                             <tr>
                                                 <td style="text-align: center; <?= $td_padding; ?>">
                                                     <?php
-                                                    if ($arrived_date_11 == '' || $arrived_date_11 == null) { ?>
+                                                    if ($edit_lock == '0') { ?>
                                                         <label style="margin-left: 25px;">
                                                             <input type="checkbox" name="logistics_ids[]" id="logistics_ids[]" value="<?= $detail_id2; ?>" <?php
                                                                                                                                                             if (isset($logistics_ids) && in_array($detail_id2, $logistics_ids)) {
@@ -313,7 +312,7 @@
                                                 <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['expected_arrival_date']); ?></td>
                                                 <td style="<?= $td_padding; ?>">
                                                     <?php
-                                                    if ($data['edit_lock'] == 0 && access("edit_perm") == 1 && ($arrived_date_11 == '' || $arrived_date_11 == null)) { ?>
+                                                    if ($data['edit_lock'] == 0 && access("edit_perm") == 1) { ?>
                                                         <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=edit&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
                                                             <i class="material-icons dp48">edit</i>
                                                         </a> &nbsp;
@@ -384,8 +383,7 @@
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>" method="post">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab2" value="Y" />
-                <input type="hidden" name="po_id" value="<?php if (isset($po_id)) echo $po_id; ?>" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />

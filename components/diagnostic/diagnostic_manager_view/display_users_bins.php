@@ -20,7 +20,7 @@
             foreach ($locations as $location_data) { ?>
                 <?php
                 $sql1 = "SELECT b.id, CONCAT(a.first_name, ' ', a.last_name) AS user_full_name, a.profile_pic,
-                                b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type 
+                                b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type ,b.assignment_no
                         FROM users a
                         INNER JOIN users_bin_for_diagnostic b ON a.id = b.bin_user_id AND b.is_processing_done = '0'
                         INNER JOIN warehouse_sub_locations b2 ON b2.id = b.location_id
@@ -38,28 +38,24 @@
                         $location_id             = $data_2['location_id'];
                         $sub_location_name        = $data_2['sub_location_name'];
                         $sub_location_type        = $data_2['sub_location_type'];
+                        $assignment_no            = $data_2['assignment_no'];
                         $total_estimated_time     = 0;
-
-                        $sql_time = "SELECT IFNULL((COUNT(a.id) / e.devices_per_user_per_day), 0) AS estimated_time
+                        
+                        $sql_time ="SELECT IFNULL((COUNT(a.id) / e.devices_per_user_per_day), 0) AS estimated_time
                                     FROM purchase_order_detail_receive a
-                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                    INNER JOIN purchase_orders c ON c.id = b.po_id
-                                    INNER JOIN products a2 ON a2.id = b.product_id
-                                    INNER JOIN product_categories a3 ON a3.id = a2.product_category
-                                    INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+                                    LEFT JOIN formula_category e ON e.product_category = a.recevied_product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
                                     INNER JOIN users_bin_for_diagnostic d1 ON d1.location_id = a.sub_location_id AND d1.`is_processing_done` = 0 
-                                    LEFT JOIN formula_category e ON e.product_category = a2.product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
                                     WHERE 1=1
                                     AND is_diagnost = 0
                                     AND d1.bin_user_id = '$bin_user_id' 
                                     AND d1.location_id = '$location_id' 
-                                    GROUP BY a.sub_location_id, a3.category_name";
+                                    GROUP BY a.sub_location_id, e.product_category";
                         $result_time    = $db->query($conn, $sql_time);
                         $count_time    = $db->counter($result_time);
                         if ($count_time > 0) {
                             $row_time = $db->fetch($result_time);
                             foreach ($row_time as $data_time) {
-                                $total_estimated_time += $data_time['estimated_time']; ?>
+                                $total_estimated_time += $data_time['estimated_time'];  ?>
                         <?php }
                         } ?>
                         <div style="text-align:center;" class="user" draggable="true" data-id="<?php echo $data_2['id']; ?>">
@@ -73,9 +69,14 @@
                                     echo "(" . $sub_location_type . ")";
                                 } ?>
                             </h5>
-                            <h6 class=" lighten-4"><?php echo round($total_estimated_time, 2); ?> Days</h6> &nbsp;&nbsp;
+                            <h6 class=" lighten-4">
+                                Assignment# <?php echo $assignment_no; ?><br><br>
+                                <?php echo round($total_estimated_time, 2); ?> Days</h6>
                             <a class="btn-floating waves-effect waves-light gradient-45deg-purple-deep-orange" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $detail_id2) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
                                 <i class="material-icons dp48">delete</i>
+                            </a>
+                            <a class="btn-floating waves-effect waves-light gradient-45deg-light-blue-cyan" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&bin_user_id=" . $bin_user_id . "&location_id=" . $location_id . "&page=editAssignment&cmd=edit&id=" . $detail_id2) ?>" title="Edit">
+                                <i class="material-icons dp48">edit</i>
                             </a>
                         </div>
         <?php }

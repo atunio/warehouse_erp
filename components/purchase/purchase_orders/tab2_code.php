@@ -44,7 +44,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 			if ($counter_ee1 == 0) {
 				$sql_c_up = "UPDATE  purchase_order_detail
 												SET 	
-													order_product_status	= '" . $before_logistic_status_dynamic . "',
+													order_product_status	= '" . $logistic_status_dynamic . "',
 
 													update_timezone			= '" . $timezone . "',
 													update_date				= '" . $add_date . "',
@@ -55,7 +55,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 
 				$sql_c_up = "UPDATE  purchase_orders
 												SET 	
-													order_status		= '" . $before_logistic_status_dynamic . "',
+													order_status		= '" . $logistic_status_dynamic . "',
 
 													update_timezone		= '" . $timezone . "',
 													update_date			= '" . $add_date . "',
@@ -66,7 +66,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 
 				$table		= "inventory_status";
 				$columns	= array("status_name");
-				$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);
+				$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $logistic_status_dynamic, $columns);
 				foreach ($get_col_from_table as $array_key1 => $array_data1) {
 					${$array_key1} = $array_data1;
 				}
@@ -79,6 +79,12 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 
 if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
 		$error2['status_id'] = "Required";
 	}
@@ -174,6 +180,12 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 }
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {
 		$error2['no_of_boxes_update'] = "Required";
 	}
@@ -287,6 +299,12 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 }
 if (isset($_POST['is_Submit_tab2_3']) && $_POST['is_Submit_tab2_3'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 
 	if (!isset($logistics_status) || (isset($logistics_status)  && ($logistics_status == "0" || $logistics_status == ""))) {
 		$error2['logistics_status'] = "Required";

@@ -1,13 +1,13 @@
 <?php
 
 if ($_SERVER['HTTP_HOST'] == 'localhost') {
-	$sub_location_id_barcode	= 1737;
+	$sub_location_id_barcode	= 2289;
 	$product_id_barcode 		= 1;
 	$logistic_id_barcode 		= 1;
-	$sub_location_id_manual		= 1737;
+	$sub_location_id_manual		= 2289;
 	$logistic_id 				= 1;
 	// $receiving_qties[5] 		= 15;
-	// $receiving_location[5]	= 1737;
+	// $receiving_location[5]	= 2289;
 	$product_id_manual 			= 1;
 	$logistic_id_manual			= 1;
 	$serial_no_manual			= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2", "DMQD7TMFMF3M3", "DMQD7TMFMF3M4", "DMQD7TMFMF3M5", "DMQD7TMFMF3M6", "DMQD7TMFMF3M7", "DMQD7TMFMF3M8", "R72F1QJ62X", "F9FRFN0HGHKH", "DLXN2FKQFK10");
@@ -20,9 +20,28 @@ if (isset($cmd5) && $cmd5 == 'delete' && isset($detail_id)) {
 		$msg5['msg_success'] = "Record has been deleted successfully.";
 	}
 }
+if (isset($cmd5_1) && $cmd5_1 == 'edit' && isset($detail_id)) {
+	$sql_ee1 		= "SELECT a.* FROM purchase_order_detail_receive a  WHERE a.id = '" . $detail_id . "'";
+	$result_ee1 	= $db->query($conn, $sql_ee1);
+	$counter_ee1	= $db->counter($result_ee1);  
+	if ($counter_ee1 > 0) {
+		$row_ee1				= $db->fetch($result_ee1);
+		$rc_price				= $row_ee1[0]['price'];
+		$rc_status_id			= $row_ee1[0]['inventory_status'];
+		$rc_sub_location_id		= $row_ee1[0]['sub_location_id']; 
+	} else {
+		$error5['msg'] = "No record found";
+	}
+}
 
 if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($receviedProductIds) || (isset($receviedProductIds) && sizeof($receviedProductIds) == 0)) {
 		$error5['msg'] = "Select atleast one record to delete";
 	}
@@ -85,6 +104,12 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 }
 if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($receiving_location2) || (isset($receiving_location2)  && sizeof($receiving_location2) == "0")) {
 		$error5['receiving_location2'] = "Required";
 	} else {
@@ -181,6 +206,12 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 /*
 if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 
 	if (!isset($serial_no_manual) || (isset($serial_no_manual)  && ($serial_no_manual == "0" || $serial_no_manual == ""))) {
 		$error5['serial_no_manual'] = "Required";
@@ -319,6 +350,12 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 /*
 if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (empty($error5)) {
 		if (po_permisions("Receive") == 0) {
 			$error5['msg'] = "You do not have add permissions.";
@@ -372,8 +409,27 @@ if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 */
 if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($sub_location_id_barcode) || (isset($sub_location_id_barcode)  && ($sub_location_id_barcode == "0" || $sub_location_id_barcode == ""))) {
 		$error5['sub_location_id_barcode'] = "Required";
+	}
+	else{
+		$sql_rc2			= " SELECT a.* 
+								FROM purchase_order_detail_receive a 
+								WHERE a.enabled 		= 1
+								AND a.po_id 			= '" . $id . "'
+								AND a.sub_location_id 	= '" . $sub_location_id_barcode . "' ";
+		$result_rc2     	= $db->query($conn, $sql_rc2);
+		$total_received2	= $db->counter($result_rc2);
+		$bin_capacity_rc1 	= bin_item_count($db, $conn, $sub_location_id_barcode);
+		if (($total_received2+1) > $bin_capacity_rc1) { 
+			$error5['sub_location_id_barcode'] = "More than Capacity ".$bin_capacity_rc1;
+		} 
 	}
 	if (!isset($serial_no_barcode) || (isset($serial_no_barcode)  && ($serial_no_barcode == "0" || $serial_no_barcode == ""))) {
 		$error5['serial_no_barcode'] = "Required";
@@ -417,7 +473,8 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 			$error5['product_id_barcode'] = "Required";
 		}	
 		*/
-		$sql_pd01_4		= "	SELECT  c.id, a.overall_grade, a.status
+		$vd_defects_or_notes = "";
+		$sql_pd01_4		= "	SELECT  c.id, a.overall_grade, a.status, a.defects_or_notes
 							FROM vender_po_data a 
 							INNER JOIN products b ON b.product_uniqueid = a.product_uniqueid
 							INNER JOIN purchase_order_detail c ON c.product_id = b.id AND c.po_id = '" . $id . "'
@@ -431,9 +488,50 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 			$product_id_barcode		= $row_pd01_4[0]['id'];
 			$c_product_condition1	= $row_pd01_4[0]['overall_grade'];
 			$c_product_status1		= $row_pd01_4[0]['status'];
+			$vd_defects_or_notes	= $row_pd01_4[0]['defects_or_notes'];
 		} else {
 			$error5['serial_no_barcode'] = "Serial#  does not match in vendor data";
 		}
+
+		$vender_d_status = "";
+		$sql_pd01_4		= "	SELECT  a.status
+							FROM vender_po_data a 
+							WHERE a.enabled = 1 
+							AND a.po_id = '" . $id . "'
+							AND a.serial_no = '" . $serial_no_barcode . "'
+							ORDER BY a.id DESC LIMIT 1 ";
+		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+		$count_pd01_4	= $db->counter($result_pd01_4);
+		if ($count_pd01_4 > 0) {
+			$row_pd01_4				= $db->fetch($result_pd01_4);
+			$vender_d_status		= $row_pd01_4[0]['status']; 
+			if($vender_d_status != 'Tested/Graded' && $vender_d_status !="" && $vender_d_status != NULL){
+				$sql_pd01_4		= "	SELECT  a.id
+									FROM purchase_order_detail_receive a 
+									WHERE a.enabled = 1 
+									AND a.po_id = '" . $id . "'
+									AND a.inventory_status = '5'
+									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  ";
+				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+				$count_pd01_4	= $db->counter($result_pd01_4);
+				if ($count_pd01_4 > 0) {
+					$error5['serial_no_barcode'] = "The Serial# is ".$vender_d_status;
+				}
+			}
+			else if($vender_d_status == 'Tested/Graded'){
+				$sql_pd01_4		= "	SELECT  a.id
+									FROM purchase_order_detail_receive a 
+									WHERE a.enabled = 1 
+									AND a.po_id = '" . $id . "'
+									AND a.inventory_status != '5'
+									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  ";
+				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+				$count_pd01_4	= $db->counter($result_pd01_4);
+				if ($count_pd01_4 > 0) {
+					$error5['serial_no_barcode'] = "The Serial# is ".$vender_d_status.", You have selected defective item's Bin";
+				}
+			}
+		} 
 	}
 	if (empty($error5)) {
 		if (po_permisions("Receive") == 0) {
@@ -489,12 +587,12 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
 					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, inventory_status, overall_grade, 
 
-																		edit_lock, is_import_diagnostic_data, is_diagnostic_bypass,
+																		edit_lock, is_import_diagnostic_data, is_diagnostic_bypass, defects_or_notes,
 
 																		sub_location_id, is_diagnost, duplication_check_token, 
 																		add_by_user_id, add_date,  add_by, add_ip, add_timezone)
 							 VALUES('" . $id . "', '" . $product_id_barcode . "',  '" . $serial_no_barcode . "', '" . $order_price . "', '" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 
-							 			1, 1, 1,
+							 			1, 1, 1, '" . $vd_defects_or_notes . "', 
 							 		'" . $sub_location_id_barcode . "', '1', '" . $duplication_check_token . "', 
 							 		'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
@@ -504,8 +602,12 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						/////////////////////////// Create Stock  START /////////////////////////////
 
 						//if ($row_pd3[0]['is_tested_po'] == 'No' && $row_pd3[0]['is_wiped_po'] == 'No' && $row_pd3[0]['is_imaged_po'] == 'No') {
-						$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, serial_no, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
-									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $serial_no_barcode . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$sql6 = "INSERT INTO product_stock( subscriber_users_id, receive_id, serial_no, 
+															product_id, p_total_stock, stock_grade,  p_inventory_status, sub_location,  
+															add_by_user_id, add_date, add_by, add_ip, add_timezone)
+									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $serial_no_barcode . "', 
+									'" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "',
+									'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$db->query($conn, $sql6);
 						/*
 						$sql_c_up = "UPDATE purchase_order_detail_receive SET 	 
@@ -544,30 +646,50 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 }
 if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
 	if (!isset($receiving_location) || (isset($receiving_location)  && sizeof($receiving_location) == "0")) {
 		$error5['receiving_location'] = "Required";
 	} else {
-		$receiving_location_error = 1;
-		foreach ($receiving_location as $data_r1) {
-			if ($data_r1 > 0) {
-				$receiving_location_error = 0;
+		foreach ($receiving_location as $key_r2 => $data_r2) {
+			if ($data_r2 > 0) {
+				if (!isset($receiving_qties[$key_r2]) || (isset($receiving_qties[$key_r2]) && ($receiving_qties[$key_r2] == '0' || $receiving_qties[$key_r2] == ''))) {
+					$error5['receiving_qties'][$key_r2] = "Required";
+				}
+				else{
+					
+					$category_qty = $receiving_qties[$key_r2];
+					$sql_rc2			= " SELECT a.* 
+											FROM purchase_order_detail_receive a 
+											WHERE a.enabled 		= 1
+											AND a.po_id 			= '" . $id . "'
+											AND a.sub_location_id 	= '" . $data_r2 . "' ";
+					$result_rc2     	= $db->query($conn, $sql_rc2);
+					$total_received2	= $db->counter($result_rc2);
+					$bin_capacity_rc1 	= bin_item_count($db, $conn, $data_r2);
+					if ($category_qty > $bin_capacity_rc1) {
+						$error5['receiving_location'][$key_r2] = "More than Capacity ".$bin_capacity_rc1;
+					}
+					else if (($total_received2+$category_qty) > $bin_capacity_rc1) { 
+						$error5['receiving_location'][$key_r2] = "More than Capacity ".$bin_capacity_rc1;
+					}  
+				}
 			}
-		}
-		if ($receiving_location_error == 1) {
-			$error5['receiving_location'] = "Required";
 		}
 	}
 	if (!isset($receiving_qties) || (isset($receiving_qties)  && sizeof($receiving_qties) == "0")) {
 		$error5['receiving_qties'] = "Required";
 	} else {
-		$receiving_qty_error = 1;
-		foreach ($receiving_qties as $data_r1) {
-			if ($data_r1 > 0) {
-				$receiving_qty_error = 0;
+		foreach ($receiving_qties as $key_r2 => $data_r2) {
+			if ($data_r2 > 0) {
+				if (!isset($receiving_location[$key_r2]) || (isset($receiving_location[$key_r2]) && ($receiving_location[$key_r2] == '0' || $receiving_location[$key_r2] == ''))) {
+					$error5['receiving_location'][$key_r2] = "Required";
+				}
 			}
-		}
-		if ($receiving_qty_error == 1) {
-			$error5['receiving_qties'] = "Required";
 		}
 	}
 
@@ -664,5 +786,64 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 		}
 	} else {
 		$error5['msg'] = "Please check Error in form.";
+	}
+}
+if (isset($_POST['is_Submit_tab5_1']) && $_POST['is_Submit_tab5_1'] == 'Y') {
+	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
+	$field_name = "rc_price";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error5[$field_name] = "Required";
+	}  
+	$field_name = "rc_status_id";
+	if (isset(${$field_name}) && (${$field_name} == "" || ${$field_name} == "0")) {
+		$error5[$field_name] = "Required";
+	} 
+	$field_name = "rc_sub_location_id";
+	if (isset(${$field_name}) &&  (${$field_name} == "" || ${$field_name} == "0")) {
+		$error5[$field_name] = "Required";
+	}    
+	if (empty($error5)) {
+		if (po_permisions("Receive") == 0) {
+			$error5['msg'] = "You do not have add permissions.";
+		} else {
+			$sql_c_up = "UPDATE  purchase_order_detail_receive 
+										SET 
+											price 					= '" . $rc_price . "',
+											inventory_status		= '" . $rc_status_id . "',
+											sub_location_id			= '" . $rc_sub_location_id . "',
+											
+											update_timezone			= '" . $timezone . "',
+											update_date				= '" . $add_date . "',
+											update_by				= '" . $_SESSION['username'] . "',
+											update_ip				= '" . $add_ip . "'
+						WHERE id = '" . $detail_id . "' ";
+			$ok = $db->query($conn, $sql_c_up);
+			if ($ok) { 
+
+				$sql_c_up = "UPDATE  product_stock 
+											SET 
+												price 					= '" . $rc_price . "',
+												p_inventory_status		= '" . $rc_status_id . "',
+												sub_location			= '" . $rc_sub_location_id . "',
+												
+												update_timezone			= '" . $timezone . "',
+												update_date				= '" . $add_date . "',
+												update_by				= '" . $_SESSION['username'] . "',
+												update_ip				= '" . $add_ip . "'
+							WHERE receive_id = '" . $detail_id . "' ";
+				$ok = $db->query($conn, $sql_c_up); 
+				$msg5['msg_success'] = "Record has been updated successfully.";
+			} else {
+				$error5['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
+			}
+		}
+	} else {
+		$error5['msg'] = "Please check the error in form.";
 	}
 }

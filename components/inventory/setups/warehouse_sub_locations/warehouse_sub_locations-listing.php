@@ -206,7 +206,7 @@ $page_heading 	= "List of " . $main_menu_name;
 								<div class="row">
 									<div class="text_align_right">
 										<?php 
-										$table_columns	= array('SNo', 'Warehouse','Purpose','Sub Location','Type','Phone Device','Actions');
+										$table_columns	= array('SNo', 'Warehouse', 'Sub Location', 'Capacity','Purpose','Type','Phone Device','Actions');
 										$k 				= 0;
 										foreach($table_columns as $data_c1){?>
 											<label>
@@ -244,16 +244,50 @@ $page_heading 	= "List of " . $main_menu_name;
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$id = $data['id'];  ?>
+														$id = $data['id'];
+														$column_no = 0;  ?>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-															<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php if ($data['warehouse_name'] != "") echo ucwords(strtolower($data['warehouse_name'])); ?></td>
-															<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php if ($data['purpose'] != "") echo ucwords(strtolower($data['purpose'])); ?></td>
-															<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php if ($data['sub_location_name'] != "") echo ucwords(strtolower($data['sub_location_name'])); ?></td>
-															<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php if ($data['sub_location_type'] != "") echo ucwords(strtolower($data['sub_location_type'])); ?></td>
-															<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php if ($data['is_mobile'] != "") echo ucwords(strtolower($data['is_mobile'])); ?></td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[6]);?>">
+															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																echo $i + 1; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
 																<?php
+																$column_no++;
+																if ($data['warehouse_name'] != "") echo ucwords(strtolower($data['warehouse_name'])); 
+																?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																if ($data['sub_location_name'] != "") echo ucwords(strtolower($data['sub_location_name'])); 
+																?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																echo $data['total_capacity']; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																if ($data['purpose'] != "") echo ucwords(strtolower($data['purpose'])); 
+																?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																if ($data['sub_location_type'] != "") echo ucwords(strtolower($data['sub_location_type'])); ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php 
+																$column_no++;
+																if ($data['is_mobile'] != "") echo ucwords(strtolower($data['is_mobile'])); ?>
+															</td>
+															<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]);?>">
+																<?php
+																$column_no++;
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
 																		<i class="material-icons dp48">edit</i>

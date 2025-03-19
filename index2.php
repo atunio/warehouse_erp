@@ -200,11 +200,20 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				if ($string_data_explode[0] == 'cmd3') {
 					$cmd3 				= $string_data_explode[1];
 				}
+				if ($string_data_explode[0] == 'cmd3_1') {
+					$cmd3_1				= $string_data_explode[1];
+				}
+				if ($string_data_explode[0] == 'cmd3_2') {
+					$cmd3_2				= $string_data_explode[1];
+				}
 				if ($string_data_explode[0] == 'cmd4') {
 					$cmd4 				= $string_data_explode[1];
 				}
 				if ($string_data_explode[0] == 'cmd5') {
 					$cmd5 				= $string_data_explode[1];
+				}
+				if ($string_data_explode[0] == 'cmd5_1') {
+					$cmd5_1 				= $string_data_explode[1];
 				}
 				if ($string_data_explode[0] == 'cmd6') {
 					$cmd6 				= $string_data_explode[1];

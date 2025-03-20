@@ -425,28 +425,29 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 											</tbody>
 										</table>
 									</div>
-								</div>  
+								</div>
 							</div>
 						</div>
 					</div>
-					<?php 
-					$sql3 			="	SELECT b.id, CONCAT(COALESCE(a.first_name), ' ', COALESCE(a.last_name)) AS user_full_name, a.profile_pic,
-											b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type ,b.assignment_no
+					<?php
+					$sql3 			= "	SELECT b.id, CONCAT(COALESCE(a.first_name), ' ', COALESCE(a.last_name)) AS user_full_name, a.profile_pic,
+											b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type ,b.assignment_no, b.add_date
 										FROM users a
 										INNER JOIN users_bin_for_diagnostic b ON a.id = b.bin_user_id AND b.is_processing_done = '0'
 										INNER JOIN warehouse_sub_locations b2 ON b2.id = b.location_id
 										WHERE 1=1
-										GROUP BY bin_user_id, location_id ";
-					$result_cl3		= $db->query($conn, $sql3); 
+										GROUP BY bin_user_id, location_id
+										ORDER BY a.first_name, a.last_name, b2.sub_location_name ";
+					$result_cl3		= $db->query($conn, $sql3);
 					$count_3		= $db->counter($result_cl3);
-					if($count_3 >0){?>
+					if ($count_3 > 0) { ?>
 						<div class="col s12">
 							<div class="card custom_margin_card_table_top">
 								<div class="card-content custom_padding_card_content_table_top">
 									<div class="row">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('SNo', 'Picture', 'Tester Name', 'Bin', 'Assignment#', 'Days', 'Actions');
+											$table_columns	= array('SNo', 'Tester Name', 'Bin', 'Assignment#', 'Assign Date', 'Days', 'Actions');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -463,7 +464,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 											<table id="page-length-option" class="display pagelength50_10">
 												<thead>
 													<tr>
-														<?php 
+														<?php
 														$headings = "";
 														foreach ($table_columns as $data_c) {
 															if ($data_c == 'SNo') {
@@ -481,17 +482,18 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 													$i = 0;
 													$row_cl3 = $db->fetch($result_cl3);
 													foreach ($row_cl3 as $data3) {
-														$column_no = 0;  
-														
-														$detail_id2             = $data3['id'];
-														$bin_user_id             = $data3['bin_user_id'];
-														$location_id             = $data3['location_id'];
-														$sub_location_name        = $data3['sub_location_name'];
-														$sub_location_type        = $data3['sub_location_type'];
-														$assignment_no            = $data3['assignment_no'];
-														$total_estimated_time     = 0;
-															
-														$sql_time ="SELECT IFNULL((COUNT(a.id) / e.devices_per_user_per_day), 0) AS estimated_time
+														$column_no = 0;
+
+														$detail_id2				= $data3['id'];
+														$bin_user_id			= $data3['bin_user_id'];
+														$location_id			= $data3['location_id'];
+														$sub_location_name		= $data3['sub_location_name'];
+														$sub_location_type		= $data3['sub_location_type'];
+														$assignment_no			= $data3['assignment_no'];
+														$assign_date			= dateformat2($data3['add_date']);
+														$total_estimated_time	= 0;
+
+														$sql_time = "SELECT IFNULL((COUNT(a.id) / e.devices_per_user_per_day), 0) AS estimated_time
 																	FROM purchase_order_detail_receive a
 																	LEFT JOIN formula_category e ON e.product_category = a.recevied_product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
 																	INNER JOIN users_bin_for_diagnostic d1 ON d1.location_id = a.sub_location_id AND d1.`is_processing_done` = 0 
@@ -499,7 +501,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																	AND is_diagnost = 0
 																	AND d1.bin_user_id = '$bin_user_id' 
 																	AND d1.location_id = '$location_id' 
-																	GROUP BY a.sub_location_id, e.product_category";
+																	GROUP BY a.sub_location_id, e.product_category ";
 														$result_time    = $db->query($conn, $sql_time);
 														$count_time    = $db->counter($result_time);
 														if ($count_time > 0) {
@@ -515,6 +517,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																$column_no++;
 																?>
 															</td>
+															<?php /*?>
 															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
 																$column_no++;
@@ -523,30 +526,37 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																	<img src="app-assets/images/logo/<?php  echo $data3['profile_pic']; ?>" style="height:70px !important;" alt="<?php echo $data3['user_full_name']; ?>" class="circle z-depth-2 responsive-img">
 																</span>
 															</td> 
-															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+															<?php */ ?>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
 																$column_no++;
 																?>
 																<?php echo $data3['user_full_name']; ?>
-															</td> 
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
 																<?php
 																$column_no++;
 																?>
-																<?php echo $sub_location_name;?>
-															</td> 
+																<?php echo $sub_location_name; ?>
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
 																<?php
 																$column_no++;
 																?>
 																<?php echo $assignment_no; ?>
-															</td> 
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
+																<?php
+																$column_no++;
+																?>
+																<?php echo $assign_date; ?>
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
 																<?php
 																$column_no++;
 																?>
 																<?php echo round($total_estimated_time, 2); ?>
-															</td> 
+															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
 																<?php
 																$column_no++;
@@ -557,11 +567,11 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $detail_id2) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
 																	<i class="material-icons dp48">delete</i>
 																</a>
-																
-															</td> 
+
+															</td>
 														</tr>
-												<?php $i++;
-													}?>
+													<?php $i++;
+													} ?>
 												</tbody>
 												<tfoot>
 													<tr>
@@ -574,9 +584,9 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 								</div>
 							</div>
 						</div>
-					<?php }?>
+					<?php } ?>
 				</div>
-				
+
 				<?PHP /*?>
 				<div class="row">
 					<div class="col s12">
@@ -682,7 +692,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 						</div>
 					</div>
 				</div>
-				<?PHP */?>
+				<?PHP */ ?>
 			</div>
 			<!-- </div> -->
 		</div>

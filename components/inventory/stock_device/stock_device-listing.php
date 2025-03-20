@@ -229,7 +229,7 @@ $page_heading 	= "Stock Summary";
 									</div>
 								<?php } ?>
 								<br>
-								<form method="post" autocomplete="off" enctype="multipart/form-data"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
+								<form method="post" autocomplete="off" enctype="multipart/form-data" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -529,7 +529,6 @@ $page_heading 	= "Stock Summary";
 														$product_desc 		= ucwords(strtolower(substr((string) ($data['product_desc'] ?? ''), 0, 50)));
 														$total_stock_p 		= 0;
 														$avg_price 			= 0;
-
 														$sql_cl1	= "	SELECT *
 																		FROM (
 																			SELECT  a2.id, a2.product_id, a2.stock_grade, SUM(a2.p_total_stock) AS p_total_stock, SUM(a2.price)/SUM(a2.p_total_stock)  AS avg_price,

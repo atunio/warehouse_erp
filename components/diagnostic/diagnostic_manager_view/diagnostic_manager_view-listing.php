@@ -520,7 +520,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																$column_no++;
 																?>
 																<span class="avatar-contact avatar-online">
-																	<img src="app-assets/images/logo/<?php echo $data3['profile_pic']; ?>" style="height:70px !important;" alt="<?php echo $data3['user_full_name']; ?>">
+																	<img src="app-assets/images/logo/<?php  echo $data3['profile_pic']; ?>" style="height:70px !important;" alt="<?php echo $data3['user_full_name']; ?>" class="circle z-depth-2 responsive-img">
 																</span>
 															</td> 
 															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">

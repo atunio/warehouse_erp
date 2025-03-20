@@ -4,7 +4,7 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
- 	$sub_location_name	= "A".date('His');
+	$sub_location_name	= "A" . date('His');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -19,6 +19,7 @@ if ($cmd == 'add') {
 	$button_val 	= "Add";
 	$id 			= "";
 }
+// echo "<br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaa: ";
 if ($cmd == 'edit' && isset($id)) {
 
 	$sql_ee				= "SELECT a.* FROM warehouse_sub_locations a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
@@ -152,9 +153,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -164,17 +165,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
-								<?php  
+								</a>
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">
@@ -275,7 +276,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-							
+
 						</div>
 						<div class="row">
 							<div class="input-field col m12 s12">

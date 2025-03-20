@@ -37,14 +37,14 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, product_category, category_name 
+$sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, product_category, category_name, sum(po_order_qty) as po_order_qty 
 				FROM (
 				SELECT * 
 				FROM (
 					SELECT * FROM (
 						SELECT 
 							id, product_id, product_uniqueid, product_desc, product_category, category_name, '' as p_inventory_status, 
-							sub_location_id as sub_location, serial_no_barcode as serial_no, overall_grade as stock_grade
+							sub_location_id as sub_location, serial_no_barcode as serial_no, overall_grade as stock_grade, sum(po_order_qty) as po_order_qty
 						FROM (
  							SELECT  
 								c.product_uniqueid, c.id, c1.product_id,
@@ -113,7 +113,8 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 
 					UNION ALL
 
-					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a.product_category, b.category_name, a2.p_inventory_status, a2.sub_location, a2.serial_no, a2.stock_grade
+					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a.product_category, b.category_name, a2.p_inventory_status, 
+							a2.sub_location, a2.serial_no, a2.stock_grade, SUM(1) AS po_order_qty
 					FROM products a
 					LEFT JOIN product_stock a2 ON a2.product_id = a.id AND a2.enabled = 1 
 					LEFT JOIN product_categories b ON b.id = a.product_category
@@ -146,7 +147,8 @@ if (isset($flt_stock_grade) && $flt_stock_grade != '') {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_grade . "', stock_grade) ";
 }
 $sql_cl		   .= " ORDER BY product_uniqueid
-				) AS t2";
+				) AS t2
+				GROUP BY product_id ";
 //  echo "<br><br><br><br><br>" . $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
@@ -526,6 +528,7 @@ $page_heading 	= "Stock Summary";
 														$id 				= $data['id'];
 														$product_uniqueid	= $data['product_uniqueid'];
 														$category_name		= $data['category_name'];
+														$po_order_qty		= $data['po_order_qty'];
 														$product_desc 		= ucwords(strtolower(substr((string) ($data['product_desc'] ?? ''), 0, 50)));
 														$total_stock_p 		= 0;
 														$avg_price 			= 0;
@@ -787,7 +790,7 @@ $page_heading 	= "Stock Summary";
 																	</a> &nbsp;&nbsp;
 																<?php } else {
 																*/
-																echo $total_stock_p;
+																echo $po_order_qty;
 																//} 
 																?>
 															</td>

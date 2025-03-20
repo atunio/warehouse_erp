@@ -62,10 +62,16 @@
                         if ($total_items_ordered > 0 && $total_received > 0) {
                             $total_received_percentage = ($total_received / $total_items_ordered) * 100;
                             if ($total_received_percentage > 0) {
-                                echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
-                                if ($total_received_percentage < '100') { ?>
-                                    <i class="material-icons dp48">warning</i>
-                        <?php
+                                if($total_received_percentage == '100'){
+                                    echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
+                                }
+                                else if ($total_received_percentage < '100') { 
+                                    echo " <span class='color-yellow'>(" . round(($total_received_percentage)) . "%)</span>";
+                                    ?>
+                                    <i class="material-icons dp48 color-yellow">warning</i>
+                                    <?php
+                                }else if($total_received_percentage > '100'){
+                                    echo " <span class='color-red'>(" . round(($total_received_percentage)) . "%)</span>";
                                 }
                             }
                         } ?>

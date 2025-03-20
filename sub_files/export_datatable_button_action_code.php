@@ -78,7 +78,7 @@ buttons: [
     {
         extend: 'excel',
         text: 'Excel',
-        filename: 'stock_excel_export',
+        filename: 'export_data_excel_<?php echo date("YmdHis")?>',
         exportOptions: {
             columns: ':visible' // Export only visible columns
         },

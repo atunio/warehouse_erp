@@ -78,7 +78,20 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE warehouse_sub_locations SET enabled			= '1', 
+																	update_date		= '" . $add_date . "',
+																	update_by		= '" . $_SESSION['username'] . "',
+																	update_ip		= '" . $add_ip . "'
+								WHERE warehouse_id	= '" . $warehouse_id . "' 
+								AND sub_location_name	= '" . $sub_location_name . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+						//$sub_location_name = "";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		} else if ($cmd == 'edit') {
@@ -110,7 +123,25 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE warehouse_sub_locations SET enabled		= '1', 
+																update_date		= '" . $add_date . "',
+																update_by		= '" . $_SESSION['username'] . "',
+																update_ip		= '" . $add_ip . "'
+								WHERE warehouse_id	= '" . $warehouse_id . "' 
+								AND sub_location_name	= '" . $sub_location_name . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$sql_c_up = "UPDATE warehouse_sub_locations SET enabled		= '0', 
+																	update_date		= '" . $add_date . "',
+																	update_by		= '" . $_SESSION['username'] . "',
+																	update_ip		= '" . $add_ip . "'
+									WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		}
@@ -232,7 +263,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								$field_label 	= "Capacity";
 								?>
 								<i class="material-icons prefix">description</i>
-								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+								<input type="number" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																													echo ${$field_name};
 																												} ?>">
 								<label for="<?= $field_name; ?>">

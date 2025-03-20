@@ -58,7 +58,19 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE product_ids SET enabled			= '1', 
+														update_date		= '" . $add_date . "',
+														update_by		= '" . $_SESSION['username'] . "',
+														update_ip		= '" . $add_ip . "'
+								WHERE product_id = '" . $product_id . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+						$sub_location_purpose_name = "";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		} else if ($cmd == 'edit') {
@@ -69,10 +81,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE product_ids SET product_id	= '" . $product_id . "', 
-															 update_date	= '" . $add_date . "',
-															 update_by		= '" . $_SESSION['username'] . "',
-															 update_ip		= '" . $add_ip . "'
+					$sql_c_up = "UPDATE product_ids SET product_id		= '" . $product_id . "', 
+														update_date		= '" . $add_date . "',
+														update_by		= '" . $_SESSION['username'] . "',
+														update_ip		= '" . $add_ip . "'
 								WHERE id = '" . $id . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -81,7 +93,24 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE product_ids SET enabled			= '1', 
+														update_date		= '" . $add_date . "',
+														update_by		= '" . $_SESSION['username'] . "',
+														update_ip		= '" . $add_ip . "'
+								WHERE product_id = '" . $product_id . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$sql_c_up = "UPDATE product_ids SET enabled			= '0', 
+											update_date		= '" . $add_date . "',
+											update_by		= '" . $_SESSION['username'] . "',
+											update_ip		= '" . $add_ip . "'
+									WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		}

@@ -74,6 +74,16 @@
             dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
             <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
+        $('table.display3').DataTable({
+            "responsive": true,
+            "lengthMenu": [
+                [100, 150, 200, -1],
+                [100, 150, 200, "All"]
+            ],
+            dom: '<"top"B><"clear"><"top"l><"clear">frt<"bottom"ip><"clear"><br>', // Add buttons to the DOM
+            <?php include('sub_files/export_datatable_button_action_code.php') ?>
+        });
+        $("table.pagelength50").dataTable().fnDestroy();
         $("table.pagelength100").dataTable().fnDestroy();
         $('table.pagelength100').DataTable({
             "responsive": true,
@@ -85,6 +95,7 @@
             <?php include('sub_files/export_datatable_button_action_code.php') ?>
         });
         $("table.pagelength50").dataTable().fnDestroy();
+
         $('table.pagelength50').DataTable({
             "responsive": true,
             "lengthMenu": [

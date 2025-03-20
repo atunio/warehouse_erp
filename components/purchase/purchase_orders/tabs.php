@@ -1,12 +1,12 @@
 <style>
     .tabs .tab a:hover,
     .tabs .tab a.active {
-        color: rgb(7, 123, 218);
+        color: rgb(5, 103, 183);
         background-color: rgba(17, 116, 245, 0.15);
     }
 
     .tabs .tab a.active {
-        color: rgb(7, 123, 218);
+        color: rgb(5, 103, 183);
         background-color: rgba(17, 116, 245, 0.15);
     }
 </style>
@@ -18,8 +18,8 @@
                 <a href="#tab1_html" class="<?php if (isset($active_tab) && $active_tab == 'tab1') {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">receipt</i>
-                    <span>Purchase</a></span>
+                    <i class="material-icons dp48">receipt</i>
+                    <span>Purchase</span>
                 </a>
             </li>
         <?php }
@@ -28,7 +28,7 @@
                 <a href="#tab4_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab4')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">person_outline</i>
+                    <i class="material-icons dp48">person_outline</i>
                     <span>Vendor Data</span>
                 </a>
             </li>
@@ -38,7 +38,7 @@
                 <a href="#tab2_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab2')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">add_shopping_cart</i>
+                    <i class="material-icons dp48">add_shopping_cart</i>
                     <span>Logistics</span>
                 </a>
             </li>
@@ -48,7 +48,7 @@
                 <a href="#tab3_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab3')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">add_shopping_cart</i>
+                    <i class="material-icons dp48">add_shopping_cart</i>
                     <span> Arrival
                         <?php
                         $total_logistics = 0;
@@ -76,10 +76,15 @@
                         if ($total_logistics > 0 && $total_arrived > 0) {
                             $total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
                             if ($total_arrival_percentage > 0) {
-                                echo " <span class='color-green'>(" . round(($total_arrival_percentage)) . "%)</span>";
-                                if ($total_arrival_percentage < '100') { ?>
+                                if($total_arrival_percentage == 100){
+                                    echo " <span class='color-green'>(" . round(($total_arrival_percentage)) . "%)</span>";
+                                }else if($total_arrival_percentage < 100){
+                                    echo " <span class='color-yellow'>(" . round(($total_arrival_percentage)) . "%)</span>";
+                                    ?>
                                     <i class="material-icons dp48">warning</i>
-                        <?php
+                                    <?php
+                                }else if($total_arrival_percentage > 100){
+                                    echo " <span class='color-red'>(" . round(($total_arrival_percentage)) . "%)</span>";
                                 }
                             }
                         }
@@ -93,7 +98,7 @@
                 <a href="#tab5_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab5')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">assistant</i>
+                    <i class="material-icons dp48">assistant</i>
                     <span>Receive
                         <?php
                         $total_items_ordered = 0;
@@ -118,10 +123,16 @@
                         if ($total_items_ordered > 0 && $total_received > 0) {
                             $total_received_percentage = ($total_received / $total_items_ordered) * 100;
                             if ($total_received_percentage > 0) {
-                                echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
-                                if ($total_received_percentage < '100') { ?>
-                                    <i class="material-icons dp48">warning</i>
-                        <?php
+                                if($total_received_percentage == '100'){
+                                    echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
+                                }
+                                else if ($total_received_percentage < '100') { 
+                                    echo " <span class='color-yellow'>(" . round(($total_received_percentage)) . "%)</span>";
+                                    ?>
+                                    <i class="material-icons dp48 color-yellow">warning</i>
+                                    <?php
+                                }else if($total_received_percentage > '100'){
+                                    echo " <span class='color-red'>(" . round(($total_received_percentage)) . "%)</span>";
                                 }
                             }
                         }
@@ -135,7 +146,7 @@
                 <a href="#tab6_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab6')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">list</i>
+                    <i class="material-icons dp48">list</i>
                     <span>Diagnostic
                         <?php
                         $j = 0;
@@ -153,10 +164,16 @@
                             if ($total_diagnosed > 0) {
                                 $total_diagnosed_percentage = ($total_diagnosed / $total_received) * 100;
                                 if ($total_received > 0) {
-                                    echo " <span class='color-green'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
-                                    if ($total_diagnosed_percentage < '100') { ?>
-                                        <i class="material-icons dp48">warning</i>
-                        <?php
+                                    if($total_diagnosed_percentage == '100'){
+                                        echo " <span class='color-green'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
+                                    }
+                                    else if ($total_diagnosed_percentage < '100') { 
+                                        echo " <span class='color-yellow'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
+                                        ?>
+                                        <i class="material-icons dp48 color-yellow">warning</i>
+                                        <?php
+                                    }else if($total_diagnosed_percentage > '100'){
+                                        echo " <span class='color-red'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
                                     }
                                 }
                             }
@@ -171,7 +188,7 @@
                 <a href="#tab7_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab7')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">access_time</i>
+                    <i class="material-icons dp48">access_time</i>
                     <span>RMA</span>
                 </a>
             </li>
@@ -181,7 +198,7 @@
                 <a href="#tab8_html" class="<?php if (!isset($active_tab) || (isset($active_tab) && $active_tab == 'tab8')) {
                                                 echo "active";
                                             } ?>">
-                    <i class="material-icons">attach_money</i>
+                    <i class="material-icons dp48">attach_money</i>
                     <span>Price Setup</span>
                 </a>
             </li>

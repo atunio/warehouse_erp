@@ -448,7 +448,16 @@ $page_heading 	= "List Purchase Orders ";
 																				if ($total_logistics > 0 && $total_arrived > 0) {
 																					$total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
 																					if ($total_arrival_percentage > 0) { 
-																						echo " (" . round(($total_arrival_percentage)) . "%)";
+																						if($total_arrival_percentage == 100){
+																							echo " <span class='color-green'>(" . round(($total_arrival_percentage)) . "%)</span>";
+																						}else if($total_arrival_percentage < 100){
+																							echo " <span class='color-yellow'>(" . round(($total_arrival_percentage)) . "%)</span>";
+																							?>
+																							<i class="material-icons dp48">warning</i>
+																							<?php
+																						}else if($total_arrival_percentage > 100){
+																							echo " <span class='color-red'>(" . round(($total_arrival_percentage)) . "%)</span>";
+																						}
 																					}
 																				} 
 																			}
@@ -475,7 +484,17 @@ $page_heading 	= "List Purchase Orders ";
 																				if ($total_items_ordered > 0 && $total_received > 0) {
 																					$total_received_percentage = ($total_received / $total_items_ordered) * 100;
 																					if ($total_received_percentage > 0) {
-																						echo " (" . round(($total_received_percentage)) . "%)";
+																						if($total_received_percentage == '100'){
+																							echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
+																						}
+																						else if ($total_received_percentage < '100') { 
+																							echo " <span class='color-yellow'>(" . round(($total_received_percentage)) . "%)</span>";
+																							?>
+																							<i class="material-icons dp48 color-yellow">warning</i>
+																							<?php
+																						}else if($total_received_percentage > '100'){
+																							echo " <span class='color-red'>(" . round(($total_received_percentage)) . "%)</span>";
+																						}
 																					}
 																				}
 																			}
@@ -493,7 +512,17 @@ $page_heading 	= "List Purchase Orders ";
 																					if ($total_diagnosed > 0) {
 																						$total_diagnosed_percentage = ($total_diagnosed / $total_received) * 100;
 																						if ($total_received > 0) {
-																							echo " (" . round(($total_diagnosed_percentage)) . "%)";
+																							if($total_diagnosed_percentage == '100'){
+																								echo " <span class='color-green'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
+																							}
+																							else if ($total_diagnosed_percentage < '100') { 
+																								echo " <span class='color-yellow'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
+																								?>
+																								<i class="material-icons dp48 color-yellow">warning</i>
+																								<?php
+																							}else if($total_diagnosed_percentage > '100'){
+																								echo " <span class='color-red'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
+																							}
 																						}
 																					}
 																				}
@@ -510,7 +539,17 @@ $page_heading 	= "List Purchase Orders ";
 																				if ($total_received > 0 && $total_inventory > 0) {
 																					$total_inventory_percentage = ($total_inventory / $total_received) * 100;
 																					if ($total_inventory_percentage > 0) {
-																						echo " (" . round(($total_inventory_percentage)) . "%)";
+																						if($total_inventory_percentage == '100'){
+																							echo " <span class='color-green'>(" . round(($total_inventory_percentage)) . "%)</span>";
+																						}
+																						else if ($total_inventory_percentage < '100') { 
+																							echo " <span class='color-yellow'>(" . round(($total_inventory_percentage)) . "%)</span>";
+																							?>
+																							<i class="material-icons dp48 color-yellow">warning</i>
+																							<?php
+																						}else if($total_inventory_percentage > '100'){
+																							echo " <span class='color-red'>(" . round(($total_inventory_percentage)) . "%)</span>";
+																						}
 																					}
 																				}
 																			}

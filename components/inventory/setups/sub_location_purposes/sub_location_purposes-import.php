@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("Category", "category_type");
-$duplication_columns 		= array("Category");
-$required_columns 			= array("Category");
+$supported_column_titles 	= array("sub_location_purpose_name");
+$duplication_columns 		= array("sub_location_purpose_name");
+$required_columns 			= array("sub_location_purpose_name");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -67,7 +67,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 $added = 0;
-$master_table = "product_categories";
+$master_table = "sub_location_purposes";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	// $filter_import_colums = array_filter($import_colums, function ($value) {
@@ -91,9 +91,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	foreach ($required_columns as $required_column) {
 		if (!in_array($required_column, $import_colums_uniq)) {
 			if (isset($error['msg'])) {
-				$error['msg'] .= "<br>" . $required_column . " column is required.";
+				$error['msg'] .= "<br>" . $required_column . " column title is required.";
 			} else {
-				$error['msg'] = $required_column . " column is required.";
+				$error['msg'] = $required_column . " column title is required.";
 			}
 		}
 	}
@@ -124,22 +124,20 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
-				$duplicate_colum_values2 = array_unique(array_column($all_data, "category_type"));
-				$m = 0;
 				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-					$dup_category_type = $duplicate_colum_values2[$m];
 
 					$db_column = $dup_data;
-					if ($db_column == 'Category') {
-						$db_column = "category_name";
+					if ($dup_data == 'product_id') {
+						$db_column = "product_uniqueid";
 					}
-					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' AND category_type = '" . $dup_category_type . "' ";
+
+					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
-					if ($count1 > 0) { 
+					if ($count1 > 0) {
 						$row_dp1 = $db->fetch($result1);
-						foreach($row_dp1 as $data_dp11){
- 							$ids_already[] = $data_dp11['id']; 
+						foreach ($row_dp1 as $data_dp11) {
+							$ids_already[] = $duplicate_colum_values1;
 						}
 						// if (!isset($error['msg'])) {
 						// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
@@ -147,58 +145,46 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
 						// }
 					}
-					$m++;
 				}
 			}
 			foreach ($all_data  as $data1) {
 				// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Modified Array:" . $data1[$dup_data];
-				if (isset($data1['Category']) && $data1['Category'] != '' && $data1['Category'] != NULL && $data1['Category'] != 'blank') {
-
-					$category_id2 = "";
-					$sql1		= "SELECT * FROM " . $master_table . " WHERE category_name = '" . $data1['Category'] . "' AND category_type = '" . $data1['category_type'] . "' ";
-					$result1	= $db->query($conn, $sql1);
-					$count1		= $db->counter($result1);
-					if ($count1 > 0) { 
-						$row_dp1 = $db->fetch($result1); 
-						$category_id2 = $row_dp1[0]['id']; 
-					} 
-
+				if (isset($data1['sub_location_purpose_name']) && $data1['sub_location_purpose_name'] != '' && $data1['sub_location_purpose_name'] != NULL && $data1['sub_location_purpose_name'] != 'blank') {
+					$sub_location_purpose_name2 = $data1['sub_location_purpose_name'];
 					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
 						if ($key != "" && $key != 'is_insert') {
-							if ($key == 'Category') {
-								$key = "category_name";
-							}
-							if ($data != "") { // ONLY IF one field 
+							if ($data != "" && $data != "-") { // ONLY IF one field 
 								$columns 		.= ", " . $key;
 								$column_data 	.= ", '" . $data . "'";
 							}
 						}
-					} 
+					}
 					$update_column	.= ", enabled = '1'";
-					if(isset($category_id2) && $category_id2>0){
-						if ($update_column != "" ) { // ONLY IF one field 
+					if (isset($ids_already) && isset($sub_location_purpose_name2) && in_array($sub_location_purpose_name2, $ids_already)) {
+						if ($update_column != "") { // ONLY IF one field 
 							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																								update_by 				= '" . $_SESSION['username'] . "', 
 																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
 																								update_ip 				= '" . $add_ip . "', 
 																								update_timezone 		= '" . $timezone . "', 
 																								update_from_module_id 	= '" . $module_id . "'
-																								".$update_column."
-									WHERE id = '".$category_id2."' ";//echo "<br><br>".$sql6;
+																								" . $update_column . "
+									WHERE sub_location_purpose_name 	= '" . $sub_location_purpose_name2 . "' "; //echo "<br><br>".$sql6;
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {
 								$added++;
 							}
 						}
-					}
-					else{
-						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-								VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-						$ok = $db->query($conn, $sql6);
-						// echo "<br>" . $sql6;
-						if ($ok) {
-							$added++;
+					} else {
+						if ($columns != "" && $column_data != "") { // ONLY IF one field 
+							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
+									VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+							$ok = $db->query($conn, $sql6);
+							// echo "<br>" . $sql6;
+							if ($ok) {
+								$added++;
+							}
 						}
 					}
 				}
@@ -224,9 +210,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -236,20 +222,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 									New
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-content custom_padding_card_content_table_top">
-				<div class="card-content">
 					<h4 class="card-title">Import Excel Data</h4><br>
 					<?php
 					if (isset($msg['msg_success'])) { ?>
@@ -323,7 +308,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
-										if ($s_heading == 'status_name') {
+										if ($s_heading == 'sub_location_purpose_name') {
 											$cell_format = "Text (Unique)";
 										}
 										echo " <tr>
@@ -406,8 +391,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														}
 														if (in_array($db_column_excel, $duplication_columns)) {
 
-															if ($db_column == 'Category') {
-																$db_column = "category_name";
+															if ($db_column == 'product_id') {
+																$db_column = "product_uniqueid";
 															}
 
 															$sql_dup 	= " SELECT * FROM " . $master_table . " WHERE " . $db_column . "	= '" . htmlspecialchars($cell) . "' "; // echo "<br>" . $sql_dup;

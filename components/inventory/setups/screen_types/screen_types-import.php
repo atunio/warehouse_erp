@@ -121,6 +121,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	if (empty($error)) {
 		$duplicate_data_array = array();
+		$ids_already = array(); 
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
@@ -135,36 +136,58 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
-						$duplicate_data_array[] = $duplicate_colum_values1;
-						if (!isset($error['msg'])) {
-							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
-						} else {
-							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						$row_dp1 = $db->fetch($result1);
+						foreach($row_dp1 as $data_dp11){
+ 							$ids_already[] = $duplicate_colum_values1; 
 						}
+						// $duplicate_data_array[] = $duplicate_colum_values1;
+						// if (!isset($error['msg'])) {
+						// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// } else {
+						// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// }
 					}
 				}
 			}
-			foreach ($all_data  as $data1) {
-				// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Modified Array:" . $data1[$dup_data];
-				$duplicate_data_array = array_unique($duplicate_data_array);
-				if (!in_array($data1[$dup_data], $duplicate_data_array)) {
-					$columns = $column_data = "";
+			foreach ($all_data  as $data1) { 
+				if (isset($data1['screen_type_name']) && $data1['screen_type_name'] != '' && $data1['screen_type_name'] != NULL && $data1['screen_type_name'] != 'blank') {
+					$screen_type_name2 	= $data1['screen_type_name'];
+					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
 						if ($key != "" && $key != 'is_insert') {
 							if ($data != "") { // ONLY IF one field 
 								$columns 		.= ", " . $key;
 								$column_data 	.= ", '" . $data . "'";
+								
+							}
+						}
+					} 
+					$update_column	.= ", enabled = '1'";
+					if(isset($ids_already) && isset($screen_type_name2) && in_array($screen_type_name2, $ids_already)){
+						if ($update_column != "" ) { // ONLY IF one field 
+							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
+																								update_by 				= '" . $_SESSION['username'] . "', 
+																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																								update_ip 				= '" . $add_ip . "', 
+																								update_timezone 		= '" . $timezone . "', 
+																								update_from_module_id 	= '" . $module_id . "'
+																								".$update_column."
+									WHERE screen_type_name 	= '".$screen_type_name2."' "; //echo "<br><br>".$sql6;
+							$ok = $db->query($conn, $sql6);
+							if ($ok) {
+								$added++;
 							}
 						}
 					}
-
-					if ($columns != "" && $column_data != "") { // ONLY IF one field 
-						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
-								VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
-						$ok = $db->query($conn, $sql6);
-						// echo "<br>" . $sql6;
-						if ($ok) {
-							$added++;
+					else{
+						if ($columns != "" && $column_data != "") { // ONLY IF one field 
+							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
+									VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+							$ok = $db->query($conn, $sql6);
+							// echo "<br>" . $sql6;
+							if ($ok) {
+								$added++;
+							}
 						}
 					}
 				}

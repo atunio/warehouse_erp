@@ -9,6 +9,9 @@
 .color-blue {
 	color: blue !important;
 }
+.color-yellow {
+	color:  rgb(239, 208, 4) !important;
+}
 
 .color-black {
 	color: black !important;

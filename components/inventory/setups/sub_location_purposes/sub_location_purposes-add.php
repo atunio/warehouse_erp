@@ -4,28 +4,27 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
- 	$category_name	= "Computer".date('Ymd-His');
+	$sub_location_purpose_name	= "SCR " . date('Ymd-His');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 if ($cmd == 'edit') {
-	$title_heading = "Update Product Category";
+	$title_heading = "Update Purpose";
 	$button_val = "Save";
 }
 if ($cmd == 'add') {
-	$title_heading 	= "Add Product Category";
+	$title_heading 	= "Add Purpose";
 	$button_val 	= "Add";
 	$id 			= "";
 }
 if ($cmd == 'edit' && isset($id)) {
 
-	$sql_ee				= "SELECT a.* FROM product_categories a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$sql_ee				= "SELECT a.* FROM sub_location_purposes a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
 	$result_ee			= $db->query($conn, $sql_ee);
 	$row_ee				= $db->fetch($result_ee);
-	$category_name		= $row_ee[0]['category_name'];
-	$category_type		= $row_ee[0]['category_type'];
+	$sub_location_purpose_name		= $row_ee[0]['sub_location_purpose_name'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -35,47 +34,40 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-	$field_name = "category_type";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name]	= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
-	$field_name = "category_name";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name]	= "Required";
-		${$field_name . "_valid"} 	= "invalid";
+	if (isset($sub_location_purpose_name) && $sub_location_purpose_name == "") {
+		$error['sub_location_purpose_name']	= "Required";
+		$vender_name_valid 		= "invalid";
 	}
 	if (empty($error)) {
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM product_categories a  WHERE a.category_name	= '" . $category_name . "' AND a.category_type	= '" . $category_type . "' ";
+				$sql_dup	= " SELECT a.* FROM sub_location_purposes a  WHERE a.sub_location_purpose_name	= '" . $sub_location_purpose_name . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $category_name . "', '" . $category_type . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".sub_location_purposes(subscriber_users_id, sub_location_purpose_name, add_date, add_by, add_ip)
+							VALUES('" . $subscriber_users_id . "', '" . $sub_location_purpose_name . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$category_name = "";
+						$sub_location_purpose_name = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$sql_c_up = "UPDATE product_categories SET enabled		= '1', 
-															update_date		= '" . $add_date . "',
-															update_by		= '" . $_SESSION['username'] . "',
-															update_ip		= '" . $add_ip . "'
-								WHERE category_name	= '" . $category_name . "' 
-								AND category_type	= '" . $category_type . "' ";
+					$sql_c_up = "UPDATE sub_location_purposes SET enabled		= '1', 
+															 update_date	= '" . $add_date . "',
+															 update_by		= '" . $_SESSION['username'] . "',
+															 update_ip		= '" . $add_ip . "'
+								WHERE sub_location_purpose_name = '" . $sub_location_purpose_name . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						//$category_name = $category_type = "";
+						$sub_location_purpose_name = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -85,21 +77,14 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			if (access("edit_perm") == 0) {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* FROM product_categories a 
-								WHERE a.category_name 	= '" . $category_name . "' 
-								 AND a.category_type	= '" . $category_type . "'
-								AND a.id 				!= '" . $id . "'";
+				$sql_dup	= " SELECT a.* FROM sub_location_purposes a WHERE a.sub_location_purpose_name = '" . $sub_location_purpose_name . "' AND a.id != '" . $id . "'";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE product_categories SET 	category_name			= '" . $category_name . "', 
-																category_type			= '" . $category_type . "',
-																update_date				= '" . $add_date . "',
-																update_by				= '" . $_SESSION['username'] . "',
-																update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																update_ip				= '" . $add_ip . "',
-																update_timezone			= '" . $timezone . "',
-																update_from_module_id	= '" . $module_id . "'
+					$sql_c_up = "UPDATE sub_location_purposes SET sub_location_purpose_name	= '" . $sub_location_purpose_name . "', 
+																update_date	= '" . $add_date . "',
+																update_by		= '" . $_SESSION['username'] . "',
+																update_ip		= '" . $add_ip . "'
 								WHERE id = '" . $id . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -108,18 +93,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$sql_c_up = "UPDATE product_categories SET enabled			= '1', 
-														update_date		= '" . $add_date . "',
-														update_by		= '" . $_SESSION['username'] . "',
-														update_ip		= '" . $add_ip . "'
-								WHERE category_name 	= '" . $category_name . "' 
-								 AND category_type	= '" . $category_type . "' ";
+					$sql_c_up = "UPDATE sub_location_purposes SET enabled		= '1', 
+															 update_date	= '" . $add_date . "',
+															 update_by		= '" . $_SESSION['username'] . "',
+															 update_ip		= '" . $add_ip . "'
+								WHERE sub_location_purpose_name = '" . $sub_location_purpose_name . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
-						$sql_c_up = "UPDATE product_categories SET enabled			= '0', 
-																update_date		= '" . $add_date . "',
-																update_by		= '" . $_SESSION['username'] . "',
-																update_ip		= '" . $add_ip . "'
+						$sql_c_up = "UPDATE sub_location_purposes SET 	enabled 		= '0', 
+																		update_date		= '" . $add_date . "',
+																		update_by		= '" . $_SESSION['username'] . "',
+																		update_ip		= '" . $add_ip . "'
 									WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql_c_up);
 						if (isset($error['msg'])) unset($error['msg']);
@@ -137,9 +121,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -149,17 +133,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
-								<?php  
+								</a>
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">
@@ -185,15 +169,15 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							</button>
 						</div>
 					<?php } ?>
-					<br>
+					<h4 class="card-title">Detail Form</h4><br>
 					<form method="post" autocomplete="off">
 						<input type="hidden" name="is_Submit" value="Y" />
 						<input type="hidden" name="cmd" value="<?php if (isset($cmd)) echo $cmd; ?>" />
 						<div class="row">
-							<div class="input-field col m4 s12">
+							<div class="input-field col m6 s12">
 								<?php
-								$field_name 	= "category_name";
-								$field_label 	= "Category";
+								$field_name 	= "sub_location_purpose_name";
+								$field_label 	= "Purpose";
 								?>
 								<i class="material-icons prefix">description</i>
 								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -207,31 +191,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 																} ?>
 									</span>
 								</label>
-							</div>
-							<div class="input-field col m3 s12">
-								<?php
-								$field_name 	= "category_type";
-								$field_label 	= "Type";
-								?>
-								<i class="material-icons prefix">question_answer</i>
-								<div class="select2div">
-									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate <?php if (isset(${$field_name . "_valid"})) {
-																														echo ${$field_name . "_valid"};
-																													} ?>">
-										<option value="">Select</option>
-										<option value="Device" <?php if (isset(${$field_name}) && ${$field_name} == 'Device') { ?> selected="selected" <?php } ?>>Device</option>
-										<option value="Package Material" <?php if (isset(${$field_name}) && ${$field_name} == 'Package Material') { ?> selected="selected" <?php } ?>>Package Material</option>
-										<option value="Parts" <?php if (isset(${$field_name}) && ${$field_name} == 'Parts') { ?> selected="selected" <?php } ?>>Parts</option>
-									</select>
-									<label for="<?= $field_name; ?>">
-										<?= $field_label; ?>
-										<span class="color-red">* <?php
-																	if (isset($error[$field_name])) {
-																		echo $error[$field_name];
-																	} ?>
-										</span>
-									</label>
-								</div>
 							</div>
 						</div>
 						<div class="row">

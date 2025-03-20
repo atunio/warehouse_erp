@@ -1867,7 +1867,7 @@
                                                             $column_no++;
                                                             echo $data['defects_or_notes'];
                                                             ?>
-                                                         </td>status_name
+                                                         </td> 
                                                           <td class="col-<?= set_table_headings($table_columns[$column_no]); ?>" style="<?= $td_padding; ?>">
                                                              <?php 
                                                             $column_no++;

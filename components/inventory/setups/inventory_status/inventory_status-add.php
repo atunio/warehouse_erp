@@ -67,7 +67,20 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE inventory_status 	SET enabled		= '1', 
+															update_date		= '" . $add_date . "',
+															update_by		= '" . $_SESSION['username'] . "',
+															update_ip		= '" . $add_ip . "'
+								WHERE status_name	= '" . $status_name . "' 
+								AND status_type	= '" . $status_type . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+						$status_name = $status_type = "";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		} else if ($cmd == 'edit') {
@@ -95,7 +108,25 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$error['msg'] = "This record is already exist.";
+					$sql_c_up = "UPDATE inventory_status SET enabled			= '1', 
+														update_date		= '" . $add_date . "',
+														update_by		= '" . $_SESSION['username'] . "',
+														update_ip		= '" . $add_ip . "'
+								WHERE status_name = '" . $status_name . "' 
+								 AND status_type	= '" . $status_type . "' ";
+					$ok = $db->query($conn, $sql_c_up);
+					if ($ok) {
+						$sql_c_up = "UPDATE inventory_status 	SET enabled			= '0', 
+																update_date		= '" . $add_date . "',
+																update_by		= '" . $_SESSION['username'] . "',
+																update_ip		= '" . $add_ip . "'
+									WHERE id = '" . $id . "' ";
+						$db->query($conn, $sql_c_up);
+						if (isset($error['msg'])) unset($error['msg']);
+						$msg['msg_success'] = "Record has been added successfully.";
+					} else {
+						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
+					}
 				}
 			}
 		}

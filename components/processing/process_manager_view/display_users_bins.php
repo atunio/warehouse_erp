@@ -19,7 +19,7 @@
             $locations     = $row;
             foreach ($locations as $location_data) { ?>
                 <?php
-                $sql1 = "SELECT b.id, CONCAT(a.first_name, ' ', a.last_name) AS user_full_name, a.profile_pic,
+                $sql1 = "SELECT b.id, CONCAT(COALESCE(a.first_name), ' ', COALESCE(a.last_name)) AS user_full_name, a.profile_pic,
                                 b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type 
                         FROM users a
                         INNER JOIN users_bin_for_processing b ON a.id = b.bin_user_id AND b.is_processing_done = '0'

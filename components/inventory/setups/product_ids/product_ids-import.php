@@ -156,10 +156,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if ($data != "") { // ONLY IF one field 
 								$columns 		.= ", " . $key;
 								$column_data 	.= ", '" . $data . "'";
-								$update_column	.= ", enabled = '1'";
+								
 							}
 						}
 					} 
+					$update_column	.= ", enabled = '1'";
 					if(isset($ids_already) && isset($product_id2) && in_array($product_id2, $ids_already)){
 						if ($update_column != "" ) { // ONLY IF one field 
 							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 

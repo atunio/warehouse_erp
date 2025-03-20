@@ -19,6 +19,8 @@ if (isset($cmd6) && $cmd6 == 'delete' && isset($detail_id)) {
 		}
 	}
 }
+
+		
 if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 	extract($_POST);
 	foreach ($_POST as $key => $value) {
@@ -724,6 +726,18 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 	$phone_check_model_no = "";
 	if (!isset($sub_location_id_barcode_diagnostic) || (isset($sub_location_id_barcode_diagnostic)  && ($sub_location_id_barcode_diagnostic == "0" || $sub_location_id_barcode_diagnostic == ""))) {
 		$error6['sub_location_id_barcode_diagnostic'] = "Required";
+	}else{
+		$sql_rc2			= " SELECT a.* 
+								FROM purchase_order_detail_receive a 
+								WHERE a.enabled 						= 1
+								AND a.po_id 							= '" . $id . "'
+								AND a.sub_location_id_after_diagnostic 	= '" . $sub_location_id_barcode_diagnostic . "' ";
+		$result_rc2     	= $db->query($conn, $sql_rc2);
+		$total_received2	= $db->counter($result_rc2);
+		$bin_capacity_rc1 	= bin_item_count($db, $conn, $sub_location_id_barcode_diagnostic);
+		if (($total_received2+1) > $bin_capacity_rc1) { 
+			$error6['sub_location_id_barcode_diagnostic'] = "More than Capacity ".$bin_capacity_rc1;
+		} 
 	}
 	if (!isset($serial_no_barcode_diagnostic) || (isset($serial_no_barcode_diagnostic)  && ($serial_no_barcode_diagnostic == "0" || $serial_no_barcode_diagnostic == ""))) {
 		$error6['serial_no_barcode_diagnostic'] = "Required";
@@ -852,6 +866,18 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 	}
 	if (!isset($sub_location_id_boken_device) || (isset($sub_location_id_boken_device)  && ($sub_location_id_boken_device == "0" || $sub_location_id_boken_device == ""))) {
 		$error6['sub_location_id_boken_device'] = "Required";
+	}else{
+		$sql_rc2			= " SELECT a.* 
+								FROM purchase_order_detail_receive a 
+								WHERE a.enabled 						= 1
+								AND a.po_id 							= '" . $id . "'
+								AND a.sub_location_id_after_diagnostic 	= '" . $sub_location_id_boken_device . "' ";
+		$result_rc2     	= $db->query($conn, $sql_rc2);
+		$total_received2	= $db->counter($result_rc2);
+		$bin_capacity_rc1 	= bin_item_count($db, $conn, $sub_location_id_boken_device);
+		if (($total_received2+1) > $bin_capacity_rc1) { 
+			$error6['sub_location_id_boken_device'] = "More than Capacity ".$bin_capacity_rc1;
+		}
 	}
 	if (!isset($battery_boken_device) || (isset($battery_boken_device)  && ($battery_boken_device == "0" || $battery_boken_device == ""))) {
 		$error6['battery_boken_device'] = "Required";
@@ -1105,6 +1131,19 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 	$field_name = "sub_location_id_fetched";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error6[$field_name] = "Required";
+	}else{
+		$sql_rc2			= " SELECT a.* 
+								FROM purchase_order_detail_receive a 
+								WHERE a.enabled 						= 1
+								AND a.po_id 							= '" . $id . "'
+								AND a.sub_location_id_after_diagnostic 	= '" . $sub_location_id_fetched . "' ";
+		$result_rc2     	= $db->query($conn, $sql_rc2);
+		$total_received2	= $db->counter($result_rc2);
+		$bin_capacity_rc1 	= bin_item_count($db, $conn, $sub_location_id_fetched);
+		if (($total_received2+1) > $bin_capacity_rc1) { 
+			$error6['sub_location_id_fetched'] = "More than Capacity ".$bin_capacity_rc1;
+		} 
+
 	}
 	$field_name = "diagnostic_fetch_id";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {

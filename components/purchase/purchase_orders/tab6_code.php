@@ -746,12 +746,18 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 							FROM phone_check_api_data a 
 							WHERE a.enabled = 1 
 							AND a.imei_no = '" . $serial_no_barcode_diagnostic . "'
-							ORDER BY a.id DESC LIMIT 1";
+							ORDER BY a.id DESC LIMIT 1"; 
 		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 		$count_pd01_4	= $db->counter($result_pd01_4);
 		if ($count_pd01_4 > 0) {
 			$row_pd01_4					= $db->fetch($result_pd01_4);
 			$phone_check_model_no		= $row_pd01_4[0]['model_no'];
+			if(!isset($assignment_id) || ( isset($assignment_id) && ($assignment_id =="" || $assignment_id =="0"))){
+				$assignment_id2 = $row_pd01_4[0]['assignment_id'];
+			} 
+			else{
+				$assignment_id2 = $assignment_id;
+			}
 		} else {
 			$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
 			$device_detail_array	= getinfo_phonecheck_imie($serial_no_barcode_diagnostic);
@@ -781,6 +787,9 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 	}
 
 	if (empty($error6)) {
+		if(!isset($assignment_id2)){
+			$assignment_id2 = 0;
+		}
 		///*
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
@@ -817,7 +826,9 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 				if ($count_pd01 > 0) {
 					$row_pd01		= $db->fetch($result_pd01);
 					$receive_id_2 	= $row_pd01[0]['id'];
-					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		po_detail_id						= '" . $product_id_barcode_diagnostic . "',
+					$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
+																				assignment_id						= '" . $assignment_id2 . "',
+																				po_detail_id						= '" . $product_id_barcode_diagnostic . "',
 																				serial_no_barcode					= '" . $serial_no_barcode_diagnostic . "',
 																				sub_location_id_after_diagnostic	= '" . $sub_location_id_barcode_diagnostic . "',
 																				is_diagnost							= '1',
@@ -903,6 +914,13 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 		if (po_permisions("Diagnostic") == 0) {
 			$error6['msg'] = "You do not have add permissions.";
 		} else {
+
+			if(!isset($assignment_id) || (isset($assignment_id) && ($assignment_id ==""))){
+				$assignment_id2 = '0';
+			} 
+			else{
+				$assignment_id2 = $assignment_id;
+			}
 			$update_rec 	= "";
 			$sql_pd01 		= "	SELECT c.product_category
 								FROM purchase_order_detail a 
@@ -942,7 +960,8 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 			}
 			if ($update_rec != "") {
 				$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
-																			po_detail_id						= '" . $product_id_boken_device . "',
+																			assignment_id						= '" . $assignment_id2 . "', 
+																			po_detail_id						= '" . $product_id_boken_device . "', 
 																			serial_no_barcode					= '" . $serial_no_boken_device . "',
 																			sub_location_id_after_diagnostic	= '" . $sub_location_id_boken_device . "',
 																			battery								= '" . $battery_boken_device . "',
@@ -1204,8 +1223,8 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 							$receive_id_2 	= $row_pd01[0]['id'];
 						} else {
 
-							$sql = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-									VALUES('" . $id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							$sql = "INSERT INTO purchase_order_detail_receive(po_id, assignment_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+									VALUES('" . $id . "' , '" . $product_assignment_id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$db->query($conn, $sql);
 							// echo "<br><br>" . $sql;
 							$receive_id_2 = mysqli_insert_id($conn);
@@ -1235,7 +1254,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 
 						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
 																				po_detail_id						= '" . $po_detail_id1 . "', 
-																				assignment_id						= '" . $assignment_id . "', 
+																				assignment_id						= '" . $product_assignment_id . "', 
 																				serial_no_barcode					= '" . $data . "', 
 																				" . $update_product_id . "
  

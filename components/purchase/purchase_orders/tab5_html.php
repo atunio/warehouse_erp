@@ -1758,7 +1758,8 @@
                          <div class="section section-data-tables">
                              <div class="row">
                                  <div class="col m12 s12">
-                                     <table id="page-length-option" class="display pagelength100 dataTable dtr-inline">
+                                    <table id="page-length-option"></table>
+                                     <table id="page-length-option" class="display pagelength50_5">
                                          <thead>
                                              <tr>
                                                  <?php

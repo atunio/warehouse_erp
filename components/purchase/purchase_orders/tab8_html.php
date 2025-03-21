@@ -224,34 +224,36 @@
                                                         if (!isset($array_pricing[$product_uniqueid]) || !array_filter($array_pricing[$product_uniqueid], function ($entry) {
                                                             return $entry['stock_grade'] === "A";
                                                         })) {
-                                                            // If not present, add the new entry for stock grade "E"
-                                                            $array_pricing[$product_uniqueid][] = [
+                                                            // If not present, add the new entry for stock grade "A"
+                                                            array_unshift($array_pricing[$product_uniqueid], [
                                                                 "stock_grade" => "A",
                                                                 "product_total_price" => $product_total_price,
                                                                 "total_qty" => 0 // Assuming you want to set this to 0
-                                                            ];
+                                                            ]);
                                                         }
                                                         if (!isset($array_pricing[$product_uniqueid]) || !array_filter($array_pricing[$product_uniqueid], function ($entry) {
                                                             return $entry['stock_grade'] === "B";
                                                         })) {
-                                                            // If not present, add the new entry for stock grade "E"
-                                                            $array_pricing[$product_uniqueid][] = [
+                                                            $new_item = [
                                                                 "stock_grade" => "B",
                                                                 "product_total_price" => $product_total_price,
                                                                 "total_qty" => 0 // Assuming you want to set this to 0
                                                             ];
+                                                            // Insert at index 1 and shift the rest
+                                                            array_splice($array_pricing[$product_uniqueid], 1, 0, [$new_item]);
                                                         }
                                                         if (!isset($array_pricing[$product_uniqueid]) || !array_filter($array_pricing[$product_uniqueid], function ($entry) {
                                                             return $entry['stock_grade'] === "C";
                                                         })) {
-                                                            // If not present, add the new entry for stock grade "E"
+                                                            // If not present, add the new entry for stock grade "C"
                                                             $array_pricing[$product_uniqueid][] = [
                                                                 "stock_grade" => "C",
                                                                 "product_total_price" => $product_total_price,
                                                                 "total_qty" => 0 // Assuming you want to set this to 0
                                                             ];
                                                         }
-                                                        $pricing_table_trs = ""; ?>
+                                                        $pricing_table_trs = ""; 
+                                                        ?>
                                                         <tr>
                                                             <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
                                                                 <?php echo $i + 1;
@@ -278,14 +280,16 @@
                                                                     <?php
                                                                     $suggested_price = 0;
                                                                     if ($data['no_of_grades_in_product'] > 1) {
-                                                                        // Loop through each record for the current product ID
+                                                                        // echo "<pre>";
+                                                                        // print_r($array_pricing);
                                                                         foreach ($array_pricing[$product_uniqueid] as $record) {
 
                                                                             $total_qty_from_array1  = $array_pricing[$product_uniqueid][0]['total_qty'];
                                                                             $total_qty_from_array2  = $array_pricing[$product_uniqueid][1]['total_qty'];
                                                                             $total_qty_from_array3  = $array_pricing[$product_uniqueid][2]['total_qty'];
-
+ 
                                                                             $b_grade_calculation    = ($product_total_price / (($total_qty_from_array1 * 1.1) + $total_qty_from_array2 + ($total_qty_from_array3 * 0.9)));
+                                                                            //echo " $grade_calculation    = ($product_total_price / (($total_qty_from_array1 * 1.1) + $total_qty_from_array2 + ($total_qty_from_array3 * 0.9)))";
 
                                                                             if ($data["stock_grade"] == 'A' && $record["stock_grade"] == 'A') {
                                                                                 $suggested_price = ($b_grade_calculation * 1.1);

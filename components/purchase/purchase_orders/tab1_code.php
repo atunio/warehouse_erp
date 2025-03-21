@@ -266,7 +266,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			///echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaa <pre>"; print_r($filtered_product_ids);  print_r($order_qty); print_r($order_price); print_r($product_condition);die;
 			foreach ($filtered_product_ids as $data_p) {
 				if($data_p !=""){
-					$sql_dup 	= "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.product_id = '" . $data_p . "'";
+					$sql_dup 	= "SELECT a.* FROM purchase_order_detail a 
+									WHERE a.po_id = '" . $id . "' 
+									AND a.product_id = '" . $data_p . "'
+									AND a.product_condition = '" . $product_condition[$i] . "'
+									AND a.expected_status = '" . $expected_status[$i] . "'";
+					//echo "<br><br>".$sql_dup;
 					$result_dup = $db->query($conn, $sql_dup);
 					$count_dup 	= $db->counter($result_dup);
 					if ($count_dup > 0) {
@@ -296,10 +301,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$i++;
 
 					} else {
-						
 						// Check if all required array elements exist
 						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-						VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$k++; // Increment the counter only if the insertion is successful

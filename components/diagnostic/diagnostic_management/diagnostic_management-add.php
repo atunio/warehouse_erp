@@ -11,12 +11,14 @@ $user_id 				= $_SESSION["user_id"];
 
 
 $sql_cl 		= "	SELECT DISTINCT a2.id, a2.assignment_no, b.po_no, a.po_id, b2.sub_location_name, b2.sub_location_type,
-							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(c2.first_name, ''), ' ', COALESCE(c2.middle_name, ''), ' ', COALESCE(c2.last_name, ''), ' (', COALESCE(c2.username, ''), ')') ) AS task_user_details
+							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(c2.first_name, ''), ' ', COALESCE(c2.middle_name, ''), ' ', COALESCE(c2.last_name, ''), ' (', COALESCE(c2.username, ''), ')') ) AS task_user_details,
+							a2.add_date, g.vender_name
 					FROM users_bin_for_diagnostic a2
 					INNER JOIN warehouse_sub_locations b2 ON b2.id = a2.location_id
 					INNER JOIN users c2 ON c2.id = a2.bin_user_id 
 					INNER JOIN purchase_order_detail_receive a ON a.sub_location_id  = b2.id
 					INNER JOIN purchase_orders b ON b.id = a.po_id
+ 					INNER JOIN venders g ON g.id = b.vender_id  
 					WHERE a.enabled = 1
 					AND a2.id = '" . $detail_id . "' 
 					GROUP BY a.po_id ";
@@ -90,7 +92,7 @@ $page_heading 	= "Diagnostic";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'AssignmentNo', 'PO No', 'Location', 'User Detail', 'Actions');
+										$table_columns	= array('SNo', 'AssignmentNo',  'Assignment Date', 'PO No', 'Vendor', 'Location', 'User Detail', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -138,8 +140,16 @@ $page_heading 	= "Diagnostic";
 																<?php echo $data['assignment_no'];  
 																$col_no++;?>
 															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo dateformat2($data['add_date']);  
+																$col_no++;?>
+															</td> 
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['po_no'];
 																																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]);?>">
+																<?php echo ($data['vender_name']);  
+																$col_no++;?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]);
 																			$col_no++; ?>">

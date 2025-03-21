@@ -159,6 +159,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							}
 						}
 					}
+
+					$sql_del = " DELETE FROM vender_po_data WHERE po_id =  '" . $id . "' ";
+					$db->query($conn, $sql_del);
+					
 					foreach ($all_data  as $data1) {
 						$update_master = $columns = $column_data = $update_column = $po_detail_data =  $po_detail_column = $update_po_detail = "";
 						if (
@@ -175,9 +179,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$product_id2 	= $row1[0]['id'];
 
 								$product_po_detail_id = $po_order_qty = 0;
-								$sql_po_d			= " SELECT * FROM purchase_order_detail 
-														WHERE  product_id = '" . $product_id2 . "'
-														AND po_id =  '" . $id . "' ";
+								$sql_po_d			= " SELECT a.* 
+														FROM purchase_order_detail a
+														LEFT JOIN inventory_status b ON b.id = a.expected_status 
+														WHERE 1=1
+														AND a.product_id		= '" . $product_id2 . "'
+														AND a.product_condition = '" . $data1['overall_grade']. "'
+														AND b.status_name 		= '" . $data1['status'] . "'
+														AND a.po_id 			=  '" . $id . "' "; 
 								// echo "<br><br><br><br>" . $product_id2;die;
 								$result_po_d		= $db->query($conn, $sql_po_d);
 								$count_po_d			= $db->counter($result_po_d);

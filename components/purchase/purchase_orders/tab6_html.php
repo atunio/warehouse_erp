@@ -707,14 +707,17 @@
                                         <?php
                                         $field_name     = "product_id_barcode_diagnostic";
                                         $field_label    = "Product ID";
-                                        $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
-                                                                FROM purchase_order_detail a 
-                                                                INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                                INNER JOIN products c ON c.id = a.product_id
-                                                                INNER JOIN product_categories d ON d.id = c.product_category
-                                                                WHERE 1=1 
-                                                                AND a.enabled = 1
-                                                                AND a.po_id = '" . $id . "' ";
+                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                                            FROM purchase_order_detail a 
+                                                            INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                            INNER JOIN products c ON c.id = a.product_id
+                                                            INNER JOIN product_categories d ON d.id = c.product_category
+                                                            INNER JOIN purchase_order_detail_receive e ON e.po_id = a.po_id 
+                                                                                                        AND c.product_category = e.recevied_product_category  
+                                                                                                        AND (e.serial_no_barcode IS NULL OR e.serial_no_barcode = '')
+                                                            WHERE 1=1 
+                                                            AND a.enabled = 1
+                                                            AND a.po_id = '" . $id . "' ";
                                         $sql1           .= " ORDER BY c.product_uniqueid, a.product_condition ";
                                         // echo $sql; 
                                         $result_log2    = $db->query($conn, $sql);
@@ -811,15 +814,18 @@
                                         <?php
                                         $field_name     = "product_id_boken_device";
                                         $field_label    = "Product ID";
-                                        $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
-                                                                FROM purchase_order_detail a 
-                                                                INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                                INNER JOIN products c ON c.id = a.product_id
-                                                                INNER JOIN product_categories d ON d.id = c.product_category
-                                                                WHERE 1=1 
-                                                                AND a.enabled = 1
-                                                                AND a.po_id = '" . $id . "' 
-                                                                ORDER BY c.product_uniqueid, a.product_condition ";
+                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                                            FROM purchase_order_detail a 
+                                                            INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                            INNER JOIN products c ON c.id = a.product_id
+                                                            INNER JOIN product_categories d ON d.id = c.product_category
+                                                            INNER JOIN purchase_order_detail_receive e ON e.po_id = a.po_id 
+                                                                                                    AND c.product_category = e.recevied_product_category  
+                                                                                                    AND (e.serial_no_barcode IS NULL OR e.serial_no_barcode = '')
+                                                            WHERE 1=1 
+                                                            AND a.enabled = 1
+                                                            AND a.po_id = '" . $id . "' 
+                                                            ORDER BY c.product_uniqueid, a.product_condition ";
                                         // echo $sql; 
                                         $result_log2    = $db->query($conn, $sql);
                                         $count_r2       = $db->counter($result_log2); ?>

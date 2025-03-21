@@ -30,6 +30,68 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
+if (isset($is_Submit_bulk_bins) && $is_Submit_bulk_bins == 'Y') {
+
+	if (!isset($bin_ids) || (isset($bin_ids) && sizeof($bin_ids) == 0)) {
+		$error['msg'] = "Select atleast one record";
+	}
+	
+	$field_name = "bin_user_id_bulk";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error[$field_name] = "Required";
+	}
+	if (empty($error)) {
+		$k = 0;
+		foreach($bin_ids as $data){
+			$order_by		= 1;
+            $sql_order		= " SELECT MAX(a.order_by) as max_order_by
+								FROM users_bin_for_diagnostic a  
+								WHERE  a.is_processing_done	= '0'  ";
+            $result_order 	= $db->query($conn, $sql_order);
+            $count_order  	= $db->counter($result_order);
+            if ($count_order > 0) {
+                $row_order = $db->fetch($result_order);
+                $order_by = $row_order[0]['max_order_by'] + 1;
+            }
+			$sql1     ="SELECT a.id
+						FROM users_bin_for_diagnostic a  
+						WHERE  a.bin_user_id		= '".$bin_user_id_bulk."' 
+						AND a.location_id			= '".$data."'  
+						AND a.is_processing_done	= '0'  ";
+			$result_1 = $db->query($conn, $sql1);
+			$count_1  = $db->counter($result_1);
+			if ($count_1 == 0) {
+				$sql6 = "INSERT INTO " . $selected_db_name . ".users_bin_for_diagnostic(subscriber_users_id, bin_user_id, location_id,order_by, add_date, add_by, add_by_user_id, add_ip, added_from_module_id )
+							VALUES('" . $subscriber_users_id . "', '" . $bin_user_id_bulk . "', '" . $data . "',  '" . $order_by . "' ,'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $module_id . "')";
+				$ok = $db->query($conn, $sql6);
+				if ($ok) {
+					$id2			= mysqli_insert_id($conn);
+					$assignment_no  = "A" . $id2;
+
+					$sql_dup	= " SELECT a.* FROM users_bin_for_diagnostic a WHERE  assignment_no	= '" . $assignment_no . "' ";
+					$result_dup	= $db->query($conn, $sql_dup);
+					$count_dup	= $db->counter($result_dup);
+					if ($count_dup > 0) {
+						$assignment_no  = "A" . $assignment_no;
+						$sql_dup	= " SELECT a.* FROM users_bin_for_diagnostic a WHERE  assignment_no	= '" . $assignment_no . "' ";
+						$result_dup	= $db->query($conn, $sql_dup);
+						$count_dup	= $db->counter($result_dup);
+						if ($count_dup > 0) {
+							$assignment_no  = "AA" . $assignment_no;
+						}
+					}
+					$sql6 = " UPDATE users_bin_for_diagnostic SET assignment_no = '" . $assignment_no . "' WHERE id = '" . $id2 . "' ";
+					$db->query($conn, $sql6);
+					$k++;
+				}
+			}
+		}
+		if($k>0){
+			$msg['msg_success'] = "Bins have been assigned";
+		}
+		
+	}  
+}
 $module_status = 5;
 $sql_cl = " SELECT DISTINCT IFNULL(e.id, 0) AS bin_id, a.sub_location_id AS sub_location, d.sub_location_name, d.sub_location_type, 
 					GROUP_CONCAT(DISTINCT CONCAT('<br>PO#: ', COALESCE(c.po_no, 'N/A'), ', Vendor Name: ', COALESCE(a2.vender_name, 'N/A')) ORDER BY c.po_no SEPARATOR '') AS po_detail,
@@ -104,16 +166,17 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 				</div>
 				<div class="row">
 					<div class="col s12">
-						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top">
-								<h4 class="card-title">Categories Wise Detail</h4>
-								<form method="post" autocomplete="off" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" enctype="multipart/form-data">
-									<input type="hidden" name="is_Submit2" value="Y" />
-									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-																						echo encrypt($_SESSION['csrf_session']);
-																					} ?>">
-									<?php
-									if ($count_cl2 > 0) {
+						<?php
+						if ($count_cl2 > 0) {?>
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
+									<h4 class="card-title">Categories Wise Detail</h4>
+									<form method="post" autocomplete="off" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" enctype="multipart/form-data">
+										<input type="hidden" name="is_Submit2" value="Y" />
+										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																							echo encrypt($_SESSION['csrf_session']);
+																						} ?>">
+										<?php
 										$row_cl = $db->fetch($result_cl2);
 										$i = 1;
 										foreach ($row_cl as $data) {
@@ -150,294 +213,374 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 											</div>
 									<?php
 											$i++;
-										}
-									} ?>
-								</form>
+										} ?>
+									</form>
+								</div>
 							</div>
-						</div>
+						<?php }
+						if (isset($error['msg'])) { ?>
+							<div class="row">
+								<div class="col 24 s12">
+									<div class="card-alert card red lighten-5">
+										<div class="card-content red-text">
+											<p><?php echo $error['msg']; ?></p>
+										</div>
+										<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						<?php } else if (isset($msg['msg_success'])) { ?>
+							<div class="row">
+								<div class="col 24 s12">
+									<div class="card-alert card green lighten-5">
+										<div class="card-content green-text">
+											<p><?php echo $msg['msg_success']; ?></p>
+										</div>
+										<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+								</div>
+							</div>
+						<?php } ?>
 					</div>
 				</div>
+
 				<div class="row">
-					<div class="col s12">
-						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top">
-								<?php
-								if (isset($error['msg'])) { ?>
-									<div class="row">
-										<div class="col 24 s12">
-											<div class="card-alert card red lighten-5">
-												<div class="card-content red-text">
-													<p><?php echo $error['msg']; ?></p>
-												</div>
-												<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
-													<span aria-hidden="true">×</span>
-												</button>
-											</div>
-										</div>
-									</div>
-								<?php } else if (isset($msg['msg_success'])) { ?>
-									<div class="row">
-										<div class="col 24 s12">
-											<div class="card-alert card green lighten-5">
-												<div class="card-content green-text">
-													<p><?php echo $msg['msg_success']; ?></p>
-												</div>
-												<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
-													<span aria-hidden="true">×</span>
-												</button>
-											</div>
-										</div>
-									</div>
-								<?php } ?>
-								<h4 class="card-title">Bins / Locations</h4>
-								<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>">
+					<?php 
+					if ($count_cl > 0) {?>
+						<div class="col s12">
+							<div class="card custom_margin_card_table_top">
+								<div class="card-content custom_padding_card_content_table_top">
+									<br>
+									<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>">
 
-									<input type="hidden" id="module_url" value="<?= PROJECT_URL; ?>/home?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" />
-									<input type="hidden" name="is_Submit" value="Y" />
-									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-																						echo encrypt($_SESSION['csrf_session']);
-																					} ?>">
-									<div class="row">
+										<input type="hidden" id="module_url" value="<?= PROJECT_URL; ?>/home?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>" />
+										<input type="hidden" name="is_Submit" value="Y" />
+										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																							echo encrypt($_SESSION['csrf_session']);
+																						} ?>">
+										<div class="row">
 
-										<div class="input-field col m3 s12">
-											<i class="material-icons prefix">question_answer</i>
-											<div class="select2div">
-												<?php
-												$field_name     = "flt_bin_id";
-												$field_label	= "Bin/Location";
+											<div class="input-field col m3 s12">
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<?php
+													$field_name     = "flt_bin_id";
+													$field_label	= "Bin/Location";
 
-												$sql1		= " SELECT b.id,b.sub_location_name, b.sub_location_type FROM warehouse_sub_locations b WHERE  b.enabled = 1 ";
-												$result1	= $db->query($conn, $sql1);
-												$count1		= $db->counter($result1);
-												?>
-												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																													echo ${$field_name . "_valid"};
-																																												} ?>">
-													<option value="">All</option>
-													<?php
-													if ($count1 > 0) {
-														$row1    = $db->fetch($result1);
-														foreach ($row1 as $data2) { ?>
-															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php
-																																																				echo $data2['sub_location_name'];
-																																																				if ($data2['sub_location_type'] != "") {
-																																																					echo "(" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-																																																				} ?></option>
-													<?php }
-													} ?>
-												</select>
-												<label for="<?= $field_name; ?>">
-													<?= $field_label; ?>
-													<span class="color-red"><?php
-																			if (isset($error[$field_name])) {
-																				echo $error[$field_name];
-																			} ?>
-													</span>
-												</label>
-											</div>
-										</div>
-										<div class="input-field col m3 s12">
-											<i class="material-icons prefix">question_answer</i>
-											<div class="select2div">
-												<?php
-												$field_name     = "flt_product_category";
-												$field_label    = "Product Category";
-												$sql11          = " SELECT b.id, b.category_name FROM  product_categories b WHERE  b.enabled = 1 ";
-												$result11       = $db->query($conn, $sql11);
-												$count11        = $db->counter($result11);
-												?>
-												<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																													echo ${$field_name . "_valid"};
-																																												} ?>">
-													<option value="">All</option>
-													<?php
-													if ($count11 > 0) {
-														$row11    = $db->fetch($result11);
-														foreach ($row11 as $data12) { ?>
-															<option value="<?php echo $data12['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data12['id']) { ?> selected="selected" <?php } ?>><?php
-																																																					echo $data12['category_name']; ?>
-															</option>
-													<?php }
-													} ?>
-												</select>
-												<label for="<?= $field_name; ?>">
-													<?= $field_label; ?>
-													<span class="color-red"><?php
-																			if (isset($error[$field_name])) {
-																				echo $error[$field_name];
-																			} ?>
-													</span>
-												</label>
-											</div>
-										</div>
-										<div class="input-field col m3 s12">
-											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
-											&nbsp;&nbsp;
-											<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">All</a>
-										</div>
-									</div>
-								</form>
-								<div class="row">
-									<div class="text_align_right">
-										<?php
-										$table_columns	= array('SNo', 'Location / Bin', 'PO Detail', 'Received Date', 'Warranty Remaining', 'Details', 'Total Qty', 'Assign User');
-										$k 				= 0;
-										foreach ($table_columns as $data_c1) { ?>
-											<label>
-												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
-												<span><?= $data_c1 ?></span>
-											</label>&nbsp;&nbsp;
-										<?php
-											$k++;
-										} ?>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col s12">
-										<table id="page-length-option" class="display pagelength100">
-											<thead>
-												<tr>
-													<?php
-													$headings = "";
-													foreach ($table_columns as $data_c) {
-														if ($data_c == 'SNo') {
-															$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
-														} else {
-															$headings .= '<th class="text_align_center col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
-														}
-													}
-													echo $headings;
+													$sql1		= " SELECT b.id,b.sub_location_name, b.sub_location_type FROM warehouse_sub_locations b WHERE  b.enabled = 1 ";
+													$result1	= $db->query($conn, $sql1);
+													$count1		= $db->counter($result1);
 													?>
-												</tr>
-											</thead>
-											<tbody>
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count1 > 0) {
+															$row1    = $db->fetch($result1);
+															foreach ($row1 as $data2) { ?>
+																<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php
+																																																					echo $data2['sub_location_name'];
+																																																					if ($data2['sub_location_type'] != "") {
+																																																						echo "(" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+																																																					} ?></option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m3 s12">
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<?php
+													$field_name     = "flt_product_category";
+													$field_label    = "Product Category";
+													$sql11          = " SELECT b.id, b.category_name FROM  product_categories b WHERE  b.enabled = 1 ";
+													$result11       = $db->query($conn, $sql11);
+													$count11        = $db->counter($result11);
+													?>
+													<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																														echo ${$field_name . "_valid"};
+																																													} ?>">
+														<option value="">All</option>
+														<?php
+														if ($count11 > 0) {
+															$row11    = $db->fetch($result11);
+															foreach ($row11 as $data12) { ?>
+																<option value="<?php echo $data12['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data12['id']) { ?> selected="selected" <?php } ?>><?php
+																																																						echo $data12['category_name']; ?>
+																</option>
+														<?php }
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red"><?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m3 s12">
+												<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
+												&nbsp;&nbsp;
+												<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">All</a>
+											</div>
+										</div>
+									</form>
+									<form method="post" autocomplete="off" enctype="multipart/form-data" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page) ?>">
+										<input type="hidden" name="is_Submit_bulk_bins" value="Y" />
+										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																							echo encrypt($_SESSION['csrf_session']);
+																						} ?>">
+										<input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+										<div class="row">
+											<div class="text_align_right">
 												<?php
-												$i = 0;
-												if ($count_cl > 0) {
-													$row_cl = $db->fetch($result_cl);
-													foreach ($row_cl as $data) {
-														$column_no = 0;
-														$id = $data['sub_location']; ?>
+												$table_columns	= array('SNo', 'check_all','Location / Bin', 'PO Detail', 'Received Date', 'Warranty Remaining', 'Details', 'Total Qty', 'Assign User');
+												$k 				= 0;
+												foreach ($table_columns as $data_c1) { ?>
+													<label>
+														<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+														<span><?= $data_c1 ?></span>
+													</label>&nbsp;&nbsp;
+												<?php
+													$k++;
+												} ?>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col s12">
+												<table id="page-length-option" class="display pagelength100">
+													<thead>
 														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																echo $i + 1;
-																$column_no++;
-																?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																$column_no++;
-																echo $data['sub_location_name'];
-																if ($data['sub_location_type'] != "") {
-																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
-																} ?>
-															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																echo $data['po_detail'];
-																$column_no++; ?>
-															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																echo ($data['received_dates']);
-																$column_no++; ?>
-															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-
-																$column_no++; ?>
-															</td>
-
-															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																$column_no++;
-																$total_qty = 0;
-																$sql_cl3 = "SELECT COUNT(*) AS qty, a3.category_name  
-																				FROM purchase_order_detail_receive a
-																				INNER JOIN purchase_orders c ON c.id = a.po_id
-																				INNER JOIN product_categories a3 ON a3.id = a.recevied_product_category 
-																				WHERE 1=1
-																				AND a.is_diagnost = 0 
-																				AND a.sub_location_id = '" . $id . "' 
-																				GROUP BY a3.category_name
-																				ORDER BY a3.category_name";
-																$result_cl3		= $db->query($conn, $sql_cl3);
-																$count_cl3		= $db->counter($result_cl3);
-																if ($count_cl3 > 0) {
-																	$row_cl3 = $db->fetch($result_cl3);
-																	foreach ($row_cl3 as $data3) {
-																		$total_qty += $data3['qty']; ?>
-																		<div class="col m8 s12" style="text-align: right;"><b></b><?= $data3['category_name']; ?></div>
-																		<div class="col m4 s12"><b>Qty: </b><?= $data3['qty']; ?></div>
-																<?php
-																	}
-																} ?>
-															</td>
-															<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<?php
-																echo $total_qty;
-																$column_no++; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																<div class="input-field col m12 s12">
-																	<div class="select2div">
+															<th class="col-check_all">
+																<label>
+																	<input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
+																																									echo "checked";
+																																								} ?> />
+																	<span></span>
+																</label>
+															</th>
+														</tr>
+														<tr>
+															<?php
+															$headings = "";
+															foreach ($table_columns as $data_c) {
+																if ($data_c == 'SNo') {
+																	$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+																}
+																else if ($data_c == 'check_all') {
+																	$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+																} 
+																else {
+																	$headings .= '<th class="text_align_center col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
+																}
+															}
+															echo $headings;
+															?>
+														</tr>
+													</thead>
+													<tbody>
+														<?php
+														$i = 0;
+														if ($count_cl > 0) {
+															$row_cl = $db->fetch($result_cl);
+															foreach ($row_cl as $data) {
+																$column_no = 0;
+																$id 	= $data['sub_location']; 
+																$bin_id = $data['bin_id'];?>
+																<tr>
+																	<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
+																		echo $i + 1;
+																		$column_no++;
+																		?>
+																	</td>
+																	<td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$column_no]);?>">
+																		<?php
+																		$column_no++; ?>
+																		<label style="margin-left: 25px;">
+																			<input type="checkbox" name="bin_ids[]" id="bin_ids[]" value="<?= $id; ?>" <?php if(isset($bin_ids) && in_array($id, $bin_ids)){ echo "checked"; }?> class="checkbox6 filled-in" />
+																			<span></span>
+																		</label>
+																	</td>
+																	<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																		<?php
 																		$column_no++;
-																		$sql_u13			= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
-																		$result_u13		= $db->query($conn, $sql_u13);
-																		$count_u13		= $db->counter($result_u13);
-																		if ($count_u13 > 0) {
-																			$row_u13 = $db->fetch($result_u13);
-																			$bin_user_id = $row_u13[0]['bin_user_id'];
-																			$location_id = $row_u13[0]['location_id'];
-																		}
-																		$field_name     = "bin_user_id";
-																		$field_id     	= "bin_user_id-" . $id;
-																		$field_label    = "Users";
+																		echo $data['sub_location_name'];
+																		if ($data['sub_location_type'] != "") {
+																			echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
+																		} ?>
+																	</td>
+																	<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
+																		echo $data['po_detail'];
+																		$column_no++; ?>
+																	</td>
+																	<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
+																		echo ($data['received_dates']);
+																		$column_no++; ?>
+																	</td>
+																	<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
 
-																		$sql_u1			= " SELECT id, CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name
-																		 					FROM users 
-																							WHERE  FIND_IN_SET('Diagnostic' , user_sections) > 0 "; //echo $sql_u;
-																		$result_u1		= $db->query($conn, $sql_u1);
-																		$count_u1		= $db->counter($result_u1);
-																		?>
-																		<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class="bin_user_id select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-																																																					echo ${$field_name . "_valid"};
-																																																				} ?>">
-																			<option value="">Assign User</option>
-																			<?php
-																			if ($count_u1 > 0) {
-																				$row_u1 = $db->fetch($result_u1);
-																				foreach ($row_u1 as $data_u1) { ?>
-																					<option value="<?php echo $data_u1['id']; ?>" <?php if (isset($bin_user_id) && $bin_user_id == $data_u1['id'] && $location_id == $id) { ?> selected="selected" <?php } ?>><?php echo $data_u1['user_full_name']; ?></option>
-																			<?php
+																		$column_no++; ?>
+																	</td>
+
+																	<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
+																		$column_no++;
+																		$total_qty = 0;
+																		$sql_cl3 	= " SELECT COUNT(*) AS qty, a3.category_name  
+																						FROM purchase_order_detail_receive a
+																						INNER JOIN purchase_orders c ON c.id = a.po_id
+																						LEFT JOIN product_categories a3 ON a3.id = a.recevied_product_category 
+																						WHERE 1=1
+																						AND a.is_diagnost = 0 
+																						AND a.sub_location_id = '" . $id . "' 
+																						GROUP BY a3.category_name
+																						ORDER BY a3.category_name";
+																		$result_cl3		= $db->query($conn, $sql_cl3);
+																		$count_cl3		= $db->counter($result_cl3);
+																		if ($count_cl3 > 0) {
+																			$row_cl3 = $db->fetch($result_cl3);
+																			foreach ($row_cl3 as $data3) {
+																				$total_qty += $data3['qty']; ?>
+																				<div class="col m8 s12" style="text-align: right;"><b></b><?= $data3['category_name']; ?></div>
+																				<div class="col m4 s12"><b>Qty: </b><?= $data3['qty']; ?></div>
+																		<?php
+																			}
+																		} ?>
+																	</td>
+																	<td class="text_align_center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<?php
+																		echo $total_qty;
+																		$column_no++; ?>
+																	</td>
+																	<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																		<div class="input-field col m12 s12">
+																			<div class="select2div">
+																				<?php
+																				$column_no++;
+																				$sql_u13			= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
+																				$result_u13		= $db->query($conn, $sql_u13);
+																				$count_u13		= $db->counter($result_u13);
+																				if ($count_u13 > 0) {
+																					$row_u13 = $db->fetch($result_u13);
+																					$bin_user_id = $row_u13[0]['bin_user_id'];
+																					$location_id = $row_u13[0]['location_id'];
 																				}
-																			} ?>
-																		</select>
-																	</div>
-																</div>
-															</td>
-														</tr>
-												<?php $i++;
-													}
-												} ?>
-											</tbody>
-										</table>
-									</div>
+																				$field_name     = "bin_user_id";
+																				$field_id     	= "bin_user_id-" . $id;
+																				$field_label    = "Users";
+
+																				$sql_u1			= " SELECT id, CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name
+																									FROM users 
+																									WHERE  FIND_IN_SET('Diagnostic' , user_sections) > 0 "; //echo $sql_u;
+																				$result_u1		= $db->query($conn, $sql_u1);
+																				$count_u1		= $db->counter($result_u1);
+																				?>
+																				<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class="bin_user_id select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																																							echo ${$field_name . "_valid"};
+																																																						} ?>">
+																					<option value="">Assign User</option>
+																					<?php
+																					if ($count_u1 > 0) {
+																						$row_u1 = $db->fetch($result_u1);
+																						foreach ($row_u1 as $data_u1) { ?>
+																							<option value="<?php echo $data_u1['id']; ?>" <?php if (isset($bin_user_id) && $bin_user_id == $data_u1['id'] && $location_id == $id) { ?> selected="selected" <?php } ?>><?php echo $data_u1['user_full_name']; ?></option>
+																					<?php
+																						}
+																					} ?>
+																				</select>
+																			</div>
+																		</div>
+																	</td>
+																</tr>
+														<?php $i++;
+															}
+														} ?>
+													</tbody>
+												</table>
+											</div>
+										</div><br>
+										<div class="row">
+											<div class="input-field col m4 s12">
+												<i class="material-icons prefix">question_answer</i>
+												<div class="select2div">
+													<?php
+													$field_name     = "bin_user_id_bulk";
+													$field_id     	= "bin_user_id_bulk";
+													$field_label    = "Users";
+
+													$sql_u1			= " SELECT id, CONCAT(COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) AS user_full_name
+																		FROM users 
+																		WHERE  FIND_IN_SET('Diagnostic' , user_sections) > 0 "; //echo $sql_u;
+													$result_u1		= $db->query($conn, $sql_u1);
+													$count_u1		= $db->counter($result_u1);
+													?>
+													<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																																echo ${$field_name . "_valid"};
+																																															} ?>">
+														<option value="">Select User</option>
+														<?php
+														if ($count_u1 > 0) {
+															$row_u1 = $db->fetch($result_u1);
+															foreach ($row_u1 as $data_u1) { ?>
+																<option value="<?php echo $data_u1['id']; ?>" <?php if (isset($bin_user_id_bulk) && $bin_user_id_bulk == $data_u1['id']) { ?> selected="selected" <?php } ?>><?php echo $data_u1['user_full_name']; ?></option>
+														<?php
+															}
+														} ?>
+													</select>
+													<label for="<?= $field_name; ?>">
+														<?= $field_label; ?>
+														<span class="color-red">*<?php
+																				if (isset($error[$field_name])) {
+																					echo $error[$field_name];
+																				} ?>
+														</span>
+													</label>
+												</div>
+											</div>
+											<div class="input-field col m2 s2 text_align_center">
+												<button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="bulk">Assign Bin Bulk</button>
+											</div>
+										</div>
+									</form>
 								</div>
 							</div>
 						</div>
-					</div>
+					<?php }?>
 					<?php
 					$sql3 			= "	SELECT b.id, CONCAT(COALESCE(a.first_name), ' ', COALESCE(a.last_name)) AS user_full_name, a.profile_pic,
-											b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type ,b.assignment_no, b.add_date
+											b.location_id, b.bin_user_id, b2.sub_location_name, b2.sub_location_type ,b.assignment_no, b.add_date,
+											GROUP_CONCAT(DISTINCT CONCAT('<br>PO#: ', d.po_no, ', Vender: ',e.vender_name)) AS po_detail,
+											COUNT(c.id) as total_qty
 										FROM users a
 										INNER JOIN users_bin_for_diagnostic b ON a.id = b.bin_user_id AND b.is_processing_done = '0'
 										INNER JOIN warehouse_sub_locations b2 ON b2.id = b.location_id
+										INNER JOIN purchase_order_detail_receive c ON c.sub_location_id = b.location_id AND c.is_diagnost = 0
+										INNER JOIN purchase_orders d ON d.id = c.po_id
+										INNER JOIN venders e ON e.id = d.vender_id
 										WHERE 1=1
 										GROUP BY bin_user_id, location_id
-										ORDER BY a.first_name, a.last_name, b2.sub_location_name ";
+										ORDER BY a.first_name, a.last_name, b.order_by ";
 					$result_cl3		= $db->query($conn, $sql3);
 					$count_3		= $db->counter($result_cl3);
 					if ($count_3 > 0) { ?>
@@ -447,7 +590,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 									<div class="row">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('SNo', 'Tester Name', 'Bin', 'Assignment#', 'Assign Date', 'Days', 'Actions');
+											$table_columns	= array('SNo', 'Tester Name', 'Bin', 'Detail', 'Assignment#', 'Assign Date', 'Qty', 'Days', 'Actions');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -461,7 +604,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 									</div>
 									<div class="row">
 										<div class="col s12">
-											<table id="page-length-option" class="display pagelength50_10">
+											<table id="page-length-option" class="display pagelength50_2">
 												<thead>
 													<tr>
 														<?php
@@ -490,6 +633,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 														$sub_location_name		= $data3['sub_location_name'];
 														$sub_location_type		= $data3['sub_location_type'];
 														$assignment_no			= $data3['assignment_no'];
+														$po_detail				= $data3['po_detail'];
+														$total_qty				= $data3['total_qty'];
 														$assign_date			= dateformat2($data3['add_date']);
 														$total_estimated_time	= 0;
 
@@ -543,6 +688,12 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																<?php
 																$column_no++;
 																?>
+																<?php echo $po_detail; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
+																<?php
+																$column_no++;
+																?>
 																<?php echo $assignment_no; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
@@ -550,6 +701,12 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																$column_no++;
 																?>
 																<?php echo $assign_date; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
+																<?php
+																$column_no++;
+																?>
+																<?php echo ($total_qty); ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?> text_align_center">
 																<?php
@@ -585,114 +742,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 							</div>
 						</div>
 					<?php } ?>
-				</div>
-
-				<?PHP /*?>
-				<div class="row">
-					<div class="col s12">
-						<div class="card custom_margin_card_table_top">
-							<div class="card-content custom_padding_card_content_table_top">
-								<input type="hidden" name="module_id" id="module_id" value="<?= $module_id; ?>">
-								<?php
-								if (isset($error2['msg'])) { ?>
-									<div class="row">
-										<div class="col 24 s12">
-											<div class="card-alert card red lighten-5">
-												<div class="card-content red-text">
-													<p><?php echo $error2['msg']; ?></p>
-												</div>
-												<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
-													<span aria-hidden="true">×</span>
-												</button>
-											</div>
-										</div>
-									</div>
-								<?php } else if (isset($msg2['msg_success'])) { ?>
-									<div class="row">
-										<div class="col 24 s12">
-											<div class="card-alert card green lighten-5">
-												<div class="card-content green-text">
-													<p><?php echo $msg2['msg_success']; ?></p>
-												</div>
-												<button type="button" class="close green-text" data-dismiss="alert" aria-label="Close">
-													<span aria-hidden="true">×</span>
-												</button>
-											</div>
-										</div>
-									</div>
-								<?php } ?>
-								<h4 class="card-title">Users</h4>
-								<style>
-									.user-list-container {
-										display: flex;
-										flex-direction: column;
-										margin: 10px;
-									}
-
-									.user-list {
-										display: flex;
-										gap: 10px;
-										border: 2px dashed #ccc;
-										padding: 10px;
-										flex-wrap: wrap;
-									}
-
-									.user {
-										background-color: #f0f0f0;
-										padding: 10px;
-										cursor: grab;
-										border: 1px solid #ddd;
-										border-radius: 4px;
-									}
-
-									.user1 {
-										background-color: #f0f0f0;
-										padding: 10px;
-										border: 1px solid #ddd;
-										border-radius: 4px;
-									}
-
-									.drop-row {
-										display: flex;
-										justify-content: space-between;
-										margin: 10px 0;
-										align-items: center;
-									}
-
-									.location-column {
-										width: 40%;
-										padding: 10px;
-										text-align: center;
-										background-color: #f0f0f0;
-										border: 1px solid #ddd;
-										border-radius: 4px;
-									}
-
-									.drop-column {
-										width: 55%;
-									}
-
-									.drop-box {
-										border: 2px dashed #ccc;
-										min-height: 100px;
-										padding: 10px;
-										background-color: #ffffff;
-									}
-
-									.drop-box.dragover {
-										background-color: #d9f7be;
-									}
-								</style>
-								<div class="row">
-									<div class="col s12 bin_users">
-										<?php include('display_users_bins.php'); ?>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<?PHP */ ?>
+				</div> 
 			</div>
 			<!-- </div> -->
 		</div>

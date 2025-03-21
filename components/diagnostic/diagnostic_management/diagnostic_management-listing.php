@@ -21,7 +21,7 @@ if (po_permisions("ALL Bins") != '1') {
 	$sql_cl	.= " AND a.bin_user_id = '" . $_SESSION['user_id'] . "' ";
 }
 $sql_cl	.= "GROUP BY a.id
-			ORDER BY a.id DESC";
+			ORDER BY a.order_by";
 // echo $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);

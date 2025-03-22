@@ -11,7 +11,7 @@
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <?php if (access("add_perm") == 1) { ?>
+                <?php if (access("add_perm") == 1  && $stage_status == 'Draft') { ?>
                     <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&id=" . $id . "&page=importvender_data") ?>">
                         Import Vendor Data
                     </a>

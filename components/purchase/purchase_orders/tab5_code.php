@@ -479,6 +479,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 							INNER JOIN products b ON b.product_uniqueid = a.product_uniqueid
 							INNER JOIN purchase_order_detail c ON c.product_id = b.id AND c.po_id = '" . $id . "'
 							WHERE a.enabled = 1 
+							AND c.enabled	= 1
 							AND a.serial_no = '" . $serial_no_barcode . "'
 							ORDER BY a.id DESC LIMIT 1 ";
 		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
@@ -494,7 +495,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 		}
 
 		$vender_d_status = "";
-		$sql_pd01_4		= "	SELECT  a.status
+		$sql_pd01_4		= "	SELECT  a.status, a.overall_grade
 							FROM vender_po_data a 
 							WHERE a.enabled = 1 
 							AND a.po_id = '" . $id . "'
@@ -505,17 +506,34 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 		if ($count_pd01_4 > 0) {
 			$row_pd01_4				= $db->fetch($result_pd01_4);
 			$vender_d_status		= $row_pd01_4[0]['status']; 
-			if($vender_d_status != 'Tested/Graded' && $vender_d_status !="" && $vender_d_status != NULL){
+			$vender_d_overall_grade	= $row_pd01_4[0]['overall_grade']; 
+			
+			if($vender_d_overall_grade == 'D'){
 				$sql_pd01_4		= "	SELECT  a.id
 									FROM purchase_order_detail_receive a 
 									WHERE a.enabled = 1 
 									AND a.po_id = '" . $id . "'
-									AND a.inventory_status = '5'
+									AND a.inventory_status != '6'
+									AND a.inventory_status = '5' 
+									AND overall_grade != 'D'  
 									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  ";
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "The Serial# is ".$vender_d_status;
+					$error5['serial_no_barcode'] = "CThe Serial# is D, Select another Bin";
+				}
+			}
+			else if($vender_d_status != 'Tested/Graded' && $vender_d_status !="" && $vender_d_status != NULL){
+				$sql_pd01_4		= "	SELECT  a.id
+									FROM purchase_order_detail_receive a 
+									WHERE a.enabled = 1 
+									AND a.po_id = '" . $id . "'
+									AND (a.inventory_status = '5' AND a.overall_grade != 'D' )
+									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  ";
+				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+				$count_pd01_4	= $db->counter($result_pd01_4);
+				if ($count_pd01_4 > 0) {
+					$error5['serial_no_barcode'] = "BThe Serial# is ".$vender_d_status.", Select another Bin.";
 				}
 			}
 			else if($vender_d_status == 'Tested/Graded'){
@@ -523,12 +541,12 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 									FROM purchase_order_detail_receive a 
 									WHERE a.enabled = 1 
 									AND a.po_id = '" . $id . "'
-									AND a.inventory_status != '5'
-									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  ";
+									AND (a.inventory_status != '5' OR  a.overall_grade = 'D')
+									AND a.sub_location_id = '" . $sub_location_id_barcode . "'  "; 
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "The Serial# is ".$vender_d_status.", You have selected defective item's Bin";
+					$error5['serial_no_barcode'] = "AThe Serial# is ".$vender_d_status.", Select another Bin";
 				}
 			}
 		} 
@@ -539,7 +557,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 		} else {
 			$k = 0;
 			$sql_ee1 = "SELECT a.* FROM purchase_order_detail_receive a 
-						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id AND b.enabled	= 1
 						WHERE a.enabled = 1 
 						AND ( 
 								b.po_id = '" . $id . "'
@@ -558,6 +576,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 									INNER JOIN products c ON c.id = a.product_id
 									INNER JOIN purchase_orders a2 ON a2.id = a.po_id
 									WHERE 1 = 1
+									AND a.enabled	= 1
 									AND a.id 	= '" . $product_id_barcode . "'";
 				$result_pd3		= $db->query($conn, $sql_pd3);
 				$count_pd3		= $db->counter($result_pd3);
@@ -722,7 +741,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 											FROM purchase_order_detail a
 											INNER JOIN products b ON b.id = a.product_id
 											INNER JOIN purchase_orders a2 ON a2.id = a.po_id
- 											WHERE b.product_category 	= '" . $recevied_product_category . "' 
+ 											WHERE a. enabled = 1
+											ANDb.product_category 	= '" . $recevied_product_category . "' 
  											AND a.po_id 				= '" . $id . "' ";
 						$result_pd3		= $db->query($conn, $sql_pd3);
 						$count_pd3		= $db->counter($result_pd3);

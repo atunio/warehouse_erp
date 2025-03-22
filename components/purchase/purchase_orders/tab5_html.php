@@ -129,7 +129,8 @@
                                                         LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id
                                                         INNER JOIN product_stock j ON j.receive_id = a.id 
                                                         WHERE a.enabled = 1 
-                                                        AND b.po_id = '" . $id . "'
+                                                        AND b.enabled   = 1
+                                                        AND b.po_id     = '" . $id . "'
                                                          AND a.edit_lock = 1 
                                                         
                                                         UNION ALL 
@@ -373,7 +374,8 @@
                                         INNER JOIN products c ON c.id = a.product_id
                                         INNER JOIN product_categories d ON d.id = c.product_category
                                         WHERE 1=1 
-                                        AND a.po_id = '" . $id . "' AND a.enabled =1
+                                         AND a.po_id = '" . $id . "' 
+                                        AND a.enabled =1
                                         GROUP BY d.category_name
                                         ORDER BY d.category_name"; //echo $sql_cl;
                         $result_r1  = $db->query($conn, $sql_r1);
@@ -563,6 +565,7 @@
                                                         INNER JOIN product_categories d ON d.id = c.product_category
                                                         WHERE 1=1 
                                                         AND a.po_id = '" . $id . "' 
+                                                        AND a.enabled = 1
                                                         AND a.is_fk_serial_generated = 0
                                                         ORDER BY c.product_uniqueid, a.product_condition "; // echo $sql; 
                                     $result_log2    = $db->query($conn, $sql);
@@ -744,6 +747,7 @@
                                                     INNER JOIN product_categories d ON d.id = c.product_category
                                                     WHERE 1=1 
                                                     AND a.po_id = '" . $id . "' 
+                                                    AND a.enabled = 1
                                                     ORDER BY c.product_uniqueid, a.product_condition ";
                                     // echo $sql; 
                                     $result_log2    = $db->query($conn, $sql);
@@ -861,6 +865,7 @@
                                                         INNER JOIN product_categories d ON d.id = c.product_category
                                                         WHERE 1=1 
                                                         AND a.po_id = '" . $id . "' 
+                                                        AND a.enabled = 1
                                                         ORDER BY c.product_uniqueid, a.product_condition "; // echo $sql; 
                                         $result_log2    = $db->query($conn, $sql);
                                         $count_r2       = $db->counter($result_log2); ?>
@@ -1070,16 +1075,16 @@
              <?php
                 */
                 $sql_r1     = "	SELECT  aa.id, b.package_name,c.category_name AS package_material_category_name, aa.order_qty AS package_material_qty
-                                                FROM purchase_order_packages_detail aa
-                                                INNER JOIN purchase_order_detail a ON a.po_id = aa.po_id
-                                                INNER JOIN packages b ON b.id = aa.package_id
-                                                INNER JOIN product_categories c ON c.id = b.product_category
-                                                INNER JOIN products d ON d.id = a.product_id
-                                                INNER JOIN product_categories e ON e.id = d.product_category
-                                                WHERE a.enabled = 1 
-                                                AND a.po_id = '$id'
-                                                GROUP BY b.package_name, c.category_name , aa.order_qty
-                                                ORDER BY b.package_name, c.category_name , aa.order_qty"; //echo $sql_cl;
+                                FROM purchase_order_packages_detail aa
+                                INNER JOIN purchase_order_detail a ON a.po_id = aa.po_id
+                                INNER JOIN packages b ON b.id = aa.package_id
+                                INNER JOIN product_categories c ON c.id = b.product_category
+                                INNER JOIN products d ON d.id = a.product_id
+                                INNER JOIN product_categories e ON e.id = d.product_category
+                                WHERE a.enabled = 1 
+                                AND a.po_id = '$id' 
+                                GROUP BY b.package_name, c.category_name , aa.order_qty
+                                ORDER BY b.package_name, c.category_name , aa.order_qty"; //echo $sql_cl;
                 $result_r1  = $db->query($conn, $sql_r1);
                 $count_r1   = $db->counter($result_r1);
                 if ($count_r1 > 0) { ?>
@@ -1313,6 +1318,7 @@
                                                         INNER JOIN products c ON c.id = a.product_id
                                                         INNER JOIN product_categories d ON d.id = c.product_category
                                                         WHERE 1=1 
+                                                        AND a.enabled = 1
                                                         AND a.po_id = '" . $id . "' 
                                                         ORDER BY c.product_uniqueid, a.product_condition "; // echo $sql; 
                                     $result_log2    = $db->query($conn, $sql);
@@ -1561,8 +1567,9 @@
                                         LEFT JOIN users e ON e.id = a.add_by_user_id
                                         LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                         LEFT JOIN inventory_status h ON h.id = a.inventory_status
-                                        WHERE a.enabled = 1 
-                                        AND b.po_id = '" . $id . "'
+                                        WHERE a.enabled     = 1 
+                                        AND b.enabled       = 1
+                                        AND b.po_id         = '" . $id . "'
                                         AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 
                                         UNION ALL
@@ -1622,7 +1629,8 @@
                                                     LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
                                                     INNER JOIN product_categories d ON d.id = c.product_category  
                                                     WHERE a.enabled = 1 
-                                                    AND b.po_id = '" . $id . "'
+                                                    AND b.enabled   = 1
+                                                    AND b.po_id     = '" . $id . "'
                                                     AND a.`receive_type` != 'CateogryReceived'
                                                     GROUP BY c.product_category, a.sub_location_id
 
@@ -1698,6 +1706,7 @@
                                                     INNER JOIN products c ON c.id = b.product_id
                                                     LEFT JOIN product_categories d ON d.id =c.product_category
                                                     WHERE a.enabled = 1 
+                                                    AND b.enabled   = 1
                                                     AND b.po_id = '" . $id . "'
                                                     GROUP BY a.po_detail_id
                                                     ORDER BY a.po_detail_id ";

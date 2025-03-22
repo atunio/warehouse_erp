@@ -59,8 +59,9 @@
         $sql            = " SELECT a.id
                             FROM purchase_order_detail_receive a 
                             INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                            WHERE a.enabled = 1 
-                            AND a.is_diagnost = 1
+                            WHERE a.enabled     = 1 
+                            AND b.enabled       = 1 
+                            AND a.is_diagnost   = 1
                             AND b.po_id = '" . $id . "' ";
         // echo $sql; 
         $result_log     = $db->query($conn, $sql);
@@ -89,6 +90,7 @@
                                 LEFT JOIN warehouse_sub_locations i ON i.id = a.sub_location_id_after_diagnostic
                                 INNER JOIN product_stock j ON j.receive_id = a.id
                                 WHERE a.enabled = 1 
+                                AND b.enabled   = 1 
                                 AND b.po_id = '" . $id . "'
                                 AND a.inventory_status != '" . $tested_or_graded_status . "' 
 
@@ -115,6 +117,7 @@
                                 INNER JOIN product_stock j ON j.receive_id = a.id
                                 LEFT JOIN vender_po_data k ON k.serial_no = a.serial_no_barcode
                                 WHERE a.enabled = 1 
+                                AND b.enabled   = 1 
                                 AND b.po_id = '" . $id . "'
                                 AND a.inventory_status = '" . $tested_or_graded_status . "'
                                 AND k.id IS NULL  
@@ -162,7 +165,8 @@
                                 INNER JOIN products c ON c.id = c1.product_id
                                 LEFT JOIN product_categories d ON d.id =c.product_category
                                 WHERE d1.id = '" . $id . "' 
-                                AND a.enabled = 1
+                                AND a.enabled   = 1
+                                AND c1.enabled  = 1 
 
                                 UNION ALL 
 
@@ -232,23 +236,23 @@
                                                 IFNULL(SUM(DISTINCT m3.order_qty), 0) AS po_expected_c_grade
 
                                             FROM purchase_orders a
-                                            LEFT JOIN purchase_order_detail b ON b.po_id = a.id
-                                            LEFT JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id
-                                            LEFT JOIN purchase_order_detail_receive g ON g.id = c.id AND g.inventory_status = 6 
+                                            LEFT JOIN purchase_order_detail b ON b.po_id = a.id AND b.enabled  = 1
+                                            LEFT JOIN purchase_order_detail_receive c ON c.po_detail_id = b.id AND c.enabled  = 1
+                                            LEFT JOIN purchase_order_detail_receive g ON g.id = c.id AND g.inventory_status = 6 AND g.enabled  = 1
                                             LEFT JOIN vender_po_data f1 ON f1.po_id = a.id AND (f1.overall_grade = 'A' || f1.overall_grade = 'A Grade')
                                             LEFT JOIN vender_po_data f2 ON f2.po_id = a.id AND (f2.overall_grade = 'B' || f2.overall_grade = 'B Grade')
                                             LEFT JOIN vender_po_data f3 ON f3.po_id = a.id AND (f3.overall_grade = 'C' || f3.overall_grade = 'C Grade')
                                             LEFT JOIN vender_po_data f4 ON f4.po_id = a.id AND f4.`status` = 'Defective'
 
-                                            LEFT JOIN purchase_order_detail_receive i ON i.id = c.id AND i.overall_grade = 'A' 
-                                            LEFT JOIN purchase_order_detail_receive j ON j.id = c.id AND j.overall_grade = 'B' 
-                                            LEFT JOIN purchase_order_detail_receive k ON k.id = c.id AND k.overall_grade = 'C' 
+                                            LEFT JOIN purchase_order_detail_receive i ON i.id = c.id AND i.overall_grade = 'A' AND i.enabled  = 1
+                                            LEFT JOIN purchase_order_detail_receive j ON j.id = c.id AND j.overall_grade = 'B' AND j.enabled  = 1
+                                            LEFT JOIN purchase_order_detail_receive k ON k.id = c.id AND k.overall_grade = 'C' AND k.enabled  = 1
 
-                                            LEFT JOIN purchase_order_detail m1 ON m1.po_id = a.id AND m1.product_condition = 'A' 
-                                            LEFT JOIN purchase_order_detail m2 ON m2.po_id = a.id AND m2.product_condition = 'B' 
-                                            LEFT JOIN purchase_order_detail m3 ON m3.po_id = a.id AND m3.product_condition = 'C' 
+                                            LEFT JOIN purchase_order_detail m1 ON m1.po_id = a.id AND m1.product_condition = 'A' AND m1.enabled  = 1
+                                            LEFT JOIN purchase_order_detail m2 ON m2.po_id = a.id AND m2.product_condition = 'B' AND m2.enabled  = 1
+                                            LEFT JOIN purchase_order_detail m3 ON m3.po_id = a.id AND m3.product_condition = 'C' AND m3.enabled  = 1
 
-                                            WHERE a.id = '" . $id . "' ";
+                                            WHERE a.id = '" . $id . "'  ";
                             $result_t1  = $db->query($conn, $sql);
                             $count_t1   = $db->counter($result_t1);
                             if ($count_t1 > 0) {

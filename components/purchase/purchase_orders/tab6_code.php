@@ -45,7 +45,8 @@ if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 									INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
 									INNER JOIN products c ON c.id = b.product_id
 									INNER JOIN purchase_orders d ON d.id = b.po_id
-									WHERE a.id = '" . $id_for_stock . "'
+									WHERE a.id 		= '" . $id_for_stock . "'
+									AND b.enabled   = 1
 
 									UNION ALL 
 
@@ -314,7 +315,8 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 											INNER JOIN purchase_orders b ON b.id = a.po_id
 											INNER JOIN products c ON c.id = a.product_id
 											WHERE 1=1 
-											AND a.po_id = '" . $id . "' 
+											AND a.enabled   = 1
+											AND a.po_id 	= '" . $id . "' 
 											AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
 						$result_pd01	= $db->query($conn, $sql_pd01);
 						$count_pd01		= $db->counter($result_pd01);
@@ -422,7 +424,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 										INNER JOIN products c ON c.id = b.product_id
 										INNER JOIN purchase_orders d ON d.id = b.po_id
 										WHERE a.id = '" . $id_for_stock . "'
-
+										AND b.enabled       = 1	
 										UNION ALL 
 
 										SELECT 'non_PO_products' as rec_type, a.*, a.product_id as inv_product_id, c.product_uniqueid, d.logistics_cost
@@ -773,7 +775,8 @@ if (isset($_POST['is_Submit_tab6_2']) && $_POST['is_Submit_tab6_2'] == 'Y') {
 							INNER JOIN purchase_orders b ON b.id = a.po_id
 							INNER JOIN products c ON c.id = a.product_id
 							WHERE 1=1 
-							AND a.po_id = '" . $id . "' 
+							AND a.enabled = 1
+							AND a.po_id   = '" . $id . "' 
 							AND c.product_model_no = '" . $phone_check_model_no . "'  ";
 		$result_pd01	= $db->query($conn, $sql_pd01);
 		$count_pd01		= $db->counter($result_pd01);

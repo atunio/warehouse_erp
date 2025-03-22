@@ -51,7 +51,7 @@
                                 Save changes
                             </button>
                             <?php
-                            if (po_permisions("Vendor Data") == 1) { ?>
+                            if (po_permisions("Vendor Data") == 1 && $stage_status == 'Draft') { ?>
                                 <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=importvender_data&id=" . $id) ?>">
                                     Import Vendor Data
                                 </a>
@@ -290,7 +290,10 @@
                                     unset($order_qty);
                                     unset($expected_status);
 
-                                    $sql_ee1    = "SELECT a.* FROM purchase_order_detail a WHERE a.po_id = '" . $id . "' AND a.enabled = 1 ";
+                                    $sql_ee1    = " SELECT a.* FROM purchase_order_detail a
+                                                    WHERE a.po_id = '" . $id . "' 
+                                                    AND a.enabled = 1  
+                                                    ORDER BY a.product_id, a.expected_status, a.product_condition  ";
                                     $result_ee1 = $db->query($conn, $sql_ee1);
                                     $count_ee1  = $db->counter($result_ee1);
                                     if ($count_ee1 > 0) {
@@ -377,6 +380,7 @@
                                                                                                 echo sizeof($product_ids);
                                                                                             } ?>">
                                     <?php
+                                    $product_detail = array();
                                     $disabled = $readonly = "";
                                     if (isset($stage_status) && $stage_status == "Committed") {
                                         $disabled = "disabled='disabled'";
@@ -433,7 +437,34 @@
                                         }
                                         $pkg_stock_of_product_needed = $order_qty_val - $pkg_stock_in_hand;
                                         //if (isset($stage_status) && $stage_status == "Committed" || isset($stage_status) && $stage_status != "Committed" ) { 
-                                    ?>
+                                        if(isset(${$field_name}[$i - 1])){ ?>
+                                            <input type="hidden" name="product_detail[<?= $i?>][0]" Value="<?= ${$field_name}[$i - 1];?>" />
+                                            <?php 
+                                            if(isset($order_price[$i - 1])){?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][1]" Value="<?= $order_price[$i - 1];?>" />
+                                        <?php  
+                                            }
+                                            else{?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][1]" Value="" />
+                                        <?php  
+                                            }
+                                            if(isset($product_condition[$i - 1])){?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][2]" Value="<?= $product_condition[$i - 1];?>" />
+                                        <?php  
+                                            } 
+                                            else{?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][2]" Value="" />
+                                         <?php  
+                                            }
+                                            if(isset($expected_status[$i - 1]) ){?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][3]" Value="<?= $expected_status[$i - 1];?>" />
+                                        <?php  
+                                            }
+                                            else{?>
+                                                <input type="hidden" name="product_detail[<?= $i?>][3]" Value="" />
+                                        <?php  
+                                            }
+                                        }?>
                                         <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                             <td>
                                                 <select <?php echo $disabled;

@@ -314,14 +314,16 @@
                             <?php
                             if (isset($assignment_id) && $assignment_id > 0) {
                                 $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name
-                                                    FROM phone_check_api_data a
-                                                    LEFT JOIN products c ON c.product_model_no = a.model_no 
-                                                    LEFT JOIN product_categories c2 ON c2.id = c.product_category
-                                                    LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
-                                                    WHERE a.po_id = '" . $id . "' 
-                                                    AND a.assignment_id = '" . $assignment_id . "' 
-                                                    AND a.is_processed = 0
-                                                    ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
+                                                FROM phone_check_api_data a
+                                                LEFT JOIN products c ON c.product_model_no = a.model_no 
+                                                LEFT JOIN product_categories c2 ON c2.id = c.product_category
+                                                LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
+                                                WHERE a.po_id       = '" . $id . "'
+                                                AND d.enabled       = 1
+                                                AND a.enabled       = 1 
+                                                AND a.assignment_id = '" . $assignment_id . "' 
+                                                AND a.is_processed  = 0
+                                                ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
                                 // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
                                 $result_preview    = $db->query($conn, $sql_preview);
                                 $count_preview        = $db->counter($result_preview);
@@ -1615,8 +1617,9 @@
                                         INNER JOIN purchase_order_detail d ON d.id = a.po_detail_id
                                         INNER JOIN products d2 ON d2.id = d.`product_id`
                                         INNER JOIN product_categories e ON e.id = d2.`product_category`
-                                        WHERE  d.enabled = 1 AND a.enabled = 1
-                                        AND a.po_id = '" . $id . "' 
+                                        WHERE d.enabled = 1 
+                                        AND a.enabled   = 1
+                                        AND a.po_id     = '" . $id . "' 
 
                                         UNION ALL 
 

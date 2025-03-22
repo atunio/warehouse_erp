@@ -84,6 +84,7 @@
                                         INNER JOIN product_stock c2 ON c2.receive_id = a.id
                                         WHERE a.enabled     = 1 AND c2.enabled = 1 AND b.enabled = 1
                                         AND a.is_diagnost   = 1
+                                        AND b.enabled       = 1
                                         AND b.po_id         = '" . $id . "'
                                         AND c2.p_inventory_status = 5
                                         AND c2.stock_grade IN('A', 'B', 'C')

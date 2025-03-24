@@ -43,8 +43,14 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 				FROM (
 					SELECT * FROM (
 						SELECT 
-							id, product_id, product_uniqueid, product_desc, product_category, category_name, '' as p_inventory_status, 
-							sub_location_id as sub_location, serial_no_barcode as serial_no, overall_grade as stock_grade, sum(po_order_qty) as po_order_qty
+							id, product_id, product_uniqueid, product_desc, 
+ 							GROUP_CONCAT(DISTINCT product_category) as product_category, 
+							category_name, 
+							'' as p_inventory_status, 
+  							GROUP_CONCAT(DISTINCT sub_location_id) as sub_location, 
+							GROUP_CONCAT(DISTINCT serial_no_barcode) as serial_no, 
+							GROUP_CONCAT(DISTINCT overall_grade) as stock_grade, 
+ 							sum(po_order_qty) as po_order_qty
 						FROM (
  							SELECT  
 								c.product_uniqueid, c.id, c1.product_id,
@@ -75,7 +81,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 								a.po_no,
 								e.status_name AS po_status_name,
 								SUM(1) AS po_order_qty,
-								SUM(b.price) AS total_price, b.sub_location_id, b.serial_no_barcode, b.overall_grade 
+								SUM(b.price) AS total_price, b.sub_location_id, GROUP_CONCAT(b.serial_no_barcode) as serial_no_barcode, b.overall_grade 
 
 							FROM `purchase_orders` a 
 							INNER JOIN purchase_order_detail_receive b ON b.`po_id` = a.id
@@ -113,8 +119,14 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 
 					UNION ALL
 
-					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a.product_category, b.category_name, a2.p_inventory_status, 
-							a2.sub_location, a2.serial_no, a2.stock_grade, SUM(1) AS po_order_qty
+					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, 
+ 							GROUP_CONCAT(DISTINCT a.product_category) AS product_category, 
+							b.category_name, 
+ 							GROUP_CONCAT(DISTINCT a2.p_inventory_status) AS p_inventory_status, 
+							GROUP_CONCAT(DISTINCT a2.sub_location) AS sub_location, 
+							GROUP_CONCAT(DISTINCT a2.serial_no) AS serial_no, 
+							GROUP_CONCAT(DISTINCT a2.stock_grade) AS stock_grade, 
+ 							SUM(1) AS po_order_qty
 					FROM products a
 					LEFT JOIN product_stock a2 ON a2.product_id = a.id AND a2.enabled = 1 
 					LEFT JOIN product_categories b ON b.id = a.product_category
@@ -137,11 +149,11 @@ if (isset($flt_product_category) && $flt_product_category != "") {
 if (isset($flt_stock_status) && $flt_stock_status > 0) {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_status . "', p_inventory_status) ";
 }
-if (isset($flt_bin_id) && $flt_bin_id > 0) {
-	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) ";
-}
 if (isset($flt_serial_no) && $flt_serial_no != '') {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_serial_no . "', serial_no) ";
+}
+if (isset($flt_bin_id) && $flt_bin_id > 0) {
+	$sql_cl		.= " AND FIND_IN_SET('" . $flt_bin_id . "', sub_location) ";
 }
 if (isset($flt_stock_grade) && $flt_stock_grade != '') {
 	$sql_cl		.= " AND FIND_IN_SET('" . $flt_stock_grade . "', stock_grade) ";
@@ -149,7 +161,7 @@ if (isset($flt_stock_grade) && $flt_stock_grade != '') {
 $sql_cl		   .= " ORDER BY product_uniqueid
 				) AS t2
 				GROUP BY product_id ";
-//  echo "<br><br><br><br><br>" . $sql_cl;
+// echo "<br><br><br><br><br>" . $sql_cl;
 $result_cl		= $db->query($conn, $sql_cl);
 $count_cl		= $db->counter($result_cl);
 $page_heading 	= "Stock Summary";

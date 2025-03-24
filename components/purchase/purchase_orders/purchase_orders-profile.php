@@ -573,6 +573,7 @@ $general_heading = "PO Profile"; ?>
 	</div>
 	<?php include("sub_files/add_product_modal.php") ?>
 	<?php include("sub_files/add_vender_modal.php") ?>
+	<?php include("sub_files/add_agent_modal.php") ?>
 	<?php include("sub_files/add_package_modal.php") ?>
 	<?php include("sub_files/add_repair_type_modal.php") ?>
 </div>
@@ -602,5 +603,6 @@ $general_heading = "PO Profile"; ?>
 </script>
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>
+<?php include("sub_files/add_agent_js_code.php") ?>
 <?php include("sub_files/add_package_js_code.php") ?>
 <?php include("sub_files/add_repair_type_js_code.php") ?>

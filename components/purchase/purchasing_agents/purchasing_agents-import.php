@@ -20,7 +20,7 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles	= array("vender_name", "phone_no", "vender_type", "address", "note_about_vender");
+$supported_column_titles	= array("agent_name", "phone_no", "address", "note_about_agent");
 $duplication_columns 		= array("phone_no");
 $required_columns 			= array("phone_no");
 
@@ -66,7 +66,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 $added = 0;
-$master_table = "venders";
+$master_table = "purchasing_agents";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	// $filter_import_colums = array_filter($import_colums, function ($value) {
@@ -121,9 +121,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	if (empty($error)) {
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($all_data  as $data1) {
-				if (isset($data1['vender_name']) && $data1['vender_name'] != '' && $data1['vender_name'] != NULL && $data1['vender_name'] != 'blank') {
+				if (isset($data1['agent_name']) && $data1['agent_name'] != '' && $data1['agent_name'] != NULL && $data1['agent_name'] != 'blank') {
 					$id2 = "";
-					$sql1		= "SELECT * FROM " . $master_table . " WHERE vender_name = '" . $data1['vender_name'] . "' ";
+					$sql1		= "SELECT * FROM " . $master_table . " WHERE agent_name = '" . $data1['agent_name'] . "' ";
 					if (isset($data1['phone_no'])) {
 						$sql1 .= " AND phone_no = '" . $data1['phone_no'] . "' ";
 					}
@@ -135,41 +135,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
+
 						if ($key != "" && $key != 'is_insert') {
 
-							if ($key == 'vender_type') {
-								$table = "vender_types";
-								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-									$sql1 			= "SELECT * FROM " . $table . " WHERE type_name = '" . $data . "' ";
-									$result1 		= $db->query($conn, $sql1);
-									$count1 		= $db->counter($result1);
-									if ($count1 > 0) {
-										$row1 = $db->fetch($result1);
-										$columns 		.= ", " . $key;
-										$column_data 	.= ", '" . $row1[0]['id'] . "'";
-									} else {
-										$sql6 = "INSERT INTO " . $selected_db_name . "." . $table . "(subscriber_users_id, type_name, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-												 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-										$ok = $db->query($conn, $sql6);
-										if ($ok) {
-											$vender_type = mysqli_insert_id($conn);
-											$columns 		.= ", " . $key;
-											$column_data 	.= ", '" . $vender_type . "'";
+							$columns 		.= ", " . $key;
+							$column_data 	.= ", '" . $data . "'";
 
-											$update_column	.= ", " . $key . " = '" . $vender_type . "'";
-										}
-									}
-								}
-							} else {
-								$columns 		.= ", " . $key;
-								$column_data 	.= ", '" . $data . "'";
-
-								$update_column	.= ", " . $key . " = '" . $data . "'";
-							}
+							$update_column	.= ", " . $key . " = '" . $data . "'";
 						}
 					}
-
-
 					$update_column	.= ", enabled = '1'";
 					if (isset($id2) && $id2 > 0) {
 						if ($update_column != "") { // ONLY IF one field 
@@ -188,12 +162,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						}
 					} else {
 						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
-								VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+							VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$id			= mysqli_insert_id($conn);
-							$vender_no	= "V" . $id;
-							$sql6		= "UPDATE " . $master_table . " SET vender_no = '" . $vender_no . "' WHERE id = '" . $id . "' ";
+							$agent_no	= "AG" . $id;
+							$sql6		= "UPDATE " . $master_table . " SET agent_no = '" . $agent_no . "' WHERE id = '" . $id . "' ";
 							$db->query($conn, $sql6);
 							$added++;
 						}
@@ -322,10 +296,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if ($s_heading == 'phone_no') {
 											$cell_format = "Text (Unique)";
 										}
-										if ($s_heading == 'vender_type') {
-											$cell_format = "Text (Distributor etc)";
-										}
-
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>

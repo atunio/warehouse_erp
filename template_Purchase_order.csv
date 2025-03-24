@@ -1,0 +1,2 @@
+po_no,po_date,vender,vender_invoice_no,po_desc123,estimated_receive_date,po_status,product_id,product_desc,product_category,detail_desc,order_qty,order_price,is_tested,is_wiped,is_imaged,product_condition,warranty_period_in_days,product_po_desc
+PO2,24/03/2025,test1,2342434234,test,29/03/2025,tested/Graded,2000,testet,3,testset,15,400,Yes,Yes,Yes,A,30,testttttt

@@ -5,6 +5,7 @@ if (!isset($module)) {
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$vender_id					= "1";
+	$purchasing_agent_id		= "1";
 	$po_date 					= date('d/m/Y');
 	$po_desc					= "purchase order desc : " . date('YmdHis');
 	$is_tested_po				= "Yes";
@@ -44,8 +45,9 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 								WHERE a.id = '" . $id . "'"; // echo $sql_ee;
 	$result_ee				= $db->query($conn, $sql_ee);
 	$row_ee					= $db->fetch($result_ee);
-	$vender_id				=  $row_ee[0]['vender_id'];
-	$disp_status_name		=  $row_ee[0]['status_name'];
+	$vender_id				= $row_ee[0]['vender_id'];
+	$purchasing_agent_id	= $row_ee[0]['purchasing_agent_id'];
+	$disp_status_name		= $row_ee[0]['status_name'];
 	$po_desc				= $row_ee[0]['po_desc'];
 	$po_no					= $row_ee[0]['po_no'];
 	$po_desc_public			= $row_ee[0]['po_desc_public'];
@@ -55,7 +57,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$is_imaged_po			= $row_ee[0]['is_imaged_po'];
 	$order_status           = $row_ee[0]['order_status'];
 	$stage_status           = $row_ee[0]['stage_status'];
-	
+
 	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
 
 	$product_condition 		= [];
@@ -105,8 +107,8 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 				INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
 				WHERE a.enabled = 1 
 				AND a.is_processing_done = 0
-				AND d.po_id = '".$id."'
-				AND a.bin_user_id = '".$_SESSION['user_id']."' ";
+				AND d.po_id = '" . $id . "'
+				AND a.bin_user_id = '" . $_SESSION['user_id'] . "' ";
 	$result2	= $db->query($conn, $sql2);
 	$user_no_of_assignments = $db->counter($result2);
 }
@@ -121,8 +123,8 @@ if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != "" && isset
 	$result_ee		= $db->query($conn, $sql_ee);
 	$row_ee			= $db->fetch($result_ee);
 	$assignment_qty			= $row_ee[0]['assignment_qty'];
-	$assignment_no			= $row_ee[0]['assignment_no']; 
-	$assignment_location_id	= $row_ee[0]['sub_location_id']; 
+	$assignment_no			= $row_ee[0]['assignment_no'];
+	$assignment_location_id	= $row_ee[0]['sub_location_id'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -175,8 +177,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, vender_invoice_no, po_date, is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
-							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, purchasing_agent_id, vender_invoice_no, po_date, is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $purchasing_agent_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id				= mysqli_insert_id($conn);
@@ -230,8 +232,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$po_date1 = NULL;
 		if (isset($po_date) && $po_date != "") {
 			$po_date1 = convert_date_mysql_slash($po_date);
-		} 
+		}
 		$sql_c_up = "UPDATE purchase_orders SET	vender_id				= '" . $vender_id . "',
+												purchasing_agent_id		= '" . $purchasing_agent_id . "',
 												po_date					= '" . $po_date1 . "',
  												po_desc					= '" . $po_desc . "', 
 												po_desc_public			= '" . $po_desc_public . "', 
@@ -258,7 +261,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 			$matches_po_detail_ids = array();
 			foreach ($filtered_product_ids as $index => $product) {
-				
+
 				$condition 	= isset($product_condition[$index]) ? $product_condition[$index] : "";
 				$status 	= isset($expected_status[$index])	? $expected_status[$index]   : "";
 				$price 		= isset($order_price[$index])       ? $order_price[$index]       : "";
@@ -272,49 +275,49 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										AND product_id 			= '" . $product . "'
 										AND product_condition 	= '" . $condition . "'
 										AND expected_status		= '" . $status . "'
-										AND order_price			= '" . $price . "' "; 
+										AND order_price			= '" . $price . "' ";
 						$result_p_old 	= $db->query($conn, $sql_old);
 						$counter_p_old	= $db->counter($result_p_old);
-						if($counter_p_old > 0){
+						if ($counter_p_old > 0) {
 							$row_p_old = $db->fetch($result_p_old);
- 							foreach ($row_p_old as $data_p_old) {
+							foreach ($row_p_old as $data_p_old) {
 								$matches_po_detail_ids[] = $data_p_old['id'];
 							}
 						}
- 						break;
+						break;
 					}
 				}
 			}
 			$all_matches_po_detail_ids = "''";
 			if (!empty($matches_po_detail_ids)) {
-				$all_matches_po_detail_ids = implode(",", $matches_po_detail_ids); 
-			}  
-			
-			$sql_dup1 ="UPDATE purchase_order_detail SET enabled = 0 
+				$all_matches_po_detail_ids = implode(",", $matches_po_detail_ids);
+			}
+
+			$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
 						WHERE po_id	= '" . $id . "' 
 						AND product_id NOT IN(" . $all_matches_po_detail_ids . ") ";
 			$db->query($conn, $sql_dup1);
-		  
-		  
+
+
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
-			
+
 			///echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaa <pre>"; print_r($filtered_product_ids);  print_r($order_qty); print_r($order_price); print_r($product_condition);die;
 			foreach ($filtered_product_ids as $data_p) {
-				if($data_p !=""){
-					
+				if ($data_p != "") {
+
 					$product_condition[$i] 	= isset($product_condition[$i]) ? $product_condition[$i] : "";
 					$expected_status[$i] 	= isset($expected_status[$i]) ? $expected_status[$i] : "";
-					$order_price[$i] 		= isset($order_price[$i]) ? $order_price[$i] : ""; 
-					
+					$order_price[$i] 		= isset($order_price[$i]) ? $order_price[$i] : "";
+
 					$sql_dup 	= " SELECT a.* FROM purchase_order_detail a 
 									WHERE a.enabled 			= 1
 									AND a.po_id 			= '" . $id . "' 
 									AND a.product_id 		= '" . $data_p . "'
 									AND a.product_condition = '" . $product_condition[$i] . "'
 									AND a.expected_status 	= '" . $expected_status[$i] . "'
-									AND a.order_price 		= '" . $order_price[$i] . "' "; 
- 					//echo "<br><br>".$sql_dup;
+									AND a.order_price 		= '" . $order_price[$i] . "' ";
+					//echo "<br><br>".$sql_dup;
 					$result_dup = $db->query($conn, $sql_dup);
 					$count_dup 	= $db->counter($result_dup);
 					if ($count_dup > 0) {
@@ -342,7 +345,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$order_qty[$i] 				= "";
 						$expected_status[$i] 		= "";
 						$i++;
-
 					} else {
 						// Check if all required array elements exist
 						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
@@ -358,7 +360,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			if (isset($package_ids)) {
 				$filtered_id = (array_values(array_filter($package_ids)));
 				$current_ids = implode(',', $filtered_id);
-				if($current_ids !=""){
+				if ($current_ids != "") {
 					$sql_dup1 = "UPDATE purchase_order_packages_detail SET enabled = 0 
 								WHERE po_id	= '" . $id . "' 
 								AND package_id NOT IN(" . $current_ids . ") ";

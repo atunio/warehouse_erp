@@ -742,7 +742,7 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 											INNER JOIN products b ON b.id = a.product_id
 											INNER JOIN purchase_orders a2 ON a2.id = a.po_id
  											WHERE a. enabled = 1
-											ANDb.product_category 	= '" . $recevied_product_category . "' 
+											AND b.product_category 	= '" . $recevied_product_category . "' 
  											AND a.po_id 				= '" . $id . "' ";
 						$result_pd3		= $db->query($conn, $sql_pd3);
 						$count_pd3		= $db->counter($result_pd3);

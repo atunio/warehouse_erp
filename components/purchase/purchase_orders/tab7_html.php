@@ -217,7 +217,7 @@
                             $sql        = " SELECT (
                                                 SELECT IFNULL(SUM(b.order_qty), 0)
                                                     FROM purchase_order_detail b 
-                                                    WHERE b.po_id = a.id
+                                                    WHERE b.po_id = a.id AND b.enabled = 1
                                                 ) AS total_ordered,
                                                 IFNULL(COUNT(DISTINCT c.id), 0) AS received,
                                                 IFNULL(COUNT(DISTINCT f1.id), 0) AS expected_a_grade,
@@ -276,7 +276,7 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php  echo ($data_t1['expected_a_grade'] > 0) ? $data_t1['expected_a_grade'] : $data_t1['po_expected_a_grade'];  ?></span>
+                                                <span class="green-text"><?php echo ($data_t1['expected_a_grade'] > 0) ? $data_t1['expected_a_grade'] : $data_t1['po_expected_a_grade'];  ?></span>
                                             </span> vs &nbsp;
                                             <?php
                                             if (($data_t1['expected_a_grade'] > 0 && $data_t1['expected_a_grade'] != $data_t1['tested_a_grade']) || ($data_t1['po_expected_a_grade'] > 0 && $data_t1['po_expected_a_grade'] != $data_t1['tested_a_grade'])) { ?>
@@ -291,7 +291,7 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php  echo ($data_t1['expected_b_grade'] > 0) ? $data_t1['expected_b_grade'] : $data_t1['po_expected_b_grade'];  ?></span>
+                                                <span class="green-text"><?php echo ($data_t1['expected_b_grade'] > 0) ? $data_t1['expected_b_grade'] : $data_t1['po_expected_b_grade'];  ?></span>
                                             </span> vs &nbsp;
                                             <?php
                                             if (($data_t1['expected_b_grade'] > 0 && $data_t1['expected_b_grade'] != $data_t1['tested_b_grade']) || ($data_t1['po_expected_b_grade'] > 0 && $data_t1['po_expected_b_grade'] != $data_t1['tested_b_grade'])) { ?>
@@ -305,9 +305,9 @@
                                             <?php } ?>
                                         </td>
                                         <td>
-                                            
-                                        <span class="chip green lighten-5">
-                                                <span class="green-text"><?php  echo ($data_t1['expected_c_grade'] > 0) ? $data_t1['expected_c_grade'] : $data_t1['po_expected_c_grade'];  ?></span>
+
+                                            <span class="chip green lighten-5">
+                                                <span class="green-text"><?php echo ($data_t1['expected_c_grade'] > 0) ? $data_t1['expected_c_grade'] : $data_t1['po_expected_c_grade'];  ?></span>
                                             </span> vs &nbsp;
                                             <?php
                                             if (($data_t1['expected_c_grade'] > 0 && $data_t1['expected_c_grade'] != $data_t1['tested_c_grade']) || ($data_t1['po_expected_c_grade'] > 0 && $data_t1['po_expected_c_grade'] != $data_t1['tested_c_grade'])) { ?>
@@ -386,7 +386,7 @@
                                                         SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,
                                                                 c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
                                                         FROM purchase_order_detail_receive a
-                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                                        INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id AND b.enabled = 1
                                                         INNER JOIN products c ON c.id = b.product_id
                                                         LEFT JOIN product_categories d ON d.id =c.product_category
                                                         LEFT JOIN inventory_status h ON h.id = a.inventory_status
@@ -834,19 +834,19 @@
                                                                         <span class="chip orange lighten-5">
                                                                             <span class="orange-text">Vendor Status: <?php echo $vender_status; ?></span>
                                                                         </span><br>
-                                                            <?php 
+                                                                <?php
                                                                     }
                                                                 }
                                                             } else {
                                                                 echo $string_text . "<br>";
-                                                            } 
+                                                            }
                                                             if ($status_name != '') { ?>
                                                                 <span class="chip <?= $color; ?> lighten-5">
                                                                     <span class="<?= $color; ?>-text"><?php echo $status_name; ?></span>
                                                                 </span>
-                                                            <?php 
-                                                                } 
-                                                            }?>
+                                                        <?php
+                                                            }
+                                                        } ?>
                                                     </td>
                                                     <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]); ?>">
                                                         <?php if ($battery > '0') {

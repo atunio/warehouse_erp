@@ -22,7 +22,7 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
- 
+
 $supported_column_titles	= array("po_no", "po_date", "vender", "vender_invoice_no",  "po_desc",  "estimated_receive_date", "po_status", "product_id", "product_desc", "product_category", "detail_desc", "order_qty", "order_price", "is_tested", "is_wiped", "is_imaged", "product_condition", "warranty_period_in_days", "product_po_desc");
 $master_columns 			= array("po_no", "po_date", "vender", "vender_invoice_no", "po_desc", "estimated_receive_date", "po_status");  // db fields
 $duplication_columns 		= array("po_no");
@@ -30,77 +30,78 @@ $required_columns 			= array("po_no", "vender", "product_id", "product_category"
 
 $error = []; // Initialize error array
 // Function to read CSV
-function readCSV($file_tmp){
-    return file_get_contents($file_tmp);
+function readCSV($file_tmp)
+{
+	return file_get_contents($file_tmp);
 }
 // Function to read Excel
-function readExcel($file_tmp){
-    $spreadsheet = IOFactory::load($file_tmp);
-    $worksheet = $spreadsheet->getActiveSheet();
-    return implode(PHP_EOL, array_map(fn($row) => implode(',', $row), $worksheet->toArray()));
+function readExcel($file_tmp)
+{
+	$spreadsheet = IOFactory::load($file_tmp);
+	$worksheet = $spreadsheet->getActiveSheet();
+	return implode(PHP_EOL, array_map(fn($row) => implode(',', $row), $worksheet->toArray()));
 }
 if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
-    if (isset($_FILES["upload_excel_file"]) && $_FILES["upload_excel_file"]["error"] == 0) {
-        $file_name = $_FILES["upload_excel_file"]["name"];
-        $file_tmp = $_FILES["upload_excel_file"]["tmp_name"];
-        $file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
+	if (isset($_FILES["upload_excel_file"]) && $_FILES["upload_excel_file"]["error"] == 0) {
+		$file_name = $_FILES["upload_excel_file"]["name"];
+		$file_tmp = $_FILES["upload_excel_file"]["tmp_name"];
+		$file_ext = pathinfo($file_name, PATHINFO_EXTENSION);
 
-        // Allowed file types
-        $allowed_ext = ["csv", "xls", "xlsx"];
+		// Allowed file types
+		$allowed_ext = ["csv", "xls", "xlsx"];
 
-        if (!in_array($file_ext, $allowed_ext)) {
-            $error['msg'][] = "Invalid file type! Only CSV and Excel files are allowed.";
-        }
-        
-        if (empty($error)) {
-            // Read file data
-            if ($file_ext == "csv") {
-                $excel_data = readCSV($file_tmp);
-            } else {
-                $excel_data = readExcel($file_tmp);
-            }
-           
-            // Process data
-            $rows = explode(PHP_EOL, trim($excel_data));
-            $data = [];
-            foreach ($rows as $row) {
-                $data[] = preg_split('/[\t,]+/', trim($row)); // Split by tab or comma
-            }
-            
-            // Extract headings
-            $headings = array_shift($data);
+		if (!in_array($file_ext, $allowed_ext)) {
+			$error['msg'][] = "Invalid file type! Only CSV and Excel files are allowed.";
+		}
 
-            // Validation: Check for missing headings
-            foreach ($data as $row_v1) {
-                if (count($row_v1) != count($headings)) {
-                    $error['msg'][] = "One or more column headings are missing or extra columns exist.".$row_v1;
-                    break;
-                }
-            }
-             // Validation: Ensure all cells have values
-            foreach ($data as $row11) {
-                foreach ($row11 as $cell_array) {
-                    if (empty($cell_array) || trim($cell_array) == '') {
-                        $error['msg'][] = "All cells must contain values. Use '-' for empty cells.";
-                        break 2; // Break out of both loops
-                    }
-                }
-            }
+		if (empty($error)) {
+			// Read file data
+			if ($file_ext == "csv") {
+				$excel_data = readCSV($file_tmp);
+			} else {
+				$excel_data = readExcel($file_tmp);
+			}
 
-            $sql_del = "DELETE FROM export_temp_data WHERE session_id_temp = '".$_SESSION['session_id_temp']."' ";
-            $db->query($conn, $sql_del); 
-            
-            if(empty($error)){
-                foreach ($data as $row11) {
-                    foreach ($row11 as $cell_array) {
+			// Process data
+			$rows = explode(PHP_EOL, trim($excel_data));
+			$data = [];
+			foreach ($rows as $row) {
+				$data[] = preg_split('/[\t,]+/', trim($row)); // Split by tab or comma
+			}
 
-                    }
-                }
-            }
-        }
-    } else {
-        $error['msg'][] = "File upload error!";
-    }
+			// Extract headings
+			$headings = array_shift($data);
+
+			// Validation: Check for missing headings
+			foreach ($data as $row_v1) {
+				if (count($row_v1) != count($headings)) {
+					$error['msg'][] = "One or more column headings are missing or extra columns exist." . $row_v1;
+					break;
+				}
+			}
+			// Validation: Ensure all cells have values
+			foreach ($data as $row11) {
+				foreach ($row11 as $cell_array) {
+					if (empty($cell_array) || trim($cell_array) == '') {
+						$error['msg'][] = "All cells must contain values. Use '-' for empty cells.";
+						break 2; // Break out of both loops
+					}
+				}
+			}
+
+			// $sql_del = "DELETE FROM export_temp_data WHERE session_id = '" . $_SESSION['session_id_temp'] . "' ";
+			// $db->query($conn, $sql_del);
+
+			if (empty($error)) {
+				foreach ($data as $row11) {
+					foreach ($row11 as $cell_array) {
+					}
+				}
+			}
+		}
+	} else {
+		$error['msg'][] = "File upload error!";
+	}
 }
 
 $master_table	= "purchase_orders";
@@ -449,38 +450,38 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<div class="card-alert card red lighten-5">
 							<div class="card-content red-text">
 								<?php //echo $error['msg']; 
-                                    foreach( $error['msg'] as $err){?>
-                                        <p><?php echo $err;?></p>
-                                    <?php } ?>
-                                    
+								foreach ($error['msg'] as $err) { ?>
+									<p><?php echo $err; ?></p>
+								<?php } ?>
+
 							</div>
 							<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">×</span>
 							</button>
 						</div>
 					<?php }
-                
-					if (!isset($upload_excel_file) || (isset($upload_excel_file) && $upload_excel_file == "")  ) { ?>
+
+					if (!isset($upload_excel_file) || (isset($upload_excel_file) && $upload_excel_file == "")) { ?>
 
 						<form method="post" autocomplete="off" enctype="multipart/form-data">
 							<input type="hidden" name="is_Submit" value="Y" />
 							<div class="row">
-                                <div class="input-field col m3 s12">
-                                    <?php
+								<div class="input-field col m3 s12">
+									<?php
 									$field_name 	= "upload_excel_file";
 									$field_label 	= "File";
 									?>
-                                    <div class="file-field input-field">
-                                        <div class="btn">
-                                            <span>Browse</span>
-                                            <input type="hidden" name="old_upload_excel_file" value="">
-                                            <input type="file" name="<?= $field_name; ?>">
-                                        </div>
-                                        <div class="file-path-wrapper">
-                                            <input class="file-path validate" type="text" placeholder="upload excel or csv file here ...">
-                                        </div>
-                                    </div>
-                                </div>
+									<div class="file-field input-field">
+										<div class="btn">
+											<span>Browse</span>
+											<input type="hidden" name="old_upload_excel_file" value="">
+											<input type="file" name="<?= $field_name; ?>">
+										</div>
+										<div class="file-path-wrapper">
+											<input class="file-path validate" type="text" placeholder="upload excel or csv file here ...">
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="row">
 								<div class="input-field col m4 s12">
@@ -527,12 +528,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 						</div>
 						<?php
-                        
-					} 
-                    else if (isset($headings) && sizeof($headings) > "0") { 
+
+					} else if (isset($headings) && sizeof($headings) > "0") {
 						if ((isset($upload_excel_file) && $upload_excel_file != "" && !isset($error) || isset($error)) && sizeof($error) == 0) {
-                            
-                            ?>
+
+						?>
 							<div class="row">
 								<div class="col m6 s12">
 									Summary
@@ -620,15 +620,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 							<h4 class="card-title">Data to be imported</h4><br>
 							<form method="post" autocomplete="off">
-								<input type="hidden" name="is_Submit2" value="Y" />  
-                               <?php
-                                $files_json = "";
-                                if (isset($_FILES["upload_excel_file"]) && $_FILES["upload_excel_file"]["error"] == 0) {
-                                    // Encode the $_FILES array properly
-                                    $files_json = json_encode($_FILES["upload_excel_file"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-                                }
-                                ?>
-                                <input type="hidden" name="files_data" value='<?php echo htmlspecialchars($files_json, ENT_QUOTES, "UTF-8"); ?>' />
+								<input type="hidden" name="is_Submit2" value="Y" />
+								<?php
+								$files_json = "";
+								if (isset($_FILES["upload_excel_file"]) && $_FILES["upload_excel_file"]["error"] == 0) {
+									// Encode the $_FILES array properly
+									$files_json = json_encode($_FILES["upload_excel_file"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+								}
+								?>
+								<input type="hidden" name="files_data" value='<?php echo htmlspecialchars($files_json, ENT_QUOTES, "UTF-8"); ?>' />
 								<div class="row">
 									<div class="col m12 s12">
 										<table class="bordered striped">
@@ -709,7 +709,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																$db_column = "product_id";
 															}
 
-															$sql_dup 	= " SELECT * FROM " . $master_table . " WHERE " . $db_column . "	= '" . htmlspecialchars($cell) . "' "; echo "<br>" . $sql_dup;
+															$sql_dup 	= " SELECT * FROM " . $master_table . " WHERE " . $db_column . "	= '" . htmlspecialchars($cell) . "' ";
+															echo "<br>" . $sql_dup;
 															$result_dup	= $db->query($conn, $sql_dup);
 															$count_dup	= $db->counter($result_dup);
 
@@ -722,19 +723,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																} else {
 																	$row_error_status = "Duplicate " . $db_column_excel;
 																} ?>
- 															<?php
+															<?php
 															} else {
 																$row_color = "color-green"; ?>
- 															<?php
+															<?php
 															}
 														} else {
 															$row_color = "color-green";  ?>
- 													<?php
+													<?php
 														}
 														echo "<td class='" . $row_color . "'>" . htmlspecialchars($cell) . "</td>";
 														$col_no++;
 													} ?>
- 												<?php
+												<?php
 													if ($is_error == 1) {
 														$row_color = "color-red";
 													} else {

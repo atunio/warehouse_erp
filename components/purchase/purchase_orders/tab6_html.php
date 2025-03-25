@@ -240,10 +240,10 @@
                                         $field_name     = "phone_check_username";
                                         $field_label    = "PhoneCheck User";
                                         $sql            = " SELECT a.*
-                                                                FROM phone_check_users a 
-                                                                WHERE 1=1 
-                                                                AND a.enabled = '1' 
-                                                                ORDER BY a.username"; // echo $sql; 
+                                                            FROM phone_check_users a 
+                                                            WHERE 1=1 
+                                                            AND a.enabled = '1' 
+                                                            ORDER BY a.username"; // echo $sql; 
                                         $result_log2    = $db->query($conn, $sql);
                                         $count_r2       = $db->counter($result_log2); ?>
                                         <i class="material-icons prefix pt-1">description</i>
@@ -313,13 +313,12 @@
                             </form>
                             <?php
                             if (isset($assignment_id) && $assignment_id > 0) {
-                                $sql_preview = "SELECT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name
+                                $sql_preview = "SELECT DISTINCT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name
                                                 FROM phone_check_api_data a
                                                 LEFT JOIN products c ON c.product_model_no = a.model_no 
                                                 LEFT JOIN product_categories c2 ON c2.id = c.product_category
                                                 LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
-                                                WHERE a.po_id       = '" . $id . "'
-                                                AND d.enabled       = 1
+                                                WHERE a.po_id       = '" . $id . "' 
                                                 AND a.enabled       = 1 
                                                 AND a.assignment_id = '" . $assignment_id . "' 
                                                 AND a.is_processed  = 0

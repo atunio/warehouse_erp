@@ -87,6 +87,7 @@
                                         AND b.enabled       = 1
                                         AND b.po_id         = '" . $id . "'
                                         AND c2.p_inventory_status = 5
+                                        AND a.received_during != 'BarCodeReceive'
                                         AND c2.stock_grade IN('A', 'B', 'C')
                                         GROUP BY c.product_uniqueid, c2.stock_grade
                                         
@@ -109,6 +110,7 @@
                                         AND a.is_diagnost   = 1
                                         AND a.po_id         = '" . $id . "'
                                         AND c2.p_inventory_status = 5
+                                        AND a.received_during != 'BarCodeReceive'
                                         AND c2.stock_grade IN('A', 'B', 'C')
                                         GROUP BY c.product_uniqueid, c2.stock_grade
                                     ) AS t1
@@ -253,8 +255,8 @@
                                                                 "total_qty" => 0 // Assuming you want to set this to 0
                                                             ];
                                                         }
-                                                        $pricing_table_trs = ""; 
-                                                        ?>
+                                                        $pricing_table_trs = "";
+                                                ?>
                                                         <tr>
                                                             <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
                                                                 <?php echo $i + 1;
@@ -288,7 +290,7 @@
                                                                             $total_qty_from_array1  = $array_pricing[$product_uniqueid][0]['total_qty'];
                                                                             $total_qty_from_array2  = $array_pricing[$product_uniqueid][1]['total_qty'];
                                                                             $total_qty_from_array3  = $array_pricing[$product_uniqueid][2]['total_qty'];
- 
+
                                                                             $b_grade_calculation    = ($product_total_price / (($total_qty_from_array1 * 1.1) + $total_qty_from_array2 + ($total_qty_from_array3 * 0.9)));
                                                                             //echo " $grade_calculation    = ($product_total_price / (($total_qty_from_array1 * 1.1) + $total_qty_from_array2 + ($total_qty_from_array3 * 0.9)))";
 

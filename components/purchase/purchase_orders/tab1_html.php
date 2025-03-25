@@ -131,12 +131,16 @@
                                         </span>
                                     </label>
                                 </div>
-                                <div class="input-field col m2 s12 custom_margin_bottom_col">
+                                <div class="input-field col m4 s12 custom_margin_bottom_col">
                                     <?php
                                     $field_name     = "vender_id";
-                                    $field_label     = "Vendor";
-                                    $sql1             = "SELECT * FROM venders WHERE enabled = 1 ORDER BY vender_name ";
-                                    $result1         = $db->query($conn, $sql1);
+                                    $field_label    = "Vendor";
+                                    $sql1           = " SELECT a.*, b.agent_name 
+                                                        FROM venders a
+                                                        LEFT JOIN purchasing_agents b ON b.id = a.purchasing_agent_id
+                                                        WHERE a.enabled = 1 
+                                                        ORDER BY b.agent_name, a.vender_name ";
+                                    $result1        = $db->query($conn, $sql1);
                                     $count1         = $db->counter($result1);
                                     ?>
                                     <i class="material-icons prefix">question_answer</i>
@@ -149,7 +153,13 @@
                                             if ($count1 > 0) {
                                                 $row1    = $db->fetch($result1);
                                                 foreach ($row1 as $data2) { ?>
-                                                    <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['vender_name']; ?> - Phone: <?php echo $data2['phone_no']; ?></option>
+                                                    <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                        <?php
+                                                        echo "Vendor: " . $data2['vender_name'];
+                                                        if ($data2['agent_name'] != "") {
+                                                            echo ", Agent: " . $data2['agent_name'];
+                                                        } ?>
+                                                    </option>
                                             <?php }
                                             } ?>
                                         </select>
@@ -165,41 +175,6 @@
                                 </div>
                                 <div class="input-field col m2 s12 custom_margin_bottom_col"><br>
                                     <a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#vender_add_modal">New Vendor</a>
-                                </div>
-                                <div class="input-field col m2 s12 custom_margin_bottom_col">
-                                    <?php
-                                    $field_name         = "purchasing_agent_id";
-                                    $field_label        = "Purchasing Agent";
-                                    $sql1               = "SELECT * FROM purchasing_agents WHERE enabled = 1 ORDER BY agent_name ";
-                                    $result1            = $db->query($conn, $sql1);
-                                    $count1             = $db->counter($result1);
-                                    ?>
-                                    <i class="material-icons prefix">question_answer</i>
-                                    <div class="select2div">
-                                        <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                                                        } ?>">
-                                            <option value="">Select</option>
-                                            <?php
-                                            if ($count1 > 0) {
-                                                $row1    = $db->fetch($result1);
-                                                foreach ($row1 as $data2) { ?>
-                                                    <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['agent_name']; ?> - Phone: <?php echo $data2['phone_no']; ?></option>
-                                            <?php }
-                                            } ?>
-                                        </select>
-                                        <label for="<?= $field_name; ?>">
-                                            <?= $field_label; ?>
-                                            <span class="color-red"><?php
-                                                                    if (isset($error[$field_name])) {
-                                                                        echo $error[$field_name];
-                                                                    } ?>
-                                            </span>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="input-field col m2 s12 custom_margin_bottom_col"><br>
-                                    <a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#agent_add_modal">New Agent</a>
                                 </div>
                             </div>
                             <div class="row">

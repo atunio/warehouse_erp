@@ -5,7 +5,6 @@ if (!isset($module)) {
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$vender_id					= "1";
-	$purchasing_agent_id		= "1";
 	$po_date 					= date('d/m/Y');
 	$po_desc					= "purchase order desc : " . date('YmdHis');
 	$is_tested_po				= "Yes";
@@ -46,7 +45,6 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$result_ee				= $db->query($conn, $sql_ee);
 	$row_ee					= $db->fetch($result_ee);
 	$vender_id				= $row_ee[0]['vender_id'];
-	$purchasing_agent_id	= $row_ee[0]['purchasing_agent_id'];
 	$disp_status_name		= $row_ee[0]['status_name'];
 	$po_desc				= $row_ee[0]['po_desc'];
 	$po_no					= $row_ee[0]['po_no'];
@@ -177,8 +175,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, purchasing_agent_id, vender_invoice_no, po_date, is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
-							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $purchasing_agent_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_orders(subscriber_users_id, vender_id, vender_invoice_no, po_date, is_tested_po,  is_wiped_po, is_imaged_po, add_date, add_by, add_by_user_id, add_ip, add_timezone)
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "', '" . $is_tested_po  . "', '" . $is_wiped_po  . "', '" . $is_imaged_po  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id				= mysqli_insert_id($conn);
@@ -234,7 +232,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$po_date1 = convert_date_mysql_slash($po_date);
 		}
 		$sql_c_up = "UPDATE purchase_orders SET	vender_id				= '" . $vender_id . "',
-												purchasing_agent_id		= '" . $purchasing_agent_id . "',
 												po_date					= '" . $po_date1 . "',
  												po_desc					= '" . $po_desc . "', 
 												po_desc_public			= '" . $po_desc_public . "', 

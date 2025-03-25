@@ -41,6 +41,7 @@ function readExcel($file_tmp)
 	$worksheet = $spreadsheet->getActiveSheet();
 	return implode(PHP_EOL, array_map(fn($row) => implode(',', $row), $worksheet->toArray()));
 }
+/*
 if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 	if (isset($_FILES["upload_excel_file"]) && $_FILES["upload_excel_file"]["error"] == 0) {
 		$file_name = $_FILES["upload_excel_file"]["name"];
@@ -405,7 +406,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			}
 		}
 	}
-} ?>
+}
+*/ ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">

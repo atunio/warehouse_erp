@@ -170,7 +170,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		}
 	}
 	if (empty($error)) {
-		$user_sections_str = implode(",", $user_sections);
+		if (isset($_POST['user_sections']) && sizeof($_POST['user_sections']) > 0) {
+			$user_sections_str = implode(",", $user_sections);
+		} else {
+			$user_sections_str = "";
+		}
 		if ($hourly_rate == "") $hourly_rate = 0;
 		$a_password_md5 = md5($a_password);
 		if ($cmd == 'add') {
@@ -394,11 +398,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								$field_label 	= "Hourly Rate";
 								?>
 								<i class="material-icons prefix pt-2">attach_money</i>
-								<input id="<?= $field_name; ?>" name="<?= $field_name; ?>" required="" type="text" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>" class="twoDecimalNumber validate  <?php if (isset(${$field_name . "_valid"})) {
-																																										echo ${$field_name . "_valid"};
-																																									} ?> ">
+								<input id="<?= $field_name; ?>" name="<?= $field_name; ?>" type="text" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="twoDecimalNumber validate  <?php if (isset(${$field_name . "_valid"})) {
+																																							echo ${$field_name . "_valid"};
+																																						} ?> ">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
 									<span class="color-red"> <?php

@@ -23,15 +23,17 @@ if ($cmd == 'add') {
 	$id 			= "";
 }
 if ($cmd == 'edit' && isset($id)) {
-	$sql_ee			= "SELECT a.* FROM venders a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee		= $db->query($conn, $sql_ee);
-	$row_ee			= $db->fetch($result_ee);
-	$vender_name		= $row_ee[0]['vender_name'];
-	$phone_no			=  $row_ee[0]['phone_no'];
-	$address			= $row_ee[0]['address'];
-	$note_about_vender	= $row_ee[0]['note_about_vender'];
-	$vender_type		= $row_ee[0]['vender_type'];
+	$sql_ee						= "	SELECT a.* FROM venders a 
+									WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee					= $db->query($conn, $sql_ee);
+	$row_ee						= $db->fetch($result_ee);
+	$vender_name				= $row_ee[0]['vender_name'];
+	$phone_no					=  $row_ee[0]['phone_no'];
+	$address					= $row_ee[0]['address'];
+	$note_about_vender			= $row_ee[0]['note_about_vender'];
+	$vender_type				= $row_ee[0]['vender_type'];
 	$warranty_period_in_days	= $row_ee[0]['warranty_period_in_days'];
+	$purchasing_agent_id		= $row_ee[0]['purchasing_agent_id'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -81,8 +83,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".venders(subscriber_users_id, vender_name, address, phone_no, vender_type, note_about_vender,warranty_period_in_days, add_date, add_by, add_ip)
-							VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '". $warranty_period_in_days ."','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".venders(subscriber_users_id, vender_name, address, phone_no, vender_type, note_about_vender, warranty_period_in_days, purchasing_agent_id, add_date, add_by, add_ip)
+							VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '" . $warranty_period_in_days . "', '" . $purchasing_agent_id . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 
@@ -93,7 +95,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$vender_name = $address = $phone_no = "";
+						$vender_name = $address = $phone_no = $purchasing_agent_id =  $vender_type =  $note_about_vender =   $warranty_period_in_days = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -120,6 +122,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 													vender_type					= '" . $vender_type . "', 
 													note_about_vender			= '" . $note_about_vender . "', 
 													warranty_period_in_days		= '" . $warranty_period_in_days . "', 
+													purchasing_agent_id			= '" . $purchasing_agent_id . "', 
 													update_date 				= '" . $add_date . "',
 													update_by 					= '" . $_SESSION['username'] . "',
 													update_ip 					= '" . $add_ip . "'
@@ -142,9 +145,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -154,17 +157,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
-								<?php  
+								</a>
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">
@@ -308,8 +311,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
-							
-							<div class="input-field col m12 s12">
+
+							<div class="input-field col m6 s12">
 								<?php
 								$field_name 	= "note_about_vender";
 								$field_label 	= "Note About Vendor";
@@ -327,6 +330,42 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									</span>
 								</label>
 							</div>
+
+							<div class="input-field col m4 s12">
+								<?php
+								$field_name         = "purchasing_agent_id";
+								$field_label        = "Purchasing Agent";
+								$sql1               = "SELECT * FROM purchasing_agents WHERE enabled = 1 ORDER BY agent_name ";
+								$result1            = $db->query($conn, $sql1);
+								$count1             = $db->counter($result1);
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="">Select</option>
+										<?php
+										if ($count1 > 0) {
+											$row1    = $db->fetch($result1);
+											foreach ($row1 as $data2) { ?>
+												<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['agent_name']; ?> - Phone: <?php echo $data2['phone_no']; ?></option>
+										<?php }
+										} ?>
+									</select>
+									<label for="<?= $field_name; ?>">
+										<?= $field_label; ?>
+										<span class="color-red"><?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+										</span>
+									</label>
+								</div>
+							</div>
+							<div class="input-field col m2 s12"><br>
+								<a class="waves-effect waves-light btn modal-trigger mb-2 mr-1 custom_btn_size" href="#agent_add_modal">New Agent</a>
+							</div>
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">
@@ -343,7 +382,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				?>
 			</div>
 		</div>
-
-
-	</div><br><br><br><br>
+		<?php include("sub_files/add_agent_modal.php") ?>
+	</div>
 	<!-- END: Page Main-->

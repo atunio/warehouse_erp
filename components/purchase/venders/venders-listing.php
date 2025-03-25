@@ -42,10 +42,11 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 
-$sql_cl 		= "	SELECT a.*, type_name
+$sql_cl 		= "	SELECT a.*, type_name, c.agent_name, c.phone_no as agent_phone_no
 					FROM venders a 
 					LEFT JOIN vender_types b ON b.id = a.vender_type
-					WHERE 1=1  "; 
+					LEFT JOIN purchasing_agents c ON c.id = a.purchasing_agent_id
+					WHERE 1=1  ";
 if (isset($flt_vendor) && $flt_vendor != "") {
 	$sql_cl 	.= " AND a.id = '" . trim($flt_vendor) . "' ";
 }
@@ -128,7 +129,7 @@ $page_heading 	= "List of Vendors";
 									</div>
 								<?php } ?>
 								<br>
-								<form method="post" autocomplete="off" enctype="multipart/form-data"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
+								<form method="post" autocomplete="off" enctype="multipart/form-data" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -198,32 +199,31 @@ $page_heading 	= "List of Vendors";
 								</form>
 								<div class="row">
 									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Vendor ID','Vendor Name','Phone','Address','Type','Note About Vendor','Unpaid Balance','Actions');
+										<?php
+										$table_columns	= array('SNo', 'Vendor ID', 'Vendor Name', 'Phone', 'Address', 'Type', 'Agent Detail', 'Unpaid Balance', 'Actions');
 										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
+										foreach ($table_columns as $data_c1) { ?>
 											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
+												<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+												<span><?= $data_c1 ?></span>
 											</label>&nbsp;&nbsp;
-										<?php 
+										<?php
 											$k++;
-										}?> 
+										} ?>
 									</div>
-								</div>	
+								</div>
 								<table id="page-length-option" class="display pagelength50_3">
 									<thead>
 										<tr>
 											<?php
 											$headings = "";
-											foreach($table_columns as $data_c){
-												if($data_c == 'SNo'){
-													$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+											foreach ($table_columns as $data_c) {
+												if ($data_c == 'SNo') {
+													$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+												} else {
+													$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 												}
-												else{
-													$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-												}
-											} 
+											}
 											echo $headings;
 											?>
 										</tr>
@@ -236,11 +236,11 @@ $page_heading 	= "List of Vendors";
 											foreach ($row_cl as $data) {
 												$id = $data['id'];  ?>
 												<tr>
-													<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-													<td class="col-<?= set_table_headings($table_columns[1]);?>"><?php echo $data['vender_no']; ?></td>
-													<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php if ($data['vender_name'] != "") echo ucwords(strtolower($data['vender_name'])); ?></td>
-													<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['phone_no']; ?></td>
-													<td class="col-<?= set_table_headings($table_columns[4]);?>">
+													<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[1]); ?>"><?php echo $data['vender_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php if ($data['vender_name'] != "") echo ucwords(strtolower($data['vender_name'])); ?></td>
+													<td class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $data['phone_no']; ?></td>
+													<td class="col-<?= set_table_headings($table_columns[4]); ?>">
 														<?php
 														if ($data['address'] != '') {
 															$address = $data['address'];
@@ -250,19 +250,18 @@ $page_heading 	= "List of Vendors";
 															}
 														}  ?>
 													</td>
-													<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php if ($data['type_name'] != "") echo ucwords(strtolower($data['type_name'])); ?></td>
-													<td class="col-<?= set_table_headings($table_columns[6]);?>">
+													<td class="col-<?= set_table_headings($table_columns[5]); ?>"><?php if ($data['type_name'] != "") echo ucwords(strtolower($data['type_name'])); ?></td>
+													<td class="col-<?= set_table_headings($table_columns[6]); ?>">
 														<?php
-														$note_about_vender = $data['note_about_vender'];
-														if ($note_about_vender != '') {
-															echo substr($note_about_vender, 0, 25) . "";
-															if (strlen($note_about_vender) > 25) {
-																echo "...";
-															}
+
+														$agent_phone_no = $data['agent_phone_no'];
+														$agent_name 	= $data['agent_name'];
+														if ($agent_name != '') {
+															echo "" . $agent_name;
 														} ?>
 													</td>
-													<td class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo number_format($data['credit_balance'], 2); ?></td>
-													<td class="text-align-center col-<?= set_table_headings($table_columns[8]);?>">
+													<td class="col-<?= set_table_headings($table_columns[7]); ?>"><?php echo number_format($data['credit_balance'], 2); ?></td>
+													<td class="text-align-center col-<?= set_table_headings($table_columns[8]); ?>">
 														<?php
 														if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
 															<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">

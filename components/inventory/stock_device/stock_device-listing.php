@@ -70,6 +70,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							AND a.order_status IN (3, 5, 6)
 							AND a.is_pricing_done = 0
 							AND b.is_rma_processed = 0
+							AND b.received_during != 'BarCodeReceive'
 							GROUP BY c1.product_id, b.po_id
 
 							UNION ALL
@@ -91,6 +92,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							WHERE a.enabled = 1
 							AND order_status IN(3, 5, 6)
 							AND a.is_pricing_done = 0
+							AND b.received_during != 'BarCodeReceive'
 							GROUP BY b.product_id, b.po_id
 							
 							UNION ALL
@@ -596,6 +598,7 @@ $page_heading 	= "Stock Summary";
 																					WHERE a.enabled = 1
 																					AND a.order_status IN (3, 5, 6)
 																					AND a.is_pricing_done = 0
+																					AND b.received_during != 'BarCodeReceive'
 																					AND b.is_rma_processed = 0
 																					GROUP BY c1.product_id, b.po_id
 
@@ -614,6 +617,7 @@ $page_heading 	= "Stock Summary";
 																					WHERE a.enabled = 1
 																					AND order_status IN(3, 5, 6)
 																					AND a.is_pricing_done = 0
+																					AND b.received_during != 'BarCodeReceive'
 																					GROUP BY b.product_id, b.po_id
 																					
 																					UNION ALL
@@ -711,6 +715,7 @@ $page_heading 	= "Stock Summary";
 																					AND a.order_status IN (3, 5, 6)
 																					AND a.is_pricing_done = 0
 																					AND b.is_rma_processed = 0
+																					AND b.received_during != 'BarCodeReceive'
 																					GROUP BY c1.product_id, b.po_id
 
 																					UNION ALL
@@ -728,6 +733,7 @@ $page_heading 	= "Stock Summary";
 																					WHERE a.enabled = 1
 																					AND order_status IN(3, 5, 6)
 																					AND a.is_pricing_done = 0
+																					AND b.received_during != 'BarCodeReceive'
 																					GROUP BY b.product_id, b.po_id
 																					
 																					UNION ALL

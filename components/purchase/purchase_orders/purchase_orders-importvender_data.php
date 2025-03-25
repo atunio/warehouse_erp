@@ -21,7 +21,7 @@ $result_ee					= $db->query($conn, $sql_ee);
 $row_ee						= $db->fetch($result_ee);
 $disp_po_no					=  $row_ee[0]['po_no'];
 $disp_vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
-$disp_stage_status			= $row_ee[0]['stage_status'];   
+$disp_stage_status			= $row_ee[0]['stage_status'];
 
 extract($_POST);
 
@@ -135,7 +135,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		}
 
 		$all_data = $modified_array;
-		$sql_ee1 = " SELECT a.* FROM ".$master_table." a  WHERE a.duplication_check_token = '" . $duplication_check_token . "' ";
+		$sql_ee1 = " SELECT a.* FROM " . $master_table . " a  WHERE a.duplication_check_token = '" . $duplication_check_token . "' ";
 		// echo $sql_ee1;
 		$result_ee1 	= $db->query($conn, $sql_ee1);
 		$counter_ee1	= $db->counter($result_ee1);
@@ -179,10 +179,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$sql_del = " DELETE FROM vender_po_data WHERE po_id =  '" . $id . "' ";
 					$db->query($conn, $sql_del);
 
-					$sql_dup1 ="UPDATE purchase_order_detail SET enabled = 0 
+					$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
 								WHERE po_id	= '" . $id . "' ";
 					$db->query($conn, $sql_dup1);
-					
+
 					foreach ($all_data  as $data1) {
 						$update_master = $columns = $column_data = $update_column = $po_detail_data =  $po_detail_column = $update_po_detail = "";
 						if (
@@ -209,26 +209,23 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														WHERE 1=1
 														AND a.enabled = 1
 														AND a.product_id		= '" . $product_id2 . "'  ";
-								if($overall_grade == ""){
+								if ($overall_grade == "") {
 									$sql_po_d			.= " AND (a.product_condition = '' OR a.product_condition IS NULL)";
-								}
-								else{
+								} else {
 									$sql_po_d			.= " AND a.product_condition = '" . $overall_grade . "'";
 								}
-								if($status == ""){
+								if ($status == "") {
 									$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
-								}
-								else{
+								} else {
 									$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
 								}
-								if($price == ""){
+								if ($price == "") {
 									$sql_po_d			.= " AND (a.order_price = '' OR a.order_price IS NULL)";
-								}
-								else{
+								} else {
 									$sql_po_d			.= " AND a.order_price 		= '" . $price . "'";
-								} 
+								}
 								// echo "<br><br><br>" . $sql_po_d;
-								$sql_po_d			.= " AND a.po_id 			=  '" . $id . "' ";  
+								$sql_po_d			.= " AND a.po_id 			=  '" . $id . "' ";
 								$result_po_d		= $db->query($conn, $sql_po_d);
 								$count_po_d			= $db->counter($result_po_d);
 								if ($count_po_d > 0) {
@@ -249,7 +246,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								foreach ($data1 as $key => $data) {
 									if ($key != "" && $key != 'is_insert') {
-										if($data == '-'){
+										if ($data == '-') {
 											$data = "";
 										}
 										if ($key == 'product_id') {
@@ -401,7 +398,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				<div class="card-panel custom_padding_card_content_table_top">
 					<?php
 					if (isset($id) && isset($disp_po_no)) {  ?>
-						<div class="row"> 
+						<div class="row">
 							<div class="input-field col m4 s12">
 								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $disp_po_no; ?></span></h6>
 							</div>
@@ -419,7 +416,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					<?php } ?>
 					<h4 class="card-title">Import Excel Data</h4><br>
 					<?php
-					if($disp_stage_status == 'Draft'){
+					if ($disp_stage_status == 'Draft') {
 						if (isset($msg['msg_success'])) { ?>
 							<div class="card-alert card green lighten-5">
 								<div class="card-content green-text">
@@ -663,15 +660,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								<div class="col m4 s12">&nbsp;</div>
 							</div>
 						<?php }
-					} 
-					else{?>
+					} else { ?>
 						<div class="card-alert card red lighten-5">
 							<div class="card-content red-text">
 								<p>Data only can be import if PO is in Draft</p>
-							</div> 
+							</div>
 						</div>
-						<?php
-					}?>
+					<?php
+					} ?>
 				</div>
 				<?php
 				//include('sub_files/right_sidebar.php');

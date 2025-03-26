@@ -70,14 +70,14 @@
                                     SELECT * FROM (
                                         SELECT  a.po_detail_id, a.product_id, c.product_uniqueid, 
                                             c2.stock_grade,
-                                            a.price AS order_price,
+                                            ROUND((SUM(a.price)/COUNT(c2.id)), 2) AS order_price, 
                                             COUNT(c2.id) AS total_qty, 
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
                                             ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
                                             ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * a.price), 2) total_price
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(SUM(a.price)), 2) total_price
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN products c ON c.id = b.product_id
@@ -95,14 +95,14 @@
                                         
                                         SELECT  a.po_detail_id, a.product_id, c.product_uniqueid, 
                                             c2.stock_grade,
-                                            a.price AS  order_price,
+                                            ROUND((SUM(a.price)/COUNT(c2.id)), 2) AS order_price, 
                                             COUNT(c2.id) AS total_qty, 
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
                                             ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
                                             ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(COUNT(c2.id) * a.price), 2) total_price
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(SUM(a.price)), 2) total_price
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN products c ON c.id = a.product_id
                                         INNER JOIN product_stock c2 ON c2.receive_id = a.id
@@ -150,7 +150,7 @@
                                     <div class="text_align_right">
                                         <?php
                                         $table_columns    = array('SNo', 'Product ID / Product Detail', 'Grade', 'Qty', 'Suggested Price', 'Total');
-                                        $k                 = 0;
+                                        $k                = 0;
                                         foreach ($table_columns as $data_c1) { ?>
                                             <label>
                                                 <input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
@@ -189,11 +189,32 @@
                                                     foreach ($row_cl2 as $data2) {
                                                         $product_total_price        = $data2['product_total_price'];
                                                         $total_qty                  = $data2['total_qty'];
+                                                        $logistic_cost              = $data2['logistic_cost'];
+                                                        $receiving_labor            = $data2['receiving_labor'];
+                                                        $diagnostic_labor           = $data2['diagnostic_labor'];
+                                                        $distributed_amount         = $data2['distributed_amount'];
+
+                                                        if($logistic_cost >0){
+                                                            $logistic_cost = $logistic_cost/$data2['total_qty'];
+                                                        }
+                                                        if($receiving_labor >0){
+                                                            $receiving_labor = $receiving_labor/$data2['total_qty'];
+                                                        }
+                                                        if($diagnostic_labor >0){
+                                                            $diagnostic_labor = $diagnostic_labor/$data2['total_qty'];
+                                                        }
+                                                        if($distributed_amount >0){
+                                                            $distributed_amount = $distributed_amount/$data2['total_qty'];
+                                                        }
 
                                                         $array_pricing[$data2['product_uniqueid']][] = [
                                                             "stock_grade"           => $data2['stock_grade'],
                                                             "product_total_price"   => $product_total_price,
-                                                            "total_qty"             => $total_qty
+                                                            "total_qty"             => $total_qty,  
+                                                            "logistic_cost"         => $logistic_cost,  
+                                                            "receiving_labor"       => $receiving_labor,  
+                                                            "diagnostic_labor"      => $diagnostic_labor,  
+                                                            "distributed_amount"    => $distributed_amount
                                                         ];
                                                     }
                                                     foreach ($row_cl1 as $data) {
@@ -231,7 +252,8 @@
                                                             array_unshift($array_pricing[$product_uniqueid], [
                                                                 "stock_grade" => "A",
                                                                 "product_total_price" => $product_total_price,
-                                                                "total_qty" => 0 // Assuming you want to set this to 0
+                                                                "total_qty" => 0, // Assuming you want to set this to 0
+                                                                "logistic_cost" => 0,
                                                             ]);
                                                         }
                                                         if (!isset($array_pricing[$product_uniqueid]) || !array_filter($array_pricing[$product_uniqueid], function ($entry) {
@@ -240,7 +262,8 @@
                                                             $new_item = [
                                                                 "stock_grade" => "B",
                                                                 "product_total_price" => $product_total_price,
-                                                                "total_qty" => 0 // Assuming you want to set this to 0
+                                                                "total_qty" => 0, // Assuming you want to set this to 0
+                                                                "logistic_cost" => 0,
                                                             ];
                                                             // Insert at index 1 and shift the rest
                                                             array_splice($array_pricing[$product_uniqueid], 1, 0, [$new_item]);
@@ -252,7 +275,8 @@
                                                             $array_pricing[$product_uniqueid][] = [
                                                                 "stock_grade" => "C",
                                                                 "product_total_price" => $product_total_price,
-                                                                "total_qty" => 0 // Assuming you want to set this to 0
+                                                                "total_qty" => 0, // Assuming you want to set this to 0
+                                                                "logistic_cost" => 0,
                                                             ];
                                                         }
                                                         $pricing_table_trs = "";
@@ -284,7 +308,6 @@
                                                                     $suggested_price = 0;
                                                                     if ($data['no_of_grades_in_product'] > 1) {
                                                                         // echo "<pre>";
-                                                                        // print_r($array_pricing);
                                                                         foreach ($array_pricing[$product_uniqueid] as $record) {
 
                                                                             $total_qty_from_array1  = $array_pricing[$product_uniqueid][0]['total_qty'];
@@ -310,39 +333,58 @@
                                                                         echo $suggested_price;
                                                                     }
                                                                     $single_product_price = $suggested_price;
-
-                                                                    if ($logistic_percentage_per_item > 0) {
-                                                                        $logistic_after_pricing =  round(($suggested_price * $logistic_percentage_per_item) / 100, 2);
+                                                                    if ($data['stock_grade'] == 'A') {
+                                                                        $index = '0';
+                                                                    }
+                                                                    else if ($data['stock_grade'] == 'B') {
+                                                                        $index = '1';
+                                                                    }
+                                                                    else if ($data['stock_grade'] == 'C') {
+                                                                        $index = '2';
+                                                                    }
+                                                                    $logistic_after_pricing = "0";
+                                                                    if(isset($array_pricing[$product_uniqueid][$index]['logistic_cost']) && $array_pricing[$product_uniqueid][$index]['logistic_cost']>0){
+                                                                        $logistic_after_pricing =  $array_pricing[$product_uniqueid][$index]['logistic_cost'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Logistics</td>
                                                                                                     <td>" . $logistic_after_pricing . "</td>
                                                                                                 </tr>";
-                                                                        $single_product_price = $single_product_price - $logistic_after_pricing;
                                                                     }
-                                                                    if ($receiving_percentage_per_item > 0) {
-                                                                        $receiving_after_pricing =  round(($suggested_price * $receiving_percentage_per_item) / 100, 2);
+                                                                    $single_product_price = $single_product_price - $logistic_after_pricing;
+
+
+                                                                    $receiving_after_pricing = "0";
+                                                                    if(isset($array_pricing[$product_uniqueid][$index]['receiving_labor']) && $array_pricing[$product_uniqueid][$index]['receiving_labor']>0){
+                                                                        $receiving_after_pricing =  $array_pricing[$product_uniqueid][$index]['receiving_labor'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Receiving</td>
                                                                                                     <td>" . $receiving_after_pricing . "</td>
                                                                                                 </tr>";
-                                                                        $single_product_price = $single_product_price - $receiving_after_pricing;
                                                                     }
-                                                                    if ($diagnostic_percentage_per_item > 0) {
-                                                                        $diagnostic_after_pricing =  round(($suggested_price * $diagnostic_percentage_per_item) / 100, 2);
+                                                                    $single_product_price = $single_product_price - $receiving_after_pricing;
+
+
+                                                                    $diagnostic_after_pricing = "0";
+                                                                    if(isset($array_pricing[$product_uniqueid][$index]['diagnostic_labor']) && $array_pricing[$product_uniqueid][$index]['diagnostic_labor']>0){
+                                                                        $diagnostic_after_pricing =  $array_pricing[$product_uniqueid][$index]['diagnostic_labor'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Diagnostic</td>
                                                                                                     <td>" . $diagnostic_after_pricing . "</td>
                                                                                                 </tr>";
-                                                                        $single_product_price = $single_product_price - $diagnostic_after_pricing;
                                                                     }
-                                                                    if ($distributed_percentage_per_item > 0) {
-                                                                        $distributed_after_pricing =  round(($suggested_price * $distributed_percentage_per_item) / 100, 2);
+                                                                    $single_product_price = $single_product_price - $diagnostic_after_pricing;
+
+
+                                                                    $distributed_after_pricing = "0";
+                                                                    if(isset($array_pricing[$product_uniqueid][$index]['distributed_amount']) && $array_pricing[$product_uniqueid][$index]['distributed_amount']>0){
+                                                                        $distributed_after_pricing =  $array_pricing[$product_uniqueid][$index]['distributed_amount'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Other Defective Distribution</td>
                                                                                                     <td>" . $distributed_after_pricing . "</td>
                                                                                                 </tr>";
-                                                                        $single_product_price = $single_product_price - $distributed_after_pricing;
                                                                     }
+                                                                    $single_product_price = $single_product_price - $distributed_after_pricing;
+
                                                                     $pricing_table_trs .= "  <tr>
                                                                                                 <td>Product Price</td>
                                                                                                 <td>" . round($single_product_price, 2) . "</td>

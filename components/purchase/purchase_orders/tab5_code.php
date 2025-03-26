@@ -479,9 +479,14 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 		$sql_pd01_4		= "	SELECT  c.id, a.overall_grade, a.status, a.defects_or_notes
 							FROM vender_po_data a 
 							INNER JOIN products b ON b.product_uniqueid = a.product_uniqueid
-							INNER JOIN purchase_order_detail c ON c.product_id = b.id AND c.po_id = '" . $id . "'
+							LEFT JOIN inventory_status d ON d.status_name = a.status AND d.enabled = 1
+							INNER JOIN purchase_order_detail c ON 	c.product_id 			= b.id 
+																	AND a.overall_grade 	= c.product_condition 
+																	AND a.price 			= c.order_price 
+																	AND d.id 				= c.expected_status 
 							WHERE a.enabled = 1 
 							AND c.enabled	= 1
+							AND c.po_id = '" . $id . "'
 							AND a.serial_no = '" . $serial_no_barcode . "'
 							ORDER BY a.id DESC LIMIT 1 ";
 		$result_pd01_4	= $db->query($conn, $sql_pd01_4);
@@ -522,7 +527,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "CThe Serial# is D, Select another Bin";
+					$error5['serial_no_barcode'] = "The Serial# is D, Select another Bin";
 				}
 			} else if ($vender_d_status != 'Tested/Graded' && $vender_d_status != "" && $vender_d_status != NULL) {
 				$sql_pd01_4		= "	SELECT  a.id
@@ -534,7 +539,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "BThe Serial# is " . $vender_d_status . ", Select another Bin.";
+					$error5['serial_no_barcode'] = "The Serial# is " . $vender_d_status . ", Select another Bin.";
 				}
 			} else if ($vender_d_status == 'Tested/Graded') {
 				$sql_pd01_4		= "	SELECT  a.id
@@ -546,7 +551,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "AThe Serial# is " . $vender_d_status . ", Select another Bin";
+					$error5['serial_no_barcode'] = "The Serial# is " . $vender_d_status . ", Select another Bin";
 				}
 			}
 		}
@@ -571,18 +576,22 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$product_uniqueid_main1 = "";
 				$package_id1 = $package_material_qty1 = $package_material_qty_received1 = 0;
 
-				$sql_pd3		= "	SELECT a.product_id, a.product_condition, c.product_uniqueid, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price,a.expected_status
+				$sql_pd3		= "	SELECT  a.product_id, a.product_condition, c.product_uniqueid, a.order_price,a.expected_status,
+											a2.logistics_cost, a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, c.product_category
 									FROM purchase_order_detail a 
 									INNER JOIN products c ON c.id = a.product_id
 									INNER JOIN purchase_orders a2 ON a2.id = a.po_id
 									WHERE 1 = 1
 									AND a.enabled	= 1
-									AND a.id 	= '" . $product_id_barcode . "'";
+									AND a.id 	= '" . $product_id_barcode . "'"; 
+				// echo "<br><br>".$sql_pd3;
 				$result_pd3		= $db->query($conn, $sql_pd3);
 				$count_pd3		= $db->counter($result_pd3);
 				if ($count_pd3 > 0) {
 					$row_pd3 						= $db->fetch($result_pd3);
 					$order_price					= $row_pd3[0]['order_price'];
+					$product_category_brc			= $row_pd3[0]['product_category'];
+					$po_logistic_cost1				= $row_pd3[0]['logistics_cost'];
 					$product_uniqueid_main1			= $row_pd3[0]['product_uniqueid'];
 					$c_product_id2 					= $row_pd3[0]['product_id'];
 					$c_product_condition2 			= $row_pd3[0]['product_condition'];
@@ -600,17 +609,20 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 							$c_expected_status2 	= $row_st1[0]['id'];
 						}
 					}
-
 					// Only if Diagnostic bypass
 					// edit_lock, is_import_diagnostic_data, is_diagnostic_bypass
 
-					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, inventory_status, overall_grade, 
-																		received_during, edit_lock, is_import_diagnostic_data, is_diagnostic_bypass, defects_or_notes,
-																		sub_location_id, is_diagnost, duplication_check_token, 
+					$item_logistic_cost			= round(po_logistic_cost_product_added($db, $conn, $id, $po_logistic_cost1), 2);
+					$item_receive_labor_cost 	= round(signle_device_receive_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_brc), 2);
+					$new_order_price			= round(($order_price + $item_logistic_cost + $item_receive_labor_cost), 2); 
+
+					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, logistic_cost, receiving_labor, 
+																		inventory_status, overall_grade, received_during, edit_lock, is_import_diagnostic_data, is_diagnostic_bypass, 
+																		defects_or_notes, sub_location_id, is_diagnost, duplication_check_token, 
 																		add_by_user_id, add_date,  add_by, add_ip, add_timezone)
-							 VALUES('" . $id . "', '" . $product_id_barcode . "',  '" . $serial_no_barcode . "', '" . $order_price . "', '" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 
-							 			'BarCodeReceive', 1, 1, 1, '" . $vd_defects_or_notes . "', 
-							 		'" . $sub_location_id_barcode . "', '1', '" . $duplication_check_token . "', 
+							 VALUES('" . $id . "', '" . $product_id_barcode . "',  '" . $serial_no_barcode . "', '" . $new_order_price . "', '" . $item_logistic_cost . "', '" . $item_receive_labor_cost . "', 
+							 			'" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 'BarCodeReceive', 1, 1, 1, 
+										'" . $vd_defects_or_notes . "', '" . $sub_location_id_barcode . "', '1', '" . $duplication_check_token . "', 
 							 		'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
@@ -622,7 +634,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						$sql6 = "INSERT INTO product_stock( subscriber_users_id, receive_id, serial_no, is_final_pricing, price,
 															product_id, p_total_stock, stock_grade,  p_inventory_status, sub_location,  
 															add_by_user_id, add_date, add_by, add_ip, add_timezone)
-									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $serial_no_barcode . "', 1, '" . $order_price . "',
+									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $serial_no_barcode . "', 1, '" . $new_order_price . "',
 									'" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "',
 									'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$db->query($conn, $sql6);
@@ -733,7 +745,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 						$package_id1 	= $package_material_qty1 = $package_material_qty_received1 = 0;
 						$sql_pd3 		= "	SELECT  a.id, a.product_id, a.product_condition, b.product_uniqueid, 
-													a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price, a.order_qty, a.expected_status
+													a2.is_tested_po, a2.is_wiped_po, a2.is_imaged_po, a.order_price, a.order_qty, a.expected_status,
+													a2.logistics_cost
 											FROM purchase_order_detail a
 											INNER JOIN products b ON b.id = a.product_id
 											INNER JOIN purchase_orders a2 ON a2.id = a.po_id
@@ -748,7 +761,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 							foreach ($row_pd3 as $data3_rv) {
 
 								$po_detail_id			= $data3_rv['id'];
-								$order_price			= $data3_rv['order_price'];
+								$order_price			= $data3_rv['order_price']; 
+								$po_logistic_cost1		= $data3_rv['logistics_cost']; 
 								$order_qty				= $data3_rv['order_qty'];
 								$product_uniqueid_main1	= $data3_rv['product_uniqueid'];
 								$c_product_id2			= $data3_rv['product_id'];
@@ -764,9 +778,16 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 								for ($m = 0; $m < $allocated_qty; $m++) {
 									$receiving_location_add = $receiving_location[$key];
-
-									$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, recevied_product_category,  receive_type, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-											 VALUES('" . $id . "', '" . $recevied_product_category . "', 'CateogryReceived', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+									
+									$item_logistic_cost			= round(po_logistic_cost_product_added($db, $conn, $id, $po_logistic_cost1), 2);
+									$item_receive_labor_cost 	= round(signle_device_receive_labor_cost($db, $conn, $_SESSION['user_id'], $recevied_product_category), 2);
+ 
+									$sql6 = "INSERT INTO purchase_order_detail_receive(	po_id, recevied_product_category, receive_type, add_by_user_id, sub_location_id,
+																						logistic_cost, receiving_labor, 
+																						duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+											 VALUES('" . $id . "', '" . $recevied_product_category . "', 'CateogryReceived', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', 
+											 		'" . $item_logistic_cost . "', '" . $item_receive_labor_cost . "', 
+													'" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 									$ok = $db->query($conn, $sql6);
 									if ($ok) {
 

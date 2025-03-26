@@ -1543,6 +1543,87 @@ function po_logistic_cost($db, $conn, $po_id, $logistics_cost)
 	return $po_logistic_cost;
 }
 
+function po_logistic_cost_product_added($db, $conn, $po_id, $logistics_cost)
+{
+	$item_logistic_cost = 0;
+	$sql			= " SELECT IFNULL(sum(order_qty), 0) as total_qty
+						FROM  purchase_orders b  
+						INNER JOIN purchase_order_detail c ON c.po_id = b.id
+ 						WHERE b.id = '" . $po_id . "' 
+						AND c.enabled = 1";
+	$result			= $db->query($conn, $sql); //echo $sql;die;
+	$total_received	= $db->counter($result);
+	if ($total_received > 0) {
+		$row 		= $db->fetch($result);
+		$total_qty 	= $row[0]['total_qty'];
+		if ($total_qty > 0 && $logistics_cost > 0) {
+			$item_logistic_cost = $logistics_cost / $total_qty;
+		}
+	}
+	return $item_logistic_cost;
+}
+
+function signle_device_receive_labor_cost($db, $conn, $user_id, $product_category)
+{
+	$signle_device_receive_labor_cost = 0;
+	$sql			= " SELECT devices_per_user_per_day
+						FROM formula_category
+						WHERE formula_type = 'Receive' 
+						AND product_category = '" . $product_category . "'   ";
+	$result			= $db->query($conn, $sql); //echo $sql;die;
+	$total_received	= $db->counter($result);
+	if ($total_received > 0) {
+		$row 						= $db->fetch($result);
+		$devices_per_user_per_day 	= $row[0]['devices_per_user_per_day'];
+		if ($devices_per_user_per_day > 0) {
+			$minutes_per_device = 60 / ($devices_per_user_per_day / 8);
+			if ($minutes_per_device > 0) {
+				$sql2		= " SELECT  e.hourly_rate FROM employee_profile e  WHERE e.user_id = '" . $user_id . "' ";
+				$result2	= $db->query($conn, $sql2); //echo $sql;die;
+				$count2	= $db->counter($result2);
+				if ($count2 > 0) {
+					$row2 = $db->fetch($result2);
+					$hourly_rate = $row2[0]['hourly_rate'];
+					if ($hourly_rate > 0) {
+						$signle_device_receive_labor_cost = ($hourly_rate / 60) * $minutes_per_device;
+					}
+				}
+			}
+		}
+	}
+	return $signle_device_receive_labor_cost;
+}
+function signle_device_diagnostic_labor_cost($db, $conn, $user_id, $product_category)
+{
+	$signle_device_diagnostic_labor_cost = 0;
+	$sql			= " SELECT devices_per_user_per_day
+						FROM formula_category
+						WHERE formula_type = 'Diagnostic' 
+						AND product_category = '" . $product_category . "'   ";
+	$result			= $db->query($conn, $sql); //echo $sql;die;
+	$total_received	= $db->counter($result);
+	if ($total_received > 0) {
+		$row 						= $db->fetch($result);
+		$devices_per_user_per_day 	= $row[0]['devices_per_user_per_day'];
+		if ($devices_per_user_per_day > 0) {
+			$minutes_per_device = 60 / ($devices_per_user_per_day / 8);
+			if ($minutes_per_device > 0) {
+				$sql2		= " SELECT  e.hourly_rate FROM employee_profile e  WHERE e.user_id = '" . $user_id . "' ";
+				$result2	= $db->query($conn, $sql2); //echo $sql;die;
+				$count2	= $db->counter($result2);
+				if ($count2 > 0) {
+					$row2 = $db->fetch($result2);
+					$hourly_rate = $row2[0]['hourly_rate'];
+					if ($hourly_rate > 0) {
+						$signle_device_diagnostic_labor_cost = ($hourly_rate / 60) * $minutes_per_device;
+					}
+				}
+			}
+		}
+	}
+	return $signle_device_diagnostic_labor_cost;
+}
+
 function device_repaire_labor_cost($db, $conn, $receive_rma_id)
 {
 	$per_product_labor = 0;

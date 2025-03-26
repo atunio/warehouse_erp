@@ -102,8 +102,17 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 								d.category_name, c.product_category,
 								a.po_no,
 								e.status_name AS po_status_name,
-								SUM(b.order_qty) AS po_order_qty,
-								SUM(b.order_qty*order_price) AS total_price, '' as sub_location_id, '' as serial_no_barcode, '' as overall_grade
+								SUM(b.order_qty) - (
+									SELECT IFNULL(SUM(enabled), 0) 
+									FROM `purchase_order_detail_receive` f 
+									WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1
+								) AS po_order_qty,
+								(SUM(b.order_qty) - 
+									(SELECT IFNULL(SUM(enabled), 0) 
+									FROM `purchase_order_detail_receive` f 
+									WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1)
+								) * order_price AS total_price,  
+								'' as sub_location_id, '' as serial_no_barcode, '' as overall_grade
 							FROM `purchase_orders` a 
 							INNER JOIN purchase_order_detail b ON b.`po_id` = a.id
 							INNER JOIN products c ON c.id = b.`product_id`
@@ -111,9 +120,9 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							INNER JOIN inventory_status e ON e.id = a.order_status
 							WHERE a.enabled = 1 
 							AND b.order_qty > 0 
-							AND order_status IN(1, 3, 4, 11, 12)
 							AND a.is_pricing_done = 0
-							GROUP BY b.product_id, b.po_id
+							GROUP BY b.product_id, b.po_id 
+							HAVING po_order_qty > 0
 
 						) AS combined_data
 						GROUP BY product_uniqueid, product_desc, category_name
@@ -622,7 +631,19 @@ $page_heading 	= "Stock Summary";
 																					
 																					UNION ALL
 																					
-																					SELECT a.po_no, b.po_id, b.product_id, SUM(b.order_qty) AS po_order_qty, SUM(b.order_qty*order_price) AS total_price, 
+																					SELECT a.po_no, b.po_id, b.product_id, 
+
+																						SUM(b.order_qty) - (
+																							SELECT IFNULL(SUM(enabled), 0) 
+																							FROM `purchase_order_detail_receive` f 
+																							WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1
+																						) AS po_order_qty,
+																						(SUM(b.order_qty) - 
+																							(SELECT IFNULL(SUM(enabled), 0) 
+																							FROM `purchase_order_detail_receive` f 
+																							WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1)
+																						) * order_price AS total_price, 
+																					 
 																						d.category_name, c.product_desc, c.product_uniqueid,
 																						'' AS sub_location_name, '' AS sub_location_id,
 																						e.status_name AS po_status_name, '' as serial_no_barcode, '' as overall_grade
@@ -633,9 +654,9 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN inventory_status e ON e.id = a.order_status
 																					WHERE a.enabled = 1
 																					AND b.order_qty > 0 
-																					AND order_status IN(1, 3, 4, 11, 12) 
 																					AND a.is_pricing_done = 0
 																					GROUP BY b.product_id, b.po_id
+																					HAVING po_order_qty > 0
 
 																				) AS combined_data
 																				WHERE product_id = '" . $id . "' 
@@ -738,7 +759,19 @@ $page_heading 	= "Stock Summary";
 																					
 																					UNION ALL
 																					
-																					SELECT a.po_no, b.po_id, b.product_id, SUM(b.order_qty) AS po_order_qty, SUM(b.order_qty*order_price) AS total_price, 
+																					SELECT a.po_no, b.po_id, b.product_id, 
+																					 
+																						SUM(b.order_qty) - (
+																							SELECT IFNULL(SUM(enabled), 0) 
+																							FROM `purchase_order_detail_receive` f 
+																							WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1
+																						) AS po_order_qty,
+																						(SUM(b.order_qty) - 
+																							(SELECT IFNULL(SUM(enabled), 0) 
+																							FROM `purchase_order_detail_receive` f 
+																							WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1)
+																						) * order_price AS total_price, 
+																						 
 																						d.category_name, c.product_desc, c.product_uniqueid,
 																						'' AS sub_location_name, '' AS sub_location_id,
 																						e.status_name AS po_status_name, '' as serial_no_barcode, '' as overall_grade
@@ -749,9 +782,9 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN inventory_status e ON e.id = a.order_status
 																					WHERE a.enabled = 1
 																					AND b.order_qty > 0 
-																					AND order_status IN(1, 3, 4, 11, 12) 
 																					AND a.is_pricing_done = 0
 																					GROUP BY b.product_id, b.po_id
+																					HAVING po_order_qty > 0
 
 																				) AS combined_data
 																				WHERE product_id = '" . $id . "' 

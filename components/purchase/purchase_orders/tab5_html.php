@@ -584,9 +584,7 @@
                                             }
                                             if ($count_r2 > 0) {
                                                 $row_r2    = $db->fetch($result_log2);
-                                                foreach ($row_r2 as $data_r2) {
-                                                    $detail_id_r1       = $data_r2['id'];
-                                                    $order_qty          = $data_r2['order_qty']; ?>
+                                                foreach ($row_r2 as $data_r2) { ?>
                                                  <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                      <?php
                                                         echo " " . $data_r2['product_desc'];
@@ -600,6 +598,9 @@
                                                         }
                                                         if ($data_r2['status_name'] != "") {
                                                             echo ", Status: " . $data_r2['status_name'] . "";
+                                                        }
+                                                        if ($data_r2['status_name'] != "") {
+                                                            echo ", Price: " . $data_r2['order_price'] . "";
                                                         }
                                                         ?>
                                                  </option>

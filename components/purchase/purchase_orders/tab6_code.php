@@ -463,7 +463,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 						$inv_color_name			= $row_pd1[0]['color_name'];
 						$logistics_cost			= $row_pd1[0]['logistics_cost'];
 
-						$po_logistic_cost = $po_receiving_labor = $po_diagnostic_labor = 0;
+						//$po_logistic_cost = $po_receiving_labor = $po_diagnostic_labor = 0;
 						// $po_logistic_cost 		= po_logistic_cost($db, $conn, $inv_po_id, $logistics_cost);
 						// $po_receiving_labor 		= po_receiving_labor($db, $conn, $inv_po_id);
 						// $po_diagnostic_labor 	= po_diagnostic_labor($db, $conn, $inv_po_id);
@@ -518,12 +518,7 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 							$db->query($conn, $sql_c_up);
 						}
 
-						$sql_c_up = "UPDATE purchase_order_detail_receive 
-																			SET edit_lock 			= '1',
-																				Logistic_cost 		= '" . round($po_logistic_cost, 2) . "',
-																				receiving_labor 	= '" . round($po_receiving_labor, 2) . "',
-																				diagnostic_labor 	= '" . round($po_diagnostic_labor, 2) . "'
-										WHERE id = '" . $inv_receive_id . "' ";
+						$sql_c_up = "UPDATE purchase_order_detail_receive SET edit_lock = '1' WHERE id = '" . $inv_receive_id . "' ";
 						// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
 						$db->query($conn, $sql_c_up);
 						if (isset($inv_po_detail_id) && $inv_po_detail_id > 0) {
@@ -1072,15 +1067,14 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 									$row_pd01 = $db->fetch($result_pd01);
 									foreach ($row_pd01 as $data_pd01) {
 										$receive_id_2 		= $data_pd01['id'];
-										$sub_location_id 	= $data_pd01['sub_location_id'];
-										$price 				= $data_pd01['price'];
+										$sub_location_id 	= $data_pd01['sub_location_id']; 
 										$serial_no_fake 	= "GEN" . $receive_id_2;
 
 										$sql6 = "	INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, 
 																				stock_grade, p_inventory_status, sub_location, price, 
 																				add_by_user_id, add_date, add_by, add_ip, add_timezone)
 													VALUES('" . $subscriber_users_id . "', '" . $receive_id_2 . "', '" . $c_product_id2 . "', '" . $serial_no_fake . "', 1, 
-														'" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id . "', '" . $price . "',  
+														'" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id . "', '" . $order_price2 . "',  
 														'" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 										$db->query($conn, $sql6);
 
@@ -1207,6 +1201,9 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 					$result_pd01	= $db->query($conn, $sql_pd01);
 					$count_pd01		= $db->counter($result_pd01);
 					if ($count_pd01 == 0) {
+						
+						$item_diagnostic_labor_cost = round(signle_device_diagnostic_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_diagn), 2);
+
 						$sql_pd01 		= "	SELECT a.* 
 											FROM purchase_order_detail_receive a 
 											INNER JOIN users_bin_for_diagnostic b ON b.location_id = a.sub_location_id
@@ -1223,8 +1220,8 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 							$receive_id_2 	= $row_pd01[0]['id'];
 						} else {
 
-							$sql = "INSERT INTO purchase_order_detail_receive(po_id, assignment_id, recevied_product_category, product_id, receive_type, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-									VALUES('" . $id . "' , '" . $product_assignment_id . "' , '" . $product_category_diagn . "' ,'" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							$sql = "INSERT INTO purchase_order_detail_receive(po_id, assignment_id, recevied_product_category, product_id, receive_type, diagnostic_labor, sub_location_id, sub_location_id_after_diagnostic, add_by_user_id, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+									VALUES('" . $id . "' , '" . $product_assignment_id . "' , '" . $product_category_diagn . "' , '" . $product_id_not_in_po . "' , 'CateogryReceived' , '" . $item_diagnostic_labor_cost . "' , '" . $sub_location_id_fetched . "',  '" . $sub_location_id_fetched . "',  '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							$db->query($conn, $sql);
 							// echo "<br><br>" . $sql;
 							$receive_id_2 = mysqli_insert_id($conn);
@@ -1252,10 +1249,11 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 							$update_product_id = " product_id = " . $product_id_not_in_po . ", ";
 						}
 
-						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 		
+						$sql_c_up = "UPDATE  purchase_order_detail_receive SET 	
 																				po_detail_id						= '" . $po_detail_id1 . "', 
 																				assignment_id						= '" . $product_assignment_id . "', 
 																				serial_no_barcode					= '" . $data . "', 
+																				diagnostic_labor					= '" . $item_diagnostic_labor_cost . "', 
 																				" . $update_product_id . "
  
 																				phone_check_api_data				= '" . $jsonData2 . "',

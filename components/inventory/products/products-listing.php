@@ -61,7 +61,8 @@ if (isset($flt_product_model_no) && $flt_product_model_no != "") {
 if (isset($is_enabled_disabled) && $is_enabled_disabled != "") {
 	$sql_cl			.= " AND a.enabled = '" . $is_enabled_disabled . "' ";
 }
-$sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC "; // echo $sql_cl;
+$sql_cl	.= " ORDER BY a.enabled DESC, a.id DESC ";
+// echo $sql_cl;
 $result_cl	= $db->query($conn, $sql_cl);
 $count_cl	= $db->counter($result_cl);
 $page_heading 	= "List of Products";
@@ -138,7 +139,7 @@ $page_heading 	= "List of Products";
 									</div>
 								<?php } ?>
 								<br>
-								<form method="post" autocomplete="off" enctype="multipart/form-data"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
+								<form method="post" autocomplete="off" enctype="multipart/form-data" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);

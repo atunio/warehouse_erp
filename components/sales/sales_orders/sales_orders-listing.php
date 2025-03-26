@@ -49,7 +49,7 @@ $sql_cl			= "
 					) AS t1
 					WHERE 1=1 ";
 if (po_permisions("ALL SO in List") != '1') {
-	$sql_cl	.= " AND (t1.sub_user_id = '" . $_SESSION['user_id'] . "' || t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
+	$sql_cl	.= " AND (t1.add_by_user_id_order = '" . $_SESSION['user_id'] . "') ";
 }
 if (isset($flt_so_no) && $flt_so_no != "") {
 	$sql_cl 	.= " AND t1.so_no LIKE '" . trim($flt_so_no) . "' ";
@@ -142,7 +142,7 @@ $page_heading 	= "List Sales Orders ";
 										</div>
 									<?php } ?>
 
-									<form method="post" autocomplete="off"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
+									<form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 										<input type="hidden" name="is_Submit" value="Y" />
 										<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																							echo encrypt($_SESSION['csrf_session']);
@@ -321,17 +321,17 @@ $page_heading 	= "List Sales Orders ";
 									</form>
 									<div class="row">
 										<div class="text_align_right">
-											<?php 
-											$table_columns	= array('SNo', 'SO No', 'Order Date', 'Customer', 'Invoice No', 'Category Wise Qty','Actions');
+											<?php
+											$table_columns	= array('SNo', 'SO No', 'Order Date', 'Customer', 'Invoice No', 'Category Wise Qty', 'Actions');
 											$k 				= 0;
-											foreach($table_columns as $data_c1){?>
+											foreach ($table_columns as $data_c1) { ?>
 												<label>
-													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-													<span><?= $data_c1?></span>
+													<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+													<span><?= $data_c1 ?></span>
 												</label>&nbsp;&nbsp;
-											<?php 
+											<?php
 												$k++;
-											}?> 
+											} ?>
 										</div>
 									</div>
 									<div class="row">
@@ -341,14 +341,13 @@ $page_heading 	= "List Sales Orders ";
 													<tr>
 														<?php
 														$headings = "";
-														foreach($table_columns as $data_c){
-															if($data_c == 'SNo'){
-																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														foreach ($table_columns as $data_c) {
+															if ($data_c == 'SNo') {
+																$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+															} else {
+																$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 															}
-															else{
-																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-															}
-														} 
+														}
 														echo $headings;
 														?>
 													</tr>
@@ -362,8 +361,8 @@ $page_heading 	= "List Sales Orders ";
 															$id	= $data['sale_order_id_master'];
 													?>
 															<tr>
-																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[1]);?>">
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																		<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
@@ -398,7 +397,7 @@ $page_heading 	= "List Sales Orders ";
 																									AND a.enabled = 1 ";
 																			$result3            = $db->query($conn, $sql3);
 																			$total_packed     = $db->counter($result3);
-																			
+
 																			if ($data['order_status'] == $packing_status_dynamic) {
 																				if ($total_items_ordered > 0 && $total_packed > 0) {
 																					$total_packed_percentage = ($total_packed / $total_items_ordered) * 100;
@@ -431,14 +430,14 @@ $page_heading 	= "List Sales Orders ";
 																	</span>
 																	<span class="chip blue lighten-5">
 																		<span class="blue-text">
-																			<?php echo "".$data['stage_status']; ?>
+																			<?php echo "" . $data['stage_status']; ?>
 																		</span>
 																	</span>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo dateformat2($data['order_date']); ?></td>
- 																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['customer_name']; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['customer_invoice_no']; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[5]);?>">
+																<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo dateformat2($data['order_date']); ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $data['customer_name']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['customer_invoice_no']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[5]); ?>">
 																	<?php
 																	$sql3		= " SELECT d.category_name, sum(aa2.order_qty) as order_qty
 																					FROM  sales_order_detail aa2 
@@ -463,13 +462,13 @@ $page_heading 	= "List Sales Orders ";
 																		}
 																	} ?>
 																</td>
-																<td class="text-align-center col-<?= set_table_headings($table_columns[6]);?>">
+																<td class="text-align-center col-<?= set_table_headings($table_columns[6]); ?>">
 																	<?php
 																	if ($data['order_enabled'] == 1 && access("print_perm") == 1) { ?>
 																		<a href="components/<?php echo $module_folder; ?>/<?php echo $module; ?>/print_invoice.php?string=<?php echo encrypt("module_id=" . $module_id . "&id=" . $id) ?>" target="_blank">
 																			<i class="material-icons dp48">print</i>
 																		</a>&nbsp;&nbsp;
-																	<?php }
+																		<?php }
 																	if ($data['stage_status'] != 'Committed') {
 																		if ($data['order_enabled'] == 1 && access("edit_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
@@ -480,7 +479,7 @@ $page_heading 	= "List Sales Orders ";
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
 																				<i class="material-icons dp48">add</i>
 																			</a> &nbsp;&nbsp;
-																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1 ) { ?>
+																		<?php } else if ($data['order_enabled'] == 1 && access("delete_perm") == 1) { ?>
 																			<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
 																				<i class="material-icons dp48">delete</i>
 																			</a> &nbsp;&nbsp;

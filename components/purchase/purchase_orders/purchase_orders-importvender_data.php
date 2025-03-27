@@ -11,7 +11,7 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-$title_heading 			= "Import " . $main_menu_name;
+$title_heading 			= "Import Vendor Data";
 $button_val 			= "Preview";
 $sql_ee						= " SELECT a.*, b.status_name
 								FROM purchase_orders a
@@ -84,10 +84,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 $added = 0;
 $master_table = "vender_po_data";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
-
-	// $filter_import_colums = array_filter($import_colums, function ($value) {
-	// 	return !empty($value);
-	// });
 
 	$import_colums_uniq 		= array_unique($import_colums);
 	$total_import_column_set 	= count($import_colums_uniq);
@@ -381,6 +377,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								</h6>
 							</div>
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=importvender_data_file&id=" . $id) ?>">
+									Import File
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 									PO List
 								</a>
@@ -488,8 +487,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 										foreach ($supported_column_titles as $s_heading) {
 											$cell_format = "Text";
-											if ($s_heading == 'serial_no') {
-												$cell_format = "Text (Unique)";
+											if ($s_heading == 'price') {
+												$cell_format = "Number";
 											}
 											echo " <tr>
 														<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>

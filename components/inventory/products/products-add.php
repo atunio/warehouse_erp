@@ -85,6 +85,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$total_stock			= $row_ee[0]['total_stock'];
 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
 	$product_model_no		= $row_ee[0]['product_model_no'];
+	// echo "<br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ";
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
 	$sql_ee						= "SELECT a.* FROM product_packages a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
@@ -105,12 +106,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
-	}
-	$field_name = "product_desc";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name] 	= "Required";
-		${$field_name . "_valid"} = "invalid";
-	}
+	} 
 	$field_name = "product_uniqueid";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
@@ -173,10 +169,10 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE products SET 	product_desc		= '" . $product_desc . "', 
-														product_category	= '" . $product_category . "',
-														product_uniqueid	= '" . $product_uniqueid . "', 
-														product_model_no	= '" . $product_model_no . "', 
+					$sql_c_up = "UPDATE products SET 	product_desc			= '" . $product_desc . "', 
+														product_category		= '" . $product_category . "',
+														product_uniqueid		= '" . $product_uniqueid . "', 
+														product_model_no		= '" . $product_model_no . "', 
 														
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
@@ -416,7 +412,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$field_label 	= "Product Descripton";
 								?>
 								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" required="" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+								<input id="<?= $field_name; ?>" type="text"  name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
 																																echo ${$field_name};
 																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
 																																						echo ${$field_name . "_valid"};

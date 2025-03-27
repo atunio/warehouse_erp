@@ -1672,6 +1672,7 @@
                                                 <th>Product ID</th>
                                                 <th>Product Description</th>
                                                 <th>Category</th>
+                                                <th>Other Cost</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -1697,6 +1698,26 @@
                                                     <td><?php echo $data2['product_uniqueid']; ?></td>
                                                     <td><?php echo $data2['product_desc']; ?></td>
                                                     <td><?php echo $data2['category_name']; ?></td>
+                                                    <td>
+                                                        <?php 
+                                                        $total_other_cost = 0;
+                                                        $field_name = "logistic_cost";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
+                                                            echo "Logistic: ".$data2[$field_name].", ";
+                                                            $total_other_cost += $data2[$field_name];
+                                                        }
+                                                        $field_name = "receiving_labor";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
+                                                            echo "Receiving Labor: ".$data2[$field_name].", ";
+                                                            $total_other_cost += $data2[$field_name];
+                                                        }
+                                                        $field_name = "diagnostic_labor";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
+                                                            echo "Diagnostic Labor: ".$data2[$field_name].", ";
+                                                            $total_other_cost += $data2[$field_name];
+                                                        }
+                                                        echo " <b>Total: </b>".$total_other_cost;?>
+                                                     </td>
                                                     <td style="width: 150px;">
                                                         <?php if (isset($error6["price" . $receive_id2])) {
                                                             echo "<span class='color-red'>" . $error6["price" . $receive_id2] . "</span>";

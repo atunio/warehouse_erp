@@ -74,7 +74,13 @@ switch ($type) {
                 $product_id         = $row[0]['id'];
                 $product_desc       = $row[0]['product_desc'];
                 $product_uniqueid   = $row[0]['product_uniqueid'];
-                echo '<option value="' . $product_id . '" selected="selected">' . $product_desc . ' (' . $category_name . ') - ' . $product_uniqueid . '</option>';
+              
+                $text_return        = $data2['product_uniqueid'];
+                $text_return        .= isset($category_name) ? " (".$category_name . ") " : '';
+                $text_return        .= isset($product_desc) ? " ".$product_desc . "" : '';
+             
+                echo '<option value="' . $product_id . '" selected="selected">' . $text_return . '</option>';
+
             }
         } else {
             echo 'Select';

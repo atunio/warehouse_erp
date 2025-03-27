@@ -1,2 +1,8 @@
-po_no,po_date,vender,vender_invoice_no,po_desc123,estimated_receive_date,po_status,product_id,product_desc,product_category,detail_desc,order_qty,order_price,is_tested,is_wiped,is_imaged,product_condition,warranty_period_in_days,product_po_desc
-PO2,24/03/2025,test1,2342434234,test,29/03/2025,tested/Graded,2000,testet,3,testset,15,400,Yes,Yes,Yes,A,30,testttttt
+po_no,po_date,vender,vender_invoice_no,po_desc,po_status,po_stage,product_id,product_category,order_qty,order_price,is_wiped_po,is_imaged_po,is_imaged_po,product_condition
+PO2,24/03/2025,test1,2342434234,test,tested/Graded,Completed,ABC-343,Ipad,25,400,Yes,No,No,A
+PO2,24/03/2025,test2,2342434235,test,tested/Graded,Completed,ABC-344,Ipad,26,400,Yes,No,No,B
+PO2,24/03/2025,test3,2342434236,test,tested/Graded,Completed,ABC-345,Ipad,27,400,Yes,No,No,A
+PO3,27/03/2025,test4,2342434237,test,tested/Graded,Draft,ABC-346,Ipad,28,400,Yes,No,No,A
+PO3,27/03/2025,test5,2342434238,test,tested/Graded,Draft,ABC-347,Ipad,29,400,Yes,No,No,A
+PO3,27/03/2025,test6,2342434239,test,tested/Graded,Draft,ABC-348,Ipad,30,400,Yes,No,No,A
+PO3,27/03/2025,test7,2342434240,test,tested/Graded,Draft,ABC-349,Ipad,31,400,Yes,No,No,A

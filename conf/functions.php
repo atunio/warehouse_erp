@@ -2085,3 +2085,43 @@ function bin_item_count($db, $conn, $location_id)
 	}
 	return $total_capacity;
 }
+
+function excel_export_temp_data($db, $conn, $session_id, $module_id, $total_columns_in_data)
+{
+	$u			= 0;
+	$data 		= array();
+	$sql_dt1	= " SELECT * FROM export_temp_data WHERE session_id	= '" . $session_id . "' AND module_id = '" . $module_id . "' ";
+	$result_dt1	= $db->query($conn, $sql_dt1);
+	$count_dup	= $db->counter($result_dt1);
+	if ($count_dup > 0) {
+		$row_dt1	= $db->fetch($result_dt1);
+		foreach ($row_dt1 as $data2) {
+			for ($v = 1; $v <= $total_columns_in_data; $v++) {
+				$data[$u][$v - 1] = $data2['column' . $v];
+			}
+			$u++;
+		}
+	}
+	return $data;
+}
+function excel_export_temp_data_with_columns($db, $conn, $session_id, $module_id, $total_columns_in_data, $import_colums_uniq)
+{
+	$u			= 0;
+	$data 		= array();
+	$sql_dt1	= " SELECT * FROM export_temp_data WHERE session_id	= '" . $session_id . "' AND module_id = '" . $module_id . "'  ";
+	$result_dt1	= $db->query($conn, $sql_dt1);
+	$count_dup	= $db->counter($result_dt1);
+	if ($count_dup > 0) {
+		$row_dt1	= $db->fetch($result_dt1);
+		foreach ($row_dt1 as $data2) {
+			for ($v = 1; $v <= $total_columns_in_data; $v++) {
+				$heading_cell = $import_colums_uniq[$v - 1];
+				if ($heading_cell != "") {
+					$data[$u][$heading_cell] 	= $data2['column' . $v];
+				}
+			}
+			$u++;
+		}
+	}
+	return $data;
+}

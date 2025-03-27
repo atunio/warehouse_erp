@@ -481,7 +481,13 @@
                                                     if ($count1 > 0) {
                                                         $row1    = $db->fetch($result1);
                                                         foreach ($row1 as $data2) { ?>
-                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?> (<?php echo $data2['category_name']; ?>) - <?php echo $data2['product_uniqueid']; ?></option>
+                                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>>
+                                                                <?php 
+                                                                echo $data2['product_uniqueid']; 
+                                                                echo isset($data2['category_name']) ? " (".$data2['category_name'] . ") " : '';
+                                                                echo isset($data2['product_desc']) ? " ".$data2['product_desc'] . "" : '';
+                                                                ?>
+                                                            </option>
                                                     <?php }
                                                     } ?>
                                                     <option value="product_add_modal">+Add New Product</option>

@@ -145,39 +145,38 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			foreach ($all_data  as $data1) {
 				$update_master = $columns = $column_data = $update_column = "";
 				if (isset($data1['product_id']) && $data1['product_id'] != '' && $data1['product_id'] != NULL && $data1['product_id'] != 'blank') {
- 					$sql1		= " SELECT a.* 
+					$sql1		= " SELECT a.* 
 									FROM purchase_order_detail a
 									LEFT JOIN inventory_status b ON b.id = a.expected_status 
 									INNER JOIN products b1 ON b1.id = a.product_id
 									WHERE a.po_id = '" . $id . "' 
 									AND a.enabled = 1 ";
-					if(isset($data1['product_id'])){
-						$sql1 .= " AND b1.product_uniqueid = '" . $data1['product_id']. "' ";
-					} 
-					if(isset($data1['product_condition'])){
+					if (isset($data1['product_id'])) {
+						$sql1 .= " AND b1.product_uniqueid = '" . $data1['product_id'] . "' ";
+					}
+					if (isset($data1['product_condition'])) {
 						$sql1 .= " AND a.product_condition = '" . $data1['product_condition'] . "' ";
-					} 
-					if(isset($data1['product_status'])){
+					}
+					if (isset($data1['product_status'])) {
 						$sql1 .= " AND b.status_name = '" . $data1['product_status'] . "' ";
-					} 
-					if(isset($data1['order_price'])){
+					}
+					if (isset($data1['order_price'])) {
 						$sql1 .= " AND a.order_price = '" . $data1['order_price'] . "' ";
-					} 
+					}
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
 						$row1			= $db->fetch($result1);
 						$po_detail_id	= $row1[0]['id'];
 						$product_id2	= $row1[0]['product_id'];
-					}
-					else{
-						$sql1		= " SELECT a.* FROM products a WHERE a.product_uniqueid = '" . $data1['product_id'] . "' "; 
+					} else {
+						$sql1		= " SELECT a.* FROM products a WHERE a.product_uniqueid = '" . $data1['product_id'] . "' ";
 						$result1	= $db->query($conn, $sql1);
 						$count1		= $db->counter($result1);
 						if ($count1 > 0) {
 							$row1			= $db->fetch($result1);
 							$product_id2	= $row1[0]['id'];
-  						}
+						}
 					}
 					foreach ($data1 as $key => $data) {
 						if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
@@ -189,6 +188,21 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							${$insert_db_field_id} 	= $data;
 
 							if ($key == 'product_id') {
+
+								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+									$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
+									$result1	= $db->query($conn, $sql1);
+									$count1		= $db->counter($result1);
+									if ($count1 == 0) {
+										$sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_ip, add_timezone)
+												VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+										$db->query($conn, $sql6);
+									} else {
+										$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
+										$db->query($conn, $sql6);
+									}
+								}
+
 								$columns 		.= ", " . $insert_db_field_id;
 								$column_data 	.= ", '" . $product_id2 . "'";
 
@@ -221,7 +235,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							}
 						}
 					}
-					if (isset($po_detail_id) && $po_detail_id>0) {
+					if (isset($po_detail_id) && $po_detail_id > 0) {
 						$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																							update_by 				= '" . $_SESSION['username'] . "', 
 																							update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
@@ -243,7 +257,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if ($ok) {
 						$added++;
 					}
-					 
 				}
 			}
 		}

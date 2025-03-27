@@ -294,6 +294,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 													$update_detail_column 	.= ", " . $insert_db_field_id_detail_pd . " = '" . ${$insert_db_field_id_detail_pd} . "'";
 												} else {
+
+													$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
+													$result1	= $db->query($conn, $sql1);
+													$count1		= $db->counter($result1);
+													if ($count1 == 0) {
+														$sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_ip, add_timezone)
+																 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+														$db->query($conn, $sql6);
+													} else {
+														$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
+														$db->query($conn, $sql6);
+													}
+
 													$sql6 = "INSERT INTO " . $selected_db_name . "." . $table1 . "(subscriber_users_id, " . $key . ", add_date, add_by, add_ip, add_timezone)
 															VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
 													$ok = $db->query($conn, $sql6);

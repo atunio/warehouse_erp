@@ -20,7 +20,7 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles 	= array("product_id", "product_desc", "product_category", "product_model_no");
+$supported_column_titles 	= array("product_id", "product_category", "product_model_no", "product_desc");
 $duplication_columns 		= array("product_id", "product_model_no");
 $required_columns 			= array("product_id", "product_category");
 if (isset($is_Submit) && $is_Submit == 'Y') {
@@ -134,14 +134,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if ($dup_data == 'product_id') {
 						$db_column = "product_uniqueid";
 					}
-					if((isset($duplicate_colum_values1) && $duplicate_colum_values1 != "")){
+					if ((isset($duplicate_colum_values1) && $duplicate_colum_values1 != "")) {
 						$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 						$result1	= $db->query($conn, $sql1);
 						$count1		= $db->counter($result1);
 						if ($count1 > 0) {
 							$row_dp1 = $db->fetch($result1);
-							foreach($row_dp1 as $data_dp11){
-								 $product_table_ids_already[] = $data_dp11['id']; 
+							foreach ($row_dp1 as $data_dp11) {
+								$product_table_ids_already[] = $data_dp11['id'];
 							}
 							// $duplicate_data_array[$key][$db_column][] = $duplicate_colum_values1;
 							// if (!isset($error['msg'])) {
@@ -153,10 +153,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 				}
 			}
-			foreach ($all_data  as $key1 => $data1) { 
-				$product_model_no2 	= $product_table_id = $product_model_no_db = ""; 
-				
-				if(isset($data1['product_model_no'])){
+			foreach ($all_data  as $key1 => $data1) {
+				$product_model_no2 	= $product_table_id = $product_model_no_db = "";
+
+				if (isset($data1['product_model_no'])) {
 					$product_model_no2 	= $data1['product_model_no'];
 				}
 				// if (!isset($duplicate_data_array[$key1]) || (isset($duplicate_data_array[$key1]) && sizeof($duplicate_data_array[$key1]) == '0')) {
@@ -167,11 +167,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
 						$row_dp1 = $db->fetch($result1);
-						$product_table_id = $row_dp1[0]['id'];  
+						$product_table_id = $row_dp1[0]['id'];
 					}
 
- 					if(isset($product_model_no2) && $product_model_no2 !=""){
-						$sql1 				= " SELECT * FROM " . $master_table . " WHERE product_model_no = '".$product_model_no2."'";
+					if (isset($product_model_no2) && $product_model_no2 != "") {
+						$sql1 				= " SELECT * FROM " . $master_table . " WHERE product_model_no = '" . $product_model_no2 . "'";
 						$result1			= $db->query($conn, $sql1);
 						$modale_already		= $db->counter($result1);
 					}
@@ -184,7 +184,21 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					foreach ($data1 as $key => $data) {
 						if ($key != "") {
 							if ($key == 'product_id') {
-								$key = "product_uniqueid";
+								$key 		= "product_uniqueid";
+
+								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+									$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
+									$result1	= $db->query($conn, $sql1);
+									$count1		= $db->counter($result1);
+									if ($count1 == 0) {
+										$sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_ip, add_timezone)
+												VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+										$db->query($conn, $sql6);
+									} else {
+										$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
+										$db->query($conn, $sql6);
+									}
+								}
 							}
 							if ($key != 'is_insert') {
 								if ($key == 'product_category') {
@@ -196,7 +210,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$row1 = $db->fetch($result1);
 											$columns 		.= ", " . $key;
 											$column_data 	.= ", '" . $row1[0]['id'] . "'";
-											$update_column	.= ", " . $key." = '".$row1[0]['id']."'";
+											$update_column	.= ", " . $key . " = '" . $row1[0]['id'] . "'";
 										} else {
 											$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 													VALUES('" . $subscriber_users_id . "', '" . $data . "', 'Device', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
@@ -205,28 +219,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												$category_id = mysqli_insert_id($conn);
 												$columns 		.= ", " . $key;
 												$column_data 	.= ", '" . $category_id . "'";
-												$update_column	.= ", " . $key." = '".$category_id."'";
+												$update_column	.= ", " . $key . " = '" . $category_id . "'";
 											}
 										}
 									}
 								} else {
 									$columns 		.= ", " . $key;
 									$column_data 	.= ", '" . $data . "'";
- 									if ($key != 'product_uniqueid') {
-										if ($key == 'product_model_no') { 
-											if ($modale_already == '0') { 
-												$update_column	.= ", " . $key." = '".$data."'";
+									if ($key != 'product_uniqueid') {
+										if ($key == 'product_model_no') {
+											if ($modale_already == '0') {
+												$update_column	.= ", " . $key . " = '" . $data . "'";
 											}
-										}
-										else{
-											$update_column	.= ", " . $key." = '".$data."'";
+										} else {
+											$update_column	.= ", " . $key . " = '" . $data . "'";
 										}
 									}
 								}
 							}
 						}
 					}
-					if(isset($product_table_id) && $product_table_id > 0){
+					if (isset($product_table_id) && $product_table_id > 0) {
 						$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																							update_by 				= '" . $_SESSION['username'] . "', 
 																							update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
@@ -235,18 +248,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																							update_from_module_id 	= '" . $module_id . "'
 																							" . $update_column . " 
 																							, enabled = '1'
-								WHERE id 	= '".$product_table_id."'  ";
+								WHERE id 	= '" . $product_table_id . "'  ";
 						//echo "<br><br>".$sql6;
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$added++;
 						}
-					}
-					else{
+					} else {
 						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 								 VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-						$ok = $db->query($conn, $sql6); 
-						if ($ok) { 
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
 							$added++;
 						}
 						$id			= mysqli_insert_id($conn);
@@ -254,7 +266,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$sql6		= "UPDATE " . $master_table . " SET product_no = '" . $product_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 					}
-				  }
+				}
 			}
 		}
 		if ($added > 0) {

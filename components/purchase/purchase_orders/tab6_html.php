@@ -1361,6 +1361,8 @@
                                                             $is_import_diagnostic_data  = $data['is_import_diagnostic_data'];
                                                             $is_rma_processed           = $data['is_rma_processed'];
                                                             $edit_lock                  = $data['edit_lock'];
+                                                            $mdm                        = $data['mdm'];
+                                                            $failed                     = $data['failed'];
                                                             $col = 0; ?>
                                                             <tr>
                                                                 <td style="<?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$col]); ?>">
@@ -1432,7 +1434,7 @@
                                                                         </span>
                                                                     <?php
                                                                         if ($is_import_diagnostic_data == '0' && ($data['phone_check_api_data'] == NULL || $data['phone_check_api_data'] == "[]" || $data['phone_check_api_data'] == "" || $data['phone_check_api_data'] == '(NULL)' || $data['phone_check_api_data'] == '{"msg":"Failed to get device info results"}')) {
-                                                                            $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $etching = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
+                                                                            $mdm = $failed = $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $etching = $ram = $memory = $defectsCode = $overall_grade = $sku_code = "";
                                                                             $sql_pd01_4         = "	SELECT  a.*
                                                                                                     FROM phone_check_api_data a 
                                                                                                     WHERE a.enabled = 1 
@@ -1474,6 +1476,8 @@
                                                                                                                                         inventory_status		= '" . $inventory_status . "', 
                                                                                                                                         serial_no_barcode		= '" . $serial_no_barcode . "',
                                                                                                                                         is_diagnost		        = '" . $is_diagnost . "',
+                                                                                                                                        mdm		                = '" . $mdm . "',
+                                                                                                                                        failed		            = '" . $failed . "',
 
                                                                                                                                         update_timezone		    = '" . $timezone . "',
                                                                                                                                         update_date			    = '" . $add_date . "',
@@ -1499,7 +1503,13 @@
                                                                         echo "RAM: " . $ram . "<br>";
                                                                     }
                                                                     if ($processor != '') {
-                                                                        echo "Processor: " . $processor;
+                                                                        echo "Processor: " . $processor . "<br>";
+                                                                    }
+                                                                    if ($mdm != '') {
+                                                                        echo "MDM: " . $mdm . "<br>";
+                                                                    }
+                                                                    if ($failed != '') {
+                                                                        echo "Failed: " . $failed . "<br>";
                                                                     } ?>
                                                                 </td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
@@ -1699,25 +1709,25 @@
                                                     <td><?php echo $data2['product_desc']; ?></td>
                                                     <td><?php echo $data2['category_name']; ?></td>
                                                     <td>
-                                                        <?php 
+                                                        <?php
                                                         $total_other_cost = 0;
                                                         $field_name = "logistic_cost";
-                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
-                                                            echo "Logistic: ".$data2[$field_name].", ";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
+                                                            echo "Logistic: " . $data2[$field_name] . ", ";
                                                             $total_other_cost += $data2[$field_name];
                                                         }
                                                         $field_name = "receiving_labor";
-                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
-                                                            echo "Receiving Labor: ".$data2[$field_name].", ";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
+                                                            echo "Receiving Labor: " . $data2[$field_name] . ", ";
                                                             $total_other_cost += $data2[$field_name];
                                                         }
                                                         $field_name = "diagnostic_labor";
-                                                        if (isset($data2[$field_name]) && $data2[$field_name]>0) {
-                                                            echo "Diagnostic Labor: ".$data2[$field_name].", ";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
+                                                            echo "Diagnostic Labor: " . $data2[$field_name] . ", ";
                                                             $total_other_cost += $data2[$field_name];
                                                         }
-                                                        echo " <b>Total: </b>".$total_other_cost;?>
-                                                     </td>
+                                                        echo " <b>Total: </b>" . $total_other_cost; ?>
+                                                    </td>
                                                     <td style="width: 150px;">
                                                         <?php if (isset($error6["price" . $receive_id2])) {
                                                             echo "<span class='color-red'>" . $error6["price" . $receive_id2] . "</span>";

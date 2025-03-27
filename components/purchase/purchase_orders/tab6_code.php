@@ -228,10 +228,11 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$imei_already = $phone_check_sku_codes = "";
 			$k = $n = 0;
 			$all_devices_info = v2_devices_call_phonecheck($data);
-			// echo "<br><br><pre>"; print_r($all_devices_info);die;
-			if (isset($all_devices_info['imei']) && sizeof($all_devices_info['imei']) > 0) {
+			// echo "<br><br><pre>";
+			// print_r($all_devices_info);die;
+			if (isset($all_devices_info['serial']) && sizeof($all_devices_info['serial']) > 0) {
 				$m = 1;
-				foreach ($all_devices_info['imei'] as $data) {
+				foreach ($all_devices_info['serial'] as $data) {
 					$phone_check_api_data_id = 0;
 					// $data = "DMTPD5R1FK10";
 					if ($data != "" && $data != null) {
@@ -250,7 +251,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 						$count_pd01_4	= $db->counter($result_pd01_4);
 						if ($count_pd01_4 == 0) {
 							// echo "<br>".$sql_pd01_4;  
-							$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+							$mdm = $failed = $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 							$device_detail_array 	= getinfo_phonecheck_imie($data);
 							$jsonData2				= json_encode($device_detail_array);
 
@@ -267,7 +268,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 							$phone_check_api_data_prev 	= $row_pd01[0]['phone_check_api_data'];
 							$phone_check_api_data_id 	= $row_pd01[0]['id'];
 							if ($phone_check_api_data_prev == '' || $phone_check_api_data_prev == NULL) {
-								$model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+								$mdm = $failed = $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
 								$device_detail_array 	= getinfo_phonecheck_imie($data);
 								$jsonData2				= json_encode($device_detail_array);
 								if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
@@ -1067,7 +1068,7 @@ if (isset($_POST['is_Submit_tab6_2_2']) && $_POST['is_Submit_tab6_2_2'] == 'Y') 
 									$row_pd01 = $db->fetch($result_pd01);
 									foreach ($row_pd01 as $data_pd01) {
 										$receive_id_2 		= $data_pd01['id'];
-										$sub_location_id 	= $data_pd01['sub_location_id']; 
+										$sub_location_id 	= $data_pd01['sub_location_id'];
 										$serial_no_fake 	= "GEN" . $receive_id_2;
 
 										$sql6 = "	INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, serial_no, p_total_stock, 
@@ -1201,7 +1202,7 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 					$result_pd01	= $db->query($conn, $sql_pd01);
 					$count_pd01		= $db->counter($result_pd01);
 					if ($count_pd01 == 0) {
-						
+
 						$item_diagnostic_labor_cost = round(signle_device_diagnostic_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_diagn), 2);
 
 						$sql_pd01 		= "	SELECT a.* 
@@ -1270,6 +1271,8 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 																				storage								= '" . $memory . "',
 																				defects_or_notes					= '" . $defectsCode . "',
 																				overall_grade		    			= '" . $overall_grade . "', 
+																				mdm		                			= '" . $mdm . "',
+																				failed		            			= '" . $failed . "',
 																				inventory_status					= '" . $inventory_status . "', 
 																				sku_code							= '" . $sku_code . "',
  

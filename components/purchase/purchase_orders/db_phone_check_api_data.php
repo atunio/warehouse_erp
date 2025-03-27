@@ -16,6 +16,8 @@ $ram                            = $row_pd01_4[0]['ram'];
 $memory                         = $row_pd01_4[0]['memory'];
 $defectsCode                    = $row_pd01_4[0]['defectsCode'];
 $overall_grade                  = $row_pd01_4[0]['overall_grade'];
+$mdm                            = $row_pd01_4[0]['mdm'];
+$failed                         = $row_pd01_4[0]['failed'];
 $is_diagnost                    = 1;
 
 $inventory_status = '6';

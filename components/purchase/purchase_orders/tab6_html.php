@@ -541,7 +541,7 @@
                                                     foreach ($row_r2 as $data_r2) { ?>
                                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                             <?php
-                                                            echo "Product: " . $data_r2['product_desc'] . " (" . $data_r2['product_uniqueid'] . ") - ";
+                                                            echo "Product: " . $data_r2['product_uniqueid'] . " ";
                                                             if ($data_r2['category_name'] != "") {
                                                                 echo " (" . $data_r2['category_name'] . ") ";
                                                             }

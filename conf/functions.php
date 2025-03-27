@@ -1291,6 +1291,10 @@ function v2_devices_call_phonecheck($data)
 		// Decode the JSON response
 		$data = json_decode($response, true);
 
+		// echo "<br><br><br><pre>";
+		// print_r($data);
+		// echo "<br><br><br>";
+
 		$all_imeis 		= array();
 		$all_serials 	= array();
 		$all_udids		= array();
@@ -1301,7 +1305,9 @@ function v2_devices_call_phonecheck($data)
 			if (is_array($data)) {
 				foreach ($data as $key1 => $data1) {
 					if (is_array($data1)) {
+
 						foreach ($data1 as $key2 => $data2) {
+							// echo "<br>Key:" . $key2 . ", data: " . $data2;
 							if ($key2 == 'IMEI') {
 								$all_imeis[] = $data2;
 								$c++;

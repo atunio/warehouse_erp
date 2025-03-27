@@ -229,7 +229,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$k = $n = 0;
 			$all_devices_info = v2_devices_call_phonecheck($data);
 			// echo "<br><br><pre>";
-			// print_r($all_devices_info);die;
+			// print_r($all_devices_info); // die;
 			if (isset($all_devices_info['serial']) && sizeof($all_devices_info['serial']) > 0) {
 				$m = 1;
 				foreach ($all_devices_info['serial'] as $data) {

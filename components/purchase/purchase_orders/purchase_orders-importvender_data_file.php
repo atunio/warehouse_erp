@@ -10,8 +10,8 @@ $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
-if (!isset($_SESSION['session_id_temp_2_'.$module_id])) {
-	$_SESSION['session_id_temp_2_'.$module_id] = session_id()."2".$module_id;
+if (!isset($_SESSION['session_id_temp_2_' . $module_id])) {
+	$_SESSION['session_id_temp_2_' . $module_id] = session_id() . "2" . $module_id;
 }
 $title_heading 				= "Import Vendor Data File ";
 $button_val 				= "Preview";
@@ -100,8 +100,8 @@ if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 			}
 
 			$sql_del = "DELETE FROM export_temp_data 
-						WHERE (session_id = '" . $_SESSION['session_id_temp_2_'.$module_id] . "' AND module_id = '" . $module_id . "') 
-						OR DATE_FORMAT(add_date, '%Y%m%d') != '".date('Ymd')."' ";
+						WHERE (session_id = '" . $_SESSION['session_id_temp_2_' . $module_id] . "' AND module_id = '" . $module_id . "') 
+						OR DATE_FORMAT(add_date, '%Y%m%d') != '" . date('Ymd') . "' ";
 			$db->query($conn, $sql_del);
 
 			if (empty($error)) {
@@ -111,22 +111,22 @@ if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 					$field_values 	= "";
 					$colno 			= 1;
 					foreach ($row11 as $cell_val) {
-						$field_names .= "column".$colno.", ";
-						$field_values .= "'".$cell_val."', ";
+						$field_names .= "column" . $colno . ", ";
+						$field_values .= "'" . $cell_val . "', ";
 						$colno++;
 					}
-					$total_columns_in_data = $colno-1;
-					
-					$field_names .= "session_id, ";
- 					$field_values .= "'".$_SESSION['session_id_temp_2_'.$module_id]."', ";
-					
-					$field_names .= "module_id, ";
-					$field_values .= "'".$module_id."', ";
-					
-					$field_names .= "add_date";
-					$field_values .= "'".$add_date."'";
+					$total_columns_in_data = $colno - 1;
 
-					$sql = "INSERT INTO export_temp_data (".$field_names.") VALUES(".$field_values.")"; //echo "<br>".$sql;
+					$field_names .= "session_id, ";
+					$field_values .= "'" . $_SESSION['session_id_temp_2_' . $module_id] . "', ";
+
+					$field_names .= "module_id, ";
+					$field_values .= "'" . $module_id . "', ";
+
+					$field_names .= "add_date";
+					$field_values .= "'" . $add_date . "'";
+
+					$sql = "INSERT INTO export_temp_data (" . $field_names . ") VALUES(" . $field_values . ")"; //echo "<br>".$sql;
 					$db->query($conn, $sql);
 				}
 			}
@@ -165,10 +165,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		}
 	}
 
-	$modified_array = excel_export_temp_data_with_columns($db, $conn, $_SESSION['session_id_temp_2_'.$module_id], $module_id,  $total_columns_in_data, $import_colums);
+	$modified_array = excel_export_temp_data_with_columns($db, $conn, $_SESSION['session_id_temp_2_' . $module_id], $module_id,  $total_columns_in_data, $import_colums);
 	// Initialize the new modified array
 	$all_data = $modified_array;
-	
+
 	if (isset($all_data)) {
 		$sql_ee1 = " SELECT a.* FROM " . $master_table . " a  WHERE a.duplication_check_token = '" . $duplication_check_token . "' ";
 		// echo $sql_ee1;
@@ -376,9 +376,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 							} else {
 								if (!isset($error['msg'])) {
-									$error['msg'] = "This <span class='color-blue'>" . $data1['product_id'] . "</span> is already exist.";
+									$error['msg'] = "This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system.";
 								} else {
-									$error['msg'] .= "<br>This <span class='color-blue'>" . $data1['product_id'] . "</span> is already exist.";
+									$error['msg'] .= "<br>This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system.";
 								}
 							}
 						}
@@ -400,14 +400,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			}
 		}
 	}
-} 
+}
 //*/
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
-		
+
 		<div class="col s12 m12 l12">
 			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
@@ -433,9 +433,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					</div>
 				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
-		<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
+			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-content custom_padding_card_content_table_top">
 					<?php
 					if (isset($id) && isset($disp_po_no)) {  ?>
@@ -469,8 +469,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					<?php }
 					if (isset($error['msg'])) { ?>
 						<div class="card-alert card red lighten-5">
-							<div class="card-content red-text"> 
-								<p><?php echo $error['msg']; ?></p> 
+							<div class="card-content red-text">
+								<p><?php echo $error['msg']; ?></p>
 							</div>
 							<button type="button" class="close red-text" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">×</span>
@@ -545,7 +545,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 					} else if (isset($headings) && sizeof($headings) > "0") {
 						if ((isset($upload_excel_file) && $upload_excel_file != "" && !isset($error) || isset($error)) && sizeof($error) == 0) {
-							$data = excel_export_temp_data($db, $conn, $_SESSION['session_id_temp_2_'.$module_id], $module_id, $total_columns_in_data); ?>
+							$data = excel_export_temp_data($db, $conn, $_SESSION['session_id_temp_2_' . $module_id], $module_id, $total_columns_in_data); ?>
 							<div class="row">
 								<div class="col m6 s12">
 									Summary
@@ -557,7 +557,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												<td style="padding: 3px 15px !important">Column Value</td>
 												<td style="padding: 3px 15px !important">Status</td>
 											</tr>
-											<?php  
+											<?php
 											foreach ($data as $row_c1) {
 												$col_c1_no =  0;
 												foreach ($row_c1 as $cell_c1) {
@@ -641,10 +641,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<h4 class="card-title">Data to be imported</h4><br>
 							<form method="post" autocomplete="off">
 								<input type="hidden" name="is_Submit2" value="Y" />
-								<input type="hidden" name="upload_excel_file" value="<?php echo $upload_excel_file;?>" />
-								<input type="hidden" name="total_columns_in_data" value="<?php echo $total_columns_in_data;?>" />
+								<input type="hidden" name="upload_excel_file" value="<?php echo $upload_excel_file; ?>" />
+								<input type="hidden" name="total_columns_in_data" value="<?php echo $total_columns_in_data; ?>" />
 								<input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
- 								<div class="row">
+								<div class="row">
 									<div class="col m12 s12">
 										<table class="bordered striped">
 											<thead>
@@ -722,19 +722,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																} else {
 																	$row_error_status = "Duplicate " . $db_column_excel;
 																} ?>
- 															<?php
+															<?php
 															} else {
 																$row_color = "color-green"; ?>
- 															<?php
+															<?php
 															}
 														} else {
 															$row_color = "color-green";  ?>
- 													<?php
+													<?php
 														}
 														echo "<td class='" . $row_color . "'>" . htmlspecialchars($cell) . "</td>";
 														$col_no++;
 													} ?>
- 												<?php
+												<?php
 													if ($is_error == 1) {
 														$row_color = "color-red";
 													} else {
@@ -758,7 +758,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										</button>
 									</div>
 									<div class="col m2 s12">
-										<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page. "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
+										<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
 											<i class="material-icons left">send</i>
 										</a>
 									</div>
@@ -770,7 +770,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="row">
 								<div class="col m2 s12">&nbsp;</div>
 								<div class="col m2 s12">
-									<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page. "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
+									<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
 										<i class="material-icons left">send</i>
 									</a>
 								</div>
@@ -781,7 +781,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<div class="row">
 							<div class="col m2 s12">&nbsp;</div>
 							<div class="col m2 s12">
-								<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page. "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
+								<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&id=" . $id) ?>" class="waves-effect waves-light btn modal-trigger mb-2 mr-1" type="submit" name="action">Browse New
 									<i class="material-icons left">send</i>
 								</a>
 							</div>

@@ -106,7 +106,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
 		${$field_name . "_valid"} = "invalid";
-	} 
+	}
 	$field_name = "product_uniqueid";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 	= "Required";
@@ -412,11 +412,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$field_label 	= "Product Descripton";
 								?>
 								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text"  name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																																echo ${$field_name};
-																															} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																						echo ${$field_name . "_valid"};
-																																					} ?>">
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+																																			echo ${$field_name . "_valid"};
+																																		} ?>">
 								<label for="<?= $field_name; ?>">
 									<?= $field_label; ?>
 									<span class="color-red">* <?php

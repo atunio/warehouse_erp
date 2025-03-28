@@ -1,5 +1,37 @@
 <script language="JavaScript">
     $(document).ready(function() {
+        function getHighlightedOption(identify) {
+            let highlighted = $('.select2-results__option--highlighted');
+            if (highlighted.length) {
+                var complete_id = highlighted.attr('id');
+                // console.log("complete_id:", complete_id);
+                let regex = /^select2-[\w-]+-result-(.+)$/;
+                let match = complete_id.match(regex);
+                let firstBreakIndex = match[1].indexOf('-'); // Find first occurrence of '-'
+                var id = firstBreakIndex !== -1 ? match[1].substring(firstBreakIndex + 1) : match[1];
+                $(document).on('keydown', function(e) {
+                    if (e.key === 'Tab') {
+
+                        $(identify).val(id).trigger('change');
+                    }
+                });
+            }
+        }
+        // Detect changes using arrow keys, Enter, or Tab
+        $(document).on('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Enter' || e.key === 'Tab') {
+                setTimeout(getHighlightedOption, 50); // Delay to allow UI update
+            }
+        });
+        // Detect when user hovers over an option
+        $(document).on('mouseenter', '.select2-results__option', function() {
+            let openSelectId = $('.select2-container--open').prev('select').attr('id');
+            console.log("openSelectId:", openSelectId);
+            getHighlightedOption('#' + openSelectId);
+        });
+
+
+
         $("input").keyup(function() {
             var max = parseFloat($(this).attr('max'));
             var min = parseFloat($(this).attr('min'));

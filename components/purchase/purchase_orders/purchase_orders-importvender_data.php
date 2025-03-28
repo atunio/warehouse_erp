@@ -337,9 +337,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 							} else {
 								if (!isset($error['msg'])) {
-									$error['msg'] = "This <span class='color-blue'>" . $data1['product_id'] . "</span> is already exist.";
+									$error['msg'] = "This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system exist.";
 								} else {
-									$error['msg'] .= "<br>This <span class='color-blue'>" . $data1['product_id'] . "</span> is already exist.";
+									$error['msg'] .= "<br>This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system exist.";
 								}
 							}
 						}

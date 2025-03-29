@@ -154,11 +154,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				}
 			}
 			foreach ($all_data  as $key1 => $data1) {
-				$product_model_no2 	= $product_table_id = $product_model_no_db = "";
+				$product_table_id = $product_model_no_db = "";
 
-				if (isset($data1['product_model_no'])) {
-					$product_model_no2 	= $data1['product_model_no'];
-				}
 				// if (!isset($duplicate_data_array[$key1]) || (isset($duplicate_data_array[$key1]) && sizeof($duplicate_data_array[$key1]) == '0')) {
 				if (isset($data1['product_id']) && $data1['product_id'] != '' && $data1['product_id'] != NULL && $data1['product_id'] != 'blank') {
 					$sql1 = "SELECT * FROM " . $master_table . " WHERE product_uniqueid = '" . $data1['product_id'] . "' ";
@@ -169,23 +166,18 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$row_dp1 = $db->fetch($result1);
 						$product_table_id = $row_dp1[0]['id'];
 					}
-
-					if (isset($product_model_no2) && $product_model_no2 != "") {
-						$sql1 				= " SELECT * FROM " . $master_table . " WHERE product_model_no = '" . $product_model_no2 . "'";
-						$result1			= $db->query($conn, $sql1);
-						$modale_already		= $db->counter($result1);
-					}
-
 					// echo "<br><br>".$product_table_id;
 					// echo "<br><br><br><br><pre>";
 					// print_r($all_data);
 					// echo $data1['product_id'];
 					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
-						if ($key != "") {
+						if ($key != "" && $key != 'is_insert') {
+							if ($data == '-' || $data == 'NA' || $data == 'N/A' || $data == 'blank') {
+								$data = "";
+							}
 							if ($key == 'product_id') {
 								$key 		= "product_uniqueid";
-
 								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 									$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
 									$result1	= $db->query($conn, $sql1);
@@ -198,43 +190,41 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
 										$db->query($conn, $sql6);
 									}
-								}
-							}
-							if ($key != 'is_insert') {
-								if ($key == 'product_category') {
-									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-										$sql1 			= "SELECT * FROM product_categories WHERE category_name = '" . $data . "' ";
-										$result1 		= $db->query($conn, $sql1);
-										$count1 		= $db->counter($result1);
-										if ($count1 > 0) {
-											$row1 = $db->fetch($result1);
-											$columns 		.= ", " . $key;
-											$column_data 	.= ", '" . $row1[0]['id'] . "'";
-											$update_column	.= ", " . $key . " = '" . $row1[0]['id'] . "'";
-										} else {
-											$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-													VALUES('" . $subscriber_users_id . "', '" . $data . "', 'Device', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-											$ok = $db->query($conn, $sql6);
-											if ($ok) {
-												$category_id = mysqli_insert_id($conn);
-												$columns 		.= ", " . $key;
-												$column_data 	.= ", '" . $category_id . "'";
-												$update_column	.= ", " . $key . " = '" . $category_id . "'";
-											}
-										}
-									}
-								} else {
 									$columns 		.= ", " . $key;
 									$column_data 	.= ", '" . $data . "'";
-									if ($key != 'product_uniqueid') {
-										if ($key == 'product_model_no') {
-											if ($modale_already == '0') {
-												$update_column	.= ", " . $key . " = '" . $data . "'";
-											}
-										} else {
-											$update_column	.= ", " . $key . " = '" . $data . "'";
+									$update_column	.= ", " . $key . " = '" . $data . "'";
+								}
+							} else if ($key == 'product_category') {
+								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+									$sql1 			= "SELECT * FROM product_categories WHERE category_name = '" . $data . "' ";
+									$result1 		= $db->query($conn, $sql1);
+									$count1 		= $db->counter($result1);
+									if ($count1 > 0) {
+										$row1 = $db->fetch($result1);
+										$columns 		.= ", " . $key;
+										$column_data 	.= ", '" . $row1[0]['id'] . "'";
+										$update_column	.= ", " . $key . " = '" . $row1[0]['id'] . "'";
+									} else {
+										$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+												VALUES('" . $subscriber_users_id . "', '" . $data . "', 'Device', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+										$ok = $db->query($conn, $sql6);
+										if ($ok) {
+											$category_id = mysqli_insert_id($conn);
+											$columns 		.= ", " . $key;
+											$column_data 	.= ", '" . $category_id . "'";
+											$update_column	.= ", " . $key . " = '" . $category_id . "'";
 										}
 									}
+								}
+							} else {
+								if ($key == 'product_model_no') {
+									$data = implode(',', (array_map('trim', explode("&", $data))));
+								}
+								$columns 		.= ", " . $key;
+								$column_data 	.= ", '" . $data . "'";
+
+								if ($key != 'product_uniqueid') {
+									$update_column	.= ", " . $key . " = '" . $data . "'";
 								}
 							}
 						}
@@ -376,7 +366,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<div class="row">
 							<div class="col m12 s12">
 								<h4 class="card-title">Supported column titles</h4>
-								<table class="bordered striped" style="padding: 0px; width: 50%;">
+								<table class="bordered striped" style="padding: 0px; width: 95%;">
 									<tr>
 										<td style='padding: 3px 15px  !important; text-align: center; '>Column Name</td>
 										<td style='padding: 3px 15px !important; '>Column Heading</td>
@@ -394,6 +384,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if ($s_heading == 'product_id') {
 											$cell_format = "Text (Unique)";
 										}
+										if ($s_heading == 'product_model_no') {
+											$cell_format = "Text (Multiple ModelNos separated by the '&' symbol.) Example: MW772LL/A & MD785LL/A";
+										}
+
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>

@@ -313,9 +313,9 @@
                             </form>
                             <?php
                             if (isset($assignment_id) && $assignment_id > 0) {
-                                $sql_preview = "SELECT DISTINCT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name
+                                $sql_preview = "SELECT DISTINCT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name, c.product_model_no
                                                 FROM phone_check_api_data a
-                                                LEFT JOIN products c ON c.product_model_no = a.model_no 
+                                                LEFT JOIN products c ON FIND_IN_SET( a.model_no, c.product_model_no) 
                                                 LEFT JOIN product_categories c2 ON c2.id = c.product_category
                                                 LEFT JOIN purchase_order_detail d ON d.product_id = c.id AND d.po_id = a.po_id AND d.enabled = 1
                                                 WHERE a.po_id       = '" . $id . "' 
@@ -365,6 +365,7 @@
                                                                 $bulkserialNo[]         = $data['imei_no'];
                                                                 $phone_check_api_data   = $data['phone_check_api_data'];
                                                                 $product_category_name  = $data['category_name'];
+                                                                $product_model_no1      = $data['product_model_no'];
                                                                 if (isset($phone_check_api_data) && $phone_check_api_data != null && $phone_check_api_data != '') {
                                                                     $checked = "";
                                                                     if ($po_detail_id > 0) {
@@ -388,7 +389,7 @@
                                                                             <?php
                                                                             if ($po_detail_id > 0) { ?>
                                                                                 <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>">
-                                                                                    <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $phone_check_model_no; ?> (<?php echo $product_category_name; ?>)</option>
+                                                                                    <option value="<?php echo $phone_check_product_id; ?>">ProductID: <?php echo $phone_check_product_id; ?>, Model#: <?php echo $product_model_no1; ?> (<?php echo $product_category_name; ?>)</option>
                                                                                 </select>
                                                                             <?php } else { ?>
                                                                                 <select name="product_ids[<?= $data['imei_no']; ?>]" id="<?= $data['imei_no']; ?>" class="fetched_productids1 select2 browser-default select2-hidden-accessible ">
@@ -402,10 +403,13 @@
                                                                                     $count_pd03     = $db->counter($result_pd03);
                                                                                     if ($count_pd03 > 0) {
                                                                                         $row_pd03 = $db->fetch($result_pd03);
-                                                                                        foreach ($row_pd03 as $data_pd03) { ?>
-                                                                                            <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if ($phone_check_model_no == $data_pd03['product_model_no']) {
+                                                                                        foreach ($row_pd03 as $data_pd03) {
+                                                                                            $product_model_no_fetch_array = explode(", ", $data_pd03['product_model_no']); ?>
+                                                                                            <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if (in_array($phone_check_model_no, $product_model_no_fetch_array)) {
                                                                                                                                                                 echo " selected ";
-                                                                                                                                                            } ?>>ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?>, (<?php echo $data_pd03['category_name']; ?> )</option>
+                                                                                                                                                            } ?>>
+                                                                                                ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?>, (<?php echo $data_pd03['category_name']; ?> )
+                                                                                            </option>
                                                                                     <?php }
                                                                                     } ?>
                                                                                 </select>

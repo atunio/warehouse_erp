@@ -56,11 +56,11 @@
             <h5>Update Single Record</h5>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&cmd3_1=edit&detail_id=" . $detail_id . "&active_tab=tab3") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab3_1" value="Y" />
-                  <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <div class="row">
-                    
+
                     <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "update_logistics_id";
@@ -215,13 +215,13 @@
         <?php
     }
     $td_padding = "padding:5px 15px !important;";
-    if (isset($id) && $id > 0) { 
+    if (isset($id) && $id > 0) {
         $sql            = " SELECT a.*, b.sub_location_name, b.sub_location_type, c.tracking_no, c.no_of_boxes
                             FROM purchase_order_detail_logistics_receiving a
                             LEFT JOIN warehouse_sub_locations b ON b.id = a.sub_location_id
                             LEFT JOIN purchase_order_detail_logistics c ON c.id = a.logistics_id
                             WHERE a.po_id = '" . $id . "'
-                            ORDER BY DATE_FORMAT(a.arrived_date, '%Y%m%d'), a.id ";  
+                            ORDER BY DATE_FORMAT(a.arrived_date, '%Y%m%d'), a.id ";
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
         if ($count_log > 0) { ?>
@@ -276,7 +276,7 @@
                                                     echo " ( " . $sub_location_type . " )";
                                                 } ?>
                                             </td>
-                                             <td style="text-align: center; <?= $td_padding; ?>"><?php echo $data['no_of_box_arried']; ?></td> 
+                                            <td style="text-align: center; <?= $td_padding; ?>"><?php echo $data['no_of_box_arried']; ?></td>
                                             <td style="<?= $td_padding; ?>">
                                                 <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd3_1=edit&active_tab=tab3&id=" . $id . "&detail_id=" . $detail_id2) ?>">
                                                     <i class="material-icons dp48">edit</i>
@@ -315,18 +315,18 @@
                         </table>
                     </div>
                 </div>
-            </div> 
+            </div>
         <?php }
     }
     if (isset($id) && $id > 0 && isset($cmd) && !isset($cmd3_1)) { ?>
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab3") ?>" method="post" enctype="multipart/form-data">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab3" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <div class="row">
-                    
+
                     <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "logistics_id";
@@ -370,7 +370,7 @@
                         <?php
                         $field_name     = "sub_location_id";
                         $field_label    = "Location";
-                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  AND a.purpose = 'Arriving' ORDER BY sub_location_name ";
+                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  AND a.purpose = 'Arrival' ORDER BY sub_location_name ";
                         $result1        = $db->query($conn, $sql1);
                         $count1         = $db->counter($result1);
                         ?>

@@ -21,10 +21,11 @@ if ($cmd == 'add') {
 }
 if ($cmd == 'edit' && isset($id)) {
 
-	$sql_ee				= "SELECT a.* FROM sub_location_purposes a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee			= $db->query($conn, $sql_ee);
-	$row_ee				= $db->fetch($result_ee);
+	$sql_ee							= "SELECT a.* FROM sub_location_purposes a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee						= $db->query($conn, $sql_ee);
+	$row_ee							= $db->fetch($result_ee);
 	$sub_location_purpose_name		= $row_ee[0]['sub_location_purpose_name'];
+	$prev_sub_location_purpose_name = $sub_location_purpose_name;
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -47,8 +48,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".sub_location_purposes(subscriber_users_id, sub_location_purpose_name, add_date, add_by, add_ip)
-							VALUES('" . $subscriber_users_id . "', '" . $sub_location_purpose_name . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".sub_location_purposes(subscriber_users_id, sub_location_purpose_name, add_date, add_by, add_ip, add_timezone, added_from_module_id)
+							 VALUES('" . $subscriber_users_id . "', '" . $sub_location_purpose_name . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
@@ -58,10 +59,14 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$sql_c_up = "UPDATE sub_location_purposes SET enabled		= '1', 
-															 update_date	= '" . $add_date . "',
-															 update_by		= '" . $_SESSION['username'] . "',
-															 update_ip		= '" . $add_ip . "'
+					$sql_c_up = "UPDATE sub_location_purposes SET 	enabled					= '1',  
+
+																	update_timezone			= '" . $timezone . "',
+																	update_date				= '" . $add_date . "',
+																	update_by				= '" . $_SESSION['username'] . "',
+																	update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																	update_ip				= '" . $add_ip . "',
+																	update_from_module_id	= '" . $module_id . "'
 								WHERE sub_location_purpose_name = '" . $sub_location_purpose_name . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -81,10 +86,27 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE sub_location_purposes SET sub_location_purpose_name	= '" . $sub_location_purpose_name . "', 
-																update_date	= '" . $add_date . "',
-																update_by		= '" . $_SESSION['username'] . "',
-																update_ip		= '" . $add_ip . "'
+
+					if ($sub_location_purpose_name != $prev_sub_location_purpose_name) {
+						$sql_c_up = "UPDATE warehouse_sub_locations SET purpose 				= '" . $sub_location_purpose_name . "', 
+
+																		update_timezone			= '" . $timezone . "',
+																		update_date				= '" . $add_date . "',
+																		update_by				= '" . $_SESSION['username'] . "',
+																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																		update_ip				= '" . $add_ip . "',
+																		update_from_module_id	= '" . $module_id . "' 
+									WHERE purpose = '" . $prev_sub_location_purpose_name . "' ";
+						$db->query($conn, $sql_c_up);
+					}
+					$sql_c_up = "UPDATE sub_location_purposes SET 	sub_location_purpose_name	= '" . $sub_location_purpose_name . "',
+
+																	update_timezone				= '" . $timezone . "',
+																	update_date					= '" . $add_date . "',
+																	update_by					= '" . $_SESSION['username'] . "',
+																	update_by_user_id			= '" . $_SESSION['user_id'] . "',
+																	update_ip					= '" . $add_ip . "',
+																	update_from_module_id		= '" . $module_id . "' 
 								WHERE id = '" . $id . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -93,17 +115,24 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
-					$sql_c_up = "UPDATE sub_location_purposes SET enabled		= '1', 
-															 update_date	= '" . $add_date . "',
-															 update_by		= '" . $_SESSION['username'] . "',
-															 update_ip		= '" . $add_ip . "'
+					$sql_c_up = "UPDATE sub_location_purposes SET 	enabled		= '1',
+
+																	update_timezone			= '" . $timezone . "',
+																	update_date				= '" . $add_date . "',
+																	update_by				= '" . $_SESSION['username'] . "',
+																	update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																	update_ip				= '" . $add_ip . "',
+																	update_from_module_id	= '" . $module_id . "' 
 								WHERE sub_location_purpose_name = '" . $sub_location_purpose_name . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
 						$sql_c_up = "UPDATE sub_location_purposes SET 	enabled 		= '0', 
-																		update_date		= '" . $add_date . "',
-																		update_by		= '" . $_SESSION['username'] . "',
-																		update_ip		= '" . $add_ip . "'
+																		update_timezone			= '" . $timezone . "',
+																		update_date				= '" . $add_date . "',
+																		update_by				= '" . $_SESSION['username'] . "',
+																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																		update_ip				= '" . $add_ip . "',
+																		update_from_module_id	= '" . $module_id . "' 
 									WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql_c_up);
 						if (isset($error['msg'])) unset($error['msg']);

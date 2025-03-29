@@ -20,7 +20,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd2 == 'add') {
 	$product_condition			= "A Grade";
 	$warranty_period_in_days	= "15";
 	$vender_invoice_no			= date('YmdHis');
-	$product_model_no			= "AKB" . date('YmdHis');
+	$product_model_no			= array("DMQD7TMFMF3M1", "DMQD7TMFMF3M2");
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -84,8 +84,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$inventory_status		= $row_ee[0]['inventory_status'];
 	$total_stock			= $row_ee[0]['total_stock'];
 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
-	$product_model_no		= $row_ee[0]['product_model_no'];
-	// echo "<br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ";
+	$product_model_no 		= explode(",", $row_ee[0]['product_model_no']);
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
 	$sql_ee						= "SELECT a.* FROM product_packages a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
@@ -121,6 +120,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		if (isset($estimated_receive_date) && $estimated_receive_date != "") {
 			$estimated_receive_date1 = convert_date_mysql_slash($estimated_receive_date);
 		}
+		$all_product_model_nos = "";
+		if (isset($product_model_no) && is_array($product_model_no)) {
+			$filtered_product_model_no = array_filter($product_model_no, function ($value) {
+				return !empty($value); // Remove empty values
+			});
+			if (!empty($filtered_product_model_no)) {
+				$all_product_model_nos = implode(",", $filtered_product_model_no);
+			}
+		}
+
 		if ($cmd == 'add') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
@@ -128,15 +137,11 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$sql_dup	= " SELECT a.* 
 								FROM products a 
 								WHERE a.product_uniqueid	= '" . $product_uniqueid . "' ";
-				if ($product_model_no != "") {
-					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
-				}
-
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, product_model_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $product_model_no . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $all_product_model_nos . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -147,7 +152,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
 						echo redirect_to_page("?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=add&cmd=edit&cmd2=add&id=' . $id . "&msg_success=" . $msg['msg_success']));
-						$product_desc = $product_category = $inventory_status = $total_stock =  $product_uniqueid = $product_model_no = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -161,18 +165,14 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* FROM products a 
 								WHERE  (a.product_uniqueid 	= '" . $product_uniqueid . "' ";
-				if ($product_model_no != "") {
-					$sql_dup .= " OR product_model_no = '" . $product_model_no . "' ";
-				}
 				$sql_dup .= ") AND a.id != '" . $id . "' ";
-
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE products SET 	product_desc			= '" . $product_desc . "', 
 														product_category		= '" . $product_category . "',
 														product_uniqueid		= '" . $product_uniqueid . "', 
-														product_model_no		= '" . $product_model_no . "', 
+														product_model_no		= '" . $all_product_model_nos . "', 
 														
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
@@ -426,26 +426,54 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									</span>
 								</label>
 							</div>
-							<div class="input-field col m4 s12">
-								<?php
-								$field_name 	= "product_model_no";
-								$field_label 	= "Model#";
-								?>
-								<i class="material-icons prefix">description</i>
-								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-																																			echo ${$field_name . "_valid"};
-																																		} ?>">
-								<label for="<?= $field_name; ?>">
-									<?= $field_label; ?>
-									<span class="color-red"><?php
-															if (isset($error[$field_name])) {
-																echo $error[$field_name];
-															} ?>
-									</span>
-								</label>
-							</div>
+						</div>
+						<div class="row">
+							<?php
+							$max = 1;
+							if (isset($product_model_no)) {
+								// Filter out empty values from the array
+								$filtered = array_filter($product_model_no, function ($value) {
+									return !empty($value); // Keep only non-empty values
+								});
+								// Check if there are any non-empty values
+								if (!empty($filtered)) {
+									$max = sizeof($filtered) - 1;
+								}
+							}
+							for ($i = 0; $i < 100; $i++) {
+								$style = $style2 = "";
+								if ($i > $max) {
+									$style = "display: none;";
+								}
+								if ($i > $max || $i < $max) {
+									$style2 = "display: none;";
+								}
+								$i2 = $i + 1; ?>
+								<div class="input-field col m2 s12 product_model_no_input_<?= $i2; ?>" style="<?= $style; ?>">
+									<?php
+									$field_name     = "product_model_no";
+									$field_id       = $field_name . "_" . $i2;
+									$field_label    = "Model# " . $i2;
+									?>
+									<i class="material-icons prefix">description</i>
+									<input id="<?= $field_id; ?>" type="text" name="<?= $field_name; ?>[]" value="<?php if (isset($product_model_no[$i])) {
+																														echo trim($product_model_no[$i]);
+																													} ?>" class="validate ">
+									<label for="<?= $field_id; ?>">
+										<?= $field_label; ?>
+										<span class="color-red">* <?php
+																	if (isset($error5["field_name_" . $i2])) {
+																		echo $error5["field_name_" . $i2];
+																	} ?>
+										</span>
+									</label>
+								</div>
+								<div style="<?= $style; ?>" class=" input-field col m1 s12 button_div_product_model_no" id="button_div_product_model_no_<?= $i2; ?>">
+									<a href="javascript:void(0)" style="<?= $style2; ?> font-size: 30px;" class="add_<?= $field_name; ?> add_<?= $field_name; ?>_<?= $i2; ?>" id="add_<?= $field_name; ?>^<?= $i2; ?>">+</a>
+									&nbsp;
+									<a href="javascript:void(0)" style="<?= $style; ?> font-size: 30px;" class="minus_<?= $field_name; ?> minus_<?= $field_name; ?>_<?= $i2; ?>" id="minus_<?= $field_name; ?>^<?= $i2; ?>">-</a>
+								</div>
+							<?php } ?>
 						</div>
 						<div class="row">
 							<div class="input-field col m6 s12">

@@ -85,7 +85,7 @@ if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 			// Validation: Check for missing headings
 			foreach ($data as $row_v1) {
 				if (count($row_v1) != count($headings)) {
-					$error['msg'][] = "One or more column headings are missing or extra columns exist." . $row_v1;
+					$error['msg'] = "One or more column headings are missing or extra columns exist.";
 					break;
 				}
 			}
@@ -93,7 +93,7 @@ if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 			foreach ($data as $row11) {
 				foreach ($row11 as $cell_array) {
 					if (empty($cell_array) || trim($cell_array) == '') {
-						$error['msg'][] = "All cells must contain values. Use '-' for empty cells.";
+						$error['msg'] = "All cells must contain values. Use '-' for empty cells.";
 						break 2; // Break out of both loops
 					}
 				}
@@ -281,7 +281,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								foreach ($data1 as $key => $data) {
 									if ($key != "" && $key != 'is_insert') {
-										if ($data == '-') {
+										if ($data == '-' || $data == 'NA' || $data == 'N/A' || $data == 'blank') {
 											$data = "";
 										}
 										if ($key == 'product_id') {
@@ -467,7 +467,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</button>
 						</div>
 					<?php }
-					if (isset($error['msg'])) { ?>
+					if (isset($error['msg'])) {  ?>
 						<div class="card-alert card red lighten-5">
 							<div class="card-content red-text">
 								<p><?php echo $error['msg']; ?></p>

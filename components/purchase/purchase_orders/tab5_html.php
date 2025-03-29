@@ -823,7 +823,7 @@
              </form>
 
              <?php
-                /*
+                // /*
                 ?>
              <form id="receiving_manual" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                  <input type="hidden" name="is_Submit_tab5_5" value="Y" />
@@ -1083,7 +1083,7 @@
                  </div>
              </form>
              <?php
-                */
+                //*/
                 $sql_r1     = "	SELECT  aa.id, b.package_name,c.category_name AS package_material_category_name, aa.order_qty AS package_material_qty
                                 FROM purchase_order_packages_detail aa
                                 INNER JOIN purchase_order_detail a ON a.po_id = aa.po_id

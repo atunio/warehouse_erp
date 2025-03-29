@@ -242,7 +242,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								foreach ($data1 as $key => $data) {
 									if ($key != "" && $key != 'is_insert') {
-										if ($data == '-') {
+										if ($data == '-' || $data == 'NA' || $data == 'N/A' || $data == 'blank') {
 											$data = "";
 										}
 										if ($key == 'product_id') {

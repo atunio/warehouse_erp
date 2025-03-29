@@ -145,7 +145,7 @@ $page_heading 	= "List of Products";
 																						echo encrypt($_SESSION['csrf_session']);
 																					} ?>">
 									<div class="row">
-										<div class="input-field col m3 s12 custom_margin_bottom_col">
+										<div class="input-field col m2 s12 custom_margin_bottom_col">
 											<?php
 											$field_name     = "flt_product_id";
 											$field_label	= "ProductID";
@@ -241,7 +241,7 @@ $page_heading 	= "List of Products";
 												</label>
 											</div>
 										</div>
-										<div class="input-field col m1 s12 custom_margin_bottom_col">
+										<div class="input-field col m2 s12 custom_margin_bottom_col">
 											<?php
 											$field_name 	= "flt_product_model_no";
 											$field_label 	= "Model#";
@@ -258,9 +258,13 @@ $page_heading 	= "List of Products";
 													<?php
 													if ($count1 > 0) {
 														$row1    = $db->fetch($result1);
-														foreach ($row1 as $data2) { ?>
-															<option value="<?php echo $data2['product_model_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_model_no']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_model_no']; ?></option>
-													<?php }
+														foreach ($row1 as $data2) {
+															$flt_product_model_no_array = explode(", ", $data2['product_model_no']);
+															foreach ($flt_product_model_no_array as $data_model) { ?>
+																<option value="<?php echo $data_model; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_model) { ?> selected="selected" <?php } ?>><?php echo $data_model; ?></option>
+													<?php
+															}
+														}
 													} ?>
 												</select>
 												<label for="<?= $field_name; ?>">
@@ -306,7 +310,7 @@ $page_heading 	= "List of Products";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'ProductID', 'Description', 'Category', 'ModelNo', 'Actions');
+										$table_columns	= array('SNo', 'ProductID', 'Description', 'Category', 'ModelNos', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>

@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <input type="hidden" value="0" name="selected_product_id" id="selected_product_id" />
-         <div class="input-field col m6 s12">
+        <div class="input-field col m6 s12">
             <?php
             $field_name     = "product_uniqueid_modal";
             $field_label    = "Product ID";
@@ -71,10 +71,10 @@
                 </label>
             </div>
         </div>
-        <div class="input-field col m12 s12">
+        <div class="input-field col m8 s12">
             <?php
             $field_name     = "product_desc";
-            $field_label     = "Item Descripton";
+            $field_label     = "Product Descripton";
             ?>
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -91,22 +91,23 @@
                 </span>
             </label>
         </div>
-    </div><br>
-    <div class="row">
-        <div class="input-field col m12 s12">
+        <div class="input-field col m4 s12">
             <?php
-            $field_name     = "detail_desc";
-            $field_id         = "detail_desc2";
-            $field_label     = "Detail Description";
+            $field_name     = "product_model_no";
+            $field_label     = "Model#";
             ?>
             <i class="material-icons prefix">description</i>
-            <textarea id="<?= $field_id; ?>" name="<?= $field_name; ?>" class="materialize-textarea validate "></textarea>
-            <label for="<?= $field_id; ?>">
+            <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                echo ${$field_name};
+                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                    } ?>">
+            <label for="<?= $field_name; ?>">
                 <?= $field_label; ?>
-                <span class="color-red"> <?php
-                                            if (isset($error[$field_name])) {
-                                                echo $error[$field_name];
-                                            } ?>
+                <span class="color-red"><?php
+                                        if (isset($error[$field_name])) {
+                                            echo $error[$field_name];
+                                        } ?>
                 </span>
             </label>
         </div>

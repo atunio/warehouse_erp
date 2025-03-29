@@ -43,12 +43,11 @@ switch ($type) {
         }
         break;
     case 'add_product':
-        if ($product_uniqueid != "" && $product_desc != "" && $product_category != "") {
-            $product_desc = ucwords(strtolower($product_desc));
+        if ($product_uniqueid != "undefined" && $product_category != "undefined" && $product_uniqueid != "" && $product_category != "") {
             $count = 0;
 
-            $table              = "product_categories";
-            $columns            = array("category_name");
+            $table      = "product_categories";
+            $columns    = array("category_name");
             $get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $product_category, $columns);
             foreach ($get_col_from_table as $array_key1 => $array_data1) {
                 ${$array_key1} = $array_data1;
@@ -60,12 +59,12 @@ switch ($type) {
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql = "INSERT INTO products(subscriber_users_id, product_desc, product_uniqueid, product_category, detail_desc, add_date, add_by, add_ip)
-                        VALUES('" . $subscriber_users_id . "', '" . $product_desc . "', '" . $product_uniqueid . "', '" . $product_category . "', '" . $detail_desc . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+                $sql = "INSERT INTO products(subscriber_users_id, product_desc, product_uniqueid, product_category, product_model_no, add_date, add_by, add_ip)
+                        VALUES('" . $subscriber_users_id . "', '" . $product_desc . "', '" . $product_uniqueid . "', '" . $product_category . "', '" . $product_model_no . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
                 $ok = $db->query($conn, $sql);
                 if ($ok) {
                     $product_id = mysqli_insert_id($conn);
-                    echo '<option value="' . $product_id . '" selected="selected">' . $product_desc . ' (' . $category_name . ') - ' . $product_uniqueid . '</option>';
+                    echo '<option value="' . $product_id . '" selected="selected">' . $product_uniqueid . ' (' . $category_name . ') - ' . $product_desc . '</option>';
                 } else {
                     echo "Fail";
                 }
@@ -74,13 +73,12 @@ switch ($type) {
                 $product_id         = $row[0]['id'];
                 $product_desc       = $row[0]['product_desc'];
                 $product_uniqueid   = $row[0]['product_uniqueid'];
-              
-                $text_return        = $data2['product_uniqueid'];
-                $text_return        .= isset($category_name) ? " (".$category_name . ") " : '';
-                $text_return        .= isset($product_desc) ? " ".$product_desc . "" : '';
-             
-                echo '<option value="' . $product_id . '" selected="selected">' . $text_return . '</option>';
 
+                $text_return        = $product_uniqueid;
+                $text_return        .= isset($category_name) ? " (" . $category_name . ") " : '';
+                $text_return        .= isset($product_desc) ? " - " . $product_desc . "" : '';
+
+                echo '<option value="' . $product_id . '" selected="selected">' . $text_return . '</option>';
             }
         } else {
             echo 'Select';

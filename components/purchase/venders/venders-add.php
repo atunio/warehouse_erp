@@ -77,14 +77,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* FROM venders a 
 								WHERE a.vender_name	= '" . $vender_name . "'
-								AND a.phone_no		= '" . $phone_no . "'
-								AND a.address		= '" . $address . "'
-								AND a.vender_type	= '" . $vender_type . "' ";
+								AND a.phone_no		= '" . $phone_no . "'  ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql6 = "INSERT INTO " . $selected_db_name . ".venders(subscriber_users_id, vender_name, address, phone_no, vender_type, note_about_vender, warranty_period_in_days, purchasing_agent_id, add_date, add_by, add_ip)
-							VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '" . $warranty_period_in_days . "', '" . $purchasing_agent_id . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $address . "', '" . $phone_no  . "', '" . $vender_type  . "', '" . $note_about_vender  . "', '" . $warranty_period_in_days . "', '" . $purchasing_agent_id . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 
@@ -109,9 +107,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* FROM venders a 
 								WHERE a.vender_name	= '" . $vender_name . "'
-								AND a.phone_no		= '" . $phone_no . "'
-								AND a.address		= '" . $address . "'
-								AND a.vender_type	= '" . $vender_type . "'
+								AND a.phone_no		= '" . $phone_no . "' 
 								AND a.id		   != '" . $id . "'";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);

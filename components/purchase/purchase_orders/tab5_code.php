@@ -583,7 +583,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 									INNER JOIN purchase_orders a2 ON a2.id = a.po_id
 									WHERE 1 = 1
 									AND a.enabled	= 1
-									AND a.id 	= '" . $product_id_barcode . "'"; 
+									AND a.id 	= '" . $product_id_barcode . "'";
 				// echo "<br><br>".$sql_pd3;
 				$result_pd3		= $db->query($conn, $sql_pd3);
 				$count_pd3		= $db->counter($result_pd3);
@@ -614,7 +614,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 
 					$item_logistic_cost			= round(po_logistic_cost_product_added($db, $conn, $id, $po_logistic_cost1), 2);
 					$item_receive_labor_cost 	= round(signle_device_receive_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_brc), 2);
-					$new_order_price			= round(($order_price + $item_logistic_cost + $item_receive_labor_cost), 2); 
+					$new_order_price			= round(($order_price + $item_logistic_cost + $item_receive_labor_cost), 2);
 
 					$sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, logistic_cost, receiving_labor, 
 																		inventory_status, overall_grade, received_during, edit_lock, is_import_diagnostic_data, is_diagnostic_bypass, 
@@ -761,8 +761,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 							foreach ($row_pd3 as $data3_rv) {
 
 								$po_detail_id			= $data3_rv['id'];
-								$order_price			= $data3_rv['order_price']; 
-								$po_logistic_cost1		= $data3_rv['logistics_cost']; 
+								$order_price			= $data3_rv['order_price'];
+								$po_logistic_cost1		= $data3_rv['logistics_cost'];
 								$order_qty				= $data3_rv['order_qty'];
 								$product_uniqueid_main1	= $data3_rv['product_uniqueid'];
 								$c_product_id2			= $data3_rv['product_id'];
@@ -778,10 +778,10 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 
 								for ($m = 0; $m < $allocated_qty; $m++) {
 									$receiving_location_add = $receiving_location[$key];
-									
+
 									$item_logistic_cost			= round(po_logistic_cost_product_added($db, $conn, $id, $po_logistic_cost1), 2);
 									$item_receive_labor_cost 	= round(signle_device_receive_labor_cost($db, $conn, $_SESSION['user_id'], $recevied_product_category), 2);
- 
+
 									$sql6 = "INSERT INTO purchase_order_detail_receive(	po_id, recevied_product_category, receive_type, add_by_user_id, sub_location_id,
 																						logistic_cost, receiving_labor, 
 																						duplication_check_token, add_date,  add_by, add_ip, add_timezone)

@@ -104,7 +104,7 @@
                         <?php
                         $field_name     = "update_sub_location_id";
                         $field_label    = "Location";
-                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1 AND a.purpose = 'Arriving' ORDER BY sub_location_name ";
+                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1 AND a.purpose = 'Arrival' ORDER BY sub_location_name ";
                         $result1        = $db->query($conn, $sql1);
                         $count1         = $db->counter($result1);
                         ?>

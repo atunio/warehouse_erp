@@ -126,7 +126,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -181,7 +181,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$product_id 		= $data1['product_id'];
 							$serial 			= $data1['serial'];
 
-							$sql_pd04 		= "	SELECT a.*  FROM ".$master_table." a  WHERE a.id = '" . $receive_id_1 . "'  ";
+							$sql_pd04 		= "	SELECT a.*  FROM " . $master_table . " a  WHERE a.id = '" . $receive_id_1 . "'  ";
 							$result_pd04	= $db->query($conn, $sql_pd04);
 							$count_pd04		= $db->counter($result_pd04);
 							if ($count_pd04 > 0) {
@@ -191,7 +191,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									if (isset($receive_id_1) && $receive_id_1 > 0) {
 										if ($data1['serial'] != '' && $data1['serial'] != NULL && $data1['serial'] != '-' && $data1['serial'] != 'blank') {
 											$sql_pd04 		= "	SELECT a.* 
-																FROM ".$master_table." a 
+																FROM " . $master_table . " a 
 																WHERE a.enabled = 1
 																AND a.serial_no_barcode = '" . $data1['serial'] . "'
 																AND id != '" . $receive_id_1 . "' ";
@@ -258,7 +258,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														} else if ($key == 'serial_no_barcode') {
 															if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 																$sql_pd04 		= "	SELECT a.* 
-																						FROM ".$master_table." a 
+																						FROM " . $master_table . " a 
 																						WHERE a.enabled = 1 
 																						AND a.serial_no_barcode = '" . ${$insert_db_field_id} . "' ";
 																$result_pd04	= $db->query($conn, $sql_pd04);

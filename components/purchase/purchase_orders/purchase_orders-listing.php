@@ -9,6 +9,10 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
+if (!isset($flt_stage_status)) {
+	$flt_stage_status = array('Draft', 'Committed');
+}
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -300,9 +304,6 @@ $page_heading 	= "List Purchase Orders ";
 											</div>
 											<div class="input-field col m3 s12 custom_margin_bottom_col">
 												<?php
-												if (!isset($flt_stage_status)) {
-													$flt_stage_status = array('Draft', 'Committed');
-												}
 												$field_name     = "flt_stage_status";
 												$field_label	= "Stage";
 												$sql1			= "SELECT *  FROM stages_status WHERE 1=1 AND enabled = 1  ";
@@ -428,7 +429,7 @@ $page_heading 	= "List Purchase Orders ";
 																									WHERE a.po_id = '" . $id . "'";
 																			$result_logistics1  = $db->query($conn, $sql2);
 																			$ct_logistics       = $db->counter($result_logistics1);
-																			if($ct_logistics >0){
+																			if ($ct_logistics > 0) {
 																				$row_logistics1     = $db->fetch($result_logistics1);
 																				$total_logistics    = $row_logistics1[0]['total_no_of_boxes'];
 																			}
@@ -439,27 +440,27 @@ $page_heading 	= "List Purchase Orders ";
 																									WHERE a.po_id = '" . $id . "'";
 																			$result_logistics1  = $db->query($conn, $sql2);
 																			$ct_logistics       = $db->counter($result_logistics1);
-																			if($ct_logistics >0){
+																			if ($ct_logistics > 0) {
 																				$row_logistics1     = $db->fetch($result_logistics1);
 																				$total_arrived      = $row_logistics1[0]['total_no_of_box_arried'];
 																			}
-																			
+
 																			if ($data['order_status'] == $arrival_status_dynamic) {
 																				if ($total_logistics > 0 && $total_arrived > 0) {
 																					$total_arrival_percentage = ($total_arrived / $total_logistics) * 100;
-																					if ($total_arrival_percentage > 0) { 
-																						if($total_arrival_percentage == 100){
+																					if ($total_arrival_percentage > 0) {
+																						if ($total_arrival_percentage == 100) {
 																							echo " <span class='color-green'>(" . round(($total_arrival_percentage)) . "%)</span>";
-																						}else if($total_arrival_percentage < 100){
+																						} else if ($total_arrival_percentage < 100) {
 																							echo " <span class='color-yellow'>(" . round(($total_arrival_percentage)) . "%)</span>";
-																							?>
+																			?>
 																							<i class="material-icons dp48">warning</i>
-																							<?php
-																						}else if($total_arrival_percentage > 100){
+																						<?php
+																						} else if ($total_arrival_percentage > 100) {
 																							echo " <span class='color-red'>(" . round(($total_arrival_percentage)) . "%)</span>";
 																						}
 																					}
-																				} 
+																				}
 																			}
 																			/////////////////////////////////////////////////////////
 																			/////////////////////////////////////////////////////////
@@ -484,15 +485,14 @@ $page_heading 	= "List Purchase Orders ";
 																				if ($total_items_ordered > 0 && $total_received > 0) {
 																					$total_received_percentage = ($total_received / $total_items_ordered) * 100;
 																					if ($total_received_percentage > 0) {
-																						if($total_received_percentage == '100'){
+																						if ($total_received_percentage == '100') {
 																							echo " <span class='color-green'>(" . round(($total_received_percentage)) . "%)</span>";
-																						}
-																						else if ($total_received_percentage < '100') { 
+																						} else if ($total_received_percentage < '100') {
 																							echo " <span class='color-yellow'>(" . round(($total_received_percentage)) . "%)</span>";
-																							?>
+																						?>
 																							<i class="material-icons dp48 color-yellow">warning</i>
 																							<?php
-																						}else if($total_received_percentage > '100'){
+																						} else if ($total_received_percentage > '100') {
 																							echo " <span class='color-red'>(" . round(($total_received_percentage)) . "%)</span>";
 																						}
 																					}
@@ -512,15 +512,14 @@ $page_heading 	= "List Purchase Orders ";
 																					if ($total_diagnosed > 0) {
 																						$total_diagnosed_percentage = ($total_diagnosed / $total_received) * 100;
 																						if ($total_received > 0) {
-																							if($total_diagnosed_percentage == '100'){
+																							if ($total_diagnosed_percentage == '100') {
 																								echo " <span class='color-green'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
-																							}
-																							else if ($total_diagnosed_percentage < '100') { 
+																							} else if ($total_diagnosed_percentage < '100') {
 																								echo " <span class='color-yellow'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
-																								?>
+																							?>
 																								<i class="material-icons dp48 color-yellow">warning</i>
-																								<?php
-																							}else if($total_diagnosed_percentage > '100'){
+																							<?php
+																							} else if ($total_diagnosed_percentage > '100') {
 																								echo " <span class='color-red'>(" . round(($total_diagnosed_percentage)) . "%)</span>";
 																							}
 																						}
@@ -539,15 +538,14 @@ $page_heading 	= "List Purchase Orders ";
 																				if ($total_received > 0 && $total_inventory > 0) {
 																					$total_inventory_percentage = ($total_inventory / $total_received) * 100;
 																					if ($total_inventory_percentage > 0) {
-																						if($total_inventory_percentage == '100'){
+																						if ($total_inventory_percentage == '100') {
 																							echo " <span class='color-green'>(" . round(($total_inventory_percentage)) . "%)</span>";
-																						}
-																						else if ($total_inventory_percentage < '100') { 
+																						} else if ($total_inventory_percentage < '100') {
 																							echo " <span class='color-yellow'>(" . round(($total_inventory_percentage)) . "%)</span>";
 																							?>
 																							<i class="material-icons dp48 color-yellow">warning</i>
-																							<?php
-																						}else if($total_inventory_percentage > '100'){
+																			<?php
+																						} else if ($total_inventory_percentage > '100') {
 																							echo " <span class='color-red'>(" . round(($total_inventory_percentage)) . "%)</span>";
 																						}
 																					}

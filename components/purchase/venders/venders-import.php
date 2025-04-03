@@ -106,7 +106,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}

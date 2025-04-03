@@ -569,8 +569,10 @@
                                         <?php
                                         $field_name     = "sub_location_id_fetched";
                                         $field_label    = "Location";
-                                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1 ";
-                                        $sql1           .= " ORDER BY a.sub_location_name ";
+                                        $sql1           = " SELECT * FROM warehouse_sub_locations a
+                                                            WHERE a.enabled = 1 
+                                                            AND a.purpose != 'Arrival'
+                                                            ORDER BY a.sub_location_name ";
                                         $result1        = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
                                         ?>
@@ -590,6 +592,9 @@
                                                             <?php echo $data2['sub_location_name'];
                                                             if ($data2['sub_location_type'] != "") {
                                                                 echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                            }
+                                                            if ($data2['purpose'] != "") {
+                                                                echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                             } ?>
                                                         </option>
                                                 <?php }
@@ -672,8 +677,10 @@
                                         <?php
                                         $field_name     = "sub_location_id_barcode_diagnostic";
                                         $field_label    = "Location";
-                                        $sql1           = " SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1 ";
-                                        $sql1           .= " ORDER BY sub_location_name ";
+                                        $sql1           = " SELECT * FROM warehouse_sub_locations a 
+                                                            WHERE a.enabled = 1 
+                                                            AND a.purpose != 'Arrival'
+                                                            ORDER BY a.sub_location_name ";
                                         $result1        = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
                                         ?>
@@ -693,7 +700,10 @@
                                                             <?php echo $data2['sub_location_name'];
                                                             if ($data2['sub_location_type'] != "") {
                                                                 echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
-                                                            } ?>
+                                                            }
+                                                            if ($data2['purpose'] != "") {
+                                                                echo " - " . ucwords(strtolower($data2['purpose'])) . "";
+                                                            }  ?>
                                                         </option>
                                                 <?php }
                                                 } ?>
@@ -903,8 +913,10 @@
                                         <?php
                                         $field_name     = "sub_location_id_boken_device";
                                         $field_label    = "Location";
-                                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1 ";
-                                        $sql1           .= "ORDER BY sub_location_name ";
+                                        $sql1           = " SELECT * FROM warehouse_sub_locations a 
+                                                            WHERE a.enabled = 1
+                                                            AND a.purpose != 'Arrival'
+                                                            ORDER BY a.sub_location_name ";
                                         $result1        = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
                                         ?>
@@ -924,6 +936,9 @@
                                                             <?php echo $data2['sub_location_name'];
                                                             if ($data2['sub_location_type'] != "") {
                                                                 echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                            }
+                                                            if ($data2['purpose'] != "") {
+                                                                echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                             } ?>
                                                         </option>
                                                 <?php }

@@ -529,7 +529,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				if ($count_pd01_4 > 0) {
 					$error5['serial_no_barcode'] = "The Serial# is D, Select another Bin";
 				}
-			} else if ($vender_d_status != 'Tested/Graded' && $vender_d_status != "" && $vender_d_status != NULL) {
+			} else if ($vender_d_status != 'Tested/Graded' && $vender_d_status != 'Tested/graded' && $vender_d_status != 'tested/graded' && $vender_d_status != "" && $vender_d_status != NULL) {
 				$sql_pd01_4		= "	SELECT  a.id
 									FROM purchase_order_detail_receive a 
 									WHERE a.enabled = 1 
@@ -541,7 +541,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				if ($count_pd01_4 > 0) {
 					$error5['serial_no_barcode'] = "The Serial# is " . $vender_d_status . ", Select another Bin.";
 				}
-			} else if ($vender_d_status == 'Tested/Graded') {
+			} else if ($vender_d_status == 'Tested/Graded' || $vender_d_status == 'Tested/graded' || $vender_d_status == 'tested/graded') {
 				$sql_pd01_4		= "	SELECT  a.id
 									FROM purchase_order_detail_receive a 
 									WHERE a.enabled = 1 
@@ -551,7 +551,7 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 				$result_pd01_4	= $db->query($conn, $sql_pd01_4);
 				$count_pd01_4	= $db->counter($result_pd01_4);
 				if ($count_pd01_4 > 0) {
-					$error5['serial_no_barcode'] = "The Serial# is " . $vender_d_status . ", Select another Bin";
+					$error5['serial_no_barcode'] = "The Serial# is " . $vender_d_status . ", Select another Bin.";
 				}
 			}
 		}

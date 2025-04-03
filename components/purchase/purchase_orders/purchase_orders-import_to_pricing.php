@@ -126,7 +126,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -172,45 +172,44 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			foreach ($all_data  as $data1) {
 				$update_master = $update_product = $columns = $column_data = "";
 				if (isset($data1['record_id']) && $data1['record_id'] != '' && $data1['record_id'] > 0) {
-						$receive_id_1	= $data1['record_id'];
-						$sql_pd04 		= "	SELECT a.*  FROM ".$master_table." a  WHERE a.id = '" . $receive_id_1 . "'  ";
-						$result_pd04	= $db->query($conn, $sql_pd04);
-						$count_pd04		= $db->counter($result_pd04);
-						if ($count_pd04 > 0) {
-							$row_pd1_2	= $db->fetch($result_pd04);
-							$edit_lock	= $row_pd1_2[0]['edit_lock'];
-							if ($edit_lock == '0') {
-								if (isset($receive_id_1) && $receive_id_1 > 0) {
-									foreach ($data1 as $key => $data) {
-										if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
-											$data = "0";
-										}
-										$insert_db_field_id		= $key;
-										${$insert_db_field_id} 	= $data;
-										if ($key != "" && $key != 'is_insert') {
-											if ($key == 'price') {
-												$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
-											} 
+					$receive_id_1	= $data1['record_id'];
+					$sql_pd04 		= "	SELECT a.*  FROM " . $master_table . " a  WHERE a.id = '" . $receive_id_1 . "'  ";
+					$result_pd04	= $db->query($conn, $sql_pd04);
+					$count_pd04		= $db->counter($result_pd04);
+					if ($count_pd04 > 0) {
+						$row_pd1_2	= $db->fetch($result_pd04);
+						$edit_lock	= $row_pd1_2[0]['edit_lock'];
+						if ($edit_lock == '0') {
+							if (isset($receive_id_1) && $receive_id_1 > 0) {
+								foreach ($data1 as $key => $data) {
+									if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
+										$data = "0";
+									}
+									$insert_db_field_id		= $key;
+									${$insert_db_field_id} 	= $data;
+									if ($key != "" && $key != 'is_insert') {
+										if ($key == 'price') {
+											$update_master .= "`" . $insert_db_field_id . "` = '" . ${$insert_db_field_id} . "', ";
 										}
 									}
-									if ($update_master != "" && isset($receive_id_1) && $receive_id_1 > 0) {
-										$sql6 = " 	UPDATE " . $selected_db_name . "." . $master_table . " SET  " . $update_master . "
+								}
+								if ($update_master != "" && isset($receive_id_1) && $receive_id_1 > 0) {
+									$sql6 = " 	UPDATE " . $selected_db_name . "." . $master_table . " SET  " . $update_master . "
 																													update_date 				= '" . $add_date . "', 
 																													update_by 					= '" . $_SESSION['username'] . " Imported', 
 																													update_by_user_id			= '" . $_SESSION['user_id'] . "',
 																													update_ip 					= '" . $add_ip . "', 
 																													update_timezone				= '" . $timezone . "'
 														WHERE id = '" . $receive_id_1 . "'  "; //echo "<br>" . $sql6;
-										$ok = $db->query($conn, $sql6);
-										if ($ok) {
-											$added++;
-										}
+									$ok = $db->query($conn, $sql6);
+									if ($ok) {
+										$added++;
 									}
 								}
 							}
 						}
-					 
-				} 
+					}
+				}
 				$m++;
 			}
 		}

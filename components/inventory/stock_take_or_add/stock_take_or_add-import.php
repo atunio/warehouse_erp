@@ -107,7 +107,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -127,9 +127,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$sub_location_name1 = $all_data[$n]['location'];
 					$entry_type1 		= $all_data[$n]['entry_type'];
 					$db_column 			= $dup_data;
-					if ($db_column == 'serial_no') { 
-						$last_entry_type = ""; 
-						if(isset($entry_type1) && (strtolower($entry_type1) == 'add')){
+					if ($db_column == 'serial_no') {
+						$last_entry_type = "";
+						if (isset($entry_type1) && (strtolower($entry_type1) == 'add')) {
 							$sql_dup	= " SELECT a.*, b.entry_type 
 											FROM product_stock a 
 											INNER JOIN stock_take_or_add b ON b.stock_id = a.id 
@@ -138,23 +138,20 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											ORDER BY b.id DESC LIMIT 1 ";
 							$result_dup	= $db->query($conn, $sql_dup);
 							$count_dup	= $db->counter($result_dup);
-							if ($count_dup > 0) { 
+							if ($count_dup > 0) {
 								$row_dup1    		= $db->fetch($result_dup);
 								$last_entry_type 	= $row_dup1[0]['entry_type'];
-							}	
-							if($last_entry_type != 'Add'){
-								;
 							}
-							else{
+							if ($last_entry_type != 'Add') {;
+							} else {
 								$duplicate_data_array[] = $duplicate_colum_values1;
 								if (!isset($error['msg'])) {
 									$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
 								} else {
 									$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
 								}
-							} 
-						}
-						else if(isset($entry_type1) && (strtolower($entry_type1) == 'take')){
+							}
+						} else if (isset($entry_type1) && (strtolower($entry_type1) == 'take')) {
 							$sql_dup	= " SELECT a.*, b.entry_type
 											FROM product_stock a 
 											INNER JOIN stock_take_or_add b ON b.stock_id = a.id 
@@ -163,24 +160,21 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											ORDER BY b.id DESC LIMIT 1 ";
 							$result_dup	= $db->query($conn, $sql_dup);
 							$count_dup	= $db->counter($result_dup);
-							if ($count_dup > 0) { 
+							if ($count_dup > 0) {
 								$row_dup1    		= $db->fetch($result_dup);
 								$last_entry_type 	= $row_dup1[0]['entry_type'];
-							}	
-							if($last_entry_type != 'Take'){
-								;
 							}
-							else{
+							if ($last_entry_type != 'Take') {;
+							} else {
 								$duplicate_data_array[] = $duplicate_colum_values1;
 								if (!isset($error['msg'])) {
 									$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
 								} else {
 									$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already Added.";
 								}
-							} 
+							}
 						}
-					}
-					else{
+					} else {
 						$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 						$result1	= $db->query($conn, $sql1);
 						$count1		= $db->counter($result1);
@@ -195,19 +189,19 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 					$n++;
 				}
-			} 
+			}
 			$m = 0;
 			foreach ($all_data  as $data1) {
 				$duplicate_data_array = array_unique($duplicate_data_array);
 				if (!in_array($data1[$dup_data], $duplicate_data_array)) {
 					$columns = $column_data = "";
 					$entry_type1 = $all_data[$m]['entry_type'];
-					if(isset($entry_type1) && (strtolower($entry_type1) == 'add' || strtolower($entry_type1) == 'take')){
+					if (isset($entry_type1) && (strtolower($entry_type1) == 'add' || strtolower($entry_type1) == 'take')) {
 						foreach ($data1 as $key => $data) {
 							if ($key != "" && $key != 'is_insert') {
 								if ($key == 'serial_no') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-										$table 			= "product_stock"; 
+										$table 			= "product_stock";
 										$sql1 			= "SELECT * FROM " . $table . " WHERE " . $key . " = '" . $data . "' ";
 										$result1 		= $db->query($conn, $sql1);
 										$count1 		= $db->counter($result1);
@@ -219,11 +213,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 											$columns		.= ", " . $db_field2;
 											$column_data	.= ", '" . $stock_id . "'";
-											
-										} 
+										}
 									}
-								}
-								else if ($key == 'location') {
+								} else if ($key == 'location') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 										$table 			= "warehouse_sub_locations";
 										$db_field1		= "sub_location_name";
@@ -237,11 +229,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 											$columns		.= ", " . $db_field2;
 											$column_data	.= ", '" . $location_id . "'";
-										} 
-										else{
+										} else {
 											$table = "warehouse_sub_locations";
 											$sql6 = "INSERT INTO " . $table . "(subscriber_users_id, warehouse_id, sub_location_name, sub_location_type, purpose, is_mobile, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-													VALUES('" . $subscriber_users_id . "', 1, '" . $data . "', 'bin', 'Take/In', 'no', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";//echo "<br>" . $sql6;
+													VALUES('" . $subscriber_users_id . "', 1, '" . $data . "', 'bin', 'Take/In', 'no', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')"; //echo "<br>" . $sql6;
 											$ok = $db->query($conn, $sql6);
 											if ($ok) {
 												$location_id	= mysqli_insert_id($conn);
@@ -251,21 +242,20 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											}
 										}
 									}
-								}  
-								else {
+								} else {
 									$columns 		.= ", " . $key;
 									$column_data 	.= ", '" . $data . "'";
 								}
 							}
-						} 
-						if(isset($entry_type1) && (strtolower($entry_type1) == 'add')){
+						}
+						if (isset($entry_type1) && (strtolower($entry_type1) == 'add')) {
 							$p_total_stock = '1';
 						}
-						if(isset($entry_type1) && (strtolower($entry_type1) == 'take')){
-							$p_total_stock  = '0'; 
+						if (isset($entry_type1) && (strtolower($entry_type1) == 'take')) {
+							$p_total_stock  = '0';
 						}
- 
-						if ($columns != "" && $column_data != "" && isset($stock_id) && $stock_id>0 ) { // ONLY IF one field 
+
+						if ($columns != "" && $column_data != "" && isset($stock_id) && $stock_id > 0) { // ONLY IF one field 
 							$sql6 = "INSERT INTO " . $master_table . "(subscriber_users_id " . $columns . ", qty, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 									 VALUES('" . $subscriber_users_id . "' " . $column_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 							// echo "<br>" . $sql6;
@@ -276,9 +266,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 								$sql6 = "UPDATE " . $master_table . " SET change_no = '" . $change_no . "' WHERE id = '" . $id . "' ";
 								$db->query($conn, $sql6);
-								if(isset($stock_id) && $stock_id>0){
+								if (isset($stock_id) && $stock_id > 0) {
 									$sql_c_up = "UPDATE product_stock SET  p_total_stock = '" . $p_total_stock . "', ";
-									if(isset($entry_type1) && (strtolower($entry_type1) == 'add') && isset($location_id) && $location_id>0){
+									if (isset($entry_type1) && (strtolower($entry_type1) == 'add') && isset($location_id) && $location_id > 0) {
 										$sql_c_up .= "sub_location = '" . $location_id . "', ";
 									}
 									$sql_c_up .= "	update_date					= '" . $add_date . "',
@@ -291,7 +281,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								$added++;
 							}
-							
 						}
 					}
 				}
@@ -318,9 +307,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -330,16 +319,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 									New
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-content custom_padding_card_content_table_top">
@@ -416,7 +405,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
-										if($s_heading == 'entry_type'){
+										if ($s_heading == 'entry_type') {
 											$cell_format .= " (Take or Add)";
 										}
 										echo " <tr>

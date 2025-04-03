@@ -78,6 +78,7 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 }
 
 if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
+
 	extract($_POST);
 	foreach ($_POST as $key => $value) {
 		if (!is_array($value)) {
@@ -98,7 +99,8 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		$error2['tracking_no'] = "Required";
 	} else {
 		$sql_dup	= " SELECT a.* FROM purchase_order_detail_logistics a 
-						WHERE  a.tracking_no = '" . $tracking_no . "' "; //echo $sql_dup;
+						WHERE  a.tracking_no = '" . $tracking_no . "'
+						AND a.po_id = '" . $id . "' "; //echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
@@ -119,12 +121,15 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		$error2['msg'] = "Please add master record first";
 	}
 	if (empty($error2)) {
+
+
+
+
 		if (po_permisions("Logistics") == 0) {
 			$error2['msg'] = "You do not have add permissions.";
 		} else {
 			$k = 0;
 			if ($cmd2 == 'add') {
-
 				if (access("add_perm") == 0) {
 					$error2['msg'] = "You do not have add permissions.";
 				} else {
@@ -201,6 +206,7 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	} else {
 		$sql_dup	= " SELECT a.* FROM purchase_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no_update . "'
+						AND a.po_no = '" . $id . "'
 						AND id != '" . $detail_id . "' ";
 		//echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);

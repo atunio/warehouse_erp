@@ -73,7 +73,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			}
 		}
 	}
-} 
+}
 $added = 0;
 $master_table = "product_packages";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
@@ -111,14 +111,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
 			$j++;
 		}
 		$modified_array[$i]["is_insert"] = $data;
-		$i++; 
+		$i++;
 		// increment the index
 	}
 
@@ -149,14 +149,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$error['msg'] .= "<br>Incomplete " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span>.";
 						}
 						$c++;
-					}
-					else{
+					} else {
 						$sql1		= " SELECT * FROM product_packages a
 										INNER JOIN packages b ON b.id = a.package_id
 										INNER JOIN products c ON c.id = a.product_id
 										WHERE b.sku_code = '" . $duplicate_colum_values1 . "' 
 										AND c.product_uniqueid = '" . $dup_product_id . "' 
-										AND a.is_mandatory = '" . $dup_is_mandatory . "'"; 
+										AND a.is_mandatory = '" . $dup_is_mandatory . "'";
 						$result1	= $db->query($conn, $sql1);
 						$count1		= $db->counter($result1);
 						if ($count1 > 0) {
@@ -166,7 +165,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							} else {
 								$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
 							}
-						} 
+						}
 						$c++;
 					}
 				}
@@ -177,7 +176,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$columns = $column_data = "";
 					foreach ($data1 as $key => $data) {
 						if ($key != "") {
-							
+
 							if ($key != 'is_insert') {
 								if ($key == 'product_id') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
@@ -200,7 +199,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$columns 		.= ", package_id";
 											$column_data 	.= ", '" . $row1[0]['id'] . "'";
 										}
-										
 									}
 								} else {
 									$columns 		.= ", " . $key;
@@ -336,7 +334,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									$char = 'a';
 
 									foreach ($supported_column_titles as $s_heading) {
-										$cell_format = "Text"; 
+										$cell_format = "Text";
 										if ($s_heading == 'is_mandatory') {
 											$cell_format = "Text (Yes/No)";
 										}
@@ -488,7 +486,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 															$sql_dup		= " SELECT * FROM product_packages a
 																				INNER JOIN packages b ON b.id = a.package_id
-																				WHERE b.sku_code = '" . htmlspecialchars($cell) . "' "; 
+																				WHERE b.sku_code = '" . htmlspecialchars($cell) . "' ";
 															$result_dup	= $db->query($conn, $sql_dup);
 															$count_dup	= $db->counter($result_dup);
 															if ($count_dup > 0) {

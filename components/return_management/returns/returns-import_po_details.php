@@ -14,7 +14,7 @@ $user_id 				= $_SESSION["user_id"];
 $title_heading			= "Import Products in Return";
 $button_val				= "Preview";
 
-$return_no = $removal_order_id= $store_name = "";
+$return_no = $removal_order_id = $store_name = "";
 
 if (isset($id) && $id > 0) {
 	$sql_ee 		= " SELECT a.*, b.store_name
@@ -41,7 +41,7 @@ foreach ($_POST as $key => $value) {
 }
 
 $supported_column_titles	= array("product_id", "return_qty", "product_status");
-$master_columns				= array("product_id", "return_qty", "product_status"); 
+$master_columns				= array("product_id", "return_qty", "product_status");
 $duplication_columns 		= array("product_id");
 $required_columns			= array("product_id", "return_qty");
 
@@ -125,7 +125,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -158,7 +158,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
 						}
 					}
-				} 
+				}
 			}
 		}
 		if (empty($error)) {
@@ -181,15 +181,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$data = "";
 							}
 							if ($key != "" && $key != 'is_insert') {
-	
+
 								$insert_db_field_id		= $key;
 								${$insert_db_field_id} 	= $data;
-								
+
 								if ($key == 'product_id') {
- 									$columns 		.= ", " . $insert_db_field_id;
+									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . $product_id2 . "'";
-								}
-								else if ($key == 'product_status') {
+								} else if ($key == 'product_status') {
 									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
 										$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
 										$result1	= $db->query($conn, $sql1);
@@ -197,29 +196,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if ($count1 > 0) {
 											$row1 = $db->fetch($result1);
 											$columns 		.= ", expected_status";
-											$column_data 	.= ", '" . $row1[0]['id'] . "'"; 
+											$column_data 	.= ", '" . $row1[0]['id'] . "'";
 										}
 									}
-								}
-								else if ($key == 'product_condition') {
-									if(${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D'){
+								} else if ($key == 'product_condition') {
+									if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
 										$columns 		.= ", " . $insert_db_field_id;
 										$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 									}
-								}
-								else{
+								} else {
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 								}
 							}
-						} 
+						}
 						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(return_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 								VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$added++;
 						}
-					} 
+					}
 				}
 			}
 		}
@@ -245,9 +242,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -257,16 +254,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
 									Return List
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
 									Return Profile
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div>  
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-panel custom_padding_card_content_table_top">
@@ -373,7 +370,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										}
 										if (strtolower($s_heading) == 'return_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
 											$cell_format = "Number";
-										}  
+										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>
@@ -557,7 +554,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
 															<?php
 															} ?>
- 														<?php
+														<?php
 														} else {
 															$row_color = "color-green";  ?>
 															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">

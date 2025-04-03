@@ -127,7 +127,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -149,7 +149,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$sql1		= " SELECT * FROM sales_order_detail a
 									INNER JOIN product_stock b ON b.id = a.product_stock_id
 									WHERE a.sales_order_id = '" . $id . "'
-									AND b." . $db_column . " = '" . $duplicate_colum_values1 . "' ";  
+									AND b." . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
@@ -160,7 +160,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already added.";
 						}
 					}
-				} 
+				}
 			}
 		}
 		if (empty($error)) {
@@ -183,28 +183,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$data = "";
 							}
 							if ($key != "" && $key != 'is_insert') {
-	
+
 								$insert_db_field_id		= $key;
 								${$insert_db_field_id} 	= $data;
-								
+
 								if ($key == 'serial_no') {
 									$insert_db_field_id = "product_stock_id";
- 									$columns 		.= ", " . $insert_db_field_id;
+									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . $product_stock_id . "'";
-								}
-								else{
+								} else {
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 								}
 							}
-						} 
+						}
 						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(sales_order_id " . $columns . ", order_qty, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 								VALUES('" . $id . "' " . $column_data . ", 1, '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$added++;
 						}
-					} 
+					}
 				}
 			}
 		}
@@ -357,7 +356,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										}
 										if (strtolower($s_heading) == 'order_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
 											$cell_format = "Number";
-										}  
+										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>
 													<td style='padding: 3px 15px !important; '>" . $s_heading . "</td>
@@ -541,7 +540,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
 															<?php
 															} ?>
- 														<?php
+														<?php
 														} else {
 															$row_color = "color-green";  ?>
 															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">

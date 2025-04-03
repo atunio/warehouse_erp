@@ -9,6 +9,30 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
+if (isset($is_Submit_del) && access("delete_perm") == 0) {
+	$error['msg'] = "You do not have edit permissions.";
+} else {
+	if (isset($is_Submit_del) && $is_Submit_del == 'Y') {
+		if (!isset($sub_location_ids) || (isset($sub_location_ids) && sizeof($sub_location_ids) == 0)) {
+			$error['msg'] = "Select atleast one record to delete";
+		}
+		if (empty($error)) {
+			$m = 0;
+			foreach ($sub_location_ids as $data_d) {
+				$sql_dl = "UPDATE warehouse_sub_locations SET enabled = 0 WHERE id = '" . $data_d . "' ";
+				$ok = $db->query($conn, $sql_dl);
+				if ($ok) {
+					$m++;
+				}
+			}
+			if ($m > 0) {
+				$msg['msg_success'] = $m . " record has been deleted.";
+			}
+		}
+	}
+}
+
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -129,7 +153,7 @@ $page_heading 	= "List of " . $main_menu_name;
 									</div>
 								<?php } ?>
 								<br>
-								<form method="post" autocomplete="off" enctype="multipart/form-data"  action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
+								<form method="post" autocomplete="off" enctype="multipart/form-data" action="<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page); ?>">
 									<input type="hidden" name="is_Submit" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
 																						echo encrypt($_SESSION['csrf_session']);
@@ -204,117 +228,146 @@ $page_heading 	= "List of " . $main_menu_name;
 								</form>
 								<br>
 								<div class="row">
-									<div class="text_align_right">
-										<?php 
-										$table_columns	= array('SNo', 'Warehouse', 'Sub Location', 'Capacity','Purpose','Type','Phone Device','Actions');
-										$k 				= 0;
-										foreach($table_columns as $data_c1){?>
-											<label>
-												<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-												<span><?= $data_c1?></span>
-											</label>&nbsp;&nbsp;
-										<?php 
-											$k++;
-										}?> 
+									<div class="col m2 s12">
+										<label>
+											<input type="checkbox" id="all_checked" class="filled-in" name="all_checked" value="1" <?php if (isset($all_checked) && $all_checked == '1') {
+																																		echo "checked";
+																																	} ?> />
+											<span></span>
+										</label>
+									</div>
+									<div class="col m10 s12">
+										<div class="text_align_right">
+											<?php
+											$table_columns	= array('SNo', 'Warehouse', 'Sub Location', 'Capacity', 'Purpose', 'Type', 'Phone Device', 'Actions');
+											$k 				= 0;
+											foreach ($table_columns as $data_c1) { ?>
+												<label>
+													<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+													<span><?= $data_c1 ?></span>
+												</label>&nbsp;&nbsp;
+											<?php
+												$k++;
+											} ?>
+										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col s12">
-										<table id="page-length-option" class="display pagelength50_3">
-											<thead>
-												<tr>
+								<form class="infovalidate" action="" method="post">
+									<input type="hidden" name="is_Submit_del" value="Y" />
+									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+																						echo encrypt($_SESSION['csrf_session']);
+																					} ?>">
+									<div class="row">
+										<div class="col s12">
+											<table id="page-length-option" class="display pagelength50_3">
+												<thead>
+													<tr>
+														<?php
+														$headings = "";
+														foreach ($table_columns as $data_c) {
+															if ($data_c == 'SNo') {
+																$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+															} else {
+																$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
+															}
+														}
+														echo $headings;
+														?>
+
+													</tr>
+												</thead>
+												<tbody>
 													<?php
-													$headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+													$i = 0;
+													if ($count_cl > 0) {
+														$row_cl = $db->fetch($result_cl);
+														foreach ($row_cl as $data) {
+															$id = $data['id'];
+															$column_no = 0;  ?>
+															<tr>
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	echo $i + 1; ?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<label>
+																		<input type="checkbox" name="sub_location_ids[]" id="sub_location_ids[]" value="<?= $id; ?>" <?php
+																																										if (isset($sub_location_ids) && in_array($id, $sub_location_ids)) {
+																																											echo "checked";
+																																										} ?> class="checkbox filled-in" />
+																		<span></span>
+																	</label>
+																	<?php
+																	$column_no++;
+																	if ($data['warehouse_name'] != "") echo ucwords(strtolower($data['warehouse_name']));
+																	?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	if ($data['sub_location_name'] != "") echo ucwords(strtolower($data['sub_location_name']));
+																	?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	echo $data['total_capacity']; ?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	if ($data['purpose'] != "") echo ucwords(strtolower($data['purpose']));
+																	?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	if ($data['sub_location_type'] != "") echo ucwords(strtolower($data['sub_location_type'])); ?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	if ($data['is_mobile'] != "") echo ucwords(strtolower($data['is_mobile'])); ?>
+																</td>
+																<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																	<?php
+																	$column_no++;
+																	if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
+																			<i class="material-icons dp48">edit</i>
+																		</a> &nbsp;&nbsp;
+																	<?php }
+																	if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
+																			<i class="material-icons dp48">add</i>
+																		</a> &nbsp;&nbsp;
+																	<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
+																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
+																			<i class="material-icons dp48">delete</i>
+																		</a>&nbsp;&nbsp;
+																	<?php } ?>
+																</td>
+															</tr>
+													<?php $i++;
 														}
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
-													echo $headings;
-													?>
-													
-												</tr>
-											</thead>
-											<tbody>
-												<?php
-												$i = 0;
-												if ($count_cl > 0) {
-													$row_cl = $db->fetch($result_cl);
-													foreach ($row_cl as $data) {
-														$id = $data['id'];
-														$column_no = 0;  ?>
-														<tr>
-															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																echo $i + 1; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php
-																$column_no++;
-																if ($data['warehouse_name'] != "") echo ucwords(strtolower($data['warehouse_name'])); 
-																?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																if ($data['sub_location_name'] != "") echo ucwords(strtolower($data['sub_location_name'])); 
-																?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																echo $data['total_capacity']; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																if ($data['purpose'] != "") echo ucwords(strtolower($data['purpose'])); 
-																?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																if ($data['sub_location_type'] != "") echo ucwords(strtolower($data['sub_location_type'])); ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php 
-																$column_no++;
-																if ($data['is_mobile'] != "") echo ucwords(strtolower($data['is_mobile'])); ?>
-															</td>
-															<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]);?>">
-																<?php
-																$column_no++;
-																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
-																		<i class="material-icons dp48">edit</i>
-																	</a> &nbsp;&nbsp;
-																<?php }
-																if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
-																		<i class="material-icons dp48">add</i>
-																	</a> &nbsp;&nbsp;
-																<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
-																		<i class="material-icons dp48">delete</i>
-																	</a>&nbsp;&nbsp;
-																<?php } ?>
-															</td>
-														</tr>
-												<?php $i++;
-													}
-												} ?>
-											<tfoot>
-												<tr>
-													<?php echo $headings; ?>
-												</tr>
-											</tfoot>
-										</table>
+													} ?>
+												<tfoot>
+													<tr>
+														<?php echo $headings; ?>
+													</tr>
+												</tfoot>
+											</table>
+										</div>
 									</div>
-								</div>
+									<div class="row">
+										<div class="input-field col m12 s12 text_align_center">
+											<?php if (access("delete_perm") == 1 && isset($count_cl) && $count_cl > 0) { ?>
+												<button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deletepserial">Delete</button>
+											<?php } ?>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>

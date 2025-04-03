@@ -112,7 +112,7 @@ if (isset($_POST['is_Submit']) && $_POST['is_Submit'] == 'Y') {
 					$colno 			= 1;
 					foreach ($row11 as $cell_val) {
 						$field_names .= "column" . $colno . ", ";
-						$field_values .= "'" . $cell_val . "', ";
+						$field_values .= "'" . trim($cell_val) . "', ";
 						$colno++;
 					}
 					$total_columns_in_data = $colno - 1;
@@ -170,6 +170,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	$all_data = $modified_array;
 
 	if (isset($all_data)) {
+		/*
 		$sql_ee1 = " SELECT a.* FROM " . $master_table . " a  WHERE a.duplication_check_token = '" . $duplication_check_token . "' ";
 		// echo $sql_ee1;
 		$result_ee1 	= $db->query($conn, $sql_ee1);
@@ -177,6 +178,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		if ($counter_ee1 > 0) {
 			$error['msg'] = "Already imported.";
 		}
+		*/
 		if (empty($error)) {
 			if (po_permisions("Vendor Data") == 0) {
 				$error2['msg'] = "You do not have add permissions.";
@@ -215,9 +217,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$db->query($conn, $sql_del);
 
 					$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
-								WHERE po_id	= '" . $id . "' ";
+								 WHERE po_id	= '" . $id . "' ";
 					$db->query($conn, $sql_dup1);
-
+					$product_id_not_available = "";
 					foreach ($all_data  as $data1) {
 						$update_master = $columns = $column_data = $update_column = $po_detail_data =  $po_detail_column = $update_po_detail = "";
 						if (
@@ -233,154 +235,211 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$row1			= $db->fetch($result1);
 								$product_id2 	= $row1[0]['id'];
 
-								$overall_grade  = isset($data1['overall_grade']) ? $data1['overall_grade'] : '';
-								$status 		= isset($data1['status'])        ? $data1['status'] 	   : '';
-								$price 			= isset($data1['price'])		 ? $data1['price']		   : '';
-
-								$product_po_detail_id = $po_order_qty = 0;
-								$sql_po_d			= " SELECT a.* 
-														FROM purchase_order_detail a
-														LEFT JOIN inventory_status b ON b.id = a.expected_status 
-														WHERE 1=1
-														AND a.enabled = 1
-														AND a.product_id		= '" . $product_id2 . "'  ";
-								if ($overall_grade == "") {
-									$sql_po_d			.= " AND (a.product_condition = '' OR a.product_condition IS NULL)";
+								$do_not_import_row = 0;
+								if (
+									$data1['overall_grade'] == ''
+									|| $data1['overall_grade'] == NULL
+									|| $data1['overall_grade'] == '-'
+									|| $data1['overall_grade'] == 'blank'
+									|| $data1['overall_grade'] == 'N/A'
+									|| $data1['overall_grade'] == 'NA'
+									|| $data1['overall_grade'] == 'A'
+									|| $data1['overall_grade'] == 'B'
+									|| $data1['overall_grade'] == 'C'
+									|| $data1['overall_grade'] == 'D'
+								) {;
 								} else {
-									$sql_po_d			.= " AND a.product_condition = '" . $overall_grade . "'";
+									$do_not_import_row = 1;
+									if (!isset($error['msg'])) {
+										$error['msg'] = "The overall_grade of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> is invalid.";
+									} else {
+										$error['msg'] .= "<br>The overall_grade of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> is invalid.";
+									}
 								}
-								if ($status == "") {
-									$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
-								} else {
-									$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
-								}
-								if ($price == "") {
-									$sql_po_d			.= " AND (a.order_price = '' OR a.order_price IS NULL)";
-								} else {
-									$sql_po_d			.= " AND a.order_price 		= '" . $price . "'";
-								}
-								// echo "<br><br><br>" . $sql_po_d;
-								$sql_po_d			.= " AND a.po_id 			=  '" . $id . "' ";
-								$result_po_d		= $db->query($conn, $sql_po_d);
-								$count_po_d			= $db->counter($result_po_d);
-								if ($count_po_d > 0) {
-									$row_po_d				= $db->fetch($result_po_d);
-									$product_po_detail_id 	= $row_po_d[0]['id'];
-									$po_order_qty 			= $row_po_d[0]['order_qty'];
-								}
-
-								$vender_data_id = 0;
-								$sql1			= " SELECT * FROM " . $master_table . " 
-													WHERE  serial_no = '" . $data1['serial_no'] . "'
-													AND po_id =  '" . $id . "' ";
-								$result2		= $db->query($conn, $sql1);
-								$count2			= $db->counter($result2);
-								if ($count2 > 0) {
-									$row2			= $db->fetch($result2);
-									$vender_data_id = $row2[0]['id'];
-								}
-								foreach ($data1 as $key => $data) {
-									if ($key != "" && $key != 'is_insert') {
-										if ($data == '-' || $data == 'NA' || $data == 'N/A' || $data == 'blank') {
-											$data = "";
-										}
-										if ($key == 'product_id') {
-											$key2 = "product_uniqueid";
+								$count_defects_or_note = 0;
+								$field_name = "defects_or_notes";
+								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA') {
+									$sql_defects_or_note	= "SELECT * FROM defect_codes WHERE defect_code = '" . $data1[$field_name] . "' ";
+									$result_defects_or_note	= $db->query($conn, $sql_defects_or_note);
+									$count_defects_or_note	= $db->counter($result_defects_or_note);
+									if ($count_defects_or_note == 0) {
+										$do_not_import_row = 1;
+										if (!isset($error['msg'])) {
+											$error['msg'] = "The defective_code of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> does not exist in the system.";
 										} else {
-											$key2 = $key;
+											$error['msg'] .= "<br>The defective_code of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> does not exist in the system.";
 										}
-										$columns 		.= ", " . $key2;
-										$column_data 	.= ", '" . $data . "'";
+									}
+								}
+								$count_status = 0;
+								$field_name = "status";
+								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA') {
+									$sql_status		= "SELECT * FROM inventory_status WHERE status_name = '" . $data1[$field_name] . "' ";
+									$result_status	= $db->query($conn, $sql_status);
+									$count_status	= $db->counter($result_status);
+									if ($count_status == 0) {
+										$do_not_import_row = 1;
+										if (!isset($error['msg'])) {
+											$error['msg'] = "The status of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> does not exist in the system.";
+										} else {
+											$error['msg'] .= "<br>The status of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> does not exist in the system.";
+										}
+									}
+								}
+								if ($do_not_import_row == 0) {
 
-										$update_column	.= ", " . $key2 . " = '" . $data . "'";
-										if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price') {
+									$overall_grade  = isset($data1['overall_grade']) ? $data1['overall_grade'] : '';
+									$status 		= isset($data1['status'])        ? $data1['status'] 	   : '';
+									$price 			= isset($data1['price'])		 ? $data1['price']		   : '';
 
-											if ($key == 'price') {
-												$key = "order_price";
+									$product_po_detail_id = $po_order_qty = 0;
+									$sql_po_d			= " SELECT a.* 
+															FROM purchase_order_detail a
+															LEFT JOIN inventory_status b ON b.id = a.expected_status 
+															WHERE 1=1
+															AND a.enabled = 1
+															AND a.product_id		= '" . $product_id2 . "'  ";
+									if ($overall_grade == '-' || $overall_grade == 'NA' || $overall_grade == 'N/A' || $overall_grade == 'blank') {
+										$sql_po_d			.= " AND (a.product_condition = '' OR a.product_condition IS NULL)";
+									} else {
+										$sql_po_d			.= " AND a.product_condition = '" . $overall_grade . "'";
+									}
+									if ($status == '-' || $status == 'NA' || $status == 'N/A' || $status == 'blank') {
+										$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
+									} else {
+										$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
+									}
+									if ($price == '-' || $price == 'NA' || $price == 'N/A' || $price == 'blank') {
+										$sql_po_d			.= " AND (a.order_price = '' OR a.order_price IS NULL)";
+									} else {
+										$sql_po_d			.= " AND a.order_price 		= '" . $price . "'";
+									}
+									// echo "<br><br><br>" . $sql_po_d;
+									$sql_po_d			.= " AND a.po_id 			=  '" . $id . "' ";
+									$result_po_d		= $db->query($conn, $sql_po_d);
+									$count_po_d			= $db->counter($result_po_d);
+									if ($count_po_d > 0) {
+										$row_po_d				= $db->fetch($result_po_d);
+										$product_po_detail_id 	= $row_po_d[0]['id'];
+										$po_order_qty 			= $row_po_d[0]['order_qty'];
+									}
 
-												$po_detail_column	.= ", " . $key;
-												$po_detail_data		.= ", '" . $data . "'";
-												$update_po_detail	.= ", " . $key . " = '" . $data . "'";
-											} else if ($key == 'product_id') {
-												$data = $product_id2;
-												$po_detail_column	.= ", " . $key;
-												$po_detail_data		.= ", '" . $data . "'";
-												$update_po_detail	.= ", " . $key . " = '" . $data . "'";
-											} else if ($key == 'status') {
-												if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-													$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
-													$result1	= $db->query($conn, $sql1);
-													$count1		= $db->counter($result1);
-													if ($count1 > 0) {
-														$row1 = $db->fetch($result1);
+									$vender_data_id = 0;
+									$sql1			= " SELECT * FROM " . $master_table . " 
+														WHERE  serial_no = '" . $data1['serial_no'] . "'
+														AND po_id =  '" . $id . "' ";
+									$result2		= $db->query($conn, $sql1);
+									$count2			= $db->counter($result2);
+									if ($count2 > 0) {
+										$row2			= $db->fetch($result2);
+										$vender_data_id = $row2[0]['id'];
+									}
+									foreach ($data1 as $key => $data) {
+										if ($key != "" && $key != 'is_insert') {
+											if ($data == '-' || $data == 'NA' || $data == 'N/A' || $data == 'blank') {
+												$data = "";
+											}
+											if ($key == 'product_id') {
+												$key2 = "product_uniqueid";
+											} else {
+												$key2 = $key;
+											}
+											$columns 		.= ", " . $key2;
+											$column_data 	.= ", '" . $data . "'";
 
-														$po_detail_column	.= ", expected_status";
-														$po_detail_data 	.= ", '" . $row1[0]['id'] . "'";
-														$update_po_detail	.= ", expected_status = '" . $row1[0]['id'] . "'";
+											$update_column	.= ", " . $key2 . " = '" . $data . "'";
+											if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price') {
+
+												if ($key == 'price') {
+													$key = "order_price";
+
+													$po_detail_column	.= ", " . $key;
+													$po_detail_data		.= ", '" . $data . "'";
+													$update_po_detail	.= ", " . $key . " = '" . $data . "'";
+												} else if ($key == 'product_id') {
+													$data = $product_id2;
+													$po_detail_column	.= ", " . $key;
+													$po_detail_data		.= ", '" . $data . "'";
+													$update_po_detail	.= ", " . $key . " = '" . $data . "'";
+												} else if ($key == 'status') {
+													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+														$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
+														$result1	= $db->query($conn, $sql1);
+														$count1		= $db->counter($result1);
+														if ($count1 > 0) {
+															$row1 = $db->fetch($result1);
+
+															$po_detail_column	.= ", expected_status";
+															$po_detail_data 	.= ", '" . $row1[0]['id'] . "'";
+															$update_po_detail	.= ", expected_status = '" . $row1[0]['id'] . "'";
+														}
 													}
-												}
-											} else if ($key == 'overall_grade') {
-												$insert_db_field_id = "product_condition";
-												${$insert_db_field_id} = $data;
-												if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
-													$po_detail_column	.= ", " . $insert_db_field_id;
-													$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
-													$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+												} else if ($key == 'overall_grade') {
+													$insert_db_field_id = "product_condition";
+													${$insert_db_field_id} = $data;
+													if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
+														$po_detail_column	.= ", " . $insert_db_field_id;
+														$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
+														$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+													}
 												}
 											}
 										}
 									}
-								}
 
-								if (isset($ids_already) && isset($vender_data_id) && $vender_data_id > 0 && in_array($data1['serial_no'], $ids_already)) {
-									$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
-																										update_by 				= '" . $_SESSION['username'] . "', 
-																										update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
-																										update_ip 				= '" . $add_ip . "', 
-																										update_timezone 		= '" . $timezone . "', 
-																										update_from_module_id 	= '" . $module_id . "'
-																										" . $update_column . " 
-																										, enabled = '1' 
-											WHERE id 	= '" . $vender_data_id . "'
-											AND po_id 			= '" . $id . "' ";
-									// echo "<br><br>" . $sql6;
-									$ok = $db->query($conn, $sql6);
-									if ($ok) {
-										$added++;
+									if (isset($ids_already) && isset($vender_data_id) && $vender_data_id > 0 && in_array($data1['serial_no'], $ids_already)) {
+										$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
+																											update_by 				= '" . $_SESSION['username'] . "', 
+																											update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																											update_ip 				= '" . $add_ip . "', 
+																											update_timezone 		= '" . $timezone . "', 
+																											update_from_module_id 	= '" . $module_id . "'
+																											" . $update_column . " 
+																											, enabled = '1' 
+												WHERE id 	= '" . $vender_data_id . "'
+												AND po_id 			= '" . $id . "' ";
+										// echo "<br><br>" . $sql6;
+										$ok = $db->query($conn, $sql6);
+										if ($ok) {
+											$added++;
+										}
+									} else {
+										$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id, po_id " . $columns . ", duplication_check_token, add_date, add_by, add_ip)
+												VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+										// echo "<br><br>" . $sql6;
+										$ok = $db->query($conn, $sql6);
+										if ($ok) {
+											$added++;
+										}
 									}
-								} else {
-									$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id, po_id " . $columns . ", duplication_check_token, add_date, add_by, add_ip)
-											 VALUES('" . $subscriber_users_id . "', '" . $id . "' " . $column_data . ", '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
-									// echo "<br><br>" . $sql6;
-									$ok = $db->query($conn, $sql6);
-									if ($ok) {
-										$added++;
+									if ($count_po_d > 0) {
+										$sql6 = "UPDATE " . $selected_db_name . ".purchase_order_detail SET update_date 			= '" . $add_date . "', 
+																											update_by 				= '" . $_SESSION['username'] . "', 
+																											update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																											update_ip 				= '" . $add_ip . "', 
+																											update_timezone 		= '" . $timezone . "', 
+																											update_from_module_id 	= '" . $module_id . "',
+																											order_qty 				= '" . ($po_order_qty + 1) . "'
+																											" . $update_po_detail . " 
+																											, enabled = '1' 
+												WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
+										$db->query($conn, $sql6);
+									} else {
+										$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail(po_id " . $po_detail_column . ", order_qty, add_date, add_by, add_ip)
+												VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
+										$db->query($conn, $sql6);
 									}
-								}
-								if ($count_po_d > 0) {
-									$sql6 = "UPDATE " . $selected_db_name . ".purchase_order_detail SET update_date 			= '" . $add_date . "', 
-																										update_by 				= '" . $_SESSION['username'] . "', 
-																										update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
-																										update_ip 				= '" . $add_ip . "', 
-																										update_timezone 		= '" . $timezone . "', 
-																										update_from_module_id 	= '" . $module_id . "',
-																										order_qty 				= '" . ($po_order_qty + 1) . "'
-																										" . $update_po_detail . " 
-																										, enabled = '1' 
-											WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
-									$db->query($conn, $sql6);
-								} else {
-									$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail(po_id " . $po_detail_column . ", order_qty, add_date, add_by, add_ip)
-											 VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
-									$db->query($conn, $sql6);
 								}
 							} else {
-								if (!isset($error['msg'])) {
-									$error['msg'] = "This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system.";
-								} else {
-									$error['msg'] .= "<br>This <span class='color-blue'>" . $data1['product_id'] . "</span> is not in system.";
-								}
+								$product_id_not_available .= "<br>" . $data1['product_id'];
 							}
+						}
+					}
+					if (isset($product_id_not_available) && $product_id_not_available != "") {
+						if (!isset($error['msg'])) {
+							$error['msg'] = "<br>Following product id/ids is/are not in system <br><span class='color-blue'>" . $product_id_not_available . "</span>";
+						} else {
+							$error['msg'] .= "<br><br>Following product id/ids is/are not in system <span class='color-blue'>" . $product_id_not_available . "</span>";
 						}
 					}
 				}

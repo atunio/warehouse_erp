@@ -107,7 +107,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$k = 0;
 			foreach ($import_colums_uniq as $data2) {
 				if ($k == $j) {
-					$modified_array[$i][$data2] = $data;
+					$modified_array[$i][$data2] = trim($data);
 				}
 				$k++;
 			}
@@ -120,7 +120,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	$all_data = $modified_array;
 
 	if (empty($error)) {
-		$ids_already = array(); 
+		$ids_already = array();
 		if (isset($all_data) && sizeof($all_data) > 0) {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
@@ -134,10 +134,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
-					if ($count1 > 0) { 
+					if ($count1 > 0) {
 						$row_dp1 = $db->fetch($result1);
-						foreach($row_dp1 as $data_dp11){
- 							$ids_already[] = $duplicate_colum_values1; 
+						foreach ($row_dp1 as $data_dp11) {
+							$ids_already[] = $duplicate_colum_values1;
 						}
 						// if (!isset($error['msg'])) {
 						// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
@@ -147,7 +147,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					}
 				}
 			}
-			foreach ($all_data  as $data1) { 
+			foreach ($all_data  as $data1) {
 				if (isset($data1['product_id']) && $data1['product_id'] != '' && $data1['product_id'] != NULL && $data1['product_id'] != 'blank') {
 					$product_id2 	= $data1['product_id'];
 					$columns = $column_data = $update_column = "";
@@ -156,28 +156,26 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if ($data != "") { // ONLY IF one field 
 								$columns 		.= ", " . $key;
 								$column_data 	.= ", '" . $data . "'";
-								
 							}
 						}
-					} 
+					}
 					$update_column	.= ", enabled = '1'";
-					if(isset($ids_already) && isset($product_id2) && in_array($product_id2, $ids_already)){
-						if ($update_column != "" ) { // ONLY IF one field 
+					if (isset($ids_already) && isset($product_id2) && in_array($product_id2, $ids_already)) {
+						if ($update_column != "") { // ONLY IF one field 
 							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																								update_by 				= '" . $_SESSION['username'] . "', 
 																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
 																								update_ip 				= '" . $add_ip . "', 
 																								update_timezone 		= '" . $timezone . "', 
 																								update_from_module_id 	= '" . $module_id . "'
-																								".$update_column."
-									WHERE product_id 	= '".$product_id2."' "; //echo "<br><br>".$sql6;
+																								" . $update_column . "
+									WHERE product_id 	= '" . $product_id2 . "' "; //echo "<br><br>".$sql6;
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {
 								$added++;
 							}
 						}
-					}
-					else{
+					} else {
 						if ($columns != "" && $column_data != "") { // ONLY IF one field 
 							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
 									VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
@@ -211,9 +209,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -223,16 +221,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 									New
-								</a> 
+								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
+								</a>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
-		</div> 
+		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
 				<div class="card-content custom_padding_card_content_table_top">

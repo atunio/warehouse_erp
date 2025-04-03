@@ -451,9 +451,9 @@
                                                                 }
 
                                                                 $sql1       = " SELECT b.* FROM warehouse_sub_locations b 
-                                                                            WHERE b.enabled = 1 
-                                                                            AND purpose = 'Receiving'
-                                                                            ORDER BY b.sub_location_name ";
+                                                                                WHERE b.enabled = 1 
+                                                                                 AND b.purpose != 'Arrival'
+                                                                                ORDER BY b.sub_location_name ";
                                                                 $result1    = $db->query($conn, $sql1);
                                                                 $count1     = $db->counter($result1);
 
@@ -479,6 +479,9 @@
                                                                              <?php echo $data2['sub_location_name'];
                                                                                 if ($data2['sub_location_type'] != "") {
                                                                                     echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                                                }
+                                                                                if ($data2['purpose'] != "") {
+                                                                                    echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                                                 } ?>
                                                                          </option>
                                                                  <?php }
@@ -688,7 +691,7 @@
                                     $sql1           = " SELECT b.*
                                                         FROM warehouse_sub_locations  b
                                                         WHERE b.enabled = 1  
-                                                        AND purpose = 'Receiving'
+                                                        AND b.purpose != 'Arrival'
                                                         ORDER BY b.sub_location_name ";
                                     $result1        = $db->query($conn, $sql1);
                                     $count1         = $db->counter($result1);
@@ -709,6 +712,9 @@
                                                      <?php echo $data2['sub_location_name'];
                                                         if ($data2['sub_location_type'] != "") {
                                                             echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                        }
+                                                        if ($data2['purpose'] != "") {
+                                                            echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                         } ?>
                                                  </option>
                                          <?php }
@@ -983,7 +989,10 @@
                                      <?php
                                         $field_name     = "sub_location_id_manual";
                                         $field_label    = "Location";
-                                        $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
+                                        $sql1           = " SELECT * FROM warehouse_sub_locations a 
+                                                            WHERE a.enabled = 1 
+                                                            AND a.purpose != 'Arrival' 
+                                                            ORDER BY sub_location_name ";
                                         $result1        = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
                                         ?>
@@ -1001,6 +1010,9 @@
                                                          <?php echo $data2['sub_location_name'];
                                                             if ($data2['sub_location_type'] != "") {
                                                                 echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                            }
+                                                            if ($data2['purpose'] != "") {
+                                                                echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                             } ?>
                                                      </option>
                                              <?php }
@@ -1108,12 +1120,12 @@
                      <input type="hidden" name="active_tab" value="tab5" />
                      <?php
                         $sql        = " SELECT a.*, c.status_name, d.sub_location_name, d.sub_location_type
-                                            FROM purchase_order_detail_logistics a
-                                            LEFT JOIN inventory_status c ON c.id = a.logistics_status
-                                            LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
-                                            WHERE a.po_id = '" . $id . "'
-                                            AND a.arrived_date IS NOT NULL
-                                            ORDER BY a.tracking_no ";
+                                        FROM purchase_order_detail_logistics a
+                                        INNER JOIN purchase_order_detail_logistics_receiving a1 ON a1.logistics_id = a.id
+                                        LEFT JOIN inventory_status c ON c.id = a.logistics_status
+                                        LEFT JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
+                                        WHERE a.po_id = '" . $id . "'
+                                        ORDER BY a.tracking_no ";
                         // echo $sql; 
                         $result_log     = $db->query($conn, $sql);
                         $count_log      = $db->counter($result_log);
@@ -1216,10 +1228,12 @@
                                                                     if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                         $receiving_location_val = ${$field_name}[$detail_id_r1];
                                                                     }
-
-                                                                    $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
-                                                                    $result1        = $db->query($conn, $sql1);
-                                                                    $count1         = $db->counter($result1);
+                                                                    $sql1       = " SELECT * FROM warehouse_sub_locations a 
+                                                                                    WHERE a.enabled = 1 
+                                                                                    AND a.purpose != 'Arrival'
+                                                                                    ORDER BY a.sub_location_name ";
+                                                                    $result1    = $db->query($conn, $sql1);
+                                                                    $count1     = $db->counter($result1);
                                                                     ?>
                                                                  <span class="color-red"><?php
                                                                                             if (isset($error5[$field_name])) {
@@ -1238,6 +1252,9 @@
                                                                                  <?php echo $data2['sub_location_name'];
                                                                                     if ($data2['sub_location_type'] != "") {
                                                                                         echo " (" . ucwords(strtolower($data2['sub_location_type'])) . ")";
+                                                                                    }
+                                                                                    if ($data2['purpose'] != "") {
+                                                                                        echo " - " . ucwords(strtolower($data2['purpose'])) . "";
                                                                                     } ?>
                                                                              </option>
                                                                      <?php }
@@ -1568,7 +1585,7 @@
                 $td_padding = "padding:5px 10px !important;";
                 $sql            = " SELECT * FROM (
                                         SELECT 'ProductReceived' as record_type, 'PO Product' as product_type, '1' as total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
-                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, c.product_category, h.status_name
+                                        e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, c.product_category, h.status_name 
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN purchase_orders b1 ON b1.id = b.po_id
@@ -1585,7 +1602,7 @@
                                         UNION ALL
 
                                         SELECT 'ProductReceived' AS record_type, 'Added During Diagnostic' as product_type, '1' AS total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
-                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, c.product_category, h.status_name
+                                            e.first_name, e.middle_name, e.last_name, e.username, g.sub_location_name, g.sub_location_type, b1.is_pricing_done, c.product_category, h.status_name 
                                         FROM purchase_order_detail_receive a
                                         INNER JOIN purchase_orders b1 ON b1.id = a.po_id
                                         INNER JOIN products c ON c.id = a.product_id
@@ -1761,7 +1778,7 @@
                              <div class="col m10 s12">
                                  <div class="text_align_right">
                                      <?php
-                                        $table_columns    = array('SNo', '-', 'Type', 'Category', 'Product ID', 'Serial NO', 'Condition', 'Defective Note', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
+                                        $table_columns    = array('SNo', '-', 'Type', 'Category', 'Product ID', 'Serial NO', 'Status', 'Condition', 'Defective Note', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
                                         $k                 = 0;
                                         foreach ($table_columns as $data_c1) { ?>
                                          <label>
@@ -1880,6 +1897,12 @@
                                                              <?php
                                                                 $column_no++;
                                                                 echo $data['status_name'];
+                                                                ?>
+                                                         </td>
+                                                         <td class="col-<?= set_table_headings($table_columns[$column_no]); ?>" style="<?= $td_padding; ?>">
+                                                             <?php
+                                                                $column_no++;
+                                                                echo $data['overall_grade'];
                                                                 ?>
                                                          </td>
                                                          <td class="col-<?= set_table_headings($table_columns[$column_no]); ?>" style="<?= $td_padding; ?>">

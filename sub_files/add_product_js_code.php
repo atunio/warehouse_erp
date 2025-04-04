@@ -3,8 +3,9 @@
         var selected_product_id = $("#selected_product_id").val();
         var product_desc = $("#product_desc").val();
         var product_model_no = $("#product_model_no").val();
-        var product_category = $("#product_category option:selected").val();
-        var product_uniqueid = $("#product_uniqueid option:selected").val();
+
+        var product_category = $("#product_category_modal option:selected").val();
+        var product_uniqueid = $("#product_uniqueid_modal option:selected").val();
 
         var id = $("#id").val();
 

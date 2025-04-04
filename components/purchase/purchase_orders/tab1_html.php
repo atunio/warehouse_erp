@@ -315,18 +315,20 @@
                                             $order_qty[]            = $data2['order_qty'];
                                             $expected_status[]      = $data2['expected_status'];
                                         }
+                                        // echo "<br><br><br><pre>";
+                                        // echo print_r($product_ids);
                                     } else {
                                         if (isset($test_on_local) && $test_on_local == 1) {
-                                            $product_ids[]          = "2987";
-                                            $product_ids[]          = "2989";
-                                            $product_condition[]    = "A";
-                                            $product_condition[]    = "A";
-                                            $order_price[]          = "200";
-                                            $order_price[]          = "300";
-                                            $order_qty[]            = "5";
-                                            $order_qty[]            = "10";
-                                            $expected_status[]      = "5";
-                                            $expected_status[]      = "5";
+                                            // $product_ids[]          = "2987";
+                                            // $product_ids[]          = "2989";
+                                            // $product_condition[]    = "A";
+                                            // $product_condition[]    = "A";
+                                            // $order_price[]          = "200";
+                                            // $order_price[]          = "300";
+                                            // $order_qty[]            = "5";
+                                            // $order_qty[]            = "10";
+                                            // $expected_status[]      = "5";
+                                            // $expected_status[]      = "5";
                                         }
                                     }
                                 }
@@ -397,7 +399,11 @@
                                         $readonly = "readonly='readonly'";
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
-                                    for ($i = 1; $i <= 25; $i++) {
+                                    $max_products = 25;
+                                    if (isset($product_ids) && is_array($product_ids) && sizeof($product_ids) >= $max_products) {
+                                        $max_products = $max_products + 10;
+                                    }
+                                    for ($i = 1; $i <= $max_products; $i++) {
                                         $field_name     = "product_ids";
                                         $field_id       = "productids_" . $i;
                                         $field_label    = "Product";
@@ -482,10 +488,9 @@
                                                         $row1    = $db->fetch($result1);
                                                         foreach ($row1 as $data2) { ?>
                                                             <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>>
-                                                                <?php 
-                                                                echo $data2['product_uniqueid']; 
-                                                                echo isset($data2['category_name']) ? " (".$data2['category_name'] . ") " : '';
-                                                                echo isset($data2['product_desc']) ? " ".$data2['product_desc'] . "" : '';
+                                                                <?php
+                                                                echo $data2['product_uniqueid'];
+                                                                echo isset($data2['category_name']) ? " (" . $data2['category_name'] . ") " : '';
                                                                 ?>
                                                             </option>
                                                     <?php }
@@ -623,13 +628,14 @@
                                                                                                         echo sizeof($package_ids);
                                                                                                     } ?>">
                                         <?php
+                                        $package_detail = array();
                                         $disabled = $readonly = "";
-                                        if ((isset($order_status) && $order_status != 1 && $order_status != 4 && $order_status != 10 && $order_status != 12)) {
+                                        if (isset($stage_status) && $stage_status == "Committed") {
                                             $disabled = "disabled='disabled'";
                                             $readonly = "readonly='readonly'";
                                         }
                                         $sum_part_value = $sum_part_qty =  $sum_part_price = 0;
-                                        for ($i = 1; $i <= 10; $i++) {
+                                        for ($i = 1; $i <= 25; $i++) {
                                             $field_name     = "package_ids";
                                             $field_id       = "packageids_" . $i;
                                             $style_btn = '';
@@ -662,6 +668,25 @@
                                             $result1    = $db->query($conn, $sql1);
                                             $count1     = $db->counter($result1); ?>
                                             <tr class="dynamic-row-part" id="row_part_<?= $i; ?>" <?php echo $style; ?>>
+                                                <?php
+                                                if (isset(${$field_name}[$i - 1])) { ?>
+                                                    <input type="hidden" name="package_detail[<?= $i ?>][0]" Value="<?= ${$field_name}[$i - 1]; ?>" />
+                                                    <?php
+                                                    if (isset($order_part_price[$i - 1])) { ?>
+                                                        <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="<?= $order_part_price[$i - 1]; ?>" />
+                                                    <?php
+                                                    } else { ?>
+                                                        <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="" />
+                                                    <?php
+                                                    }
+                                                    if (isset($order_part_qty[$i - 1])) { ?>
+                                                        <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="<?= $order_part_qty[$i - 1]; ?>" />
+                                                    <?php
+                                                    } else { ?>
+                                                        <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="" />
+                                                <?php
+                                                    }
+                                                } ?>
                                                 <td>
                                                     <select <?php echo $disabled;
                                                             echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?= $field_name ?>_<?= $i ?>">
@@ -672,7 +697,7 @@
                                                             foreach ($row1 as $data2) { ?>
                                                                 <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
                                                                                                                                                                                                                                                                                                                         echo "SKU Code: " . $data2['sku_code'];
-                                                                                                                                                                                                                                                                                                                    } ?>, Compatible Products: <?php echo $data2['product_uniqueids']; ?></option>
+                                                                                                                                                                                                                                                                                                                    } ?></option>
                                                         <?php }
                                                         } ?>
                                                         <option value="package_add_modal">+Add New Package/Part</option>
@@ -710,7 +735,6 @@
                                                         if (isset($order_part_qty[$i - 1]) && isset($order_part_price[$i - 1])) {
                                                             $part_value =  ($order_part_price[$i - 1] * $order_part_qty[$i - 1]);
                                                             $sum_part_price += $order_part_price[$i - 1];
-                                                            $sum_part_qty   += $order_part_qty[$i - 1];
                                                         }
                                                         echo number_format($part_value, 2);
                                                         $sum_part_value += $part_value; ?>

@@ -15,6 +15,8 @@
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo date('YmdHis');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">
@@ -29,13 +31,15 @@
         </div>
         <div class="input-field col m6 s12">
             <input type="hidden" name="module_id" id="module_id" value="<?= $module_id; ?>">
-            <?php 
+            <?php
             $field_name     = "sku_code_modal";
             $field_label     = "SKU Code";
             ?>
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo date('YmdHis');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">
@@ -50,13 +54,15 @@
         </div>
         <div class="input-field col m6 s12">
             <input type="hidden" name="module_id" id="module_id" value="<?= $module_id; ?>">
-            <?php 
+            <?php
             $field_name     = "case_pack_modal";
             $field_label     = "Case Pack";
             ?>
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo date('10');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">
@@ -78,15 +84,17 @@
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo "Desc " . date('YmdHis');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">
             <label for="<?= $field_name; ?>">
                 <?= $field_label; ?>
                 <span class="color-red"><?php
-                                            if (isset($error[$field_name])) {
-                                                echo $error[$field_name];
-                                            } ?>
+                                        if (isset($error[$field_name])) {
+                                            echo $error[$field_name];
+                                        } ?>
                 </span>
             </label>
         </div>
@@ -106,8 +114,8 @@
             <i class="material-icons prefix">question_answer</i>
             <div class="select2div">
                 <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="category_id_modal validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                } ?>">
+                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                } ?>">
                     <option value="">Select</option>
                     <?php
                     if ($count1 > 0) {
@@ -129,7 +137,7 @@
         </div>
         <div class="input-field col m6 s12">
             <?php
-            $field_name     = "product_id_modal";
+            $field_name     = "product_id_pkg_modal";
             $field_label    = "Product ID";
             $sql1           = "SELECT a.*, b.category_name
                                 FROM products a
@@ -142,8 +150,8 @@
             <i class="material-icons prefix">question_answer</i>
             <div class="select2div">
                 <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="product_id_modal validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                } ?>">
+                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                } ?>">
                     <option value="">Select</option>
                     <?php
                     if ($count1 > 0) {

@@ -38,32 +38,31 @@
                 </label>
             </div>
         </div>
-
         <div class="input-field col m6 s12">
             <?php
             $field_name     = "product_category_modal";
-            $field_label     = "Category";
-            $sql1             = "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
-            $result1         = $db->query($conn, $sql1);
+            $field_label    = "Category";
+            $sql1           = "SELECT * FROM product_categories WHERE enabled = 1 AND category_type = 'Device' ORDER BY category_name ";
+            $result1        = $db->query($conn, $sql1);
             $count1         = $db->counter($result1);
             ?>
             <i class="material-icons prefix">question_answer</i>
             <div class="select2div">
-                <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" validate  <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                } ?>">
+                <select2 id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="category_id_modal validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                } ?>">
                     <option value="">Select</option>
                     <?php
                     if ($count1 > 0) {
                         $row1    = $db->fetch($result1);
                         foreach ($row1 as $data2) { ?>
-                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['category_name']; ?></option>
+                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>> <?php echo $data2['category_name']; ?></option>
                     <?php }
                     } ?>
                 </select2>
                 <label for="<?= $field_name; ?>">
                     <?= $field_label; ?>
-                    <span class="color-red">* <?php
+                    <span class="color-red"> * <?php
                                                 if (isset($error[$field_name])) {
                                                     echo $error[$field_name];
                                                 } ?>
@@ -71,7 +70,7 @@
                 </label>
             </div>
         </div>
-        <div class="input-field col m8 s12">
+        <div class="input-field col m6 s12">
             <?php
             $field_name     = "product_desc";
             $field_label     = "Product Descripton";
@@ -79,6 +78,8 @@
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo "Desc " . date('YmdHis');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">
@@ -91,7 +92,7 @@
                 </span>
             </label>
         </div>
-        <div class="input-field col m4 s12">
+        <div class="input-field col m6 s12">
             <?php
             $field_name     = "product_model_no";
             $field_label     = "Model#";
@@ -99,6 +100,8 @@
             <i class="material-icons prefix">description</i>
             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                 echo ${$field_name};
+                                                                                            } else if (isset($test_on_local) && $test_on_local == 1) {
+                                                                                                echo "MD" . date('YmdHis');
                                                                                             } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                     } ?>">

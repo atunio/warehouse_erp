@@ -5,9 +5,11 @@
         var address = $("#address").val();
         var note_about_vender = $("#note_about_vender").val();
         var warranty_period_in_days = $("#warranty_period_in_days").val();
-        var cmd = $("#cmd").val();
         var id = $("#id").val();
-        var dataString = 'type=add_vender&vender_name=' + vender_name + '&phone_no=' + phone_no + '&address=' + address + '&warranty_period_in_days=' + warranty_period_in_days + '&note_about_vender=' + note_about_vender + '&cmd=' + cmd + '&id=' + id;
+        var vender_type = $("#vender_type_id").val();
+        var purchasing_agent_id = $("#purchasing_agent_id_modal option:selected").val();
+
+        var dataString = 'type=add_vender&vender_name=' + vender_name + '&purchasing_agent_id=' + purchasing_agent_id + '&vender_type=' + vender_type + '&phone_no=' + phone_no + '&address=' + address + '&warranty_period_in_days=' + warranty_period_in_days + '&note_about_vender=' + note_about_vender + '&id=' + id;
         $.ajax({
             type: "POST",
             url: "ajax/ajax_add_entries.php",

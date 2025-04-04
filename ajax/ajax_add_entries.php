@@ -64,7 +64,7 @@ switch ($type) {
                 $ok = $db->query($conn, $sql);
                 if ($ok) {
                     $product_id = mysqli_insert_id($conn);
-                    echo '<option value="' . $product_id . '" selected="selected">' . $product_uniqueid . ' (' . $category_name . ') - ' . $product_desc . '</option>';
+                    echo '<option value="' . $product_id . '" selected="selected">' . $product_uniqueid . ' (' . $category_name . ')</option>';
                 } else {
                     echo "Fail";
                 }
@@ -76,7 +76,6 @@ switch ($type) {
 
                 $text_return        = $product_uniqueid;
                 $text_return        .= isset($category_name) ? " (" . $category_name . ") " : '';
-                $text_return        .= isset($product_desc) ? " - " . $product_desc . "" : '';
 
                 echo '<option value="' . $product_id . '" selected="selected">' . $text_return . '</option>';
             }
@@ -207,14 +206,14 @@ switch ($type) {
         if ($vender_name != "" && $phone_no != "") {
             $vender_name = ucwords(strtolower($vender_name));
             $count  = 0;
-            $sql = "    SELECT a.* FROM venders a 
-                            WHERE a.vender_name	= '" . $vender_name . "'
-                            AND a.phone_no		= '" . $phone_no . "'  ";
+            $sql    = " SELECT a.* FROM venders a 
+                        WHERE a.vender_name	= '" . $vender_name . "'
+                        AND a.phone_no		= '" . $phone_no . "'  ";
             $result = $db->query($conn, $sql);
             $count  = $db->counter($result);
             if ($count == 0) {
-                $sql    = "INSERT INTO venders(subscriber_users_id, vender_name, phone_no, `address`, note_about_vender,warranty_period_in_days, add_date, add_by, add_ip)
-                                VALUES('" . $subscriber_users_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $note_about_vender . "', '" . $warranty_period_in_days . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+                $sql    = "INSERT INTO venders(subscriber_users_id, purchasing_agent_id, vender_name, phone_no,  `address`, vender_type, note_about_vender, warranty_period_in_days, add_date, add_by, add_ip)
+                            VALUES('" . $subscriber_users_id . "', '" . $purchasing_agent_id . "', '" . $vender_name . "', '" . $phone_no . "', '" . $address . "', '" . $vender_type . "', '" . $note_about_vender . "', '" . $warranty_period_in_days . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
                 $ok     = $db->query($conn, $sql);
                 if ($ok) {
                     $vender_id          = mysqli_insert_id($conn);
@@ -323,14 +322,14 @@ switch ($type) {
             $count  = $db->counter($result);
             if ($count == 0) {
                 $sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id, product_ids,  package_name, sku_code, case_pack, pack_desc, product_category, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id )
-                        VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $sku_code  . "', '" . $case_pack  . "', '" . $pack_desc  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+                         VALUES('" . $subscriber_users_id . "', '" . $product_id . "',  '" . $package_name  . "', '" . $sku_code  . "', '" . $case_pack  . "', '" . $pack_desc  . "', '" . $product_category . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                 $ok = $db->query($conn, $sql6);
                 if ($ok) {
                     $package_id         = mysqli_insert_id($conn);
                     $package_no         = "Pkg" . $package_id;
                     $sql6               = "UPDATE packages SET package_no = '" . $package_no . "' WHERE id = '" . $package_id . "' ";
                     $db->query($conn, $sql6);
-                    echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
+                    echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ') - SKU Code: ' . $sku_code . '</option>';
                 } else {
                     echo "Fail";
                 }
@@ -339,7 +338,7 @@ switch ($type) {
                 $package_id     = $row[0]['id'];
                 $package_name   = $row[0]['package_name'];
                 $category_name  = $row[0]['category_name'];
-                echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ')</option>';
+                echo '<option value="' . $package_id . '" selected="selected">' . $package_name . ' (' . $category_name . ') - SKU Code: ' . $sku_code . '</option>';
             }
         } else {
             echo 'Select';

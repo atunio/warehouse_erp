@@ -241,7 +241,7 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 			$device_processing_labor = 0;
 
 			$sql_ee						= " SELECT a.*, b.product_uniqueid, b.product_desc, b.detail_desc, c.sub_location_name, f.po_no, f.po_date
-											FROM product_stock a
+											FROM product_stock a 
 											INNER JOIN products b ON b.id = a.product_id 
 											LEFT JOIN warehouse_sub_locations c ON c.id = a.sub_location 
 											INNER JOIN purchase_order_detail_receive d ON d.id = a.receive_id
@@ -275,6 +275,7 @@ if (isset($is_Submit2_2) && $is_Submit2_2 == 'Y') {
 				begin_transaction($conn);
 				$sql_c_up	= "	UPDATE product_stock a
 														SET	a.finale_product_unique_id 		= '" . $finale_product_unique_id . "',
+															a.is_sticker					= '" . $is_sticker . "',
 															a.is_move_finale				= '1', 
 															a.price_finale					= '" . $total_price . "',
 															a.finale_condition				= '" . $finale_condition . "',
@@ -874,12 +875,13 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2_2" value="Y" />
 							<div class="row">
-								<div class="input-field col m8 s12">
+								<div class="input-field col m12 s12">
 									<?php
 									$field_name 	= "stock_id";
 									$field_label 	= "Product";
-									$sql1 			= " SELECT a1.id, a1.serial_no, a.product_uniqueid, a.product_desc, b.category_name,
-																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade, a1.battery_percentage
+									$sql1 			= " SELECT a1.id, a1.serial_no, 
+																a1.body_grade, a1.lcd_grade, a1.digitizer_grade, a1.stock_grade, a1.battery_percentage, 
+																a.product_uniqueid, a.product_desc, b.category_name
 														FROM product_stock a1
 														INNER JOIN products a ON a.id = a1.product_id
 														INNER JOIN product_categories b ON b.id = a.product_category
@@ -930,7 +932,9 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 									$field_name = "stock_id_for_package_material"; ?>
 									<input type="hidden" name="<?= $field_name ?>" id="<?= $field_name ?>" value="" />
 								</div>
-								<div class="input-field col m2 s12">
+							</div><br>
+							<div class="row">
+								<div class="input-field col m4 s12">
 									<?php
 									$field_name 	= "finale_condition";
 									$field_label	= "Finale Condition";
@@ -958,7 +962,35 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 										</label>
 									</div>
 								</div>
-								<div class="input-field col m2 s12">
+								<div class="input-field col m4 s12">
+									<?php
+									$field_name 	= "is_sticker";
+									$field_label	= "Sticker";
+									?>
+									<i class="material-icons prefix">subtitles</i>
+									<div class="select2div">
+										<select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {  //a.product_sku, a.case_pack,a.pack_desc, b.category_name, c.total_stock
+																																											echo ${$field_name . "_valid"};
+																																										} ?>">
+
+											<option value="No" <?php if (isset(${$field_name}) && ${$field_name} == 'No') { ?> selected="selected" <?php } ?>>
+												No
+											</option>
+											<option value="Yes" <?php if (isset(${$field_name}) && ${$field_name} == 'Yes') { ?> selected="selected" <?php } ?>>
+												Yes
+											</option>
+										</select>
+										<label for="<?= $field_name; ?>">
+											<?= $field_label; ?>
+											<span class="color-red"> * <?php
+																		if (isset($error2[$field_name])) {
+																			echo $error2[$field_name];
+																		} ?>
+											</span>
+										</label>
+									</div>
+								</div>
+								<div class="input-field col m4 s12">
 									<?php
 									$field_name  = "custom_product_id";
 									$field_label = "Custom Product ID";

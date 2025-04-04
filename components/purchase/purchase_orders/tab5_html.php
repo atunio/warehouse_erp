@@ -334,7 +334,12 @@
                  <div class="card-panel custom_padding_card_content_table_top_bottom">
                      <div class="row">
                          <div class="col m6 s12">
-                             <h6>Receive by Category</h6>
+                             <h6>
+                                 Receive by Category
+                                 <?php if ($is_tested_po == 'Yes') { ?>
+                                     <span class="color-red">(Recommended)</span>
+                                 <?php } ?>
+                             </h6>
                          </div>
                          <div class="col m6 s12 show_receive_as_category_show_btn" style="<?php if (isset($is_Submit_tab5) && $is_Submit_tab5 == 'Y') {
                                                                                                 echo "display: none;";
@@ -661,7 +666,12 @@
                  <div class="card-panel custom_padding_card_content_table_top_bottom">
                      <div class="row">
                          <div class="col m6 s12">
-                             <h6>Receive from BarCode</h6>
+                             <h6>
+                                 Receive from BarCode
+                                 <?php if ($is_tested_po == 'No' && isset($total_vender_date) && $total_vender_date > 0) { ?>
+                                     <span class="color-red">(Recommended)</span>
+                                 <?php } ?>
+                             </h6>
                          </div>
                          <div class="col m6 s12 show_receive_from_barcode_show_btn" style="<?php if (isset($is_Submit_tab5_2) && $is_Submit_tab5_2 == 'Y') {
                                                                                                 echo "display: none;";

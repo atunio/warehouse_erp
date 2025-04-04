@@ -20,7 +20,6 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-
 $supported_column_titles 	= array("purpose", "sub_location_name", "sub_location_type", "is_mobile");
 $duplication_columns 		= array("sub_location_name");
 $required_columns 			= array("sub_location_name");

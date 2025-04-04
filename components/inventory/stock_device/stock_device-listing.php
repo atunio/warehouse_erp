@@ -66,7 +66,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							INNER JOIN products c ON c.id = c1.`product_id`
 							LEFT JOIN product_categories d ON d.id = c.`product_category`
 							INNER JOIN inventory_status e ON e.id = a.order_status
-							WHERE a.enabled = 1
+							WHERE a.enabled = 1 AND c1.enabled = 1 AND b.enabled = 1
 							AND a.order_status IN (3, 5, 6)
 							AND a.is_pricing_done = 0
 							AND b.is_rma_processed = 0
@@ -89,7 +89,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							INNER JOIN products c ON c.id = b.`product_id`
 							LEFT JOIN product_categories d ON  d.id = c.`product_category`
 							INNER JOIN inventory_status e ON e.id = a.order_status
-							WHERE a.enabled = 1
+							WHERE a.enabled = 1 AND b.enabled = 1
 							AND order_status IN(3, 5, 6)
 							AND a.is_pricing_done = 0
 							AND b.received_during != 'BarCodeReceive'
@@ -118,7 +118,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							INNER JOIN products c ON c.id = b.`product_id`
 							LEFT JOIN product_categories d ON  d.id = c.`product_category`
 							INNER JOIN inventory_status e ON e.id = a.order_status
-							WHERE a.enabled = 1 
+							WHERE a.enabled = 1 AND b.enabled = 1
 							AND b.order_qty > 0 
 							AND a.is_pricing_done = 0
 							GROUP BY b.product_id, b.po_id 
@@ -604,7 +604,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN warehouse_sub_locations f ON f.id = b.sub_location_id
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND c1.enabled = 1 AND b.enabled = 1
 																					AND a.order_status IN (3, 5, 6)
 																					AND a.is_pricing_done = 0
 																					AND b.received_during != 'BarCodeReceive'
@@ -623,7 +623,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN warehouse_sub_locations f ON f.id = b.sub_location_id
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND order_status IN(3, 5, 6)
 																					AND a.is_pricing_done = 0
 																					AND b.received_during != 'BarCodeReceive'
@@ -652,7 +652,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN products c ON c.id = b.product_id
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND b.order_qty > 0 
 																					AND a.is_pricing_done = 0
 																					GROUP BY b.product_id, b.po_id
@@ -732,7 +732,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN warehouse_sub_locations f ON f.id = b.sub_location_id
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND c1.enabled = 1 AND b.enabled = 1
 																					AND a.order_status IN (3, 5, 6)
 																					AND a.is_pricing_done = 0
 																					AND b.is_rma_processed = 0
@@ -751,7 +751,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN warehouse_sub_locations f ON f.id = b.sub_location_id
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND order_status IN(3, 5, 6)
 																					AND a.is_pricing_done = 0
 																					AND b.received_during != 'BarCodeReceive'
@@ -780,7 +780,7 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN products c ON c.id = b.product_id
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN inventory_status e ON e.id = a.order_status
-																					WHERE a.enabled = 1
+																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND b.order_qty > 0 
 																					AND a.is_pricing_done = 0
 																					GROUP BY b.product_id, b.po_id

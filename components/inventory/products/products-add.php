@@ -406,7 +406,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 						</div>
 						<div class="row">
-							<div class="input-field col m8 s12">
+							<div class="input-field col m6 s12">
 								<?php
 								$field_name 	= "product_desc";
 								$field_label 	= "Product Descripton";

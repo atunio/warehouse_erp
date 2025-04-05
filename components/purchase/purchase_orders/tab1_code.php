@@ -13,7 +13,7 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$vender_invoice_no			= date('YmdHis');
 	$order_status 				= 1;
 	$stage_status           	= "Draft";
-	echo "<br><br><br><br><br><br><br>";
+	//echo "<br><br><br><br><br><br><br>";
 }
 
 $db 					= new mySqlDB;
@@ -64,6 +64,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$order_qty 				= [];
 	$expected_status		= [];
 	$product_ids			= [];
+	$invoice_no				= [];
 
 	$sql_ee1	= "SELECT a.* FROM purchase_order_detail a WHERE a.enabled = 1 AND a.po_id = '" . $id . "' ";
 	$result_ee1	= $db->query($conn, $sql_ee1);
@@ -77,6 +78,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 			$order_qty[]			= $data2['order_qty'];
 			$product_ids[]			= $data2['product_id'];
 			$expected_status[]		= $data2['expected_status'];
+			$invoice_no[]			= $data2['invoice_no'];
 		}
 	}
 
@@ -295,9 +297,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$all_matches_po_detail_ids = implode(",", $matches_po_detail_ids);
 			}
 
-			$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
-						WHERE po_id	= '" . $id . "' 
-						AND product_id NOT IN(" . $all_matches_po_detail_ids . ") ";
+			$sql_dup1 = "UPDATE purchase_order_detail a
+						 LEFT JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+							SET a.enabled = 0 
+						WHERE a.po_id	= '" . $id . "' 
+						AND IFNULL(b.id, 0) = 0
+						AND a.id NOT IN(" . $all_matches_po_detail_ids . ") ";
 			$db->query($conn, $sql_dup1);
 
 			$i = 0; // Initialize the counter before the loop
@@ -316,6 +321,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$expected_status[$i] 	= isset($expected_status[$i]) ? $expected_status[$i] : "";
 					$order_price[$i] 		= isset($order_price[$i]) ? $order_price[$i] : "";
 					$order_qty[$i] 			= isset($order_qty[$i]) ? $order_qty[$i] : "";
+					$invoice_no[$i]			= isset($invoice_no[$i]) ? $invoice_no[$i] : "";
 
 					$sql_dup 	= " SELECT a.* FROM purchase_order_detail a 
 									WHERE a.enabled 			= 1
@@ -336,6 +342,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																				order_price			= '" . $order_price[$i] . "',
 																				product_condition	= '" . $product_condition[$i] . "',
 																				expected_status		= '" . $expected_status[$i] . "',
+																				invoice_no			= '" . $invoice_no[$i] . "',
 																				enabled				= '1',
 																				
 																				update_timezone	= '" . $timezone . "',
@@ -351,11 +358,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$order_price[$i] 			= "";
 						$order_qty[$i] 				= "";
 						$expected_status[$i] 		= "";
+						$invoice_no[$i] 			= "";
 						$i++;
 					} else {
 						// Check if all required array elements exist
-						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, product_id, order_qty, order_price, product_condition, expected_status , add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "','" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail (po_id, invoice_no, product_id, order_qty, order_price, product_condition, expected_status, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+								 VALUES ('" . $id . "', '" . $invoice_no[$i] . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $product_condition[$i] . "', '" . $expected_status[$i] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$k++; // Increment the counter only if the insertion is successful
@@ -470,6 +478,36 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		} else {
 			if (isset($error2['msg'])) unset($error2['msg']);
 			$msg2['msg_success'] = "Record has been added successfully.";
+		}
+
+		if (isset($stage_status) && $stage_status != "Committed") {
+			$sql_msg 	= " SELECT DISTINCT c.product_uniqueid, a.product_condition, a.order_price, d.status_name
+							FROM purchase_order_detail a
+							INNER JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+							INNER JOIN products c ON c.id = a.product_id
+							LEFT JOIN inventory_status d ON d.id = a.expected_status
+							WHERE a.po_id	= '" . $id . "'
+							AND IFNULL(b.id, 0) > 0
+							AND a.enabled = 1 AND b.enabled = 1
+							AND a.id NOT IN(" . $all_matches_po_detail_ids . ") ";
+			// echo "<br><br><br><br>" . $sql_msg;
+			$result_msg	= $db->query($conn, $sql_msg);
+			$count_msg 	= $db->counter($result_msg);
+			if ($count_msg > 0) {
+				if (isset($error2['msg'])) {
+					$error2['msg'] .= "<br>The product/s with following detail already has/have been recieved, Please remove receiving before removing from PO:<br>";
+				} else {
+					$error2['msg'] = "<br>The product/s with following detail already has/have been recieved, Please remove receiving before removing from PO:<br>";
+				}
+				$row_msg = $db->fetch($result_msg);
+				foreach ($row_msg as $data_msg) {
+					$product_uniqueid_msg	= $data_msg['product_uniqueid'];
+					$status_name_msg		= $data_msg['status_name'];
+					$product_condition_msg	= $data_msg['product_condition'];
+					$order_price_msg		= $data_msg['order_price'];
+					$error2['msg'] .= "<br>Product ID: " . $product_uniqueid_msg . ", Price: " . $order_price_msg . ", Condition: " . $product_condition_msg . ", Status: " . $status_name_msg;
+				}
+			}
 		}
 	}
 }

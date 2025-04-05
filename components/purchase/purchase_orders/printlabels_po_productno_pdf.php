@@ -75,8 +75,9 @@ $sql_ee1 = "SELECT DISTINCT b2.po_no, a.po_detail_id, c.product_desc, c.product_
 			INNER JOIN purchase_orders b2 ON b2.id = b.po_id
 			INNER JOIN products c ON c.id = b.product_id
 			LEFT JOIN product_categories d ON d.id =c.product_category
-			WHERE a.enabled = 1 
-			AND a.po_detail_id = '" . $detail_id . "'
+			WHERE a.enabled 	= 1
+			AND b.enabled 		= 1
+			AND a.po_detail_id 	= '" . $detail_id . "'
 			GROUP BY a.po_detail_id
 			ORDER BY a.po_detail_id ";
 $result_ee1 	= $db->query($conn, $sql_ee1);

@@ -85,8 +85,9 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 				LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
 				INNER JOIN product_categories d ON d.id = c.product_category  
 				LEFT JOIN venders f ON f.id = b1.vender_id
-				WHERE a.enabled = 1 
-				AND b.po_id = '" . $id . "'
+				WHERE a.enabled = 1
+				AND b.enabled 	= 1
+				AND b.po_id 	= '" . $id . "'
 				AND a.`receive_type` != 'CateogryReceived'
 				GROUP BY c.product_category, a.sub_location_id
 
@@ -98,7 +99,8 @@ $sql_ee1 = " SELECT po_no, vender_name, sub_location_id, sub_location_name, sub_
 				INNER JOIN product_categories d ON d.id = a.recevied_product_category  
 				LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
 				LEFT JOIN venders f ON f.id = b1.vender_id
-				WHERE a.po_id = '" . $id . "'
+				WHERE a.po_id 	= '" . $id . "'
+				AND a.enabled 	= 1
 				GROUP BY a.recevied_product_category, a.sub_location_id
 			) AS t1
 			WHERE product_category 	=  '" . $product_category . "'

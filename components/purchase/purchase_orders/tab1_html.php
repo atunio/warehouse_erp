@@ -299,6 +299,7 @@
                                     unset($order_price);
                                     unset($order_qty);
                                     unset($expected_status);
+                                    unset($invoice_no);
 
                                     $sql_ee1    = " SELECT a.* FROM purchase_order_detail a
                                                     WHERE a.po_id = '" . $id . "' 
@@ -314,6 +315,7 @@
                                             $order_price[]          = $data2['order_price'];
                                             $order_qty[]            = $data2['order_qty'];
                                             $expected_status[]      = $data2['expected_status'];
+                                            $invoice_no[]           = $data2['invoice_no'];
                                         }
                                         // echo "<br><br><br><pre>";
                                         // echo print_r($product_ids);
@@ -375,6 +377,7 @@
                                                     </a>
                                                 <?php } ?>
                                         </th>
+                                        <th style="width: 120px;">Invoice#</th>
                                         <th style="width: 100px;">Pkg Stock</th>
                                         <th style="width: 120px;">Pkg Needed</th>
                                         <th style="width: 100px;">Qty</th>
@@ -497,6 +500,17 @@
                                                     } ?>
                                                     <option value="product_add_modal">+Add New Product</option>
                                                 </select>
+                                            </td>
+                                            <td>
+                                                <?php
+                                                $field_name     = "invoice_no";
+                                                $field_id       = "invoiceno_" . $i;
+                                                $field_label     = "Invoice#";
+                                                ?>
+                                                <input <?php echo $disabled;
+                                                        echo $readonly; ?> name="<?= $field_name; ?>[]" type="text" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                        echo ${$field_name}[$i - 1];
+                                                                                                                                                    } ?>" class="validate custom_input invoice_no">
                                             </td>
                                             <td><span id="pkg_stock_of_product_<?= $i; ?>"><?php if ($pkg_stock_in_hand > 0) echo $pkg_stock_in_hand; ?></span></td>
                                             <td><span id="pkg_stock_of_product_needed_<?= $i; ?>"><?php echo $pkg_stock_of_product_needed > 0 ? $pkg_stock_of_product_needed : "0"; ?></span></td>

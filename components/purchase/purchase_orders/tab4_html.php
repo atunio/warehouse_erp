@@ -3,6 +3,8 @@
                                     } else {
                                         echo "none";
                                     } ?>;">
+
+    <table id="page-length-option"></table>
     <div class="card-panel" style="padding-top: 5px; padding-bottom: 5px; margin-top: 0px; margin-bottom: 5px;">
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
@@ -79,45 +81,105 @@
                         </div> <br>
                     <?php } ?>
                 </div>
+
                 <div class="row">
-                    <div class="col m12 s12">
-                        <table class="display nowrap bordered">
-                            <thead>
-                                <tr>
+                    <div class="col m2 s12">
+                        <label>
+                            <input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
+                                                                                                                            echo "checked";
+                                                                                                                        } ?> />
+                            <span></span>
+                        </label>
+                    </div>
+                    <div class="col m10 s12">
+                        <div class="text_align_right">
+                            <?php
+                            $table_columns    = array('SNo', 'InvoiceNo', 'Product ID', 'SerialNO', 'Overall Grade', 'Defects Or Notes', 'Status', 'Price');
+                            $k                 = 0;
+                            foreach ($table_columns as $data_c1) { ?>
+                                <label>
+                                    <input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+                                    <span><?= $data_c1 ?></span>
+                                </label>&nbsp;&nbsp;
+                            <?php
+                                $k++;
+                            } ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section-data-tables">
+                    <div class="row">
+                        <div class="col m12 s12">
+                            <table id="page-length-option" class="display simpledatatable_pagelength1000_1">
+                                <thead>
+                                    <tr>
+                                        <?php
+                                        $headings = "";
+                                        foreach ($table_columns as $data_c) {
+                                            if ($data_c == 'SNo') {
+                                                $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                            } else if ($data_c == '-') {
+                                                $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                            } else {
+                                                $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
+                                            }
+                                        }
+                                        echo $headings;
+
+                                        $headings2 = ' '; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     <?php
-                                    $headings = '	<th class="sno_width_60">S.No</th>
-                                                    <th>Product ID</th>
-                                                    <th>Serial#</th>
-                                                    <th>Overall Grade</th>
-                                                    <th>Defects Or Notes</th> 
-                                                    <th>Status</th>
-                                                    <th>Price</th>';
-                                    echo $headings;
-                                    $headings2 = ' '; ?>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $i = 0;
-                                if ($count_log > 0) {
-                                    $row_cl1 = $db->fetch($result_log);
-                                    foreach ($row_cl1 as $data) {
-                                        $detail_id2 = $data['id']; ?>
-                                        <tr>
-                                            <td style="<?= $td_padding; ?>"><?php echo $i + 1; ?> </td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['product_uniqueid']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['serial_no']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['overall_grade']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['defects_or_notes']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['status']; ?></td>
-                                            <td style="<?= $td_padding; ?>"><?php echo $data['price']; ?></td>
-                                        </tr>
-                                <?php
-                                        $i++;
-                                    }
-                                } ?>
-                            </tbody>
-                        </table>
+                                    $i = 0;
+                                    if ($count_log > 0) {
+                                        $row_cl1 = $db->fetch($result_log);
+                                        foreach ($row_cl1 as $data) {
+                                            $column_no = 0;
+                                            $detail_id2 = $data['id']; ?>
+                                            <tr>
+                                                <td style="<?= $td_padding; ?> text-align: center;" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php
+                                                    echo $i + 1;
+                                                    $column_no++;
+                                                    ?>
+                                                </td>
+                                                <td style=" <?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['invoice_no'];
+                                                    $column_no++; ?>
+                                                </td>
+                                                <td style=" <?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['product_uniqueid'];
+                                                    $column_no++; ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['serial_no'];
+                                                    $column_no++; ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?> text-align: center;" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['overall_grade'];
+                                                    $column_no++;  ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['defects_or_notes'];
+                                                    $column_no++;  ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo $data['status'];
+                                                    $column_no++;  ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?> text-align: right;" class=" col-<?= set_table_headings($table_columns[$column_no]); ?>">
+                                                    <?php echo number_format($data['price'], 2);
+                                                    $column_no++; ?>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                            $i++;
+                                        }
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

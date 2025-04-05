@@ -147,6 +147,7 @@ $sql_ee1 = "SELECT  a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, 
 			INNER JOIN purchase_orders c ON c.id = a.po_id
 			INNER JOIN venders d ON d.id = c.vender_id 
 			WHERE a.po_id = '" . $id . "'
+			AND a.enabled = 1
 			GROUP BY a.po_id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
@@ -239,6 +240,7 @@ if ($counter_ee11 > 0) {
 						LEFT JOIN product_categories d ON d.id = c.product_category
 						LEFT JOIN inventory_status e ON e.id = b1.expected_status
 						WHERE b.id = '" . $po_id . "'
+						AND b1.enabled = 1
 						ORDER BY b1.id"; //echo $sql_sub;die;
 	$result_sub 	= $db->query($conn, $sql_sub);
 	$counter_sub	= $db->counter($result_sub);
@@ -277,10 +279,7 @@ if ($counter_ee11 > 0) {
 									</tr>';
 
 	$report_data .= '	</tbody>
-						</table> ';
-
-
-
+					</table> ';
 
 	$sql_sub1 		= "	SELECT b.package_name , c.category_name , a.order_price,a.order_qty,b.case_pack
 						FROM purchase_order_packages_detail a

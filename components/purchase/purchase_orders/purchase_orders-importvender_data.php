@@ -31,9 +31,9 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles	= array("product_id",  "serial_no", "overall_grade", "defects_or_notes", "status", "price");
+$supported_column_titles	= array("invoice_no", "product_id",  "serial_no", "overall_grade", "defects_or_notes", "status", "price");
 $duplication_columns 		= array("serial_no");
-$required_columns 			= array("product_id", "serial_no");
+$required_columns 			= array("invoice_no", "product_id", "serial_no");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -172,12 +172,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						}
 					}
 
-					$sql_del = " DELETE FROM vender_po_data WHERE po_id =  '" . $id . "' ";
+					$sql_del = "DELETE FROM vender_po_data WHERE po_id =  '" . $id . "' ";
 					$db->query($conn, $sql_del);
 
-					$sql_dup1 = "UPDATE purchase_order_detail SET enabled = 0 
-								 WHERE po_id	= '" . $id . "' ";
+					$sql_dup1 = "	UPDATE purchase_order_detail a
+									LEFT JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+										SET a.enabled = 0 
+									WHERE a.po_id	= '" . $id . "' 
+									AND IFNULL(b.id, 0) = 0 ";
 					$db->query($conn, $sql_dup1);
+
 
 					$product_id_not_available = "";
 					foreach ($all_data  as $data1) {
@@ -307,7 +311,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$column_data 	.= ", '" . $data . "'";
 
 											$update_column	.= ", " . $key2 . " = '" . $data . "'";
-											if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price') {
+											if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price'  || $key == 'invoice_no') {
 
 												if ($key == 'price') {
 													$key = "order_price";
@@ -335,11 +339,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
 														$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 													}
+												} else if ($key == 'invoice_no') {
+													$po_detail_column	.= ", " . $key;
+													$po_detail_data		.= ", '" . $data . "'";
+													$update_po_detail	.= ", " . $key . " = '" . $data . "'";
 												}
 											}
 										}
 									}
-
 									if (isset($ids_already) && isset($vender_data_id) && $vender_data_id > 0 && in_array($data1['serial_no'], $ids_already)) {
 										$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																											update_by 				= '" . $_SESSION['username'] . "', 
@@ -349,8 +356,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																											update_from_module_id 	= '" . $module_id . "'
 																											" . $update_column . " 
 																											, enabled = '1' 
-												WHERE id 	= '" . $vender_data_id . "'
-												AND po_id 			= '" . $id . "' ";
+												WHERE id	= '" . $vender_data_id . "'
+												AND po_id 	= '" . $id . "' ";
 										// echo "<br><br>" . $sql6;
 										$ok = $db->query($conn, $sql6);
 										if ($ok) {
@@ -366,20 +373,29 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										}
 									}
 									if ($count_po_d > 0) {
-										$sql6 = "UPDATE " . $selected_db_name . ".purchase_order_detail SET update_date 			= '" . $add_date . "', 
-																											update_by 				= '" . $_SESSION['username'] . "', 
-																											update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
-																											update_ip 				= '" . $add_ip . "', 
-																											update_timezone 		= '" . $timezone . "', 
-																											update_from_module_id 	= '" . $module_id . "',
-																											order_qty 				= '" . ($po_order_qty + 1) . "'
-																											" . $update_po_detail . " 
-																											, enabled = '1' 
-												WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
-										$db->query($conn, $sql6);
+										$sql_sr1 	= " SELECT a.id
+														FROM purchase_order_detail_receive a
+														WHERE a.po_id	= '" . $id . "'
+														AND  a.serial_no_barcode	= '" . $data1['serial_no'] . "'
+														AND a.enabled = 1 "; //echo "<br><br><br><br>" . $sql_sr1;
+										$result_sr1	= $db->query($conn, $sql_sr1);
+										$count_sr1 	= $db->counter($result_sr1);
+										if ($count_sr1 == 0) {
+											$sql6 = "UPDATE " . $selected_db_name . ".purchase_order_detail SET update_date 			= '" . $add_date . "', 
+																												update_by 				= '" . $_SESSION['username'] . "', 
+																												update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																												update_ip 				= '" . $add_ip . "', 
+																												update_timezone 		= '" . $timezone . "', 
+																												update_from_module_id 	= '" . $module_id . "',
+																												order_qty 				= '" . ($po_order_qty + 1) . "'
+																												" . $update_po_detail . " 
+																												, enabled = '1' 
+													WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
+											$db->query($conn, $sql6);
+										}
 									} else {
 										$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail(po_id " . $po_detail_column . ", order_qty, add_date, add_by, add_ip)
-												VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
+												 VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
 										$db->query($conn, $sql6);
 									}
 								}
@@ -395,12 +411,39 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$error['msg'] .= "<br><br>Following product id/ids is/are not in system <span class='color-blue'>" . $product_id_not_available . "</span>";
 						}
 					}
+
+					$sql_msg 	= " SELECT DISTINCT c.product_uniqueid, a.product_condition, a.order_price, d.status_name
+									FROM purchase_order_detail a
+									INNER JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+									INNER JOIN products c ON c.id = a.product_id
+									LEFT JOIN inventory_status d ON d.id = a.expected_status
+									WHERE a.po_id	= '" . $id . "'
+									AND IFNULL(b.id, 0) > 0
+									AND a.enabled = 1 AND b.enabled = 1  ";
+					//echo "<br><br><br><br>" . $sql_msg;
+					$result_msg	= $db->query($conn, $sql_msg);
+					$count_msg 	= $db->counter($result_msg);
+					if ($count_msg > 0) {
+						if (isset($error['msg'])) {
+							$error['msg'] .= "<br>The product/s with following detail already has/have been recieved, Please remove receiving before import in order to remove those from PO:<br>";
+						} else {
+							$error['msg'] = "<br>The product/s with following detail already has/have been recieved, Please remove receiving before import in order to remove those from PO:<br>";
+						}
+						$row_msg = $db->fetch($result_msg);
+						foreach ($row_msg as $data_msg) {
+							$product_uniqueid_msg	= $data_msg['product_uniqueid'];
+							$status_name_msg		= $data_msg['status_name'];
+							$product_condition_msg	= $data_msg['product_condition'];
+							$order_price_msg		= $data_msg['order_price'];
+							$error['msg'] .= "<br>Product ID: " . $product_uniqueid_msg . ", Price: " . $order_price_msg . ", Condition: " . $product_condition_msg . ", Status: " . $status_name_msg;
+						}
+					}
 				}
 				if ($added > 0) {
 					if ($added == 1) {
-						$msg['msg_success'] = $added . " record has been imported successfully.";
+						$msg['msg_success'] = $added . " record has been processed for imported successfully.";
 					} else {
-						$msg['msg_success'] = $added . " records have been imported successfully.";
+						$msg['msg_success'] = $added . " records have been processed for imported successfully.";
 					}
 				} else {
 					if (!isset($error['msg'])) {

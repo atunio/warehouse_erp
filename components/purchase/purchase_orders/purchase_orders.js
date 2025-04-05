@@ -14,7 +14,8 @@ $(document).ready(function() {
     });
     $(document).on('click', '.add-more-btn', function(event) {
         event.preventDefault(); // Prevent form submission or page reload
-
+        
+        var vender_invoice_no = $("#vender_invoice_no").val();
         var id = $(this).attr('id');
         var parts = id.split('^');
         var rowno = parseInt(parts[1]);  
@@ -25,6 +26,7 @@ $(document).ready(function() {
         $("#orderprice_"+next_row).val('').trigger('change'); 
         $("#expectedstatus_"+next_row).val('').trigger('change'); 
         $("#value_"+next_row).text('').trigger('change');
+        $("#invoiceno_"+next_row).val(vender_invoice_no).trigger('change'); 
         $("#row_"+next_row).show();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons
 
@@ -56,7 +58,8 @@ $(document).ready(function() {
         $("#orderqty_"+rowno).val('').trigger('change'); 
         $("#orderprice_"+rowno).val('').trigger('change'); 
         $("#expectedstatus_"+rowno).val('').trigger('change'); 
-        $("#value_"+rowno).text('').trigger('change'); 
+        $("#value_"+rowno).text('').trigger('change');
+         $("#invoiceno_"+rowno).val('').trigger('change');
        
         $("#row_"+rowno).hide();
         updateRemoveButtonVisibility(); // Update visibility of "Remove" buttons

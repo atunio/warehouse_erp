@@ -1605,7 +1605,6 @@
                                         LEFT JOIN warehouse_sub_locations g ON g.id = a.sub_location_id
                                         LEFT JOIN inventory_status h ON h.id = a.inventory_status
                                         WHERE a.enabled     = 1 
-                                        AND b.enabled       = 1
                                         AND b.po_id         = '" . $id . "'
                                         AND (a.recevied_product_category = 0 || a.recevied_product_category IS NULL || a.serial_no_barcode IS NOT NULL)
 
@@ -1666,7 +1665,6 @@
                                                     LEFT JOIN warehouse_sub_locations e ON e.id = a.sub_location_id
                                                     INNER JOIN product_categories d ON d.id = c.product_category  
                                                     WHERE a.enabled = 1 
-                                                    AND b.enabled   = 1
                                                     AND b.po_id     = '" . $id . "'
                                                     AND a.`receive_type` != 'CateogryReceived'
                                                     GROUP BY c.product_category, a.sub_location_id
@@ -1804,7 +1802,6 @@
                          <div class="section section-data-tables">
                              <div class="row">
                                  <div class="col m12 s12">
-                                     <table id="page-length-option"></table>
                                      <table id="page-length-option" class="display pagelength50_5">
                                          <thead>
                                              <tr>
@@ -1820,7 +1817,6 @@
                                                         }
                                                     }
                                                     echo $headings;
-
                                                     $headings2 = ' '; ?>
                                              </tr>
                                          </thead>

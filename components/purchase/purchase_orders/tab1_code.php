@@ -8,14 +8,14 @@ if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$po_date 					= date('d/m/Y');
 	$po_desc					= "purchase order desc : " . date('YmdHis');
 	$is_tested_po				= "Yes";
-	$is_wiped_po				= "Yes";
-	$is_imaged_po				= "Yes";
 	$vender_invoice_no			= date('YmdHis');
 	$order_status 				= 1;
 	$stage_status           	= "Draft";
 	//echo "<br><br><br><br><br><br><br>";
 }
 
+$is_wiped_po			= "No";
+$is_imaged_po			= "No";
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];

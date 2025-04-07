@@ -239,6 +239,11 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$row1			= $db->fetch($result1);
 								$product_id2 	= $row1[0]['id'];
 
+								$data1['overall_grade']  		= isset($data1['overall_grade']) 	? $data1['overall_grade'] 		: '';
+								$data1['status'] 				= isset($data1['status'])        	? $data1['status'] 	   			: '';
+								$data1['price']					= isset($data1['price'])		 	? $data1['price']		   		: '';
+								$data1['defects_or_notes']		= isset($data1['defects_or_notes'])	? $data1['defects_or_notes']	: '';
+
 								$do_not_import_row = 0;
 								if (
 									$data1['overall_grade'] == ''
@@ -262,7 +267,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								$count_defects_or_note = 0;
 								$field_name = "defects_or_notes";
-								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA') {
+								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank' && $data1[$field_name] != 'N/A' && $data1[$field_name] != 'NA' && $data1[$field_name] != '') {
 									$sql_defects_or_note	= "SELECT * FROM defect_codes WHERE defect_code = '" . $data1[$field_name] . "' ";
 									$result_defects_or_note	= $db->query($conn, $sql_defects_or_note);
 									$count_defects_or_note	= $db->counter($result_defects_or_note);
@@ -277,7 +282,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								}
 								$count_status = 0;
 								$field_name = "status";
-								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA') {
+								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA'  && $data1[$field_name] != '') {
 									$sql_status		= "SELECT * FROM inventory_status WHERE status_name = '" . $data1[$field_name] . "' ";
 									$result_status	= $db->query($conn, $sql_status);
 									$count_status	= $db->counter($result_status);
@@ -303,17 +308,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 															WHERE 1=1
 															AND a.enabled = 1
 															AND a.product_id		= '" . $product_id2 . "'  ";
-									if ($overall_grade == '-' || $overall_grade == 'NA' || $overall_grade == 'N/A' || $overall_grade == 'blank') {
+									if ($overall_grade == '-' || $overall_grade == 'NA' || $overall_grade == 'N/A' || $overall_grade == 'blank' || $overall_grade == '') {
 										$sql_po_d			.= " AND (a.product_condition = '' OR a.product_condition IS NULL)";
 									} else {
 										$sql_po_d			.= " AND a.product_condition = '" . $overall_grade . "'";
 									}
-									if ($status == '-' || $status == 'NA' || $status == 'N/A' || $status == 'blank') {
+									if ($status == '-' || $status == 'NA' || $status == 'N/A' || $status == 'blank' || $status == '') {
 										$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
 									} else {
 										$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
 									}
-									if ($price == '-' || $price == 'NA' || $price == 'N/A' || $price == 'blank') {
+									if ($price == '-' || $price == 'NA' || $price == 'N/A' || $price == 'blank' || $price == '') {
 										$sql_po_d			.= " AND (a.order_price = '' OR a.order_price IS NULL)";
 									} else {
 										$sql_po_d			.= " AND a.order_price 		= '" . $price . "'";

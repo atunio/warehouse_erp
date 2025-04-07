@@ -81,8 +81,7 @@
                                     </span>
                                 </span>
                             </h5>
-                        <?php } ?>
-                        <?php
+                        <?php }
                         if (isset($cmd) && $cmd == 'add') { ?>
                             <form method="post" autocomplete="off" action="<?php echo "?string=" . encrypt('module=' . $module . '&module_id=' . $module_id . '&page=profile&active_tab=tab1&cmd=' . $cmd . '&id=' . $id); ?>">
 
@@ -178,17 +177,18 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="input-field col m3 s12 custom_margin_bottom_col">
+                                <div class="input-field col m6 s12 custom_margin_bottom_col">
                                     <?php
                                     $field_name     = "is_tested_po";
                                     $field_label     = "To Be Tested";
                                     ?>
                                     <div style="margin-top: -10px; margin-bottom: 10px;">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error[$field_name])) {
-                                                                        echo $error[$field_name];
-                                                                    } ?>
+                                        <?php // $field_label; 
+                                        ?>
+                                        <span class="color-red"><?php
+                                                                if (isset($error[$field_name])) {
+                                                                    echo $error[$field_name];
+                                                                } ?>
                                         </span>
                                     </div>
                                     <p class="mb-1 custom_radio">
@@ -197,17 +197,18 @@
                                                                                                                                 if (isset(${$field_name}) && ${$field_name} == 'Yes') {
                                                                                                                                     echo 'checked=""';
                                                                                                                                 } ?>>
-                                            <span>Yes</span>
+                                            <span>To Be Tested</span>
                                         </label> &nbsp;&nbsp;
                                         <label>
                                             <input name="<?= $field_name; ?>" id="<?= $field_name; ?>" type="radio" value="No" <?php
                                                                                                                                 if (isset(${$field_name}) && ${$field_name} == 'No') {
                                                                                                                                     echo 'checked=""';
                                                                                                                                 } ?>>
-                                            <span>No</span>
+                                            <span>Not To Be Tested</span>
                                         </label>
                                     </p>
                                 </div>
+                                <?php /*?>
                                 <div class="input-field col m3 s12 custom_margin_bottom_col">
                                     <?php
                                     $field_name     = "is_wiped_po";
@@ -268,6 +269,7 @@
                                         </label>
                                     </p>
                                 </div>
+                                <?php */ ?>
                             </div>
                             <?php if (($cmd == 'add' &&  access("add_perm") == 1)) { ?>
                                 <div class="row">

@@ -206,9 +206,9 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	} else {
 		$sql_dup	= " SELECT a.* FROM purchase_order_detail_logistics a 
 						WHERE  a.tracking_no = '" . $tracking_no_update . "'
-						AND a.po_no = '" . $id . "'
+						AND a.po_id = '" . $id . "'
 						AND id != '" . $detail_id . "' ";
-		//echo $sql_dup;
+		// echo $sql_dup;
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {

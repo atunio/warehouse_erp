@@ -8,7 +8,7 @@ $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
-
+extract($_POST);
 if (isset($is_Submit_del) && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -18,11 +18,20 @@ if (isset($is_Submit_del) && access("delete_perm") == 0) {
 		}
 		if (empty($error)) {
 			$m = 0;
+			$is_enabled = "";
+			if ($is_action == 'Deactive') {
+				$is_enabled = '0';
+			}
+			if ($is_action == 'Activate') {
+				$is_enabled = 1;
+			}
 			foreach ($sub_location_ids as $data_d) {
-				$sql_dl = "UPDATE warehouse_sub_locations SET enabled = 0 WHERE id = '" . $data_d . "' ";
-				$ok = $db->query($conn, $sql_dl);
-				if ($ok) {
-					$m++;
+				if ($is_enabled != "") {
+					$sql_dl = "UPDATE warehouse_sub_locations SET enabled = '" . $is_enabled . "' WHERE id = '" . $data_d . "' ";
+					$ok = $db->query($conn, $sql_dl);
+					if ($ok) {
+						$m++;
+					}
 				}
 			}
 			if ($m > 0) {
@@ -31,8 +40,6 @@ if (isset($is_Submit_del) && access("delete_perm") == 0) {
 		}
 	}
 }
-
-
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
@@ -361,11 +368,18 @@ $page_heading 	= "List of " . $main_menu_name;
 										</div>
 									</div>
 									<div class="row">
-										<div class="input-field col m12 s12 text_align_center">
+										<div class="col m4 s12"></div>
+										<div class="input-field col m2 s12 text_align_center">
 											<?php if (access("delete_perm") == 1 && isset($count_cl) && $count_cl > 0) { ?>
-												<button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="deletepserial">Delete</button>
+												<input class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="is_action" value="Deactive" />
 											<?php } ?>
 										</div>
+										<div class="input-field col m2 s12 text_align_center">
+											<?php if (access("delete_perm") == 1 && isset($count_cl) && $count_cl > 0) { ?>
+												<input class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="is_action" value="Activate" />
+											<?php } ?>
+										</div>
+										<div class="col m4 s12"></div>
 									</div>
 								</form>
 							</div>

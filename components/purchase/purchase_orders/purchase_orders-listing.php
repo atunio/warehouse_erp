@@ -568,12 +568,14 @@ $page_heading 	= "List Purchase Orders ";
 																	if ($data['is_tested_po'] == 'Yes') {
 																		echo "<b>Tested, </b>";
 																	}
-																	if ($data['is_wiped_po'] == 'Yes') {
-																		echo "<b>Wiped, </b>";
-																	}
-																	if ($data['is_imaged_po'] == 'Yes') {
-																		echo "<b>Imaged</b>";
-																	} ?>
+
+																	// if ($data['is_wiped_po'] == 'Yes') {
+																	// 	echo "<b>Wiped, </b>";
+																	// }
+																	// if ($data['is_imaged_po'] == 'Yes') {
+																	// 	echo "<b>Imaged</b>";
+																	// } 
+																	?>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[4]); ?>">
 																	<b>Vender: </b><?php echo $data['vender_name']; ?></br>

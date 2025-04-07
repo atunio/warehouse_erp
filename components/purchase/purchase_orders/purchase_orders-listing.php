@@ -566,7 +566,8 @@ $page_heading 	= "List Purchase Orders ";
 																<td class="col-<?= set_table_headings($table_columns[3]); ?>">
 																	<?php
 																	if ($data['is_tested_po'] == 'Yes') {
-																		echo "<b>Tested, </b>";
+																		echo "<b>Tested";
+																		// echo "<b>Tested, </b>";
 																	}
 
 																	// if ($data['is_wiped_po'] == 'Yes') {

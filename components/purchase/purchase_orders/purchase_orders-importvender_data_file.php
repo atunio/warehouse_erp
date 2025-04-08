@@ -314,9 +314,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$sql_po_d			.= " AND a.product_condition = '" . $overall_grade . "'";
 									}
 									if ($status == '-' || $status == 'NA' || $status == 'N/A' || $status == 'blank' || $status == '') {
-										$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
+										if ($overall_grade == 'D') {
+											$sql_po_d			.= " AND a.expected_status = '6' ";
+										} else {
+											$sql_po_d			.= " AND (a.expected_status = '' OR a.expected_status IS NULL)";
+										}
 									} else {
-										$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
+										if ($overall_grade == 'D') {
+											$sql_po_d			.= " AND a.expected_status = '6' ";
+										} else {
+											$sql_po_d			.= " AND b.status_name 		= '" . $status . "'";
+										}
 									}
 									if ($price == '-' || $price == 'NA' || $price == 'N/A' || $price == 'blank' || $price == '') {
 										$sql_po_d			.= " AND (a.order_price = '' OR a.order_price IS NULL)";
@@ -353,9 +361,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											} else {
 												$key2 = $key;
 											}
+
+											if ($overall_grade == 'D') {
+												if ($key == 'status') {
+													$data = "Defective";
+												}
+											}
+
 											$columns 		.= ", " . $key2;
 											$column_data 	.= ", '" . $data . "'";
-
 											$update_column	.= ", " . $key2 . " = '" . $data . "'";
 											if ($key == 'product_id' || $key == 'overall_grade'  || $key == 'status'  || $key == 'price'  || $key == 'invoice_no') {
 
@@ -378,9 +392,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														if ($count1 > 0) {
 															$row1 = $db->fetch($result1);
 
+															if ($data1['overall_grade']  == 'D') {
+																$status_id_to_import = 6;
+															} else {
+																$status_id_to_import = $row1[0]['id'];
+															}
 															$po_detail_column	.= ", expected_status";
-															$po_detail_data 	.= ", '" . $row1[0]['id'] . "'";
-															$update_po_detail	.= ", expected_status = '" . $row1[0]['id'] . "'";
+															$po_detail_data 	.= ", '" . $status_id_to_import . "'";
+															$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 														}
 													}
 												} else if ($key == 'overall_grade') {

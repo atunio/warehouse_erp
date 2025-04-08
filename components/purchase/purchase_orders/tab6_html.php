@@ -313,7 +313,7 @@
                             </form>
                             <?php
                             if (isset($assignment_id) && $assignment_id > 0) {
-                                $sql_preview = "SELECT DISTINCT a.*, c.product_uniqueid, IFNULL(d.order_price, '') AS  order_price,  IFNULL(d.id, '0') po_detail_id, c2.category_name, c.product_model_no
+                                $sql_preview = "SELECT DISTINCT a.*, c.product_uniqueid, IFNULL(SUM(d.id), '0') po_detail_id, c2.category_name, c.product_model_no
                                                 FROM phone_check_api_data a
                                                 LEFT JOIN products c ON FIND_IN_SET( a.model_no, c.product_model_no) 
                                                 LEFT JOIN product_categories c2 ON c2.id = c.product_category
@@ -322,6 +322,7 @@
                                                 AND a.enabled       = 1 
                                                 AND a.assignment_id = '" . $assignment_id . "' 
                                                 AND a.is_processed  = 0
+                                                GROUP BY a.id
                                                 ORDER BY c.enabled DESC, d.enabled DESC, a.model_no ";
                                 // LEFT JOIN products c ON c.product_model_no = a.model_no AND c.product_uniqueid = a.sku_code
                                 $result_preview    = $db->query($conn, $sql_preview);
@@ -361,7 +362,6 @@
                                                                 $phone_check_model_no   = $data['model_no'];
                                                                 $po_id                  = $data['po_id'];
                                                                 $po_detail_id           = $data['po_detail_id'];
-                                                                $product_item_price     = $data['order_price'];
                                                                 $bulkserialNo[]         = $data['imei_no'];
                                                                 $phone_check_api_data   = $data['phone_check_api_data'];
                                                                 $product_category_name  = $data['category_name'];
@@ -1321,7 +1321,7 @@
                                     <div class="col m8 s12">
                                         <div class="text_align_right">
                                             <?php
-                                            $table_columns    = array('SNo', 'Product Detail', 'Qty', 'Serial No', 'Specification', 'Grading', 'Defects', 'Inventory Status');
+                                            $table_columns    = array('SNo', 'Product Detail', 'Serial No', 'Specification', 'Grading', 'Defects', 'Inventory Status');
                                             $k                 = 0;
                                             foreach ($table_columns as $data_c1) { ?>
                                                 <label>
@@ -1413,7 +1413,6 @@
                                                                     if ($product_uniqueid_main != "" && $product_uniqueid_main != null) {
                                                                         echo $product_uniqueid_main . "<br>";
                                                                     }
-                                                                    echo $data['product_desc'];
                                                                     if ($data['category_name'] != "") {
                                                                         if ($data['record_type'] == "CateogryReceived") {
                                                                             echo "" . $data['category_name'] . "";
@@ -1430,10 +1429,6 @@
                                                                     if ($data['sub_location_type_after_diagnostic'] != "") {
                                                                         echo " (" . $data['sub_location_type_after_diagnostic'] . ")";
                                                                     } ?>
-                                                                </td>
-                                                                <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
-                                                                    <?php echo "" . $data['total_qty_received'];
-                                                                    $col++; ?>
                                                                 </td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php

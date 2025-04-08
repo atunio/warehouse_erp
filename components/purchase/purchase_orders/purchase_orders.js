@@ -1113,7 +1113,7 @@ $('#serial_no_barcode').on('keyup', function(event) {
                         showToast(toastHTML, "Fail");
                     } 
                     else{
-                        var toastHTML = "Product with barcode has been received successfully";
+                        var toastHTML = serial_no_barcode+" Barcode has been received successfully";
                         showToast(toastHTML, "Success");
                         $("#serial_no_barcode").val('').focus();
                     }
@@ -1144,7 +1144,7 @@ $('#receive_using_barcode_btn').on('click', function(event) {
                     showToast(toastHTML, "Fail");
                 } 
                 else{
-                    var toastHTML = "Product with barcode has been received successfully";
+                    var toastHTML = serial_no_barcode+" Barcode has been received successfully";
                     showToast(toastHTML, "Success"); 
                     $("#serial_no_barcode").val('').focus();
                 }

@@ -1014,6 +1014,10 @@ switch ($type) {
                         include("../components/purchase/purchase_orders/db_phone_check_api_data.php");
                         include("../components/purchase/purchase_orders/overall_grade_calculation.php");
 
+                        if ($overall_grade == 'D') {
+                            $inventory_status = '6';
+                        }
+
                         $sql_pd01       = "	SELECT a.*
                                             FROM purchase_order_detail_receive a 
                                             WHERE a.enabled = 1  

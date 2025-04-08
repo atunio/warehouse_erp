@@ -276,10 +276,18 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo ($data_t1['expected_a_grade'] > 0) ? $data_t1['expected_a_grade'] : $data_t1['po_expected_a_grade'];  ?></span>
+                                                <span class="green-text">
+                                                    <?php
+                                                    if ($data_t1['expected_a_grade'] > 0) {
+                                                        $expected_a_grade = $data_t1['expected_a_grade'];
+                                                    } else {
+                                                        $expected_a_grade = $data_t1['po_expected_a_grade'];
+                                                    }
+                                                    echo $expected_a_grade;  ?>
+                                                </span>
                                             </span> vs &nbsp;
                                             <?php
-                                            if (($data_t1['expected_a_grade'] > 0 && $data_t1['expected_a_grade'] != $data_t1['tested_a_grade']) || ($data_t1['po_expected_a_grade'] > 0 && $data_t1['po_expected_a_grade'] != $data_t1['tested_a_grade'])) { ?>
+                                            if ($expected_a_grade != $data_t1['tested_a_grade']) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_a_grade']; ?></span>
                                                 </span>
@@ -291,10 +299,18 @@
                                         </td>
                                         <td>
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo ($data_t1['expected_b_grade'] > 0) ? $data_t1['expected_b_grade'] : $data_t1['po_expected_b_grade'];  ?></span>
+                                                <span class="green-text">
+                                                    <?php
+                                                    if ($data_t1['expected_b_grade'] > 0) {
+                                                        $expected_b_grade = $data_t1['expected_b_grade'];
+                                                    } else {
+                                                        $expected_b_grade = $data_t1['po_expected_b_grade'];
+                                                    }
+                                                    echo $expected_b_grade;  ?>
+                                                </span>
                                             </span> vs &nbsp;
                                             <?php
-                                            if (($data_t1['expected_b_grade'] > 0 && $data_t1['expected_b_grade'] != $data_t1['tested_b_grade']) || ($data_t1['po_expected_b_grade'] > 0 && $data_t1['po_expected_b_grade'] != $data_t1['tested_b_grade'])) { ?>
+                                            if ($expected_b_grade != $data_t1['tested_b_grade']) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_b_grade']; ?></span>
                                                 </span>
@@ -305,12 +321,19 @@
                                             <?php } ?>
                                         </td>
                                         <td>
-
                                             <span class="chip green lighten-5">
-                                                <span class="green-text"><?php echo ($data_t1['expected_c_grade'] > 0) ? $data_t1['expected_c_grade'] : $data_t1['po_expected_c_grade'];  ?></span>
+                                                <span class="green-text">
+                                                    <?php
+                                                    if ($data_t1['expected_c_grade'] > 0) {
+                                                        $expected_c_grade = $data_t1['expected_c_grade'];
+                                                    } else {
+                                                        $expected_c_grade = $data_t1['po_expected_c_grade'];
+                                                    }
+                                                    echo $expected_c_grade;  ?>
+                                                </span>
                                             </span> vs &nbsp;
                                             <?php
-                                            if (($data_t1['expected_c_grade'] > 0 && $data_t1['expected_c_grade'] != $data_t1['tested_c_grade']) || ($data_t1['po_expected_c_grade'] > 0 && $data_t1['po_expected_c_grade'] != $data_t1['tested_c_grade'])) { ?>
+                                            if ($expected_c_grade != $data_t1['tested_c_grade']) { ?>
                                                 <span class="chip red lighten-5">
                                                     <span class="red-text"><?php echo $data_t1['tested_c_grade']; ?></span>
                                                 </span>
@@ -396,7 +419,7 @@
                                                         WHERE a.enabled = 1 
                                                         AND b.po_id = '" . $id . "'
                                                         AND a1.id IS NULL
-                                                        AND a.inventory_status = '6' 
+                                                        AND (a.inventory_status = '6' OR a.overall_grade = 'D' )
                                                         AND a.edit_lock = 1 
                                                         
                                                         UNION ALL 
@@ -413,7 +436,7 @@
                                                         WHERE a.enabled = 1 
                                                         AND a.po_id = '" . $id . "'
                                                         AND a1.id IS NULL
-                                                        AND a.inventory_status = '6' 
+                                                        AND (a.inventory_status = '6' OR a.overall_grade = 'D' )
                                                         AND a.edit_lock = 1 
                                                     ) AS t1
                                                     ORDER BY  is_rma_processed, base_product_id, serial_no_barcode DESC ";
@@ -706,7 +729,7 @@
                             <div class="col m10 s12">
                                 <div class="text_align_right">
                                     <?php
-                                    $table_columns    = array('SNo', 'Product ID / Product Detail', 'Serial# / Status', 'Specification / Defects', 'Grading', 'RMA Detail');
+                                    $table_columns    = array('SNo', 'Product ID / Category', 'Serial# / Status', 'Specification / Defects', 'Grading', 'RMA Detail');
                                     $k                 = 0;
                                     foreach ($table_columns as $data_c1) { ?>
                                         <label>
@@ -767,7 +790,7 @@
                                                 <tr>
                                                     <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
                                                         <?php echo $i + 1;
-                                                        if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6 && $is_rma_processed == 0 && $is_rma_added == 1) {
+                                                        if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && ($inventory_status == 6 || $overall_grade == 'D') && $is_rma_processed == 0 && $is_rma_added == 1) {
                                                             $total_pending_rma++;
                                                             $checkbox_del++; ?>
                                                             <label style="margin-left: 25px;" id="checkbox_no_<?= $detail_id2; ?>">
@@ -782,7 +805,6 @@
                                                         <?php echo $data['base_product_id']; ?>
                                                         <br>
                                                         <?php
-                                                        echo $data['product_desc'];
                                                         if ($data['category_name'] != "") {
                                                             echo " (" . $data['category_name'] . ")";
                                                         } ?>

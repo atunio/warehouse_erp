@@ -22,26 +22,27 @@
                 </div>
                 <div class="input-field col m1 s12" style="margin-top: 5px; margin-bottom: 5px;">
                     <?php
-                    $field_name     = "stage_status";
-                    $field_label     = "Stage Status";
-                    ?>
-                    <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
-                        <?php
-                        $sql1 = "SELECT * FROM stages_status WHERE enabled = 1";
-                        if (!isset($cmd) || (isset($cmd) && $cmd == 'add')) {
-                            $sql1 .= " AND status_name = 'Draft' ";
-                        }
-                        echo  $sql1 .= " ORDER BY sort_by ";
-                        $result1         = $db->query($conn, $sql1);
-                        $count1         = $db->counter($result1);
-                        if ($count1 > 0) {
-                            $row1    = $db->fetch($result1);
-                            foreach ($row1 as $data2) { ?>
-                                <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                        <?php
+                    if (access("delete_perm") == 1) {
+                        $field_name     = "stage_status";
+                        $field_label    = "Stage Status"; ?>
+                        <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="browser-default custom_condition_class">
+                            <?php
+                            $sql1 = "SELECT * FROM stages_status WHERE enabled = 1";
+                            if (!isset($cmd) || (isset($cmd) && $cmd == 'add')) {
+                                $sql1 .= " AND status_name = 'Draft' ";
                             }
-                        } ?>
-                    </select>
+                            echo  $sql1 .= " ORDER BY sort_by ";
+                            $result1         = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1);
+                            if ($count1 > 0) {
+                                $row1    = $db->fetch($result1);
+                                foreach ($row1 as $data2) { ?>
+                                    <option value="<?php echo $data2['status_name']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['status_name']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                            <?php
+                                }
+                            } ?>
+                        </select>
+                    <?php } ?>
                 </div>
                 <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
                     <?php
@@ -71,6 +72,13 @@
                 <div id="Form-advance" class="card card card-default scrollspy custom_margin_section">
                     <div class="card-content custom_padding_section">
                         <input type="hidden" id="first_tab_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab1&id=' . $id); ?>" />
+                        <input type="hidden" id="tab2_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab2&id=' . $id); ?>" />
+                        <input type="hidden" id="tab3_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab3&id=' . $id); ?>" />
+                        <input type="hidden" id="tab4_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab4&id=' . $id); ?>" />
+                        <input type="hidden" id="tab5_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab5&id=' . $id); ?>" />
+                        <input type="hidden" id="tab6_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab6&id=' . $id); ?>" />
+                        <input type="hidden" id="tab7_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab7&id=' . $id); ?>" />
+                        <input type="hidden" id="tab8_url" value="<?php echo PROJECT_URL ?>/home<?php echo "?string=" . encrypt('module_id=' . $module_id . '&page=' . $page . '&cmd=' . $cmd . '&active_tab=tab8&id=' . $id); ?>" />
                         <?php
                         if (isset($po_no) && isset($id)) { ?>
                             <h5 class="media-heading">
@@ -319,8 +327,6 @@
                                             $expected_status[]      = $data2['expected_status'];
                                             $invoice_no[]           = $data2['invoice_no'];
                                         }
-                                        // echo "<br><br><br><pre>";
-                                        // echo print_r($product_ids);
                                     } else {
                                         if (isset($test_on_local) && $test_on_local == 1) {
                                             // $product_ids[]          = "2987";
@@ -351,10 +357,10 @@
                                     if ($count_ee1 > 0) {
                                         $row_ee1    = $db->fetch($result_ee1);
                                         foreach ($row_ee1 as $data2) {
-                                            $package_ids[]            = $data2['package_id'];
-                                            $order_part_qty[]        = $data2['order_qty'];
-                                            $order_part_price[]        = $data2['order_price'];
-                                            $case_pack[]            = $data2['case_pack'];
+                                            $package_ids[]              = $data2['package_id'];
+                                            $order_part_qty[]           = $data2['order_qty'];
+                                            $order_part_price[]         = $data2['order_price'];
+                                            $case_pack[]                = $data2['case_pack'];
                                         }
                                     }
                                 } ?>
@@ -379,7 +385,7 @@
                                                     </a>
                                                 <?php } ?>
                                         </th>
-                                        <th style="width: 120px;">Invoice#</th>
+                                        <th style="width: 150px;">Invoice#</th>
                                         <th style="width: 100px;">Pkg Stock</th>
                                         <th style="width: 120px;">Pkg Needed</th>
                                         <th style="width: 100px;">Qty</th>

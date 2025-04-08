@@ -381,24 +381,4 @@ if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') |
 	<br><br>
 	<!-- END: Page Main-->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-	<script>
-		$(document).ready(function() {
-			$('#remove_expense_status_date').click(function() {
-				$("#expense_status_date").val('');
-			});
-			$('#remove_paid_date').click(function() {
-				$("#paid_date").val('');
-			});
-			$('.day_checkbox').click(function() {
-				var day_val = $(this).val();
-				if ($(this).prop("checked")) {
-					$(".work_and_travel_" + day_val).show();
-				} else {
-					$(".work_and_travel_" + day_val).hide();
-					$("#day_desc_" + day_val).val('');
-				}
-			});
-			// 
-		});
-	</script>
+	<!-- <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> --> -->

@@ -54,7 +54,7 @@
             </div>
         </div>
         <?php
-    } else {
+    } else if (isset($active_tab) && $active_tab == 'tab7') {
         $td_padding     = "padding:5px 15px !important;";
         $sql            = " SELECT a.id
                             FROM purchase_order_detail_receive a 
@@ -951,6 +951,7 @@
                                         <?php
                                                 $i++;
                                             }
+                                            $_SESSION['total_pending_rma'] = $total_pending_rma;
                                         } ?>
                                     </tbody>
                                 </table>

@@ -8,6 +8,34 @@ $(document).ready(function() {
         var first_tab_url = $("#first_tab_url").val();
         window.location.href = first_tab_url;
     });
+    $(document).on('click', '#show_tab2', function(event) {
+        var tab2_url = $("#tab2_url").val();
+        window.location.href = tab2_url;
+    });
+    $(document).on('click', '#show_tab3', function(event) {
+        var tab3_url = $("#tab3_url").val();
+        window.location.href = tab3_url;
+    });
+    $(document).on('click', '#show_tab4', function(event) {
+        var tab4_url = $("#tab4_url").val();
+        window.location.href = tab4_url;
+    });
+    $(document).on('click', '#show_tab5', function(event) {
+        var tab5_url = $("#tab5_url").val();
+        window.location.href = tab5_url;
+    });
+    $(document).on('click', '#show_tab6', function(event) {
+        var tab6_url = $("#tab6_url").val();
+        window.location.href = tab6_url;
+    });
+    $(document).on('click', '#show_tab7', function(event) {
+        var tab7_url = $("#tab7_url").val();
+        window.location.href = tab7_url;
+    });
+    $(document).on('click', '#show_tab8', function(event) {
+        var tab8_url = $("#tab8_url").val();
+        window.location.href = tab8_url;
+    });
     $(document).on('click', '.tab', function(event) {
         updateRemoveButtonVisibility();
         partsUpdateRemoveButtonVisibility();
@@ -1063,7 +1091,140 @@ function showToast(message, type) {
         html: message,
         classes: toastClass
     });
-}
+} 
+$('#serial_no_barcode').on('keyup', function(event) {
+    event.preventDefault(); // Prevent default form submit
+    var serial_no_barcode       = $(this).val();
+    var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var id                      = $("#id").val();
+    var module_id               = $("#module_id").val();
+    // You can add validation here if needed
+    if (event.key !='Control' && id != "") {
+        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+        $.ajax({
+            type: "POST",
+            url: "ajax/ajax_add_entries.php",
+            data: dataString,
+            cache: false,
+            success: function(response) {
+                if (response) {
+                    if (response !== "1") {
+                        var toastHTML = response;
+                        showToast(toastHTML, "Fail");
+                    } 
+                    else{
+                        var toastHTML = "Product with barcode has been received successfully";
+                        showToast(toastHTML, "Success");
+                        $("#serial_no_barcode").val('').focus();
+                    }
+                }
+            },
+            error: function() {
+            }
+        });
+    }
+});
+$('#receive_using_barcode_btn').on('click', function(event) {
+    event.preventDefault(); // Prevent default form submit
+    var serial_no_barcode       = $('#serial_no_barcode').val();
+    var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var id                      = $("#id").val();
+    var module_id               = $("#module_id").val();
+    // You can add validation here if needed
+    var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+    $.ajax({
+        type: "POST",
+        url: "ajax/ajax_add_entries.php",
+        data: dataString,
+        cache: false,
+        success: function(response) {
+            if (response) {
+                if (response !== "1") {
+                    var toastHTML = response;
+                    showToast(toastHTML, "Fail");
+                } 
+                else{
+                    var toastHTML = "Product with barcode has been received successfully";
+                    showToast(toastHTML, "Success"); 
+                    $("#serial_no_barcode").val('').focus();
+                }
+            }
+        },
+        error: function() {
+        }
+    });
+    
+});
+
+$('#process_fetch_data_barcode_btn').on('click', function(event) {
+    event.preventDefault(); // Prevent default form submit
+     var diagnostic_fetch_id    = $("#diagnostic_fetch_id option:selected").val();
+    var sub_location_id_fetched = $("#sub_location_id_fetched option:selected").val();
+    var id                      = $("#id").val();
+    var module_id               = $("#module_id").val();
+    // You can add validation here if needed
+    var dataString = 'type=process_fetch_data_barcode&diagnostic_fetch_id=' + diagnostic_fetch_id + '&sub_location_id_fetched=' + sub_location_id_fetched + '&id=' + id + '&module_id=' + module_id;
+    $.ajax({
+        type: "POST",
+        url: "ajax/ajax_add_entries.php",
+        data: dataString,
+        cache: false,
+        success: function(response) {
+            if (response) {
+                if (response !== "1") {
+                    var toastHTML = response;
+                    showToast(toastHTML, "Fail");
+                } 
+                else{
+                    var toastHTML = "Serial# has been assigned to product id.";
+                    showToast(toastHTML, "Success"); 
+                    $('#diagnostic_fetch_id option[value="' + diagnostic_fetch_id + '"]').remove();
+                    $('#diagnostic_fetch_id').val('').trigger('change');
+                    $('#diagnostic_fetch_id').select2('open');
+
+                }
+            }
+        },
+        error: function() {
+        }
+    });
+});
+
+$('#diagnostic_fetch_id').on('change', function(event) {
+    event.preventDefault(); // Prevent default form submit
+     var diagnostic_fetch_id    = $("#diagnostic_fetch_id option:selected").val();
+    var sub_location_id_fetched = $("#sub_location_id_fetched option:selected").val();
+    var id                      = $("#id").val();
+    var module_id               = $("#module_id").val();
+    // You can add validation here if needed
+    if(diagnostic_fetch_id !='' && diagnostic_fetch_id != null){
+        var dataString = 'type=process_fetch_data_barcode&diagnostic_fetch_id=' + diagnostic_fetch_id + '&sub_location_id_fetched=' + sub_location_id_fetched + '&id=' + id + '&module_id=' + module_id;
+        $.ajax({
+            type: "POST",
+            url: "ajax/ajax_add_entries.php",
+            data: dataString,
+            cache: false,
+            success: function(response) {
+                if (response) {
+                    if (response !== "1") {
+                        var toastHTML = response;
+                        showToast(toastHTML, "Fail");
+                    } 
+                    else{
+                        var toastHTML = "Serial# has been assigned to product id.";
+                        showToast(toastHTML, "Success"); 
+                        $('#diagnostic_fetch_id option[value="' + diagnostic_fetch_id + '"]').remove();
+                        $('#diagnostic_fetch_id').val('').trigger('change');
+                        $('#diagnostic_fetch_id').select2('open');
+
+                    }
+                }
+            },
+            error: function() {
+            }
+        });
+    }
+}); 
 $(document).on('change', '#stage_status', function(event) {
     var stage_status = $(this).val();
     var previous_stage_status = $('#previous_stage_status').val();

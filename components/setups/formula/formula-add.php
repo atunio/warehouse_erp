@@ -322,6 +322,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 </div>
 <?php include("sub_files/add_repair_type_modal.php") ?>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->
 <?php include("sub_files/add_repair_type_js_code.php") ?>
 <!-- END: Page Main-->

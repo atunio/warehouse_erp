@@ -1079,6 +1079,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 <!-- END: Page Main-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>

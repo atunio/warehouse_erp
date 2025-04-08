@@ -51,7 +51,7 @@
             </div>
         </div>
         <?php
-    } else {
+    } else if (isset($active_tab) && $active_tab == 'tab8') {
         $td_padding     = "padding:5px 15px !important;";
         $sql            = " SELECT a.id
                             FROM purchase_order_detail_receive a 
@@ -63,6 +63,10 @@
         $result_log     = $db->query($conn, $sql);
         $count_log      = $db->counter($result_log);
         if ($count_log > 0) {
+            $total_pending_rma = 0;
+            if (isset($_SESSION['total_pending_rma'])) {
+                $total_pending_rma = $_SESSION['total_pending_rma'];
+            }
             if ($total_pending_rma == 0) { ?>
                 <?php //*/ 
                 $td_padding = "padding:5px 10px !important;";
@@ -149,7 +153,7 @@
                                 <div class="row">
                                     <div class="text_align_right">
                                         <?php
-                                        $table_columns    = array('SNo', 'Product ID / Product Detail', 'Grade', 'Qty', 'Suggested Price', 'Total');
+                                        $table_columns    = array('Product ID / Product Detail', 'Grade', 'Qty', 'Suggested Price', 'Total');
                                         $k                = 0;
                                         foreach ($table_columns as $data_c1) { ?>
                                             <label>
@@ -194,26 +198,26 @@
                                                         $diagnostic_labor           = $data2['diagnostic_labor'];
                                                         $distributed_amount         = $data2['distributed_amount'];
 
-                                                        if($logistic_cost >0){
-                                                            $logistic_cost = $logistic_cost/$data2['total_qty'];
+                                                        if ($logistic_cost > 0) {
+                                                            $logistic_cost = $logistic_cost / $data2['total_qty'];
                                                         }
-                                                        if($receiving_labor >0){
-                                                            $receiving_labor = $receiving_labor/$data2['total_qty'];
+                                                        if ($receiving_labor > 0) {
+                                                            $receiving_labor = $receiving_labor / $data2['total_qty'];
                                                         }
-                                                        if($diagnostic_labor >0){
-                                                            $diagnostic_labor = $diagnostic_labor/$data2['total_qty'];
+                                                        if ($diagnostic_labor > 0) {
+                                                            $diagnostic_labor = $diagnostic_labor / $data2['total_qty'];
                                                         }
-                                                        if($distributed_amount >0){
-                                                            $distributed_amount = $distributed_amount/$data2['total_qty'];
+                                                        if ($distributed_amount > 0) {
+                                                            $distributed_amount = $distributed_amount / $data2['total_qty'];
                                                         }
 
                                                         $array_pricing[$data2['product_uniqueid']][] = [
                                                             "stock_grade"           => $data2['stock_grade'],
                                                             "product_total_price"   => $product_total_price,
-                                                            "total_qty"             => $total_qty,  
-                                                            "logistic_cost"         => $logistic_cost,  
-                                                            "receiving_labor"       => $receiving_labor,  
-                                                            "diagnostic_labor"      => $diagnostic_labor,  
+                                                            "total_qty"             => $total_qty,
+                                                            "logistic_cost"         => $logistic_cost,
+                                                            "receiving_labor"       => $receiving_labor,
+                                                            "diagnostic_labor"      => $diagnostic_labor,
                                                             "distributed_amount"    => $distributed_amount
                                                         ];
                                                     }
@@ -282,17 +286,6 @@
                                                         $pricing_table_trs = "";
                                                 ?>
                                                         <tr>
-                                                            <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
-                                                                <?php echo $i + 1;
-                                                                if ($serial_no_barcode != "" && $serial_no_barcode != null && po_permisions("RMA Process") == 1 && $detail_id2 > 0 && $inventory_status == 6 && $is_rma_processed == 0 && $is_rma_added == 1) { ?>
-                                                                    <label style="margin-left: 25px;" id="checkbox_no_<?= $detail_id2; ?>">
-                                                                        <input type="checkbox" name="ids_for_rma[]" id="ids_for_rma[]" <?php if (isset($ids_for_rma) && in_array($detail_id2, $ids_for_rma)) {
-                                                                                                                                            echo "checked";
-                                                                                                                                        } ?> value="<?= $detail_id2; ?>" class="checkbox8 filled-in" />
-                                                                        <span></span>
-                                                                    </label>
-                                                                <?php } ?>
-                                                            </td>
                                                             <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[1]); ?>">
                                                                 <?php echo $product_uniqueid; ?>
                                                             </td>
@@ -335,15 +328,13 @@
                                                                     $single_product_price = $suggested_price;
                                                                     if ($data['stock_grade'] == 'A') {
                                                                         $index = '0';
-                                                                    }
-                                                                    else if ($data['stock_grade'] == 'B') {
+                                                                    } else if ($data['stock_grade'] == 'B') {
                                                                         $index = '1';
-                                                                    }
-                                                                    else if ($data['stock_grade'] == 'C') {
+                                                                    } else if ($data['stock_grade'] == 'C') {
                                                                         $index = '2';
                                                                     }
                                                                     $logistic_after_pricing = "0";
-                                                                    if(isset($array_pricing[$product_uniqueid][$index]['logistic_cost']) && $array_pricing[$product_uniqueid][$index]['logistic_cost']>0){
+                                                                    if (isset($array_pricing[$product_uniqueid][$index]['logistic_cost']) && $array_pricing[$product_uniqueid][$index]['logistic_cost'] > 0) {
                                                                         $logistic_after_pricing =  $array_pricing[$product_uniqueid][$index]['logistic_cost'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Logistics</td>
@@ -354,7 +345,7 @@
 
 
                                                                     $receiving_after_pricing = "0";
-                                                                    if(isset($array_pricing[$product_uniqueid][$index]['receiving_labor']) && $array_pricing[$product_uniqueid][$index]['receiving_labor']>0){
+                                                                    if (isset($array_pricing[$product_uniqueid][$index]['receiving_labor']) && $array_pricing[$product_uniqueid][$index]['receiving_labor'] > 0) {
                                                                         $receiving_after_pricing =  $array_pricing[$product_uniqueid][$index]['receiving_labor'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Receiving</td>
@@ -365,7 +356,7 @@
 
 
                                                                     $diagnostic_after_pricing = "0";
-                                                                    if(isset($array_pricing[$product_uniqueid][$index]['diagnostic_labor']) && $array_pricing[$product_uniqueid][$index]['diagnostic_labor']>0){
+                                                                    if (isset($array_pricing[$product_uniqueid][$index]['diagnostic_labor']) && $array_pricing[$product_uniqueid][$index]['diagnostic_labor'] > 0) {
                                                                         $diagnostic_after_pricing =  $array_pricing[$product_uniqueid][$index]['diagnostic_labor'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Diagnostic</td>
@@ -376,7 +367,7 @@
 
 
                                                                     $distributed_after_pricing = "0";
-                                                                    if(isset($array_pricing[$product_uniqueid][$index]['distributed_amount']) && $array_pricing[$product_uniqueid][$index]['distributed_amount']>0){
+                                                                    if (isset($array_pricing[$product_uniqueid][$index]['distributed_amount']) && $array_pricing[$product_uniqueid][$index]['distributed_amount'] > 0) {
                                                                         $distributed_after_pricing =  $array_pricing[$product_uniqueid][$index]['distributed_amount'];
                                                                         $pricing_table_trs .= "  <tr>
                                                                                                     <td>Other Defective Distribution</td>

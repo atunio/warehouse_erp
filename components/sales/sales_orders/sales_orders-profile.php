@@ -90,9 +90,9 @@ foreach ($_POST as $key => $value) {
 }
 
 
-include('tab1_code.php');  
-include('tab2_code.php');  
-include('tab3_code.php');  
+include('tab1_code.php');
+include('tab2_code.php');
+include('tab3_code.php');
 
 $button_val = "Create";
 if (isset($cmd) && $cmd == 'edit') {
@@ -113,9 +113,9 @@ if (isset($cmd) && $cmd == 'add' && !(isset($cmd3))) {
 }
 if ((isset($cmd2) && $cmd2 == 'edit') || (isset($cmd2_2) && $cmd2_2 == 'edit') || (isset($cmd3) && $cmd3 == 'edit') || (isset($cmd4) && $cmd4 == 'edit') || (isset($cmd5) && $cmd5 == 'edit') || (isset($cmd6) && $cmd6 == 'edit')) {
 	$button_val = "Save";
-} 
-$general_heading = "SO Profile";?>
-<style> 
+}
+$general_heading = "SO Profile"; ?>
+<style>
 	table.addproducttable td {
 		padding-top: 2px !important;
 		padding-bottom: 2px !important;
@@ -124,28 +124,35 @@ $general_heading = "SO Profile";?>
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 		font-size: 12px !important;
 	}
-	table.addproducttable th{
+
+	table.addproducttable th {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 		padding-left: 10px !important;
 		padding-right: 10px !important;
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 	}
-	table.addproducttable td input{
+
+	table.addproducttable td input {
 		font-size: 12px !important;
 	}
+
 	table.addproducttable tr {
-		line-height: 1.5 !important; /* or you can use other values like 1.2, 2, etc. */
+		line-height: 1.5 !important;
+		/* or you can use other values like 1.2, 2, etc. */
 	}
-	.custom_padding_section{
+
+	.custom_padding_section {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 	}
-	.custom_margin_section{
+
+	.custom_margin_section {
 		margin-top: 2px !important;
 		margin-bottom: 2px !important;
 	}
-	.custom_input{
+
+	.custom_input {
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 		border-radius: 5px !important;
 		margin-top: 6px !important;
@@ -155,44 +162,63 @@ $general_heading = "SO Profile";?>
 		width: 85% !important;
 		line-height: 1;
 	}
+
 	select.custom_condition_class {
 		display: block;
-		width: 100%; /* Full width to fit the table cell */
-		height: 28px; /* Set the height to match the design */
-		padding: 0 30px 0 5px; /* Increase padding to create space for the arrow */
-		border: 1px solid #bdbdbd; /* Light border color */
-		border-radius: 4px; /* Slightly rounded corners */
-		background-color: #fff; /* White background */
-		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSIxMiAxNiA3IDExIDE3IDExIDEyIDE2IiBzdHlsZT0iZmlsbDpyZ2IoMTMyLCAxMjcsIDEyNyk7Ii8+PC9zdmc+'); /* Base64-encoded SVG for larger down arrow with specified color */
+		width: 100%;
+		/* Full width to fit the table cell */
+		height: 28px;
+		/* Set the height to match the design */
+		padding: 0 30px 0 5px;
+		/* Increase padding to create space for the arrow */
+		border: 1px solid #bdbdbd;
+		/* Light border color */
+		border-radius: 4px;
+		/* Slightly rounded corners */
+		background-color: #fff;
+		/* White background */
+		background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBvbHlnb24gcG9pbnRzPSIxMiAxNiA3IDExIDE3IDExIDEyIDE2IiBzdHlsZT0iZmlsbDpyZ2IoMTMyLCAxMjcsIDEyNyk7Ii8+PC9zdmc+');
+		/* Base64-encoded SVG for larger down arrow with specified color */
 		background-repeat: no-repeat;
 		background-position: right 10px center;
-		background-size: 18px; /* Increase size of the arrow */
-		appearance: none; /* Remove default browser arrow */
+		background-size: 18px;
+		/* Increase size of the arrow */
+		appearance: none;
+		/* Remove default browser arrow */
 		outline: #bdbdbd;
-		font-size: 12px !important /* Adjust font size */
-		line-height: 1; /* Set line height */
-		color: #333; /* Text color */
+		font-size: 12px !important
+			/* Adjust font size */
+			line-height: 1;
+		/* Set line height */
+		color: #333;
+		/* Text color */
 	}
 
 	/* Hover and focus states for better interaction feedback */
 	select.custom_condition_class:hover {
-		border-color: #bdbdbd; /* Darker border on hover */
+		border-color: #bdbdbd;
+		/* Darker border on hover */
 	}
 
 	select.custom_condition_class:focus {
-		border-color: #2196f3; /* Blue border on focus */
-		box-shadow: 0 0 5px rgba(33, 150, 243, 0.5); /* Blue glow */
+		border-color: #2196f3;
+		/* Blue border on focus */
+		box-shadow: 0 0 5px rgba(33, 150, 243, 0.5);
+		/* Blue glow */
 	}
-	.padding_custom_msg{
+
+	.padding_custom_msg {
 		padding-top: 0px !important;
 		padding-bottom: 0px !important;
 	}
-	.padding_custom_msg2{
+
+	.padding_custom_msg2 {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 	}
 
-	.add-more, .remove-row {
+	.add-more,
+	.remove-row {
 		font-size: 20px !important;
 		/* display: inline-flex !important; */
 		align-items: center !important;
@@ -204,22 +230,29 @@ $general_heading = "SO Profile";?>
 		text-decoration: none !important;
 	}
 
-	.add-more i, .remove-row i {
-		font-size: inherit !important;/* Inherit font size from parent anchor tag */
-		line-height: 0 !important; Ensure icons are vertically centered */
+	.add-more i,
+	.remove-row i {
+		font-size: inherit !important;
+		/* Inherit font size from parent anchor tag */
+		line-height: 0 !important;
+		Ensure icons are vertically centered */
 	}
-	.custom_margin_bottom_col{
+
+	.custom_margin_bottom_col {
 		margin-bottom: 8px !important;
 	}
-	.custom_input_heigh{
+
+	.custom_input_heigh {
 		height: 37px !important;
 	}
-	.h5{
+
+	.h5 {
 		font-size: 1.56rem !important;
-    	line-height: 2% !important;
-    	margin-top: 0px;
+		line-height: 2% !important;
+		margin-top: 0px;
 		margin-bottom: 25px !important;
 	}
+
 	table.dimentiontable td {
 		padding-top: 2px !important;
 		padding-bottom: 2px !important;
@@ -228,26 +261,28 @@ $general_heading = "SO Profile";?>
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 		font-size: 12px !important;
 	}
-	table.dimentiontable th{
+
+	table.dimentiontable th {
 		padding-top: 5px !important;
 		padding-bottom: 5px !important;
 		padding-left: 10px !important;
 		padding-right: 10px !important;
 		border: 1px solid rgba(0, 0, 0, .12) !important;
 	}
-	table.dimentiontable td input{
+
+	table.dimentiontable td input {
 		font-size: 12px !important;
 	}
+
 	table.dimentiontable tr {
-		line-height: 1.5 !important; /* or you can use other values like 1.2, 2, etc. */
+		line-height: 1.5 !important;
+		/* or you can use other values like 1.2, 2, etc. */
 	}
-    
-	
 </style>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
-		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div> 
+		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col m12 s12">
 			<div class="container">
 				<!-- Account settings -->
@@ -500,7 +535,7 @@ $general_heading = "SO Profile";?>
 							<?php include('tab1_html.php'); ?>
 							<?php include('tab2_html.php'); ?>
 							<?php include('tab3_html.php'); ?>
-							
+
 						</div>
 					</div>
 				</section>
@@ -513,5 +548,5 @@ $general_heading = "SO Profile";?>
 <br><br>
 <!-- END: Page Main-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->
 <?php include("sub_files/add_customer_js_code.php") ?>

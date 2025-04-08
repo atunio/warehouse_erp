@@ -550,10 +550,10 @@ $general_heading = "Return"; ?>
 							</div>
 							<!-- tabs content -->
 							<!--General Tab Begin-->
-							<?php 
-							include('tab1_html.php'); 
+							<?php
+							include('tab1_html.php');
 							include('tab2_html.php');
-							include('tab5_html.php'); 
+							include('tab5_html.php');
 							include('tab6_html.php'); ?>
 						</div>
 					</div>
@@ -570,27 +570,8 @@ $general_heading = "Return"; ?>
 <br><br>
 <!-- END: Page Main-->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
-<script>
-	$(document).ready(function() {
-		$('#remove_expense_status_date').click(function() {
-			$("#expense_status_date").val('');
-		});
-		$('#remove_paid_date').click(function() {
-			$("#paid_date").val('');
-		});
-		$('.day_checkbox').click(function() {
-			var day_val = $(this).val();
-			if ($(this).prop("checked")) {
-				$(".work_and_travel_" + day_val).show();
-			} else {
-				$(".work_and_travel_" + day_val).hide();
-				$("#day_desc_" + day_val).val('');
-			}
-		});
-		// 
-	});
-</script>
+<!-- <!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> --> -->
+
 <?php include("sub_files/add_store_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>
 <?php include("sub_files/add_package_js_code.php") ?>

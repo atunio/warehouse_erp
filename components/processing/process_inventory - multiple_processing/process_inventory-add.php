@@ -828,13 +828,13 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 						<form method="post" autocomplete="off" action="">
 							<input type="hidden" name="is_Submit2_2" value="Y" />
 							<?php
-							for($a = 1; $a<= 50; $a++){
-								$style= "style='display:none;'";
-								if($a == 1){
-									$style= "style='display:block;'";
+							for ($a = 1; $a <= 50; $a++) {
+								$style = "style='display:none;'";
+								if ($a == 1) {
+									$style = "style='display:block;'";
 								}
 							?>
-								<div class="row" id="row_<?php echo $a; ?>" <?= $style; ?> >
+								<div class="row" id="row_<?php echo $a; ?>" <?= $style; ?>>
 									<div class="input-field col m2 s12">
 										<?php
 										$field_name 	= "stock_id";
@@ -939,7 +939,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 											</span>
 										</label>
 									</div>
-								
+
 									<?php
 									for ($k = 1; $k <= 3; $k++) { ?>
 										<div class="input-field col m2 s12">
@@ -1242,7 +1242,7 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 <!-- END: Page Main-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->
 
 <?php include("sub_files/add_product_js_code.php") ?>
 <?php include("sub_files/add_vender_js_code.php") ?>

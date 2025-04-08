@@ -171,17 +171,17 @@ $page_heading 	= "Bin Details ( Manager View)";
 									</form>
 									<div class="row">
 										<div class="text_align_right">
-											<?php 
+											<?php
 											$table_columns	= array('SNo', 'Location / Bin',  'ProductID', 'Category', 'Condtion', 'Qty');
 											$k 				= 0;
-											foreach($table_columns as $data_c1){?>
+											foreach ($table_columns as $data_c1) { ?>
 												<label>
-													<input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-													<span><?= $data_c1?></span>
+													<input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+													<span><?= $data_c1 ?></span>
 												</label>&nbsp;&nbsp;
-											<?php 
+											<?php
 												$k++;
-											}?> 
+											} ?>
 										</div>
 									</div>
 									<div class="row">
@@ -191,14 +191,13 @@ $page_heading 	= "Bin Details ( Manager View)";
 													<tr>
 														<?php
 														$headings = "";
-														foreach($table_columns as $data_c){
-															if($data_c == 'SNo'){
-																$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
+														foreach ($table_columns as $data_c) {
+															if ($data_c == 'SNo') {
+																$headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+															} else {
+																$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 															}
-															else{
-																$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-															}
-														} 
+														}
 														echo $headings;
 														?>
 													</tr>
@@ -211,18 +210,18 @@ $page_heading 	= "Bin Details ( Manager View)";
 														foreach ($row_cl as $data) {
 															$id = $data['sub_location']; ?>
 															<tr>
-																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[1]);?>">
+																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[1]); ?>">
 																	<?php
 																	echo $data['sub_location_name'];
 																	if ($data['sub_location_type'] != "") {
 																		echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
 																	} ?>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['product_uniqueid']; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[3]);?>"><?php echo $data['category_name']; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['stock_grade']; ?></td>
-																<td class="col-<?= set_table_headings($table_columns[5]);?>"><?php echo $data['total_qty']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo $data['product_uniqueid']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[3]); ?>"><?php echo $data['category_name']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['stock_grade']; ?></td>
+																<td class="col-<?= set_table_headings($table_columns[5]); ?>"><?php echo $data['total_qty']; ?></td>
 															</tr>
 													<?php $i++;
 														}
@@ -251,4 +250,4 @@ $page_heading 	= "Bin Details ( Manager View)";
 	</div>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->

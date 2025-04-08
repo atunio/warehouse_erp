@@ -557,12 +557,11 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 													$other_payment_deduction    = $data1['other_payment_deduction'];
 													$invoice_no            		= $data1['invoice_no'];
 													$total_amount         		= $data1['total_amount'];
-													if($data1['deduction_id'] == 3){
+													if ($data1['deduction_id'] == 3) {
 														$total = ($total_sum - $total_amount);
-													}
-													else{
+													} else {
 														$total = ($total_sum + $total_amount);
-													}?>
+													} ?>
 													<tr>
 														<th><?= $other_payment_deduction; ?></th>
 														<th class="deduction"><?= number_format($total_amount, 2); ?></th>
@@ -690,4 +689,4 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 <!-- END: Page Main-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+<!-- <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script> -->

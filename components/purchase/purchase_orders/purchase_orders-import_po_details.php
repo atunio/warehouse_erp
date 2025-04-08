@@ -40,10 +40,10 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles	= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
-$master_columns				= array("product_id", "order_qty", "order_price", "product_condition", "product_status");
+$supported_column_titles	= array("invoice_no", "product_id", "order_qty", "order_price", "product_condition", "product_status");
+$master_columns				= array("invoice_no", "product_id", "order_qty", "order_price", "product_condition", "product_status");
 $duplication_columns 		= array("product_id");
-$required_columns			= array("product_id", "order_qty", "order_price");
+$required_columns			= array("invoice_no", "product_id", "order_qty", "order_price");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {

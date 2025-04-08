@@ -812,7 +812,7 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 					update_po_status($db, $conn, $id, $receive_status_dynamic);
 					$disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
 
-					$msg5['msg_success'] = "Receiving has been processed successfully.";
+					$msg5['msg_success'] = "Products have been received as category successfully.";
 					unset($receiving_qties);
 					unset($receiving_location);
 					$logistic_id = "";

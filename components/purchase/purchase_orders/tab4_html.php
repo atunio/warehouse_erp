@@ -60,7 +60,7 @@
     <?php
     }
     $td_padding = "padding:5px 15px !important;";
-    if (isset($id) && $id > 0) {
+    if (isset($id) && $id > 0 && isset($active_tab) && $active_tab == 'tab4') {
         $orderby    = " ORDER BY a.id ";
         $sql        = " SELECT a.*  FROM vender_po_data a WHERE a.enabled = 1 AND a.po_id = '" . $id . "'";
         $sql       .= $orderby;  ?>

@@ -222,7 +222,7 @@ if ($counter_ee11 > 0) {
 							<thead>
 								<tr>
 									<th>Product ID</th>
-									<th>Description</th>
+									<th>Category</th>
 									<th>Condition</th>
 									<th>Status</th>
 									<th>Price</th>
@@ -262,7 +262,7 @@ if ($counter_ee11 > 0) {
 			$report_data .= '
 								<tr>
 									<td>' . $product_uniqueid . '</td>
-									<td>' . $product_desc . ' (' . $category_name . ') </td>
+									<td>' . $category_name . '</td>
 									<td>' . $product_condition . ' </td>
 									<td>' . $status_name . ' </td>
 									<td>' . number_format($order_price, 2) . '</td>

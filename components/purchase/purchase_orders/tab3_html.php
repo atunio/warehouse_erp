@@ -428,7 +428,7 @@
                     </div>
                     <?php
                     $field_name     = "no_of_box_arried";
-                    $field_label     = "No of Boxes";
+                    $field_label     = "No of Boxes / Pallets";
                     ?>
                     <div class="input-field col m2 s12">
                         <i class="material-icons prefix">question_answer</i>

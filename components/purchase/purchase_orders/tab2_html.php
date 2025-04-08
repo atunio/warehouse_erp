@@ -106,7 +106,7 @@
                     <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "no_of_boxes_update";
-                        $field_label    = "Total Boxes";
+                        $field_label    = "Total Boxes / Pallets";
                         ?>
                         <i class="material-icons prefix">description</i>
                         <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
@@ -247,7 +247,7 @@
         if ($count_log > 0) { ?>
             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
                 <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />
@@ -383,7 +383,7 @@
         <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&cmd2=add&active_tab=tab2") ?>" method="post">
             <div class="card-panel">
                 <input type="hidden" name="is_Submit_tab2" value="Y" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                 } ?>">
                 <input type="hidden" name="active_tab" value="tab2" />
@@ -431,7 +431,7 @@
                     <div class="input-field col m3 s12">
                         <?php
                         $field_name     = "no_of_boxes";
-                        $field_label    = "Total Boxes";
+                        $field_label    = "Total Boxes / Pallets";
                         ?>
                         <i class="material-icons prefix">description</i>
                         <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {

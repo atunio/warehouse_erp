@@ -292,7 +292,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										$sql_po_d			.= " AND a.order_price 		= '" . $price . "'";
 									}
 									$sql_po_d			.= " AND a.po_id 			=  '" . $id . "' ";
-									// echo "<br>" . $sql_po_d;
+									//echo "<br>" . $sql_po_d;
 									$result_po_d		= $db->query($conn, $sql_po_d);
 									$count_po_d			= $db->counter($result_po_d);
 									if ($count_po_d > 0) {
@@ -347,14 +347,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 												} else if ($key == 'status') {
 													if ($count_status > 0) {
 														$result_status = $db->fetch($result_status);
-														if ($data1['overall_grade']  == 'D') {
-															$status_id_to_import = 6;
-														} else {
+														if ($data1['overall_grade']  != 'D') {
 															$status_id_to_import = $result_status[0]['id'];
+															if ($status_id_to_import != "") {
+																$po_detail_column	.= ", expected_status";
+																$po_detail_data 	.= ", '" . $status_id_to_import . "'";
+																$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
+															}
 														}
-														$po_detail_column	.= ", expected_status";
-														$po_detail_data 	.= ", '" . $status_id_to_import . "'";
-														$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 													}
 												} else if ($key == 'overall_grade') {
 													$insert_db_field_id = "product_condition";
@@ -363,6 +363,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														$po_detail_column	.= ", " . $insert_db_field_id;
 														$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
 														$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+													}
+													if (${$insert_db_field_id} == 'D') {
+														$status_id_to_import = 6;
+														$po_detail_column	.= ", expected_status";
+														$po_detail_data 	.= ", '" . $status_id_to_import . "'";
+														$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 													}
 												} else if ($key == 'invoice_no') {
 													$po_detail_column	.= ", " . $key;
@@ -415,12 +421,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																												order_qty 				= '" . ($po_order_qty + 1) . "'
 																												" . $update_po_detail . " 
 																												, enabled = '1' 
-													WHERE id 	= '" . $product_po_detail_id . "' "; // echo "<br><br>" . $sql6;
+													WHERE id 	= '" . $product_po_detail_id . "' ";
+											//echo "<br>" . $sql6;
 											$db->query($conn, $sql6);
 										}
 									} else {
 										$sql6 = "INSERT INTO " . $selected_db_name . ".purchase_order_detail(po_id " . $po_detail_column . ", order_qty, add_date, add_by, add_ip)
-												 VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')"; // echo "<br><br>" . $sql6;
+												 VALUES('" . $id . "' " . $po_detail_data . ", '1', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+										//echo "<br>" . $sql6;
 										$db->query($conn, $sql6);
 									}
 								}

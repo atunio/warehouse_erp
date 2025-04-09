@@ -317,6 +317,7 @@
                                                     ORDER BY a.product_id, a.expected_status, a.product_condition  ";
                                     $result_ee1 = $db->query($conn, $sql_ee1);
                                     $count_ee1  = $db->counter($result_ee1);
+                                    $total_products_in_po = $count_ee1;
                                     if ($count_ee1 > 0) {
                                         $row_ee1 = $db->fetch($result_ee1);
                                         foreach ($row_ee1 as $data2) {
@@ -411,8 +412,8 @@
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
                                     $max_products = 25;
-                                    if (isset($product_ids) && is_array($product_ids) && sizeof($product_ids) >= $max_products) {
-                                        $max_products = $max_products + 10;
+                                    if (isset($total_products_in_po) && $total_products_in_po > $max_products) {
+                                        $max_products = $total_products_in_po + 10;
                                     }
                                     for ($i = 1; $i <= $max_products; $i++) {
                                         $field_name     = "product_ids";
@@ -614,7 +615,8 @@
                                     } ?>
                                     <tr>
                                         <td class="text_align_right" colspan="3"><b>Total: </b></td>
-                                        <td class="text_align_left"><span id="total_qty"><?php echo ($sum_qty); ?></b></span></td>
+                                        <td class="text_align_left"><span class="total_qty" id="total_qty"><?php echo ($sum_qty); ?></b></span></td>
+                                        <td class="text_align_left"><span class="total_qty" id="total_qty"><?php echo ($sum_qty); ?></b></span></td>
                                         <td class="text_align_left"></td>
                                         <td class="text_align_right"><b><span id="total_value"><?php echo number_format($sum_value, 2); ?></b></span></td>
                                         <td colspan="3"></td>

@@ -142,6 +142,14 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	$t = 1;
 	if (isset($all_data) && sizeof($all_data) > 0) {
 		if (empty($error)) {
+
+			$sql_dup1 = "	UPDATE purchase_order_detail a
+							LEFT JOIN purchase_order_detail_receive b ON b.po_detail_id = a.id
+								SET a.enabled = 0 
+							WHERE a.po_id	= '" . $id . "' 
+							AND IFNULL(b.id, 0) = 0 ";
+			$db->query($conn, $sql_dup1);
+
 			foreach ($all_data  as $data1) {
 				$update_master = $columns = $column_data = $update_column = "";
 				if (isset($data1['product_id']) && $data1['product_id'] != '' && $data1['product_id'] != NULL && $data1['product_id'] != 'blank') {
@@ -163,6 +171,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					if (isset($data1['order_price'])) {
 						$sql1 .= " AND a.order_price = '" . $data1['order_price'] . "' ";
 					}
+					// echo "<br>" . $sql1;
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
@@ -170,6 +179,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$po_detail_id	= $row1[0]['id'];
 						$product_id2	= $row1[0]['product_id'];
 					} else {
+						$product_id2 = 0;
 						$sql1		= " SELECT a.* FROM products a WHERE a.product_uniqueid = '" . $data1['product_id'] . "' ";
 						$result1	= $db->query($conn, $sql1);
 						$count1		= $db->counter($result1);
@@ -178,84 +188,97 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$product_id2	= $row1[0]['id'];
 						}
 					}
-					foreach ($data1 as $key => $data) {
-						if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
-							$data = "";
-						}
-						if ($key != "" && $key != 'is_insert') {
+					if ($product_id2 > 0) {
+						foreach ($data1 as $key => $data) {
+							if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
+								$data = "";
+							}
+							if ($key != "" && $key != 'is_insert') {
 
-							$insert_db_field_id		= $key;
-							${$insert_db_field_id} 	= $data;
+								$insert_db_field_id		= $key;
+								${$insert_db_field_id} 	= $data;
+								if ($key == 'product_id') {
 
-							if ($key == 'product_id') {
-
-								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-									$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
-									$result1	= $db->query($conn, $sql1);
-									$count1		= $db->counter($result1);
-									if ($count1 == 0) {
-										$sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_ip, add_timezone)
-												VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
-										$db->query($conn, $sql6);
-									} else {
-										$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
-										$db->query($conn, $sql6);
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										$sql1		= "SELECT * FROM product_ids WHERE product_id = '" . $data . "' ";
+										$result1	= $db->query($conn, $sql1);
+										$count1		= $db->counter($result1);
+										if ($count1 == 0) {
+											$sql6 = "INSERT INTO " . $selected_db_name . ".product_ids(subscriber_users_id, product_id, add_date, add_by, add_ip, add_timezone)
+													VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+											$db->query($conn, $sql6);
+										} else {
+											$sql6 = "UPDATE " . $selected_db_name . ".product_ids SET enabled = 1 WHERE product_id = '" . $data . "' ";
+											$db->query($conn, $sql6);
+										}
 									}
-								}
 
-								$columns 		.= ", " . $insert_db_field_id;
-								$column_data 	.= ", '" . $product_id2 . "'";
+									$columns 		.= ", " . $insert_db_field_id;
+									$column_data 	.= ", '" . $product_id2 . "'";
 
-								$update_column	.= ", " . $insert_db_field_id . " = '" . $product_id2 . "'";
-							} else if ($key == 'product_status') {
-								if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-									$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
-									$result1	= $db->query($conn, $sql1);
-									$count1		= $db->counter($result1);
-									if ($count1 > 0) {
-										$row1 = $db->fetch($result1);
-										$columns 		.= ", expected_status";
-										$column_data 	.= ", '" . $row1[0]['id'] . "'";
+									$update_column	.= ", " . $insert_db_field_id . " = '" . $product_id2 . "'";
+								} else if ($key == 'product_status') {
+									if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
+										$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
+										$result1	= $db->query($conn, $sql1);
+										$count1		= $db->counter($result1);
+										if ($count1 > 0) {
+											$row1 = $db->fetch($result1);
+											$columns 		.= ", expected_status";
+											$column_data 	.= ", '" . $row1[0]['id'] . "'";
 
-										$update_column	.= ", expected_status = '" . $row1[0]['id'] . "'";
+											$update_column	.= ", expected_status = '" . $row1[0]['id'] . "'";
+										}
 									}
-								}
-							} else if ($key == 'product_condition') {
-								if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
+								} else if ($key == 'product_condition') {
+									if (${$insert_db_field_id} == 'A' || ${$insert_db_field_id} == 'B' || ${$insert_db_field_id} == 'C' || ${$insert_db_field_id} == 'D') {
+										$columns 		.= ", " . $insert_db_field_id;
+										$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
+
+										$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+									}
+								} else {
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
 
-									$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+									if ($key == 'order_qty') {
+										if (${$insert_db_field_id} > '0') {
+											$update_column	.= ", order_qty = (order_qty+" . ${$insert_db_field_id} . ") ";
+										}
+									} else {
+										$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+									}
 								}
-							} else {
-								$columns 		.= ", " . $insert_db_field_id;
-								$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
-
-								$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 							}
 						}
-					}
-					if (isset($po_detail_id) && $po_detail_id > 0) {
-						$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
-																							update_by 				= '" . $_SESSION['username'] . "', 
-																							update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
-																							update_ip 				= '" . $add_ip . "', 
-																							update_timezone 		= '" . $timezone . "', 
-																							update_from_module_id 	= '" . $module_id . "'
-																							" . $update_column . " 
-																							, enabled = '1' 
-								WHERE id 	= '" . $po_detail_id . "'
-								AND po_id	= '" . $id . "' ";
-						// echo "<br><br>".$sql6;
-						$ok = $db->query($conn, $sql6);
+						if (isset($po_detail_id) && $po_detail_id > 0) {
+							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
+																								update_by 				= '" . $_SESSION['username'] . "', 
+																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																								update_ip 				= '" . $add_ip . "', 
+																								update_timezone 		= '" . $timezone . "', 
+																								update_from_module_id 	= '" . $module_id . "'
+																								" . $update_column . " 
+																								, enabled = '1' 
+									WHERE id 	= '" . $po_detail_id . "'
+									AND po_id	= '" . $id . "' ";
+							// echo "<br>" . $sql6;
+							$ok = $db->query($conn, $sql6);
+						} else {
+							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(po_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+									VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+							// echo "<br>" . $sql6;
+							$ok = $db->query($conn, $sql6);
+						}
+						if ($ok) {
+							$added++;
+						}
 					} else {
-						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(po_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-								VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-						// echo "<br><br>".$sql6
-						$ok = $db->query($conn, $sql6);
-					}
-					if ($ok) {
-						$added++;
+						if (!isset($error['msg'])) {
+							$error['msg'] = "<br>This product <span class='color-blue'>" . $data1['product_id'] . "</span> does not exist is system.";
+						} else {
+							$error['msg'] .= "<br>This product <span class='color-blue'>" . $data1['product_id'] . "</span> does not exist is system.";
+						}
 					}
 				}
 			}

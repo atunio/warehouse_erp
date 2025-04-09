@@ -114,7 +114,7 @@ $(document).ready(function() {
             $("#total_value").text(formatNumber(p_value, 2));
         } 
         if(total_qty > 0){
-            $("#total_qty").text(total_qty);
+            $(".total_qty").text(total_qty);
         } 
         if(rowno == 1){
             $(".first_row").show();
@@ -195,7 +195,7 @@ $(document).ready(function() {
             $("#total_value").text(formatNumber(p_value, 2));
         } 
         if(total_qty > 0){
-            $("#total_qty").text(total_qty);
+            $(".total_qty").text(total_qty);
         } 
         if(pkg_stock_in_hand > 0){
             var pkg_stock_of_product_needed = order_qty - pkg_stock_in_hand;
@@ -243,7 +243,7 @@ $(document).ready(function() {
             $("#total_value").text(formatNumber(p_value, 2));
         } 
         if(total_qty > 0){
-            $("#total_qty").text(total_qty);
+            $(".total_qty").text(total_qty);
         } 
     });
 
@@ -1126,7 +1126,7 @@ $('#serial_no_barcode').on('keyup', function(event) {
 });
 $('#receive_using_barcode_btn').on('click', function(event) {
     event.preventDefault(); // Prevent default form submit
-    var serial_no_barcode       = $('#serial_no_barcode').val();
+    var serial_no_barcode    = $("#serial_no_barcode option:selected").val();
     var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
     var id                      = $("#id").val();
     var module_id               = $("#module_id").val();
@@ -1147,13 +1147,64 @@ $('#receive_using_barcode_btn').on('click', function(event) {
                     var toastHTML = serial_no_barcode+" Barcode has been received successfully";
                     showToast(toastHTML, "Success"); 
                     $("#serial_no_barcode").val('').focus();
+
+
+                    $('#serial_no_barcode option[value="' + serial_no_barcode + '"]').remove();
+                    $('#serial_no_barcode').val('').trigger('change');
+                    $('#serial_no_barcode').select2('open');
+
+
+
+
+
                 }
             }
         },
         error: function() {
         }
     });
-    
+});
+$('#serial_no_barcode').on('change', function(event) {
+    event.preventDefault(); // Prevent default form submit
+    var serial_no_barcode    = $("#serial_no_barcode option:selected").val();
+    var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var id                      = $("#id").val();
+    var module_id               = $("#module_id").val();
+    // You can add validation here if needed
+    if(serial_no_barcode !='' && serial_no_barcode != null){
+        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+        $.ajax({
+            type: "POST",
+            url: "ajax/ajax_add_entries.php",
+            data: dataString,
+            cache: false,
+            success: function(response) {
+                if (response) {
+                    if (response !== "1") {
+                        var toastHTML = response;
+                        showToast(toastHTML, "Fail");
+                    } 
+                    else{
+                        var toastHTML = serial_no_barcode+" Barcode has been received successfully";
+                        showToast(toastHTML, "Success"); 
+                        $("#serial_no_barcode").val('').focus();
+
+
+                        $('#serial_no_barcode option[value="' + serial_no_barcode + '"]').remove();
+                        $('#serial_no_barcode').val('').trigger('change');
+                        $('#serial_no_barcode').select2('open');
+
+
+
+
+
+                    }
+                }
+            },
+            error: function() {
+            }
+        });
+    }
 });
 
 $('#process_fetch_data_barcode_btn').on('click', function(event) {

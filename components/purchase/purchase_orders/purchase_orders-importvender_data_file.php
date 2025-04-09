@@ -385,21 +385,15 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 													$po_detail_data		.= ", '" . $data . "'";
 													$update_po_detail	.= ", " . $key . " = '" . $data . "'";
 												} else if ($key == 'status') {
-													if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-														$sql1		= "SELECT * FROM inventory_status WHERE status_name = '" . $data . "' ";
-														$result1	= $db->query($conn, $sql1);
-														$count1		= $db->counter($result1);
-														if ($count1 > 0) {
-															$row1 = $db->fetch($result1);
-
-															if ($data1['overall_grade']  == 'D') {
-																$status_id_to_import = 6;
-															} else {
-																$status_id_to_import = $row1[0]['id'];
+													if ($count_status > 0) {
+														$result_status = $db->fetch($result_status);
+														if ($data1['overall_grade']  != 'D') {
+															$status_id_to_import = $result_status[0]['id'];
+															if ($status_id_to_import != "") {
+																$po_detail_column	.= ", expected_status";
+																$po_detail_data 	.= ", '" . $status_id_to_import . "'";
+																$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 															}
-															$po_detail_column	.= ", expected_status";
-															$po_detail_data 	.= ", '" . $status_id_to_import . "'";
-															$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 														}
 													}
 												} else if ($key == 'overall_grade') {
@@ -409,6 +403,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														$po_detail_column	.= ", " . $insert_db_field_id;
 														$po_detail_data		.= ", '" . ${$insert_db_field_id} . "'";
 														$update_po_detail	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+													}
+													if (${$insert_db_field_id} == 'D') {
+														$status_id_to_import = 6;
+														$po_detail_column	.= ", expected_status";
+														$po_detail_data 	.= ", '" . $status_id_to_import . "'";
+														$update_po_detail	.= ", expected_status = '" . $status_id_to_import . "'";
 													}
 												} else if ($key == 'invoice_no') {
 													$po_detail_column	.= ", " . $key;

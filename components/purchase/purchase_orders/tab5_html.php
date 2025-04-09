@@ -752,21 +752,41 @@
                              <?php
                                 $field_name     = "serial_no_barcode";
                                 $field_label    = "BarCode";
-                                ?>
-                             <i class="material-icons prefix">description</i>
-                             <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                echo ${$field_name};
-                                                                                                            } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                    } ?>" autofocus>
-                             <label for="<?= $field_name; ?>">
-                                 <?= $field_label; ?>
-                                 <span class="color-red">* <?php
-                                                            if (isset($error5[$field_name])) {
-                                                                echo $error5[$field_name];
-                                                            } ?>
-                                 </span>
-                             </label>
+                                $sql            = " SELECT *  
+                                                    FROM vender_po_data a  
+                                                    WHERE a.enabled = 1
+                                                    AND a.po_id = '" . $id . "'";
+                                $result_log2    = $db->query($conn, $sql);
+                                $count_r2       = $db->counter($result_log2); ?>
+                             <i class="material-icons prefix pt-1">add_shopping_cart</i>
+                             <div class="select2div">
+                                 <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                                                } ?>">
+                                     <option value="">Select</option>
+                                     <?php
+                                        if ($count_r2 > 0) {
+                                            $row_r2    = $db->fetch($result_log2);
+                                            if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
+
+                                         <?php }
+                                            foreach ($row_r2 as $data_r2) { ?>
+                                             <option value="<?php echo $data_r2['serial_no']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['serial_no']) { ?> selected="selected" <?php } ?>>
+                                                 <?php echo $data_r2['serial_no']; ?>
+                                             </option>
+                                     <?php
+                                            }
+                                        } ?>
+                                 </select>
+                                 <label for="<?= $field_name; ?>">
+                                     <?= $field_label; ?>
+                                     <span class="color-red"> * <?php
+                                                                if (isset($error5[$field_name])) {
+                                                                    echo $error5[$field_name];
+                                                                } ?>
+                                     </span>
+                                 </label>
+                             </div>
                          </div>
                          <?php /*?>
                              <div class="input-field col m6 s12">

@@ -694,8 +694,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 					$sql_rc2			= " SELECT a.* 
 											FROM purchase_order_detail_receive a 
 											WHERE a.enabled 		= 1
-											AND a.po_id 			= '" . $id . "'
-											AND a.sub_location_id 	= '" . $data_r2 . "' ";
+                                    		AND ((a.received_during != 'BarCodeReceive' AND a.is_diagnost = '0') || (a.received_during = 'BarCodeReceive'))
+ 											AND a.sub_location_id 	= '" . $data_r2 . "' ";
 					$result_rc2     	= $db->query($conn, $sql_rc2);
 					$total_received2	= $db->counter($result_rc2);
 					$bin_capacity_rc1 	= bin_item_count($db, $conn, $data_r2);

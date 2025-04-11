@@ -541,7 +541,7 @@
                                             <?php
                                             if ($count_r2 > 0) {
                                                 $row_r2    = $db->fetch($result_log2);
-                                                if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
+                                                if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != HTTP_HOST_IP) { ?>
                                                     <option value="">Select</option>
                                                 <?php }
                                                 foreach ($row_r2 as $data_r2) { ?>

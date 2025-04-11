@@ -4,7 +4,7 @@ include($directory_path . "conf/session_start.php");
 include($directory_path . "conf/connection.php");
 include($directory_path . "conf/functions.php");
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$username = "superAdmin";
 	$password = "superAdmin";
 }

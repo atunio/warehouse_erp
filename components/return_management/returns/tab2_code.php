@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$tracking_no 			= date('YmdHis');
 	$logistics_cost			= 20.5;
 	$status_id 				= 10;
@@ -108,7 +108,7 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	if (!isset($id) || (isset($id)  && ($id == "0" || $id == ""))) {
 		$error2['msg'] = "Please add master record first";
 	}
-	if (empty($error2)) { 
+	if (empty($error2)) {
 		$k = 0;
 		if ($cmd2 == 'add') {
 
@@ -117,8 +117,8 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			} else {
 				$sql6 = "INSERT INTO return_order_detail_logistics(return_id, courier_name, logistics_cost , tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone)
 							VALUES('" . $id . "', '" . $courier_name . "', '" . $logistics_cost . "',  '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-				
-					$ok = $db->query($conn, $sql6);
+
+				$ok = $db->query($conn, $sql6);
 				if ($ok) {
 					$tracking_no	= "";
 					$no_of_boxes 	= 1;
@@ -146,7 +146,7 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 												update_by		= '" . $_SESSION['username'] . "',
 												update_ip		= '" . $add_ip . "'
 					WHERE id = '" . $id . "' ";
-				
+
 			$db->query($conn, $sql_c_up);
 
 			if (isset($msg2['msg_success'])) {
@@ -155,15 +155,14 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				$msg2['msg_success'] = "Logistics info has been added successfully.";
 			}
 
-			if ($_SERVER['HTTP_HOST'] != 'localhost') {
+			if ($_SERVER['HTTP_HOST'] != HTTP_HOST_IP) {
 				$tracking_no = "";
 			}
 
-			if ($_SERVER['HTTP_HOST'] == 'localhost') {
+			if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 				$tracking_no = date('YmdHis');
 			}
 		}
-		 
 	} else {
 		$error2['msg'] = "Please check Error in form.";
 	}
@@ -274,7 +273,6 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 		} else {
 			$error2['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 		}
-		 
 	} else {
 		$error2['msg'] = "Please check the error in form.";
 	}

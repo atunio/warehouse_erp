@@ -437,7 +437,7 @@
                                                                 if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                     $receiving_qty_value = ${$field_name}[$detail_id_r1];
                                                                 }
-                                                                if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_qty_value == "") {
+                                                                if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $receiving_qty_value == "") {
                                                                     $receiving_qty_value = 5;
                                                                 }
                                                                 if (isset($error5[$field_name][$detail_id_r1])) { ?>
@@ -463,7 +463,7 @@
                                                                 $result1    = $db->query($conn, $sql1);
                                                                 $count1     = $db->counter($result1);
 
-                                                                if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_location_val == "") {
+                                                                if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $receiving_location_val == "") {
                                                                     $receiving_location_val = 2289;
                                                                 } ?>
                                                              <span class="color-red"><?php
@@ -767,7 +767,7 @@
                                      <?php
                                         if ($count_r2 > 0) {
                                             $row_r2    = $db->fetch($result_log2);
-                                            if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != 'localhost') { ?>
+                                            if ($count_r2 > 1 && $_SERVER['HTTP_HOST'] != HTTP_HOST_IP) { ?>
 
                                          <?php }
                                             foreach ($row_r2 as $data_r2) { ?>

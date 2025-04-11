@@ -48,7 +48,7 @@ if ($count_d == 0) {
 		$user_profile_pic = "no_image.png";
 	}
 }
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$selected_db_name 			= $selected_for_test_on_local;
 }
 $_SESSION["db_name"] 	= $selected_db_name;
@@ -111,7 +111,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 			<link rel="stylesheet" type="text/css" href="app-assets/css/layouts/style-horizontal.css">
 		<?php } ?>
 
-		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/data-tables.min.css"> 
+		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/data-tables.min.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/dashboard-modern.css">
 		<link rel="stylesheet" type="text/css" href="app-assets/css/pages/dashboard.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/intro.css">
@@ -122,7 +122,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 
 		<!-- END: Page Level CSS-->
 
-	
+
 
 		<!-- BEGIN: Custom CSS-->
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/custom/custom.css">
@@ -131,7 +131,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 
 		<!-- Comment if there is no internet -->
 		<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-		
+
 
 		<?php
 		$parm1 = "";
@@ -317,7 +317,6 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				if ($string_data_explode[0] == 'active_subtab') {
 					$active_subtab	= $string_data_explode[1];
 				}
-				 
 			}
 			$sql_md 		= "SELECT * FROM menus WHERE id = '" . $module_id . "' ORDER BY id DESC LIMIT 1 ";
 			$result_md 		= $db->query($conn, $sql_md);
@@ -391,50 +390,65 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 
 		<!-- Custom data tables Export Buttons -->
 		<link rel="stylesheet" type="text/css" href="<?php echo $directory_path; ?>app-assets/css/pages/customdatatable-buttons.css">
-		
+
 		<!-- Custom data tables ends -->
- <!-- Custom CSS for Gradient Buttons -->
- 	<style>
-        /* General button styling */
-        .dt-button {
-            color: white !important; /* Text color */
-            border-radius: 5px !important; /* Rounded corners */
-            padding: 3px 8px !important; /* Padding */
-            margin: 2px !important; /* Margin between buttons */
-            border: none !important; /* Remove border */
-            font-weight: bold !important; /* Bold text */
-            background-size: 150% auto !important; /* Gradient animation */
-            transition: 0.5s !important; /* Smooth transition */
-        }
+		<!-- Custom CSS for Gradient Buttons -->
+		<style>
+			/* General button styling */
+			.dt-button {
+				color: white !important;
+				/* Text color */
+				border-radius: 5px !important;
+				/* Rounded corners */
+				padding: 3px 8px !important;
+				/* Padding */
+				margin: 2px !important;
+				/* Margin between buttons */
+				border: none !important;
+				/* Remove border */
+				font-weight: bold !important;
+				/* Bold text */
+				background-size: 150% auto !important;
+				/* Gradient animation */
+				transition: 0.5s !important;
+				/* Smooth transition */
+			}
 
-        /* Gradient colors for each button */
-        .dt-button.buttons-copy {
-            background-image: linear-gradient(45deg,rgb(163, 166, 163),rgb(218, 222, 218)) !important; /* Green gradient */
-        }
+			/* Gradient colors for each button */
+			.dt-button.buttons-copy {
+				background-image: linear-gradient(45deg, rgb(163, 166, 163), rgb(218, 222, 218)) !important;
+				/* Green gradient */
+			}
 
-        .dt-button.buttons-csv {
-            background-image: linear-gradient(45deg, #2196F3, #64B5F6) !important; /* Blue gradient */
-        }
+			.dt-button.buttons-csv {
+				background-image: linear-gradient(45deg, #2196F3, #64B5F6) !important;
+				/* Blue gradient */
+			}
 
-        .dt-button.buttons-excel {
-            background-image: linear-gradient(45deg, #4CAF50, #81C784) !important; /* Green gradient */
-        }
+			.dt-button.buttons-excel {
+				background-image: linear-gradient(45deg, #4CAF50, #81C784) !important;
+				/* Green gradient */
+			}
 
-        .dt-button.buttons-pdf {
-            background-image: linear-gradient(45deg, #F44336, #E57373) !important; /* Red gradient */
-        }
+			.dt-button.buttons-pdf {
+				background-image: linear-gradient(45deg, #F44336, #E57373) !important;
+				/* Red gradient */
+			}
 
-        .dt-button.buttons-print {
-            background-image: linear-gradient(45deg, #9C27B0, #BA68C8) !important; /* Purple gradient */
-        }
+			.dt-button.buttons-print {
+				background-image: linear-gradient(45deg, #9C27B0, #BA68C8) !important;
+				/* Purple gradient */
+			}
 
-        /* Hover effects */
-        .dt-button:hover {
-            background-position: right center !important; /* Gradient animation on hover */
-        }
-    </style>
+			/* Hover effects */
+			.dt-button:hover {
+				background-position: right center !important;
+				/* Gradient animation on hover */
+			}
+		</style>
 	</head>
 	<!-- END: Head-->
+
 	<body class="<?php
 					if ($menu_horizontal == 1) {
 						echo "horizontal-layout page-header-light horizontal-menu preload-transitions 2-columns";
@@ -484,20 +498,22 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/jquery.dataTables.min.js"></script>
 		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/extensions/responsive/js/dataTables.responsive.min.js"></script>
 		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/dataTables.select.min.js"></script>
-		
-		<?php
-		//if (isset($module_id) && $module_id == '18') {?>
-			<!-- Custom Datatables JS Export Buttons  -->
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/dataTables.buttons.min.js"></script>
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/jszip.min.js"></script>
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/pdfmake.min.js"></script>
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/vfs_fonts.js"></script>
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/buttons.html5.min.js"></script>
-			<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/buttons.print.min.js"></script>
-			<!-- Custom Datatables JS Ends-->
-		 <?php //}?>
 
-	
+		<?php
+		//if (isset($module_id) && $module_id == '18') {
+		?>
+		<!-- Custom Datatables JS Export Buttons  -->
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/dataTables.buttons.min.js"></script>
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/jszip.min.js"></script>
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/pdfmake.min.js"></script>
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/vfs_fonts.js"></script>
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/buttons.html5.min.js"></script>
+		<script src="<?php echo $directory_path; ?>app-assets/vendors/data-tables/js/buttons.print.min.js"></script>
+		<!-- Custom Datatables JS Ends-->
+		<?php //}
+		?>
+
+
 		<!-- BEGIN THEME  JS-->
 		<script src="<?php echo $directory_path; ?>app-assets/js/plugins.js"></script>
 		<script src="<?php echo $directory_path; ?>app-assets/js/search.js"></script>
@@ -1368,9 +1384,9 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 } else {
 	echo redirect_to_page("signin");
 }
-include("sub_files/index2_js.php");?>
+include("sub_files/index2_js.php"); ?>
 <script>
-	$(document).ready(function() { 
+	$(document).ready(function() {
 		$('.toggle-column').on('change', function() {
 			var columnClass = '.col-' + $(this).data('column');
 			if ($(this).is(':checked')) {
@@ -1380,10 +1396,10 @@ include("sub_files/index2_js.php");?>
 				$(columnClass).hide();
 				$(this).addClass("display_none");
 			}
-		}); 
+		});
 	});
 </script>
-<?php 
+<?php
 
 
 if (file_exists($module_js)) { ?>

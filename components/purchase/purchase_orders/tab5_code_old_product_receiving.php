@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$sub_location_id_barcode	= 1737;
 	$product_id_barcode 		= 1;
 	$logistic_id_barcode 		= 1;

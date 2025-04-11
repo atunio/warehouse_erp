@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$courier_name				= 'courier_name';
 	$tracking_no				= 'tracking_no';
 	$shipment_date				= date('d/m/Y');

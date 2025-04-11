@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 	$product_id_barcode_diagnostic 		= "5";
 	$product_id_manual_diagnostic 		= "5";
 	$sub_location_id_barcode_diagnostic	= 1737;
@@ -172,7 +172,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$limit		= 500;  // Optional, max 500 records
 			$offset		= 1;  // Optional
 
-			if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+			if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 				$invoiceNo 			= "19200";  // Optional
 				$diagnostic_date1	= "2024-10-04";  // Filter by Date (optional)
 			}

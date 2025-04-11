@@ -30,7 +30,7 @@ define("FROMNAME", "Warehouse ERP");
 define("SUB_DOMAIN_STATIC", "albert_warehouse_erp");
 $subdomain = SUB_DOMAIN_STATIC;
 $selected_for_test_on_local = "albert_warehouse_erp";
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$test_on_local = 1;
 	define("HTTP_HOST", $_SERVER['HTTP_HOST'] . "/" . $project_folder);
 	$http_protocol = "http://";

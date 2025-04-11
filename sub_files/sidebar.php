@@ -67,10 +67,10 @@ if (isset($module) && $module != "") {
 	<ul class="sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow" id="slide-out" data-menu="menu-navigation" data-collapsible="menu-accordion">
 		<li class="navigation-header"><a class="navigation-header-text color-green"><b><?php echo $_SESSION['username']; ?></b></a></li>
 		<?php
-		if ($_SERVER['HTTP_HOST'] == 'localhost' && isset($module) && isset($module_folder)) { ?>
+		if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && isset($module) && isset($module_folder)) { ?>
 			<div style="padding: 5px;"><a class=""><b><?php echo $module_folder; ?>/<?php echo $module; ?></b></a></div>
 		<?php }
-		if ($_SERVER['HTTP_HOST'] == 'localhost') { ?>
+		if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) { ?>
 			<li class="bold">
 				<a class="waves-effect waves-cyan" href="sadmin">
 					<i class="material-icons">home</i>

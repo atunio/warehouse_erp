@@ -1,7 +1,7 @@
 <?php
 
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$sub_location_id_barcode	= 1737;
 	$product_id_barcode 		= 1;
 	$logistic_id_barcode 		= 1;
@@ -110,15 +110,15 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 					$receive_id = mysqli_insert_id($conn);
 					/////////////////////////// Create Stock  START /////////////////////////////
 
-						$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
+					$sql6 = "INSERT INTO product_stock(subscriber_users_id, receive_id, product_id, p_total_stock, stock_grade, p_inventory_status, sub_location,  add_by_user_id, add_date, add_by, add_ip, add_timezone)
 									VALUES('" . $subscriber_users_id . "', '" . $receive_id . "', '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
-						$db->query($conn, $sql6);
+					$db->query($conn, $sql6);
 
-						if (isset($serial_no_barcode) && $serial_no_barcode == '') {
-							$serial_no_barcode = "GEN" . $receive_id;
-						}
+					if (isset($serial_no_barcode) && $serial_no_barcode == '') {
+						$serial_no_barcode = "GEN" . $receive_id;
+					}
 
-						$sql_c_up = "UPDATE return_items_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
+					$sql_c_up = "UPDATE return_items_detail_receive SET 	serial_no_barcode			= '" . $serial_no_barcode . "',
 																				edit_lock 					= '1',
 																				is_import_diagnostic_data	= '1',
 																				is_diagnost					= '1',
@@ -133,8 +133,8 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 																				update_ip				= '" . $add_ip . "',
 																				update_from_module_id	= '" . $module_id . "'
 									WHERE id = '" . $receive_id . "' ";
-						$db->query($conn, $sql_c_up);
-					
+					$db->query($conn, $sql_c_up);
+
 
 					update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
 					update_po_status($db, $conn, $id, $receive_status_dynamic);
@@ -214,7 +214,7 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 					if ($count_pd3 > 0) {
 						$row_pd3 = $db->fetch($result_pd3);
 						$stopLoops = false; // Flag to control breaking multiple loops
-						foreach ($row_pd3 as $data3_rv) { 
+						foreach ($row_pd3 as $data3_rv) {
 
 							$ro_detail_id			= $data3_rv['id'];
 							$order_price			= $data3_rv['order_price'];

@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 }
 
 if (isset($cmd7) && $cmd7 == 'delete' && isset($detail_id)) {

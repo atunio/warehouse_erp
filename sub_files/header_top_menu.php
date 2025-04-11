@@ -251,7 +251,7 @@
                             }
                         }
                     }
-                    if ($_SERVER['HTTP_HOST'] == 'localhost') { ?>
+                    if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) { ?>
         <li data-menu="">
             <a href="sadmin">
                 <i class="material-icons">home</i>
@@ -259,7 +259,7 @@
             </a>
         </li>
     <?php }
-                    if ($_SERVER['HTTP_HOST'] == 'localhost' && isset($module) && isset($module_folder)) { ?>
+                    if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && isset($module) && isset($module_folder)) { ?>
         <div style="padding: 5px;"><a class=""></a></div>
         <li data-menu="">
             <a href="javascript:void(0)">

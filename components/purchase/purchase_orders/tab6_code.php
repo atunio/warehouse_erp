@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 	$product_id_barcode_diagnostic 		= "5";
 	$product_id_manual_diagnostic 		= "5";
 	$sub_location_id_manual_diagnostic	= 2311;
@@ -200,7 +200,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 
 			$invoiceNo 	= $assignment_no;
 
-			if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+			if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 				if ($assignment_id == '1') {
 					$invoiceNo 			= "121824";  // Optional
 					$diagnostic_date1	= "2025-01-28";  // Filter by Date (optional)

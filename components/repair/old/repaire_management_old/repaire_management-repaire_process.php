@@ -51,7 +51,7 @@ if ($cmd == 'edit' && isset($id)) {
 		$part_id			= explode(",", $row_ee[0]['parts_stock_ids']);
 	}
 }
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 	if (($repaire_status_id == "" || $repaire_status_id == "0")) {
 		$repaire_status_id	= 5;
 	}

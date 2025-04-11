@@ -124,7 +124,7 @@
                              </div>
 
                              <?php
-                              ?>
+                                ?>
                              <div class="row">
                                  <div class="input-field col m12 s12"> </div>
                              </div>
@@ -176,15 +176,15 @@
                                                             $total_received_qty = $db->counter($result_rc1);  ?>
                                                          <tr>
                                                              <td style="width: 400px;">
-                                                                <?php
-                                                                if ($data_r1['category_name'] != '') {
-                                                                    echo "" . $data_r1['category_name'] . "";
-                                                                } else {
-                                                                    echo "No Category";
-                                                                } ?>
+                                                                 <?php
+                                                                    if ($data_r1['category_name'] != '') {
+                                                                        echo "" . $data_r1['category_name'] . "";
+                                                                    } else {
+                                                                        echo "No Category";
+                                                                    } ?>
                                                              </td>
-                                                             <td style="width: 400px;"><?php echo $data_r1['product_uniqueid'];?></td>
-                                                             <td style="width: 400px;"><?php echo $data_r1['product_desc'];?></td>
+                                                             <td style="width: 400px;"><?php echo $data_r1['product_uniqueid']; ?></td>
+                                                             <td style="width: 400px;"><?php echo $data_r1['product_desc']; ?></td>
                                                              <td style="width: 150px; text-align: center;"><?php echo $order_qty; ?></td>
                                                              <td style="width: 180px; text-align: center;"><?php echo $total_received_qty; ?></td>
                                                              <td style="width: 150px;">
@@ -196,7 +196,7 @@
                                                                     if (isset(${$field_name}[$detail_id_r1]) && ${$field_name}[$detail_id_r1] > 0) {
                                                                         $receiving_qty_value = ${$field_name}[$detail_id_r1];
                                                                     }
-                                                                    if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_qty_value == "") {
+                                                                    if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $receiving_qty_value == "") {
                                                                         $receiving_qty_value = 2;
                                                                     }
                                                                     if (isset($error5[$field_name])) { ?>
@@ -218,8 +218,8 @@
                                                                     $sql1           = "SELECT * FROM warehouse_sub_locations a WHERE a.enabled = 1  ORDER BY sub_location_name ";
                                                                     $result1        = $db->query($conn, $sql1);
                                                                     $count1         = $db->counter($result1);
-                                                                    
-                                                                    if ($_SERVER['HTTP_HOST'] == 'localhost' && $receiving_location_val == "") {
+
+                                                                    if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $receiving_location_val == "") {
                                                                         $receiving_location_val = 1737;
                                                                     }
                                                                     ?>
@@ -285,7 +285,7 @@
                  <?php } ?>
              </form>
 
-            
+
              <form id="barcodeForm" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                  <input type="hidden" name="is_Submit_tab5_2" value="Y" />
                  <input type="hidden" name="cmd5" value="<?php if (isset($cmd5)) echo $cmd5; ?>" />
@@ -453,7 +453,7 @@
                      </div>
                  </div>
              </form>
-             <?php 
+             <?php
                 $td_padding = "padding:5px 10px !important;";
                 $sql            = " SELECT * FROM ( 
                                         SELECT 'ProductReceived' as record_type, 'PO Product' as product_type, '1' as total_qty_received, a.*, c.product_desc, c.product_uniqueid, d.category_name, 
@@ -583,32 +583,32 @@
                                  <h6>Return Received Products</h6>
                              </div>
                          </div>
-                        
+
                          <br>
                          <div class="row">
-                            <div class="col m2 s12">
-                                <label>
-                                    <input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
-                                                                                                                                echo "checked";
-                                                                                                                            } ?> />
-                                    <span></span>
-                                </label>
-                            </div>
-                            <div class="col m10 s12">
-                                <div class="text_align_right">
-                                    <?php 
-                                    $table_columns	= array('SNo', 'check_all', 'Type', 'Serial NO', 'Product Base ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
-                                    $k 				= 0;
-                                    foreach($table_columns as $data_c1){?>
-                                        <label>
-                                            <input type="checkbox" value="<?= $k?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1)?>" checked="checked">
-                                            <span><?= $data_c1?></span>
-                                        </label>&nbsp;&nbsp;
-                                    <?php 
-                                        $k++;
-                                    }?> 
-                                </div>                                                                                            
-                            </div>
+                             <div class="col m2 s12">
+                                 <label>
+                                     <input type="checkbox" id="all_checked6" class="filled-in" name="all_checked6" value="1" <?php if (isset($all_checked6) && $all_checked6 == '1') {
+                                                                                                                                    echo "checked";
+                                                                                                                                } ?> />
+                                     <span></span>
+                                 </label>
+                             </div>
+                             <div class="col m10 s12">
+                                 <div class="text_align_right">
+                                     <?php
+                                        $table_columns    = array('SNo', 'check_all', 'Type', 'Serial NO', 'Product Base ID', 'Product Detail', 'Location', 'Qty', 'Received By', 'Receiving Date/Time');
+                                        $k                 = 0;
+                                        foreach ($table_columns as $data_c1) { ?>
+                                         <label>
+                                             <input type="checkbox" value="<?= $k ?>" name="table_columns[]" class="filled-in toggle-column" data-column="<?= set_table_headings($data_c1) ?>" checked="checked">
+                                             <span><?= $data_c1 ?></span>
+                                         </label>&nbsp;&nbsp;
+                                     <?php
+                                            $k++;
+                                        } ?>
+                                 </div>
+                             </div>
                          </div>
                          <div class="section section-data-tables">
                              <div class="row">
@@ -618,17 +618,16 @@
                                              <tr>
                                                  <?php
                                                     $headings = "";
-													foreach($table_columns as $data_c){
-														if($data_c == 'SNo'){
-															$headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'">'.$data_c.'</th>';
-														}else if($data_c == 'checl_all'){
-                                                            $headings .= '<th class="sno_width_60 col-'.set_table_headings($data_c).'"></th>';
+                                                    foreach ($table_columns as $data_c) {
+                                                        if ($data_c == 'SNo') {
+                                                            $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+                                                        } else if ($data_c == 'checl_all') {
+                                                            $headings .= '<th class="sno_width_60 col-' . set_table_headings($data_c) . '"></th>';
+                                                        } else {
+                                                            $headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
                                                         }
-														else{
-															$headings .= '<th class="col-'.set_table_headings($data_c).'">'.$data_c.'</th> ';
-														}
-													} 
-													echo $headings;
+                                                    }
+                                                    echo $headings;
                                                     $headings2 = ' '; ?>
                                              </tr>
                                          </thead>
@@ -643,8 +642,8 @@
                                                             $detail_id2 = $data['product_category'];
                                                         } ?>
                                                      <tr>
-                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]);?>"><?php echo $i + 1; ?></td>
-                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]);?>">
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"><?php echo $i + 1; ?></td>
+                                                         <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[1]); ?>">
                                                              <?php
                                                                 if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
@@ -654,17 +653,17 @@
                                                                  </label>
                                                              <?php } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]);?>"><?php echo $data['product_type']; ?></td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]);?>">
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[2]); ?>"><?php echo $data['product_type']; ?></td>
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[3]); ?>">
                                                              <?php
                                                                 $color              = "color-red";
                                                                 $serial_no_barcode  = $data['serial_no_barcode'];
-                                                                if ($data['serial_no_barcode'] != "" && $data['serial_no_barcode'] != null) { 
+                                                                if ($data['serial_no_barcode'] != "" && $data['serial_no_barcode'] != null) {
                                                                     echo "<span class='" . $color . "'>" . $serial_no_barcode . "</span>";
                                                                 } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]);?>"><?php echo $data['product_uniqueid']; ?></td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]);?>">
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data['product_uniqueid']; ?></td>
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[5]); ?>">
                                                              <?php echo $data['product_desc']; ?>
                                                              <?php
                                                                 if ($data['category_name'] != "") {
@@ -675,19 +674,19 @@
                                                                     }
                                                                 } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]);?>">
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[6]); ?>">
                                                              <?php echo $data['sub_location_name']; ?>
                                                              <?php
                                                                 if ($data['sub_location_type'] != "") {
                                                                     echo " (" . $data['sub_location_type'] . ")";
                                                                 } ?>
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]);?>"><?php echo $data['total_qty_received']; ?></td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[8]);?>">
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[7]); ?>"><?php echo $data['total_qty_received']; ?></td>
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[8]); ?>">
                                                              <?php echo $data['first_name']; ?>
                                                              (<?php echo $data['username']; ?>)
                                                          </td>
-                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[9]);?>">
+                                                         <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[9]); ?>">
                                                              <?php echo dateformat1_with_time($data['add_date']); ?>
                                                          </td>
                                                      </tr>

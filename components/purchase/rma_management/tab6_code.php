@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 	$product_id_barcode_diagnostic 		= "5";
 	$product_id_manual_diagnostic 		= "5";
 	$sub_location_id_barcode_diagnostic	= 1737;
@@ -151,7 +151,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 			$row_pd02			= $db->fetch($result_pd02);
 			$invoiceNo 			= $row_pd02[0]['po_no'];
 
-			if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+			if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 				$invoiceNo 			= "19200";  // Optional
 				$diagnostic_date1	= "2024-10-04";  // Filter by Date (optional)
 			}
@@ -271,7 +271,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 
 							/////////////////////// For Testing //////////////////////
 							/////////////////////////////////////////////////////////
-							if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+							if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 								$model_no 		= "A1395";
 								$carrier_name 	= "WiFi";
 								$memory 		= "32GB";
@@ -377,7 +377,7 @@ if (isset($_POST['is_Submit_tab6_6']) && $_POST['is_Submit_tab6_6'] == 'Y') {
 									}
 								}
 
-								if ($_SERVER['HTTP_HOST'] == 'localhost' && $test_on_local == 1) {
+								if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
 									$overall_grade = "A";
 								}
 

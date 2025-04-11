@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost' && !isset($cmd3_1)) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && !isset($cmd3_1)) {
 	$logistics_id 		= 1;
 	$sub_location_id	= 2299;
 	$no_of_box_arried	= 1;
@@ -166,7 +166,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 				} else {
 					$msg3['msg_success'] = "Arrival info has been added successfully.";
 				}
-				if ($_SERVER['HTTP_HOST'] != 'localhost') {
+				if ($_SERVER['HTTP_HOST'] != HTTP_HOST_IP) {
 					$logistics_id = $no_of_box_arried =  $sub_location_id = "";
 				}
 			} else {
@@ -263,7 +263,7 @@ if (isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y') {
 				} else {
 					$msg3['msg_success'] = "Record has been updated successfully.";
 				}
-				if ($_SERVER['HTTP_HOST'] != 'localhost') {
+				if ($_SERVER['HTTP_HOST'] != HTTP_HOST_IP) {
 					$update_logistics_id = $update_no_of_box_arried =  $update_sub_location_id = "";
 				}
 			} else {

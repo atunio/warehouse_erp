@@ -3,7 +3,7 @@ if (!isset($module)) {
 	require_once('../../../conf/functions.php');
 	disallow_direct_school_directory_access();
 }
-if ($_SERVER['HTTP_HOST'] == 'localhost' && (!isset($cmd2) || (isset($cmd2) && $cmd2 != 'edit'))) {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && (!isset($cmd2) || (isset($cmd2) && $cmd2 != 'edit'))) {
 	$shipment_courier_id	= 1;
 	$shipment_tracking_no	= date('YmdHis');
 	$shipment_sent_date		= date('d/m/Y');
@@ -26,8 +26,8 @@ if (isset($cmd2) && $cmd2 == 'edit' && isset($detail_id)) {
 	} else {
 		$error3['msg'] = "No record found";
 	}
-}   
-extract($_POST);  
+}
+extract($_POST);
 foreach ($_POST as $key => $value) {
 	if (!is_array($value)) {
 		$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
@@ -46,7 +46,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 	$field_name = "packing_type";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
 		$error3[${$field_name}] = "Required";
-	} 
+	}
 	$field_name = "box_no";
 	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == ""))) {
 		$error3[${$field_name}] = "Required";
@@ -69,7 +69,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 						VALUES ('" . $id . "','" . $product_stock_id . "','" . $packing_type . "', '" . $box_no . "' , '" . $pallet_no . "',
 							'" . $add_date . "','" . $_SESSION['username'] . "','" . $_SESSION['user_id'] . "','" . $add_ip . "', '" . $timezone . "' ,'" . $module_id . "') ";
 			$ok = $db->query($conn, $sql_in);
-			if ($ok) { 
+			if ($ok) {
 				$sql_c_up = "UPDATE  product_stock SET 	is_packed						= '1',
 															
 														update_by						= '" . $_SESSION['username'] . "',
@@ -84,7 +84,6 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 				$msg3['msg_success'] = "Product has been added in packing successfully.";
 				update_so_detail_status($db, $conn, $id, $module_id, $packing_status_dynamic);
 				update_so_status($db, $conn, $id, $module_id, $packing_status_dynamic);
-
 			} else {
 				$error3['msg'] = "There is error, Please check it.";
 			}
@@ -95,7 +94,7 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 		$error3['msg'] = "Please check Error in form.";
 	}
 }
-if(isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y'){
+if (isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y') {
 	extract($_POST);
 	if (!isset($bulkpacked) || (isset($bulkpacked) && sizeof($bulkpacked) == 0)) {
 		$error4['msg'] = "Select atleast one record to unpack / remove from packing";
@@ -106,10 +105,10 @@ if(isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y'){
 	if (isset($box_no_bulk) && $box_no_bulk == "") {
 		$error4['box_no_bulk'] = "Required";
 	}
-	
+
 	if (empty($error4)) {
 		$k = 0;
-		foreach ($bulkpacked as $bulkpack){
+		foreach ($bulkpacked as $bulkpack) {
 
 			$sql_pd01 		= "	SELECT a.* 
 							FROM sales_order_detail_packing a 
@@ -124,7 +123,7 @@ if(isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y'){
 							VALUES ('" . $id . "','" . $bulkpack . "','" . $packing_type_bulk . "', '" . $box_no_bulk . "' , '" . $pallet_no_bulk . "',
 								'" . $add_date . "','" . $_SESSION['username'] . "','" . $_SESSION['user_id'] . "','" . $add_ip . "', '" . $timezone . "' ,'" . $module_id . "') ";
 				$ok = $db->query($conn, $sql_in);
-				if ($ok) { 
+				if ($ok) {
 					$sql_c_up = "UPDATE  product_stock SET 	is_packed						= '1',
  																
 															update_by						= '" . $_SESSION['username'] . "',
@@ -146,7 +145,7 @@ if(isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y'){
 			}
 		}
 		$box_no_bulk = "";
-	}else {
+	} else {
 		$error4['msg'] = "Please check Error in form.";
 	}
 }
@@ -161,17 +160,17 @@ if (isset($_POST['is_Submit_tab3_2']) && $_POST['is_Submit_tab3_2'] == 'Y') {
 	if (empty($error3)) {
 		$k = 0;
 		foreach ($packedItems as $packedItem) {
-			$packedItem_array 	= explode("^",$packedItem);
+			$packedItem_array 	= explode("^", $packedItem);
 			$packing_id 		= $packedItem_array[0];
 			$stock_id 			= $packedItem_array[1];
 
 			$sql_c_up = "DELETE FROM  sales_order_detail_packing  WHERE id = '" . $packing_id . "' ";
 			$ok = $db->query($conn, $sql_c_up);
 			if ($ok) {
-				
-				$sql_c_up = "UPDATE   product_stock SET is_packed =0, sub_location = '".$sub_location_pack."' WHERE id = '" . $stock_id . "' ";
+
+				$sql_c_up = "UPDATE   product_stock SET is_packed =0, sub_location = '" . $sub_location_pack . "' WHERE id = '" . $stock_id . "' ";
 				$db->query($conn, $sql_c_up);
-				
+
 				update_so_detail_status($db, $conn, $id, $module_id, $stock_id, 1);
 
 				$k++;
@@ -189,7 +188,7 @@ if (isset($_POST['is_Submit_tab3_2']) && $_POST['is_Submit_tab3_2'] == 'Y') {
 }
 if (isset($_POST['is_Submit_tab3_3']) && $_POST['is_Submit_tab3_3'] == 'Y') {
 	extract($_POST);
-	if (empty($error3)) { 
+	if (empty($error3)) {
 		$k = 0;
 		foreach ($box_no_array as $box_no1) {
 
@@ -210,11 +209,10 @@ if (isset($_POST['is_Submit_tab3_3']) && $_POST['is_Submit_tab3_3'] == 'Y') {
 							VALUES ('" . $id . "','" . $box_no1 . "','" . $box_weight_val . "', '" . $box_height_val . "' , '" . $box_width_val . "',
 								'" . $add_date . "','" . $_SESSION['username'] . "','" . $_SESSION['user_id'] . "','" . $add_ip . "', '" . $timezone . "' ,'" . $module_id . "') ";
 				$ok = $db->query($conn, $sql_in);
-				if ($ok) { 
+				if ($ok) {
 					$k++;
 				}
-			}
-			else{
+			} else {
 				$sql_c_up = "UPDATE  sale_order_box_dimensions SET 	box_weight				= '" . $box_weight_val . "',
 																	box_height				= '" . $box_height_val . "',
 																	box_width				= '" . $box_width_val . "',

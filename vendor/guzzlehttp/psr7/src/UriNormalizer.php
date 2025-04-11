@@ -19,7 +19,7 @@ final class UriNormalizer
      * Default normalizations which only include the ones that preserve semantics.
      */
     public const PRESERVING_NORMALIZATIONS =
-        self::CAPITALIZE_PERCENT_ENCODING |
+    self::CAPITALIZE_PERCENT_ENCODING |
         self::DECODE_UNRESERVED_CHARACTERS |
         self::CONVERT_EMPTY_PATH |
         self::REMOVE_DEFAULT_HOST |
@@ -131,7 +131,8 @@ final class UriNormalizer
             $uri = self::decodeUnreservedCharacters($uri);
         }
 
-        if ($flags & self::CONVERT_EMPTY_PATH && $uri->getPath() === ''
+        if (
+            $flags & self::CONVERT_EMPTY_PATH && $uri->getPath() === ''
             && ($uri->getScheme() === 'http' || $uri->getScheme() === 'https')
         ) {
             $uri = $uri->withPath('/');

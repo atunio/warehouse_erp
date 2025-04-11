@@ -1,16 +1,16 @@
 <?php
 $test_on_local 	= 0;
 $two_way_auth 	= 0;
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+include("conf/session_start.php");
+include("path.php");
+include($directory_path . "conf/connection.php");
+include($directory_path . "conf/functions.php");
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$username = "admin_albert";
 	$password = "admin_albert";
 } else {
 	$two_way_auth = 0;
 }
-include("conf/session_start.php");
-include("path.php");
-include($directory_path . "conf/connection.php");
-include($directory_path . "conf/functions.php");
 
 $db = new mySqlDB;
 if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSION["schoolDirectory"]) && $_SESSION["schoolDirectory"] == $project_folder &&  isset($_SESSION["project_name"]) && $_SESSION["project_name"] == $project_name) {

@@ -1,6 +1,6 @@
 <?php
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$tracking_no 			= date('YmdHis');
 	$logistics_cost			= 20.5;
 	$status_id 				= 10;
@@ -171,10 +171,10 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				} else {
 					$msg2['msg_success'] = "Logistics info has been added successfully.";
 				}
-				if ($_SERVER['HTTP_HOST'] != 'localhost') {
+				if ($_SERVER['HTTP_HOST'] != HTTP_HOST_IP) {
 					$tracking_no = "";
 				}
-				if ($_SERVER['HTTP_HOST'] == 'localhost') {
+				if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 					$tracking_no = date('YmdHis');
 				}
 			}

@@ -30,7 +30,7 @@ define("SUB_DOMAIN_STATIC", "albert_warehouse_erp");
 $subdomain = SUB_DOMAIN_STATIC;
 $selected_for_test_on_local = "albert_warehouse_erp";
 
-if ($_SERVER['HTTP_HOST'] == 'localhost') {
+if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 	$timezone = "Asia/Karachi";
 	date_default_timezone_set($timezone);
 	define("TIME_ZONE", $timezone);

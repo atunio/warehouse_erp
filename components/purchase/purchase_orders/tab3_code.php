@@ -31,7 +31,7 @@ if (isset($cmd3_1) && $cmd3_1 == 'delete' && isset($detail_id)) {
 		if ($counter_ee1 <= 1) {
 
 			$sql_c_up = "UPDATE  purchase_order_detail_logistics a
-					INNER JOIN purchase_order_detail_logistics_receiving b ON b.logistics_id = a.id
+						 INNER JOIN purchase_order_detail_logistics_receiving b ON b.logistics_id = a.id
 										SET a.logistics_status		= '10',
 											a.edit_lock 			= 0,
 											a.update_timezone		= '" . $timezone . "',
@@ -156,8 +156,10 @@ if (isset($_POST['is_Submit_tab3']) && $_POST['is_Submit_tab3'] == 'Y') {
 
 				$db->query($conn, $sql_c_up);
 
-				update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic);
-				update_po_status($db, $conn, $id, $arrival_status_dynamic);
+				$status_not_in = $receive_status_dynamic . ", " . $tested_or_graded_status;
+				update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic, $status_not_in);
+				update_po_status($db, $conn, $id, $arrival_status_dynamic, $status_not_in);
+
 				$disp_status_name = get_status_name($db, $conn, $arrival_status_dynamic);
 				if (isset($error3['msg'])) unset($error3['msg']);
 
@@ -253,8 +255,11 @@ if (isset($_POST['is_Submit_tab3_1']) && $_POST['is_Submit_tab3_1'] == 'Y') {
 
 			$ok = $db->query($conn, $sql_c_up);
 			if ($ok) {
-				update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic);
-				update_po_status($db, $conn, $id, $arrival_status_dynamic);
+
+				$status_not_in = $receive_status_dynamic . ", " . $tested_or_graded_status;
+				update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic, $status_not_in);
+				update_po_status($db, $conn, $id, $arrival_status_dynamic, $status_not_in);
+
 				$disp_status_name = get_status_name($db, $conn, $arrival_status_dynamic);
 				if (isset($error3['msg'])) unset($error3['msg']);
 

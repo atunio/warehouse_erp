@@ -100,7 +100,9 @@ $sql_cl = " SELECT DISTINCT IFNULL(e.id, 0) AS bin_id, a.sub_location_id AS sub_
 			INNER JOIN venders a2 ON a2.id = c.vender_id
 			INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
  			LEFT JOIN users_bin_for_diagnostic e ON e.location_id = a.sub_location_id AND e.is_processing_done = 0
-			WHERE 1= 1 
+			WHERE 1= 1
+			AND a.enabled = 1
+			AND c.enabled = 1
 			AND is_diagnost = 0 
 			AND IFNULL(e.id, 0) = 0 ";
 if (isset($flt_bin_id) && $flt_bin_id != "") {
@@ -133,9 +135,11 @@ $sql_cl2			= " SELECT  DISTINCT IFNULL(f.id, 0) AS bin_id, a3.id, a3.category_na
 						INNER JOIN warehouse_sub_locations d ON d.id = a.sub_location_id
 						LEFT JOIN formula_category e ON e.product_category = a.recevied_product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
  						LEFT JOIN users_bin_for_diagnostic f ON f.location_id = a.sub_location_id AND f.is_processing_done = 0
-						WHERE 1=1
-						AND a.is_diagnost = 0 
+						WHERE 1 = 1
+						AND a.is_diagnost 	= 0 
 						AND IFNULL(f.id, 0) = 0
+						AND a.enabled = 1
+						AND c.enabled = 1
 						GROUP BY a.recevied_product_category "; //echo $sql_cl2;
 $result_cl2		= $db->query($conn, $sql_cl2);
 $count_cl2		= $db->counter($result_cl2);
@@ -452,6 +456,8 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																					INNER JOIN purchase_orders c ON c.id = a.po_id
 																					LEFT JOIN product_categories a3 ON a3.id = a.recevied_product_category 
 																					WHERE 1=1
+																					AND a.enabled = 1
+																					AND c.enabled = 1
 																					AND a.is_diagnost = 0 
 																					AND a.sub_location_id = '" . $id . "' 
 																					GROUP BY a3.category_name
@@ -478,7 +484,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																		<div class="select2div">
 																			<?php
 																			$column_no++;
-																			$sql_u13			= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
+																			$sql_u13		= " SELECT * FROM users_bin_for_diagnostic WHERE location_id = '$id' AND is_processing_done = 0 "; //echo $sql_u;
 																			$result_u13		= $db->query($conn, $sql_u13);
 																			$count_u13		= $db->counter($result_u13);
 																			if ($count_u13 > 0) {
@@ -577,7 +583,9 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 										INNER JOIN purchase_order_detail_receive c ON c.sub_location_id = b.location_id AND c.is_diagnost = 0
 										INNER JOIN purchase_orders d ON d.id = c.po_id
 										INNER JOIN venders e ON e.id = d.vender_id
-										WHERE 1=1
+										WHERE 1=1 
+										AND c.enabled = 1
+										AND d.enabled = 1 
 										GROUP BY bin_user_id, location_id
 										ORDER BY a.first_name, a.last_name, b.order_by ";
 					$result_cl3		= $db->query($conn, $sql3);
@@ -641,10 +649,11 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																	FROM purchase_order_detail_receive a
 																	LEFT JOIN formula_category e ON e.product_category = a.recevied_product_category AND e.formula_type = 'Diagnostic' AND e.enabled = 1
 																	INNER JOIN users_bin_for_diagnostic d1 ON d1.location_id = a.sub_location_id AND d1.`is_processing_done` = 0 
-																	WHERE 1=1
-																	AND is_diagnost = 0
-																	AND d1.bin_user_id = '$bin_user_id' 
-																	AND d1.location_id = '$location_id' 
+																	WHERE 1				= 1
+																	AND a.enabled 		= 1 
+																	AND is_diagnost 	= 0
+																	AND d1.bin_user_id 	= '$bin_user_id' 
+																	AND d1.location_id 	= '$location_id'  
 																	GROUP BY a.sub_location_id, e.product_category ";
 														$result_time    = $db->query($conn, $sql_time);
 														$count_time    = $db->counter($result_time);

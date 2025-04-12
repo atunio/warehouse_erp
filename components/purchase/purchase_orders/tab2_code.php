@@ -121,10 +121,6 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 		$error2['msg'] = "Please add master record first";
 	}
 	if (empty($error2)) {
-
-
-
-
 		if (po_permisions("Logistics") == 0) {
 			$error2['msg'] = "You do not have add permissions.";
 		} else {
@@ -144,7 +140,8 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 																		update_date			= '" . $add_date . "',
 																		update_by			= '" . $_SESSION['username'] . "',
 																		update_ip			= '" . $add_ip . "'
-									WHERE po_id = '" . $id . "' ";
+									WHERE po_id = '" . $id . "'
+									AND order_product_status NOT IN(" . $arrival_status_dynamic . ",  " . $receive_status_dynamic . ", " . $tested_or_graded_status . ") ";
 						$db->query($conn, $sql_c_up);
 						$k++;
 						if (isset($error2['msg'])) unset($error2['msg']);
@@ -156,6 +153,15 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 			if ($k > 0) {
 				$sql_c_up = "UPDATE  purchase_orders SET 	order_status	= '" . $logistic_status_dynamic . "',
+															update_timezone	= '" . $timezone . "',
+															update_date		= '" . $add_date . "',
+															update_by		= '" . $_SESSION['username'] . "',
+															update_ip		= '" . $add_ip . "'
+						WHERE id = '" . $id . "'
+						AND order_status NOT IN(" . $arrival_status_dynamic . ",  " . $receive_status_dynamic . ", " . $tested_or_graded_status . ") ";
+				$db->query($conn, $sql_c_up);
+
+				$sql_c_up = "UPDATE  purchase_orders SET 	
 															logistics_cost	= '" . $logistics_cost . "',
 															update_timezone	= '" . $timezone . "',
 															update_date		= '" . $add_date . "',

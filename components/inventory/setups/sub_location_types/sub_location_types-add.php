@@ -21,10 +21,11 @@ if ($cmd == 'add') {
 }
 if ($cmd == 'edit' && isset($id)) {
 
-	$sql_ee				= "SELECT a.* FROM sub_location_types a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee			= $db->query($conn, $sql_ee);
-	$row_ee				= $db->fetch($result_ee);
-	$sub_location_type_name		= $row_ee[0]['sub_location_type_name'];
+	$sql_ee							= "SELECT a.* FROM sub_location_types a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee						= $db->query($conn, $sql_ee);
+	$row_ee							= $db->fetch($result_ee);
+	$sub_location_type_name			= $row_ee[0]['sub_location_type_name'];
+	$prev_sub_location_type_name 	= $sub_location_type_name;
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -81,10 +82,23 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
+
+					if ($sub_location_type_name != $prev_sub_location_type_name) {
+						$sql_c_up = "UPDATE warehouse_sub_locations SET sub_location_type		= '" . $sub_location_type_name . "', 
+
+																		update_timezone			= '" . $timezone . "',
+																		update_date				= '" . $add_date . "',
+																		update_by				= '" . $_SESSION['username'] . "',
+																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
+																		update_ip				= '" . $add_ip . "',
+																		update_from_module_id	= '" . $module_id . "' 
+									WHERE sub_location_type = '" . $prev_sub_location_type_name . "' ";
+						$db->query($conn, $sql_c_up);
+					}
 					$sql_c_up = "UPDATE sub_location_types SET sub_location_type_name	= '" . $sub_location_type_name . "', 
-																update_date	= '" . $add_date . "',
-																update_by		= '" . $_SESSION['username'] . "',
-																update_ip		= '" . $add_ip . "'
+																update_date				= '" . $add_date . "',
+																update_by				= '" . $_SESSION['username'] . "',
+																update_ip				= '" . $add_ip . "'
 								WHERE id = '" . $id . "' ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {

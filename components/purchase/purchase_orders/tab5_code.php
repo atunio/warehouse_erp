@@ -314,7 +314,8 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 													WHERE id = '" . $receive_id . "' ";
 										$db->query($conn, $sql_c_up);
 									}
-									update_po_detail_status($db, $conn, $product_id_manual, $receive_status_dynamic);
+									$status_not_in = $tested_or_graded_status;
+ 									update_po_detail_status($db, $conn, $product_id_manual, $receive_status_dynamic, $status_not_in);
 									/////////////////////////// Create Stock  END /////////////////////////////
 									$k++;
 								}
@@ -327,13 +328,15 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 					$m++;
 				}
 				if ($k > 0) {
-
+				
+					$status_not_in = $tested_or_graded_status;
 					$sql_c_up = "UPDATE  purchase_orders SET	order_status				= '" . $receive_status_dynamic . "',
 																update_timezone				= '" . $timezone . "',
 																update_date					= '" . $add_date . "',
 																update_by					= '" . $_SESSION['username'] . "',
 																update_ip					= '" . $add_ip . "'
-									WHERE id = '" . $id . "' ";
+									WHERE id = '" . $id . "' 
+									AND order_status NOT IN(".$status_not_in.")";
 					$db->query($conn, $sql_c_up);
 
 
@@ -655,8 +658,10 @@ if (isset($_POST['is_Submit_tab5_2']) && $_POST['is_Submit_tab5_2'] == 'Y') {
 						*/
 						//}
 
-						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
-						update_po_status($db, $conn, $id, $receive_status_dynamic);
+						$status_not_in = $tested_or_graded_status;
+						update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic, $status_not_in);
+						update_po_status($db, $conn, $id, $receive_status_dynamic, $status_not_in);
+
 						$disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
 
 						/////////////////////////// Create Stock  END /////////////////////////////
@@ -800,7 +805,8 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 										}
 										*/
 										$k++;
-										update_po_detail_status($db, $conn, $key, $receive_status_dynamic);
+										$status_not_in = $tested_or_graded_status;
+										update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic, $status_not_in);
 									}
 								}
 								$rn++;
@@ -809,7 +815,10 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 					}
 				}
 				if ($k > 0) {
-					update_po_status($db, $conn, $id, $receive_status_dynamic);
+
+					$status_not_in = $tested_or_graded_status;
+					update_po_status($db, $conn, $id, $receive_status_dynamic, $status_not_in);
+
 					$disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
 
 					$msg5['msg_success'] = "Products have been received as category successfully.";

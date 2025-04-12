@@ -119,9 +119,10 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							LEFT JOIN product_categories d ON  d.id = c.`product_category`
 							INNER JOIN inventory_status e ON e.id = a.order_status
 							WHERE a.enabled = 1 AND b.enabled = 1
-							AND b.order_qty > 0 
-							AND a.is_pricing_done = 0
-							GROUP BY b.product_id, b.po_id 
+							AND b.order_qty > 0
+							
+							GROUP BY b.product_id, b.order_price, b.expected_status, b.po_id
+							
 							HAVING po_order_qty > 0
 
 						) AS combined_data
@@ -653,9 +654,9 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN product_categories d ON d.id = c.product_category
 																					INNER JOIN inventory_status e ON e.id = a.order_status
 																					WHERE a.enabled = 1 AND b.enabled = 1
-																					AND b.order_qty > 0 
-																					AND a.is_pricing_done = 0
-																					GROUP BY b.product_id, b.po_id
+																					AND b.order_qty > 0  
+																					
+																					GROUP BY b.product_id, b.order_price, b.expected_status, b.po_id
 																					HAVING po_order_qty > 0
 
 																				) AS combined_data
@@ -782,8 +783,9 @@ $page_heading 	= "Stock Summary";
 																					INNER JOIN inventory_status e ON e.id = a.order_status
 																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND b.order_qty > 0 
-																					AND a.is_pricing_done = 0
-																					GROUP BY b.product_id, b.po_id
+																					
+																					
+																					GROUP BY b.product_id, b.order_price, b.expected_status, b.po_id
 																					HAVING po_order_qty > 0
 
 																				) AS combined_data
@@ -804,8 +806,8 @@ $page_heading 	= "Stock Summary";
 														if (isset($flt_stock_grade) && $flt_stock_grade > 0) {
 															$sql_cl2		.= " AND FIND_IN_SET('" . $flt_stock_grade . "', stock_grade) ";
 														}
-														$sql_cl2	.= " GROUP BY status_name, stock_grade  
-																			ORDER BY status_name DESC, stock_grade "; //a2.p_inventory_status
+														$sql_cl2	.= "GROUP BY status_name, stock_grade
+																		ORDER BY status_name DESC, stock_grade "; //a2.p_inventory_status
 														// echo "<br><br><br><br>" . $sql_cl2;
 														$result_cl2	= $db->query($conn, $sql_cl2);
 														$count_cl2	= $db->counter($result_cl2); ?>

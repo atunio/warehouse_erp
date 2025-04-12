@@ -8,6 +8,15 @@ $(document).ready(function() {
         var first_tab_url = $("#first_tab_url").val();
         window.location.href = first_tab_url;
     });
+    $(document).on('click', '#show_tab_pricing', function(event) {
+        var pricing_tab_url = $("#pricing_tab_url").val();
+        window.location.href = pricing_tab_url;
+    });
+    $(document).on('click', '#show_tab_sub_tab_master', function(event) {
+        var sub_tab_master_url = $("#sub_tab_master_url").val();
+        window.location.href = sub_tab_master_url;
+    });
+    
     $(document).on('click', '#show_tab2', function(event) {
         var tab2_url = $("#tab2_url").val();
         window.location.href = tab2_url;

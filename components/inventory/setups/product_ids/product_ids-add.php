@@ -4,7 +4,7 @@ if (!isset($module)) {
 	disallow_direct_school_directory_access();
 }
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
-	$product_id	= "IPAD-".date('Ymd-His');
+	$product_id	= "IPAD-" . date('Ymd-His');
 }
 $db 					= new mySqlDB;
 $selected_db_name 		= $_SESSION["db_name"];
@@ -24,7 +24,8 @@ if ($cmd == 'edit' && isset($id)) {
 	$sql_ee				= "SELECT a.* FROM product_ids a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
 	$result_ee			= $db->query($conn, $sql_ee);
 	$row_ee				= $db->fetch($result_ee);
-	$product_id		= $row_ee[0]['product_id'];
+	$product_id			= $row_ee[0]['product_id'];
+	$prev_product_id	= $product_id;
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -81,6 +82,19 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
+
+					if ($product_id != $prev_product_id) {
+						$sql_c_up = "UPDATE products SET product_id				= '" . $product_id . "', 
+														update_timezone			= '" . $timezone . "',
+														update_date				= '" . $add_date . "',
+														update_by				= '" . $_SESSION['username'] . "',
+														update_by_user_id		= '" . $_SESSION['user_id'] . "',
+														update_ip				= '" . $add_ip . "',
+														update_from_module_id	= '" . $module_id . "' 
+									WHERE product_id = '" . $prev_product_id . "' ";
+						$db->query($conn, $sql_c_up);
+					}
+
 					$sql_c_up = "UPDATE product_ids SET product_id		= '" . $product_id . "', 
 														update_date		= '" . $add_date . "',
 														update_by		= '" . $_SESSION['username'] . "',
@@ -121,9 +135,9 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12 m12 l12">
-			<div class="section section-data-tables">   
+			<div class="section section-data-tables">
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
-					<div class="card-content custom_padding_card_content_table_top_bottom"> 
+					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
 							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
@@ -133,17 +147,17 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
 									List
-								</a> 
-								<?php  
+								</a>
+								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
 										Import
 									</a>
-								<?php }?>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
-				</div> 
+				</div>
 			</div>
 		</div>
 		<div class="col s12 m12 l12">

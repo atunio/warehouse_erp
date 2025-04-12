@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("defect_code");
+$supported_column_titles 	= array("defect_code_name", "defect_code");
 $duplication_columns 		= array("defect_code");
-$required_columns 			= array("defect_code");
+$required_columns 			= array("defect_code_name", "defect_code");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -126,12 +126,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			foreach ($duplication_columns  as $dup_data) {
 				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
 				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
-
 					$db_column = $dup_data;
-					if ($dup_data == 'product_id') {
-						$db_column = "product_uniqueid";
+					if ($dup_data == 'defect_code') {
+						$duplicate_colum_values1 = implode(',', (array_map('trim', explode("&", $duplicate_colum_values1))));
 					}
-
 					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
@@ -151,12 +149,20 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			}
 
 			foreach ($all_data  as $data1) {
-				if (isset($data1['defect_code']) && $data1['defect_code'] != '' && $data1['defect_code'] != NULL && $data1['defect_code'] != 'blank') {
-					$defect_code2 	= $data1['defect_code'];
+				$field_1 = "defect_code_name";
+				$field_2 = "defect_code";
+				if (
+					isset($data1[$field_1]) && $data1[$field_1] != '' && $data1[$field_1] != NULL && $data1[$field_1] != 'blank'
+					&& isset($data1[$field_2]) && $data1[$field_2] != '' && $data1[$field_2] != NULL && $data1[$field_2] != 'blank'
+				) {
+					$defect_code2 	= implode(',', (array_map('trim', explode("&", $data1['defect_code']))));
 					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
 						if ($key != "" && $key != 'is_insert') {
 							if ($data != "") { // ONLY IF one field 
+								if ($key == 'defect_code') {
+									$data = implode(',', (array_map('trim', explode("&", $data))));
+								}
 								$columns 		.= ", " . $key;
 								$column_data 	.= ", '" . $data . "'";
 							}
@@ -298,7 +304,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						<div class="row">
 							<div class="col m12 s12">
 								<h4 class="card-title">Supported column titles</h4>
-								<table class="bordered striped" style="padding: 0px; width: 50%;">
+								<table class="bordered striped" style="padding: 0px; width: 90%;">
 									<tr>
 										<td style='padding: 3px 15px  !important; text-align: center; '>Column Name</td>
 										<td style='padding: 3px 15px !important; '>Column Heading</td>
@@ -311,7 +317,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
 										if ($s_heading == 'defect_code') {
-											$cell_format = "Text (Unique)";
+											$cell_format = "Text (Multiple ModelNos separated by the '&' symbol.) Example: Screen & Touch";
 										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>

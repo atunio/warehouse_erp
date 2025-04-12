@@ -314,6 +314,12 @@ if (isset($_POST['is_Submit2_preview']) && $_POST['is_Submit2_preview'] == 'Y') 
 											INNER JOIN products c ON c.id = a.product_id
 											WHERE 1=1 
 											AND a.enabled   = 1
+											 AND (
+												SELECT COUNT(*) 
+												FROM purchase_order_detail_receive_diagnostic_fetch r 
+												WHERE r.po_detail_id = a.id
+												AND r.po_id 	= '" . $id . "' 
+											) < a.order_qty
 											AND a.po_id 	= '" . $id . "' 
 											AND c.product_uniqueid = '" . $phone_check_product_id . "'  ";
 						$result_pd01	= $db->query($conn, $sql_pd01);

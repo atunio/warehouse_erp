@@ -164,11 +164,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$error['msg'] = "You do not have edit permissions.";
 			} else {
 				$sql_dup	= " SELECT a.* FROM products a 
-								WHERE  (a.product_uniqueid 	= '" . $product_uniqueid . "' ";
-				$sql_dup .= ") AND a.id != '" . $id . "' ";
+								WHERE  a.product_uniqueid 	= '" . $product_uniqueid . "'
+								AND a.id != '" . $id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
+
 					$sql_c_up = "UPDATE products SET 	product_desc			= '" . $product_desc . "', 
 														product_category		= '" . $product_category . "',
 														product_uniqueid		= '" . $product_uniqueid . "', 

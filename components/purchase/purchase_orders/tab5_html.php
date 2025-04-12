@@ -752,10 +752,13 @@
                              <?php
                                 $field_name     = "serial_no_barcode";
                                 $field_label    = "BarCode";
-                                $sql            = " SELECT *  
+                                $sql            = " SELECT a.*, COUNT(b.id) AS total_received
                                                     FROM vender_po_data a  
+                                                    LEFT JOIN purchase_order_detail_receive b ON b.po_id = a.po_id AND b.serial_no_barcode = a.serial_no
                                                     WHERE a.enabled = 1
-                                                    AND a.po_id = '" . $id . "'";
+                                                    AND a.po_id = '" . $id . "'
+                                                    GROUP BY a.serial_no
+                                                    HAVING COUNT(b.id) = 0 ";
                                 $result_log2    = $db->query($conn, $sql);
                                 $count_r2       = $db->counter($result_log2); ?>
                              <i class="material-icons prefix pt-1">add_shopping_cart</i>
@@ -1868,7 +1871,8 @@
                                                          <td style="width:80px; <?= $td_padding; ?>; text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
                                                              <?php
                                                                 $column_no++;
-                                                                if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
+                                                                if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1)) && $stage_status == 'Draft') {
+                                                                    // if (access("delete_perm") == 1 && (($data['edit_lock'] == "0" && $data['is_diagnost'] == "0") || ($data['is_diagnostic_bypass'] == 1 && $data['is_pricing_done'] == 0))) {
                                                                     $checkbox_del++; ?>
                                                                  <label>
                                                                      <input type="checkbox" name="receviedProductIds[]" id="receviedProductIds[]" value="<?= $data['record_type']; ?>-<?= $detail_id2; ?>-<?= $detail_id3; ?>" class="checkbox6 filled-in" />

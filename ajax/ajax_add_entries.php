@@ -915,8 +915,10 @@ switch ($type) {
                                     '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
                         $db->query($conn, $sql6);
 
-                        update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic);
-                        update_po_status($db, $conn, $id, $receive_status_dynamic);
+                        $status_not_in = "5";
+                        update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic, $status_not_in);
+                        update_po_status($db, $conn, $id, $receive_status_dynamic, $status_not_in);
+
                         $disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
                         echo  "1";
                     }
@@ -1077,8 +1079,8 @@ switch ($type) {
                                     WHERE id = '" . $diagnostic_fetch_id . "' ";
                             $db->query($conn, $sql_c_up);
 
-                            update_po_detail_status($db, $conn, $po_detail_id1, $diagnost_status_dynamic);
-                            update_po_status($db, $conn, $id, $diagnost_status_dynamic);
+                            update_po_detail_status($db, $conn, $po_detail_id1, $diagnost_status_dynamic, "");
+                            update_po_status($db, $conn, $id, $diagnost_status_dynamic, "");
                             $disp_status_name = get_status_name($db, $conn, $diagnost_status_dynamic);
                         }
                         echo "1";

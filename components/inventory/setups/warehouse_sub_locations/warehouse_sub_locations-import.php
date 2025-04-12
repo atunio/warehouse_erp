@@ -20,9 +20,10 @@ foreach ($_POST as $key => $value) {
 		$$key = $data[$key];
 	}
 }
-$supported_column_titles 	= array("purpose", "sub_location_name", "sub_location_type", "is_mobile");
+
+$supported_column_titles 	= array("purpose", "sub_location_name", "sub_location_type", "total_capacity", "is_mobile");
 $duplication_columns 		= array("sub_location_name");
-$required_columns 			= array("sub_location_name");
+$required_columns 			= array("purpose", "sub_location_name", "sub_location_type", "total_capacity");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -154,11 +155,45 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 					$insert_db_field_id_detai2	= "sub_location_name";
 					$table1 					= "warehouse_sub_locations";
 					foreach ($data1 as $key => $data) {
-						if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
+						if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank' || htmlspecialchars($data) == 'NA' || htmlspecialchars($data) == 'N/A') {
 							$data = "";
 						}
+						if ($key == 'purpose') {
+							if ($data != "") {
+								$sql1		= "SELECT * FROM sub_location_purposes WHERE sub_location_purpose_name = '" . $data . "' ";
+								$result1	= $db->query($conn, $sql1);
+								$count1		= $db->counter($result1);
+								if ($count1 == 0) {
+									$sql6 = "INSERT INTO " . $selected_db_name . ".sub_location_purposes(subscriber_users_id, sub_location_purpose_name, add_date, add_by, add_ip, add_timezone)
+											 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+									$db->query($conn, $sql6);
+									$data = mysqli_insert_id($conn);
+								} else {
+									$sql6 = "UPDATE " . $selected_db_name . ".sub_location_purposes SET enabled = 1 WHERE sub_location_purpose_name = '" . $data . "' ";
+									$db->query($conn, $sql6);
+								}
+							}
+						}
+						if ($key == 'sub_location_type') {
+							if ($data != "") {
+								$sql1		= "SELECT * FROM sub_location_types WHERE sub_location_type_name = '" . $data . "' ";
+								$result1	= $db->query($conn, $sql1);
+								$count1		= $db->counter($result1);
+								if ($count1 == 0) {
+									$sql6 = "INSERT INTO " . $selected_db_name . ".sub_location_types(subscriber_users_id, sub_location_type_name, add_date, add_by, add_ip, add_timezone)
+											 VALUES('" . $subscriber_users_id . "', '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . " Imported', '" . $add_ip . "', '" . $timezone . "')";
+									$db->query($conn, $sql6);
+									$data = mysqli_insert_id($conn);
+								} else {
+									$sql6 = "UPDATE " . $selected_db_name . ".sub_location_types SET enabled = 1 WHERE sub_location_type_name = '" . $data . "' ";
+									$db->query($conn, $sql6);
+								}
+							}
+						}
+
 						$insert_db_field_id		= $key;
 						${$insert_db_field_id} 	= $data;
+
 						if ($key != "" && $key != 'is_insert') {
 							$columns 		.= ", " . $insert_db_field_id;
 							$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
@@ -166,7 +201,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 						}
 					}
-					$sql1		= "SELECT * FROM " . $table1 . " 
+					$sql1		= " SELECT * FROM " . $table1 . " 
 									WHERE " . $insert_db_field_id_detai2 . " = '" . $data1['sub_location_name'] . "' 
 									AND warehouse_id = 1 ";
 					$result1	= $db->query($conn, $sql1);
@@ -323,6 +358,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										}
 										if ($s_heading == 'is_mobile') {
 											$cell_format = "Yes / No";
+										}
+										if ($s_heading == 'total_capacity') {
+											$cell_format = "Number";
 										}
 										echo " <tr>
 													<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>

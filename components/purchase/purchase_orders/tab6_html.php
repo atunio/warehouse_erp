@@ -123,14 +123,14 @@
     } else if (isset($active_tab) && $active_tab == 'tab6') { ?>
         <div class="card card card-default scrollspy custom_margin_card_table_bottom" style="background-color:whitesmoke;">
             <ul class="tabs tabs-fixed-width tab-demo z-depth-1">
-                <li class="tab">
+                <li class="tab" id="show_tab_sub_tab_master">
                     <a href="#tab1"> <i class="material-icons">receipt</i>
                         <span>Master Profile</span>
                     </a>
                 </li>
                 <?php
                 if (po_permisions("Pricing") == '1') { ?>
-                    <li class="tab">
+                    <li class="tab" id="show_tab_pricing">
                         <a href="#tab2" class=" <?php if (isset($active_tab) && $active_tab == 'tab6' &&  isset($active_subtab) && $active_subtab == 'tab2') {
                                                     echo "active";
                                                 }  ?>">
@@ -141,6 +141,7 @@
                 <?php } ?>
             </ul>
             <div id="tab1">
+                <input type="hidden" id="sub_tab_master_url" value="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>">
                 <?php
                 $td_padding     = "padding:5px 15px !important;";
                 $sql            = " SELECT a.id FROM purchase_order_detail_receive a WHERE a.po_id = '" . $id . "' ";   //echo $sql; 
@@ -169,14 +170,13 @@
                                                                                                 } else {
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
-
                             <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                 <input type="hidden" name="is_Submit_tab6_6" value="Y" />
                                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
                                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                                 } ?>">
-                                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+                                <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <br>
                                 <div class="row">
                                     <div class="input-field col m6 s12">
@@ -1637,6 +1637,7 @@
                 <?php } ?>
             </div>
             <div id="tab2">
+                <input type="hidden" id="pricing_tab_url" value="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>">
                 <?php
                 $sql_p2         = " SELECT * FROM(
                                         SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, IF(a.price = 0, d.order_price, a.price) AS order_price

@@ -27,7 +27,7 @@ if (isset($is_Submit_del) && access("delete_perm") == 0) {
 			}
 			foreach ($record_ids as $data_d) {
 				if ($is_enabled != "") {
-					$sql_dl = "UPDATE defect_codes SET enabled = '" . $is_enabled . "' WHERE id = '" . $data_d . "' ";
+					$sql_dl = "UPDATE inventory_status_types SET enabled = '" . $is_enabled . "' WHERE id = '" . $data_d . "' ";
 					$ok = $db->query($conn, $sql_dl);
 					if ($ok) {
 						$m++;
@@ -40,11 +40,12 @@ if (isset($is_Submit_del) && access("delete_perm") == 0) {
 		}
 	}
 }
+
 if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_perm") == 0) {
 	$error['msg'] = "You do not have edit permissions.";
 } else {
 	if (isset($cmd) && $cmd == 'disabled') {
-		$sql_c_upd = "UPDATE defect_codes set enabled = 0,
+		$sql_c_upd = "UPDATE inventory_status_types set enabled = 0,
 												update_date = '" . $add_date . "' ,
 												update_by 	= '" . $_SESSION['username'] . "' ,
 												update_ip 	= '" . $add_ip . "'
@@ -57,7 +58,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 	if (isset($cmd) && $cmd == 'enabled') {
-		$sql_c_upd = "UPDATE defect_codes set enabled = 1,
+		$sql_c_upd = "UPDATE inventory_status_types set enabled = 1,
 											update_date = '" . $add_date . "' ,
 											update_by 	= '" . $_SESSION['username'] . "' ,
 											update_ip 	= '" . $add_ip . "'
@@ -69,9 +70,9 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 
-$sql_cl 		= "	SELECT  a.* FROM defect_codes a WHERE 1=1  ";
-if (isset($flt_defect_code) && $flt_defect_code != "") {
-	$sql_cl 	.= " AND a.id = '" . trim($flt_defect_code) . "' ";
+$sql_cl 		= "	SELECT  a.* FROM inventory_status_types a WHERE 1=1  ";
+if (isset($flt_screen_type) && $flt_screen_type != "") {
+	$sql_cl 	.= " AND a.id = '" . trim($flt_screen_type) . "' ";
 }
 
 if (!isset($is_enabled_disabled)) {
@@ -83,7 +84,7 @@ if (isset($is_enabled_disabled) && $is_enabled_disabled != "") {
 $sql_cl 		.= " ORDER BY a.enabled DESC, a.id DESC"; // echo $sql_cl;
 $result_cl 		= $db->query($conn, $sql_cl);
 $count_cl 		= $db->counter($result_cl);
-$page_heading 	= "List of Defect Codes";
+$page_heading 	= "List of Inventory Status Types";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
@@ -166,10 +167,10 @@ $page_heading 	= "List of Defect Codes";
 											<i class="material-icons prefix">question_answer</i>
 											<div class="select2div">
 												<?php
-												$field_name     = "flt_defect_code";
-												$field_label    = "Defect Code";
+												$field_name     = "flt_screen_type";
+												$field_label    = "Type";
 
-												$sql1           = " SELECT  a.* FROM defect_codes a ORDER BY defect_code";
+												$sql1           = " SELECT  a.* FROM inventory_status_types a ORDER BY inventory_status_type_name";
 												$result1        = $db->query($conn, $sql1);
 												$count1         = $db->counter($result1);
 												?>
@@ -181,7 +182,7 @@ $page_heading 	= "List of Defect Codes";
 													if ($count1 > 0) {
 														$row1    = $db->fetch($result1);
 														foreach ($row1 as $data2) { ?>
-															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['defect_code']; ?></option>
+															<option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['inventory_status_type_name']; ?></option>
 													<?php }
 													} ?>
 												</select>
@@ -238,7 +239,7 @@ $page_heading 	= "List of Defect Codes";
 									<div class="col m10 s12">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('SNo', 'Defect Code Name', 'Defect Codes', 'Actions');
+											$table_columns	= array('SNo', 'Type', 'Actions');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -251,6 +252,7 @@ $page_heading 	= "List of Defect Codes";
 										</div>
 									</div>
 								</div>
+								<br>
 								<form class="infovalidate" action="" method="post">
 									<input type="hidden" name="is_Submit_del" value="Y" />
 									<input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -295,11 +297,7 @@ $page_heading 	= "List of Defect Codes";
 																																							} ?> class="checkbox filled-in" />
 																		<span></span>
 																	</label>
-																	<?php echo ucwords(strtolower($data['defect_code_name']));
-																	$column_no++; ?>
-																</td>
-																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																	<?php echo ucwords(strtolower($data['defect_code']));
+																	<?php echo ucwords(strtolower($data['inventory_status_type_name']));
 																	$column_no++; ?>
 																</td>
 																<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]); ?>">

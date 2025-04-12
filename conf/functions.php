@@ -1752,7 +1752,7 @@ function device_parts_price($db, $conn, $parts_ids_array)
 	return $device_processing_parts_price;
 }
 
-function update_po_status($db, $conn, $po_id, $order_status)
+function update_po_status($db, $conn, $po_id, $order_status, $status_not_in = "")
 {
 	$add_ip		= $_SERVER['REMOTE_ADDR'];
 	$add_date	= date("Y-m-d H:i:s");
@@ -1764,9 +1764,12 @@ function update_po_status($db, $conn, $po_id, $order_status)
 												update_by			= '" . $_SESSION['username'] . "',
 												update_ip			= '" . $add_ip . "'
 					WHERE id = '" . $po_id . "' ";
+	if ($status_not_in != "") {
+		$sql_c_up .= " AND order_status NOT IN(" . $status_not_in . ")";
+	}
 	$db->query($conn, $sql_c_up);
 }
-function update_po_detail_status($db, $conn, $po_detail_id, $order_product_status)
+function update_po_detail_status($db, $conn, $po_detail_id, $order_product_status, $status_not_in = "")
 {
 	$add_ip		= $_SERVER['REMOTE_ADDR'];
 	$add_date	= date("Y-m-d H:i:s");
@@ -1778,9 +1781,12 @@ function update_po_detail_status($db, $conn, $po_detail_id, $order_product_statu
 													update_by_user_id		= '" . $_SESSION['user_id'] . "',
 													update_ip				= '" . $add_ip . "'
 				WHERE id = '" . $po_detail_id . "' ";
+	if ($status_not_in != "") {
+		$sql_c_up .= " AND order_product_status NOT IN(" . $status_not_in . ")";
+	}
 	$db->query($conn, $sql_c_up);
 }
-function update_po_detail_status2($db, $conn, $po_id, $order_product_status)
+function update_po_detail_status2($db, $conn, $po_id, $order_product_status, $status_not_in = "")
 {
 	$add_ip		= $_SERVER['REMOTE_ADDR'];
 	$add_date	= date("Y-m-d H:i:s");
@@ -1792,6 +1798,9 @@ function update_po_detail_status2($db, $conn, $po_id, $order_product_status)
 													update_by_user_id		= '" . $_SESSION['user_id'] . "',
 													update_ip				= '" . $add_ip . "'
 				WHERE po_id = '" . $po_id . "' ";
+	if ($status_not_in != "") {
+		$sql_c_up .= " AND order_product_status NOT IN(" . $status_not_in . ")";
+	}
 	$db->query($conn, $sql_c_up);
 }
 

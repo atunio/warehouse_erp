@@ -21,9 +21,9 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("formula_type", "category", "labor_cost");
-$duplication_columns 		= array("formula_type", "category");
-$required_columns 			= array("formula_type", "category", "labor_cost");
+$supported_column_titles 	= array("inventory_status_type_name");
+$duplication_columns 		= array("inventory_status_type_name");
+$required_columns 			= array("inventory_status_type_name");
 
 if (isset($is_Submit) && $is_Submit == 'Y') {
 	if (isset($excel_data) && $excel_data == "") {
@@ -67,7 +67,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 	}
 }
 $added = 0;
-$master_table = "formula_labor_cost";
+$master_table = "inventory_status_types";
 if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 	// $filter_import_colums = array_filter($import_colums, function ($value) {
@@ -120,104 +120,71 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	$all_data = $modified_array;
 
 	if (empty($error)) {
-		$result = array();
+		$ids_already = array();
 		if (isset($all_data) && sizeof($all_data) > 0) {
-			$dup = 0;
-			$dup_msg2 = "";
-			foreach ($all_data as $index => $record) {
-				$dup_msg 	= "";
-				$dup_where 	= " 1 = 1 ";
-				$q 			= 0;
-				$filtered 	= [];
-				foreach ($duplication_columns  as $dup_data) {
-					if (isset($record[$dup_data])) {
-						$cell_data				= $record[$dup_data];
-						$filtered[$dup_data]	= $cell_data;
-						$db_name = $dup_data;
-						if ($dup_data == 'category') {
-							$db_name = " product_category ";
-							if ($cell_data != '' && $cell_data != NULL && $cell_data != '-' && $cell_data != 'blank') {
-								$sql1		= "SELECT * FROM product_categories WHERE category_name = '" . $cell_data . "' ";
-								$result1	= $db->query($conn, $sql1);
-								$count1		= $db->counter($result1);
-								if ($count1 > 0) {
-									$row1		 = $db->fetch($result1);
-									$dup_where	.= " AND " . $db_name . " = '" . $row1[0]['id'] . "'";
-									$dup_msg	.= " " . $cell_data;
-								} else {
-									$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-											 VALUES('" . $subscriber_users_id . "', '" . $data . "', 'Device', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-									$ok = $db->query($conn, $sql6);
-									if ($ok) {
-										$category_id 	= mysqli_insert_id($conn);
-										$dup_where		.= " AND " . $db_name . " = '" . $category_id . "'";
-										$dup_msg		.= " " . $cell_data;
-									}
-								}
-							}
-						} else {
-							$dup_where	.= " AND " . $dup_data . " = '" . $cell_data . "'";
-							$dup_msg	.= " " . $cell_data;
+			foreach ($duplication_columns  as $dup_data) {
+				$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
+				foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
+
+					$db_column = $dup_data;
+					if ($dup_data == 'product_id') {
+						$db_column = "product_uniqueid";
+					}
+
+					$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $db_column . " = '" . $duplicate_colum_values1 . "' ";
+					$result1	= $db->query($conn, $sql1);
+					$count1		= $db->counter($result1);
+					if ($count1 > 0) {
+						$row_dp1 = $db->fetch($result1);
+						foreach ($row_dp1 as $data_dp11) {
+							$ids_already[] = $duplicate_colum_values1;
 						}
+						// if (!isset($error['msg'])) {
+						// 	$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// } else {
+						// 	$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						// }
 					}
 				}
-				$sql1		= "SELECT * FROM " . $master_table . " WHERE " . $dup_where . " ";
-				$result1	= $db->query($conn, $sql1);
-				$count1		= $db->counter($result1);
-				if ($count1 > 0) {
-					$result[$index] = $filtered;
-					$dup++;
-					$dup_msg2 .= "<br>" . $dup_msg;
-				}
 			}
-			if ($dup > 0) {
-				if (!isset($error['msg'])) {
-					$error['msg'] = "Already exist: <span class='color-blue'>" . $dup_msg2 . "</span>.";
-				} else {
-					$error['msg'] .= "Already exist: <span class='color-blue'>" . $dup_msg2 . "</span>.";
-				}
-			}
-			foreach ($all_data as $index1 => $data1) {
-				if (array_key_exists($index1, $result)) {
-					// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: find " . $index1;
-				} else {
-					// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: does not find" . $index1;
-					$columns = $column_data = "";
+			foreach ($all_data  as $data1) {
+				// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Modified Array:" . $data1[$dup_data];
+				if (isset($data1['inventory_status_type_name']) && $data1['inventory_status_type_name'] != '' && $data1['inventory_status_type_name'] != NULL && $data1['inventory_status_type_name'] != 'blank') {
+					$inventory_status_type_name2 = $data1['inventory_status_type_name'];
+					$columns = $column_data = $update_column = "";
 					foreach ($data1 as $key => $data) {
 						if ($key != "" && $key != 'is_insert') {
-							if ($data != '' && $data != NULL && $data != '-' && $data != 'blank') {
-								if ($key == 'category') {
-									$db_name 	= " product_category ";
-									$sql1		= "SELECT * FROM product_categories WHERE category_name = '" . $data . "' ";
-									$result1	= $db->query($conn, $sql1);
-									$count1		= $db->counter($result1);
-									if ($count1 > 0) {
-										$row1		 	= $db->fetch($result1);
-										$columns 		.= ", " . $db_name;
-										$column_data 	.= ", '" . $row1[0]['id'] . "'";
-									} else {
-										$sql6 = "INSERT INTO " . $selected_db_name . ".product_categories(subscriber_users_id, category_name, category_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-												VALUES('" . $subscriber_users_id . "', '" . $data . "', 'Device', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-										$ok = $db->query($conn, $sql6);
-										if ($ok) {
-											$category_id 	= mysqli_insert_id($conn);
-											$columns 		.= ", " . $db_name;
-											$column_data 	.= ", '" . $category_id . "'";
-										}
-									}
-								} else {
-									$columns 		.= ", " . $key;
-									$column_data 	.= ", '" . $data . "'";
-								}
+							if ($data != "" && $data != "-") { // ONLY IF one field 
+								$columns 		.= ", " . $key;
+								$column_data 	.= ", '" . $data . "'";
 							}
 						}
 					}
-					if ($columns != "" && $column_data != "") { // ONLY IF one field 
-						$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
-								VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
-						$ok = $db->query($conn, $sql6);
-						if ($ok) {
-							$added++;
+					$update_column	.= ", enabled = '1'";
+					if (isset($ids_already) && isset($inventory_status_type_name2) && in_array($inventory_status_type_name2, $ids_already)) {
+						if ($update_column != "") { // ONLY IF one field 
+							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
+																								update_by 				= '" . $_SESSION['username'] . "', 
+																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
+																								update_ip 				= '" . $add_ip . "', 
+																								update_timezone 		= '" . $timezone . "', 
+																								update_from_module_id 	= '" . $module_id . "'
+																								" . $update_column . "
+									WHERE inventory_status_type_name 	= '" . $inventory_status_type_name2 . "' "; //echo "<br><br>".$sql6;
+							$ok = $db->query($conn, $sql6);
+							if ($ok) {
+								$added++;
+							}
+						}
+					} else {
+						if ($columns != "" && $column_data != "") { // ONLY IF one field 
+							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(subscriber_users_id " . $columns . ", add_date, add_by, add_ip)
+									VALUES('" . $subscriber_users_id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+							$ok = $db->query($conn, $sql6);
+							// echo "<br>" . $sql6;
+							if ($ok) {
+								$added++;
+							}
 						}
 					}
 				}
@@ -338,9 +305,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									<?php
 									$i = 0;
 									$char = 'a';
+
 									foreach ($supported_column_titles as $s_heading) {
 										$cell_format = "Text";
-										if ($s_heading == 'defect_code') {
+										if ($s_heading == 'inventory_status_type_name') {
 											$cell_format = "Text (Unique)";
 										}
 										echo " <tr>
@@ -426,14 +394,27 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 															if ($db_column == 'product_id') {
 																$db_column = "product_uniqueid";
 															}
-															if ($db_column == 'category') {
-																$db_column = "product_category";
+
+															$sql_dup 	= " SELECT * FROM " . $master_table . " WHERE " . $db_column . "	= '" . htmlspecialchars($cell) . "' "; // echo "<br>" . $sql_dup;
+															$result_dup	= $db->query($conn, $sql_dup);
+															$count_dup	= $db->counter($result_dup);
+
+															if ($count_dup > 0) {
+																$row_color 	= "color-red";
+																$is_error 	= 1;
+																$is_insert 	= "No";
+																if ($row_error_status != "") {
+																	$row_error_status .= ", Duplicate " . $db_column_excel;
+																} else {
+																	$row_error_status = "Duplicate " . $db_column_excel;
+																} ?>
+																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
+															<?php
+															} else {
+																$row_color = "color-green"; ?>
+																<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
+															<?php
 															}
-
-
-															$row_color = "color-green"; ?>
-															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">
-														<?php
 														} else {
 															$row_color = "color-green";  ?>
 															<input type="hidden" name="all_data[<?= $row_no; ?>][<?= $db_column_excel; ?>]" value="<?= $cell; ?>">

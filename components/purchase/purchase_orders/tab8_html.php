@@ -79,9 +79,10 @@
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
                                             ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
+                                            ROUND(SUM(a.diagnostic_software_license_price), 2) AS diagnostic_software_license_price, 
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(SUM(a.price)), 2) total_price
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+SUM(a.diagnostic_software_license_price), 2) AS other_cost,
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+SUM(a.diagnostic_software_license_price)+(SUM(a.price)), 2) total_price
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
                                         INNER JOIN products c ON c.id = b.product_id
@@ -104,9 +105,10 @@
                                             ROUND(SUM(a.logistic_cost), 2) AS logistic_cost, 
                                             ROUND(SUM(a.receiving_labor), 2) AS receiving_labor, 
                                             ROUND(SUM(a.diagnostic_labor), 2) AS diagnostic_labor, 
+                                            ROUND(SUM(a.diagnostic_software_license_price), 2) AS diagnostic_software_license_price, 
                                             ROUND(SUM(c2.distributed_amount), 2) AS distributed_amount, 
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor), 2) AS other_cost,
-                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+(SUM(a.price)), 2) total_price
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+SUM(a.diagnostic_software_license_price), 2) AS other_cost,
+                                            ROUND(SUM(c2.distributed_amount)+SUM(a.logistic_cost)+ SUM(a.receiving_labor)+SUM(a.diagnostic_labor)+SUM(a.diagnostic_software_license_price)+(SUM(a.price)), 2) total_price
                                         FROM purchase_order_detail_receive a 
                                         INNER JOIN products c ON c.id = a.product_id
                                         INNER JOIN product_stock c2 ON c2.receive_id = a.id
@@ -191,12 +193,13 @@
                                                     $row_cl1 = $db->fetch($result_log);
                                                     $row_cl2 = $db->fetch($result_log2);
                                                     foreach ($row_cl2 as $data2) {
-                                                        $product_total_price        = $data2['product_total_price'];
-                                                        $total_qty                  = $data2['total_qty'];
-                                                        $logistic_cost              = $data2['logistic_cost'];
-                                                        $receiving_labor            = $data2['receiving_labor'];
-                                                        $diagnostic_labor           = $data2['diagnostic_labor'];
-                                                        $distributed_amount         = $data2['distributed_amount'];
+                                                        $product_total_price                = $data2['product_total_price'];
+                                                        $total_qty                          = $data2['total_qty'];
+                                                        $logistic_cost                      = $data2['logistic_cost'];
+                                                        $receiving_labor                    = $data2['receiving_labor'];
+                                                        $diagnostic_labor                   = $data2['diagnostic_labor'];
+                                                        $diagnostic_software_license_price  = $data2['diagnostic_software_license_price'];
+                                                        $distributed_amount                 = $data2['distributed_amount'];
 
                                                         if ($logistic_cost > 0) {
                                                             $logistic_cost = $logistic_cost / $data2['total_qty'];
@@ -207,35 +210,39 @@
                                                         if ($diagnostic_labor > 0) {
                                                             $diagnostic_labor = $diagnostic_labor / $data2['total_qty'];
                                                         }
+                                                        if ($diagnostic_software_license_price > 0) {
+                                                            $diagnostic_software_license_price = $diagnostic_software_license_price / $data2['total_qty'];
+                                                        }
                                                         if ($distributed_amount > 0) {
                                                             $distributed_amount = $distributed_amount / $data2['total_qty'];
                                                         }
 
                                                         $array_pricing[$data2['product_uniqueid']][] = [
-                                                            "stock_grade"           => $data2['stock_grade'],
-                                                            "product_total_price"   => $product_total_price,
-                                                            "total_qty"             => $total_qty,
-                                                            "logistic_cost"         => $logistic_cost,
-                                                            "receiving_labor"       => $receiving_labor,
-                                                            "diagnostic_labor"      => $diagnostic_labor,
-                                                            "distributed_amount"    => $distributed_amount
+                                                            "stock_grade"                           => $data2['stock_grade'],
+                                                            "product_total_price"                   => $product_total_price,
+                                                            "total_qty"                             => $total_qty,
+                                                            "logistic_cost"                         => $logistic_cost,
+                                                            "receiving_labor"                       => $receiving_labor,
+                                                            "diagnostic_labor"                      => $diagnostic_labor,
+                                                            "distributed_amount"                    => $distributed_amount,
+                                                            "diagnostic_software_license_price"     => $diagnostic_software_license_price
                                                         ];
                                                     }
                                                     foreach ($row_cl1 as $data) {
-                                                        $po_detail_id_prc       = $data['po_detail_id'];
-                                                        $product_id_prc         = $data['product_id'];
-                                                        $product_uniqueid       = $data['product_uniqueid'];
-                                                        $product_total_price    = $data['product_total_price'];
-                                                        $total_cost             = ($data['total_price']);
-                                                        $total_qty              = $data['total_qty'];
-                                                        $single_item_price      = round(($total_cost / $total_qty), 2);
+                                                        $po_detail_id_prc                   = $data['po_detail_id'];
+                                                        $product_id_prc                     = $data['product_id'];
+                                                        $product_uniqueid                   = $data['product_uniqueid'];
+                                                        $product_total_price                = $data['product_total_price'];
+                                                        $total_cost                         = ($data['total_price']);
+                                                        $total_qty                          = $data['total_qty'];
+                                                        $single_item_price                  = round(($total_cost / $total_qty), 2);
+                                                        $logistic_cost                      = $data['logistic_cost'];
+                                                        $receiving_labor                    = $data['receiving_labor'];
+                                                        $diagnostic_labor                   = $data['diagnostic_labor'];
+                                                        $distributed_amount                 = $data['distributed_amount'];
+                                                        $diagnostic_software_license_price  = $data['diagnostic_software_license_price'];
 
-                                                        $logistic_cost          = $data['logistic_cost'];
-                                                        $receiving_labor        = $data['receiving_labor'];
-                                                        $diagnostic_labor       = $data['diagnostic_labor'];
-                                                        $distributed_amount     = $data['distributed_amount'];
-
-                                                        $logistic_percentage_per_item = $receiving_percentage_per_item = $diagnostic_percentage_per_item = $distributed_percentage_per_item = 0;
+                                                        $logistic_percentage_per_item = $receiving_percentage_per_item = $diagnostic_percentage_per_item = $distributed_percentage_per_item = $diagnostic_software_license_percentage_per_item = 0;
                                                         if ($logistic_cost > 0) {
                                                             $logistic_percentage_per_item = ((($logistic_cost / $total_qty) / $single_item_price) * 100);
                                                         }
@@ -244,6 +251,9 @@
                                                         }
                                                         if ($diagnostic_labor > 0) {
                                                             $diagnostic_percentage_per_item = ((($diagnostic_labor / $total_qty) / $single_item_price) * 100);
+                                                        }
+                                                        if ($diagnostic_software_license_price > 0) {
+                                                            $diagnostic_software_license_percentage_per_item = ((($diagnostic_software_license_price / $total_qty) / $single_item_price) * 100);
                                                         }
                                                         if ($distributed_amount > 0) {
                                                             $distributed_percentage_per_item = ((($distributed_amount / $total_qty) / $single_item_price) * 100);
@@ -343,7 +353,6 @@
                                                                     }
                                                                     $single_product_price = $single_product_price - $logistic_after_pricing;
 
-
                                                                     $receiving_after_pricing = "0";
                                                                     if (isset($array_pricing[$product_uniqueid][$index]['receiving_labor']) && $array_pricing[$product_uniqueid][$index]['receiving_labor'] > 0) {
                                                                         $receiving_after_pricing =  $array_pricing[$product_uniqueid][$index]['receiving_labor'];
@@ -353,7 +362,6 @@
                                                                                                 </tr>";
                                                                     }
                                                                     $single_product_price = $single_product_price - $receiving_after_pricing;
-
 
                                                                     $diagnostic_after_pricing = "0";
                                                                     if (isset($array_pricing[$product_uniqueid][$index]['diagnostic_labor']) && $array_pricing[$product_uniqueid][$index]['diagnostic_labor'] > 0) {
@@ -365,6 +373,15 @@
                                                                     }
                                                                     $single_product_price = $single_product_price - $diagnostic_after_pricing;
 
+                                                                    $diagnostic_license_pricing = "0";
+                                                                    if (isset($array_pricing[$product_uniqueid][$index]['diagnostic_software_license_price']) && $array_pricing[$product_uniqueid][$index]['diagnostic_software_license_price'] > 0) {
+                                                                        $diagnostic_license_pricing =  $array_pricing[$product_uniqueid][$index]['diagnostic_software_license_price'];
+                                                                        $pricing_table_trs .= "  <tr>
+                                                                                                    <td>Diagnostic License</td>
+                                                                                                    <td>" . $diagnostic_license_pricing . "</td>
+                                                                                                </tr>";
+                                                                    }
+                                                                    $single_product_price = $single_product_price - $diagnostic_license_pricing;
 
                                                                     $distributed_after_pricing = "0";
                                                                     if (isset($array_pricing[$product_uniqueid][$index]['distributed_amount']) && $array_pricing[$product_uniqueid][$index]['distributed_amount'] > 0) {
@@ -381,17 +398,16 @@
                                                                                                 <td>" . round($single_product_price, 2) . "</td>
                                                                                             </tr>";
                                                                     $pricing_table_trs .= "  <tr>
-                                                                                                                        <td>Final Price</td>
-                                                                                                                        <td>" . round($suggested_price, 2) . "</td>
-                                                                                                                    </tr>";
-
+                                                                                                <td>Final Price</td>
+                                                                                                <td>" . round($suggested_price, 2) . "</td>
+                                                                                            </tr>";
                                                                     $price_grade    = $data["stock_grade"];
                                                                     if (!isset($is_Submit_tab8)) {
                                                                         $sql = "INSERT INTO temp_po_pricing (uniq_session_id, po_id, po_detail_id, product_id, po_product_uniq_id, price_grade, suggested_price,
-                                                                                                        logistic_percentage_per_item, receiving_percentage_per_item, diagnostic_percentage_per_item, distributed_percentage_per_item, 
+                                                                                                        logistic_percentage_per_item, receiving_percentage_per_item, diagnostic_percentage_per_item, diagnostic_software_license_percentage_per_item, distributed_percentage_per_item, 
                                                                                                         add_by_user_id, add_date,  add_by, add_ip, add_timezone, added_from_module_id) 
                                                                                 VALUES( '" . $uniq_session_id . "', '" . $id . "', '" . $po_detail_id_prc . "', '" . $product_id_prc . "', '" . $product_uniqueid . "', '" . $price_grade . "', '" . round($suggested_price, 2) . "',
-                                                                                    '" . $logistic_percentage_per_item . "', '" . $receiving_percentage_per_item . "', '" . $diagnostic_percentage_per_item . "', '" . $distributed_percentage_per_item . "',
+                                                                                    '" . $logistic_percentage_per_item . "', '" . $receiving_percentage_per_item . "', '" . $diagnostic_percentage_per_item . "', '" . $diagnostic_software_license_percentage_per_item . "', '" . $distributed_percentage_per_item . "',
                                                                                     '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
                                                                         $db->query($conn, $sql);
                                                                     } ?>

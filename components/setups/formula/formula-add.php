@@ -27,15 +27,16 @@ if ($cmd == 'add') {
 
 if ($cmd == 'edit' && isset($id) && $id > 0) {
 
-	$sql_ee						= "SELECT a.* FROM formula_category a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
-	$result_ee					= $db->query($conn, $sql_ee);
-	$row_ee						= $db->fetch($result_ee);
+	$sql_ee								= "SELECT a.* FROM formula_category a WHERE a.id = '" . $id . "' "; // echo $sql_ee;
+	$result_ee							= $db->query($conn, $sql_ee);
+	$row_ee								= $db->fetch($result_ee);
 
-	$formula_type				= $row_ee[0]['formula_type'];
-	$product_category			=  $row_ee[0]['product_category'];
-	$devices_per_user_per_day	= $row_ee[0]['devices_per_user_per_day'];
-	$no_of_employees			= $row_ee[0]['no_of_employees'];
-	$repair_type				= $row_ee[0]['repair_type'];
+	$formula_type						= $row_ee[0]['formula_type'];
+	$product_category					=  $row_ee[0]['product_category'];
+	$devices_per_user_per_day			= $row_ee[0]['devices_per_user_per_day'];
+	$no_of_employees					= $row_ee[0]['no_of_employees'];
+	$repair_type						= $row_ee[0]['repair_type'];
+	$diagnostic_software_license_price	= $row_ee[0]['diagnostic_software_license_price'];
 }
 extract($_POST);
 foreach ($_POST as $key => $value) {
@@ -83,12 +84,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_category(subscriber_users_id, formula_type, repair_type, product_category, devices_per_user_per_day,  add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $repair_type . "', '" . $product_category . "',  '" . $devices_per_user_per_day  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".formula_category(subscriber_users_id, formula_type, repair_type, product_category, devices_per_user_per_day, diagnostic_software_license_price, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $formula_type . "', '" . $repair_type . "', '" . $product_category . "',  '" . $devices_per_user_per_day  . "', '" . $diagnostic_software_license_price  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$msg['msg_success'] = "Record has been added successfully.";
-						$formula_type = $product_category = $devices_per_user_per_day = $no_of_employees = $repair_type = "";
+						$formula_type = $product_category = $devices_per_user_per_day = $no_of_employees = $repair_type = $diagnostic_software_license_price = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -110,17 +111,18 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE formula_category SET 	formula_type				= '" . $formula_type . "', 
-																product_category			= '" . $product_category . "',
-																devices_per_user_per_day	= '" . $devices_per_user_per_day . "', 
-																repair_type					= '" . $repair_type . "', 
-																
-																update_date					= '" . $add_date . "',
-																update_by					= '" . $_SESSION['username'] . "',
-																update_by_user_id			= '" . $_SESSION['user_id'] . "',
-																update_ip					= '" . $add_ip . "',
-																update_timezone				= '" . $timezone . "',
-																update_from_module_id		= '" . $module_id . "' 			
+					$sql_c_up = "UPDATE formula_category SET 	formula_type						= '" . $formula_type . "', 
+																product_category					= '" . $product_category . "',
+																devices_per_user_per_day			= '" . $devices_per_user_per_day . "', 
+																repair_type							= '" . $repair_type . "', 
+																diagnostic_software_license_price	= '" . $diagnostic_software_license_price . "', 
+
+																update_date							= '" . $add_date . "',
+																update_by							= '" . $_SESSION['username'] . "',
+																update_by_user_id					= '" . $_SESSION['user_id'] . "',
+																update_ip							= '" . $add_ip . "',
+																update_timezone						= '" . $timezone . "',
+																update_from_module_id				= '" . $module_id . "' 			
 								WHERE id = '" . $id . "'   ";
 					$ok = $db->query($conn, $sql_c_up);
 					if ($ok) {
@@ -298,6 +300,26 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 										</span>
 									</label>
 								</div>
+							</div>
+							<div class="input-field col m3 s12">
+								<?php
+								$field_name 	= "diagnostic_software_license_price";
+								$field_label 	= "Diagnostic Software License Price (Per Device)";
+								?>
+								<i class="material-icons prefix">description</i>
+								<input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+																													echo ${$field_name};
+																												} ?>" class="twoDecimalNumber  validate <?php if (isset(${$field_name . "_valid"})) {
+																																							echo ${$field_name . "_valid"};
+																																						} ?>">
+								<label for="<?= $field_name; ?>">
+									<?= $field_label; ?>
+									<span class="color-red"> * <?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+									</span>
+								</label>
 							</div>
 							<div class="input-field col m2 s12 formula_type" style="<?php if (!isset($formula_type) || (isset($formula_type) && $formula_type != 'Repair') || $formula_type == '') {
 																						echo "display: none;";

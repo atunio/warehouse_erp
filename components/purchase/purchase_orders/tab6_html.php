@@ -1701,7 +1701,7 @@
                                                 <th>Product ID</th>
                                                 <th>Product Description</th>
                                                 <th>Category</th>
-                                                <th>Other Cost</th>
+                                                <th>Labor / License Cost</th>
                                                 <th>Amount</th>
                                             </tr>
                                         </thead>
@@ -1737,12 +1737,17 @@
                                                         }
                                                         $field_name = "receiving_labor";
                                                         if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
-                                                            echo "Receiving Labor: " . $data2[$field_name] . ", ";
+                                                            echo "Receiving: " . $data2[$field_name] . ", ";
                                                             $total_other_cost += $data2[$field_name];
                                                         }
                                                         $field_name = "diagnostic_labor";
                                                         if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
-                                                            echo "Diagnostic Labor: " . $data2[$field_name] . ", ";
+                                                            echo "Diagnostic: " . $data2[$field_name] . ", ";
+                                                            $total_other_cost += $data2[$field_name];
+                                                        }
+                                                        $field_name = "diagnostic_software_license_price";
+                                                        if (isset($data2[$field_name]) && $data2[$field_name] > 0) {
+                                                            echo "Diagnostic Software: " . $data2[$field_name] . ", ";
                                                             $total_other_cost += $data2[$field_name];
                                                         }
                                                         echo " <b>Total: </b>" . $total_other_cost; ?>

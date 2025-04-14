@@ -995,7 +995,8 @@ switch ($type) {
                     $count_pd01     = $db->counter($result_pd01);
                     if ($count_pd01 == 0) {
 
-                        $item_diagnostic_labor_cost = round(signle_device_diagnostic_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_diagn), 2);
+                        $item_diagnostic_labor_cost         = round(signle_device_diagnostic_labor_cost($db, $conn, $_SESSION['user_id'], $product_category_diagn), 2);
+                        $diagnostic_software_license_price  = round(diagnostic_software_license_price($db, $conn, $_SESSION['user_id'], $product_category_diagn), 2);
 
                         $sql_pd01       = "	SELECT a.* 
                                             FROM purchase_order_detail_receive a 
@@ -1029,6 +1030,7 @@ switch ($type) {
                                                                                 assignment_id						= '" . $product_assignment_id . "', 
                                                                                 serial_no_barcode					= '" . $data . "', 
                                                                                 diagnostic_labor					= '" . $item_diagnostic_labor_cost . "', 
+                                                                                diagnostic_software_license_price   = '" . $diagnostic_software_license_price . "', 
                                                                                 " . $update_product_id . "
 
                                                                                 phone_check_api_data				= '" . $jsonData2 . "',

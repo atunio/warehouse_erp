@@ -111,20 +111,33 @@ $page_heading 	= "List of Products";
 						<div class="card custom_margin_card_table_top">
 							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
-									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+									<div class="input-field col m4 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
 											<?php echo $page_heading; ?>
 										</h6>
 									</div>
-									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+									<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+										<?php
+										$sitebar_parm2 = $sitebar_parm3 = "";
+										$check_menu_permissions = check_menu_permissions($db, $conn, $_SESSION['user_id'], $_SESSION['subscriber_users_id'], $_SESSION['user_type'], 18, $selected_db_name, $sitebar_parm2, $sitebar_parm3);
+										if ($check_menu_permissions > 0) { ?>
+											<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=18&page=listing") ?>">
+												Stock
+											</a>&nbsp;&nbsp;
+											<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=18&page=detailStock") ?>">
+												Stock History
+											</a>
+										<?php }  ?>
+									</div>
+									<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 										<?php
 										if (access("add_perm") == 1) { ?>
-											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
+											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=add&cmd=add&cmd2=add") ?>">
 												New
 											</a>
 										<?php }
 										if (access("add_perm") == 1) { ?>
-											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import") ?>">
 												Import Product
 											</a> &nbsp;&nbsp;
 											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_packages") ?>">
@@ -335,7 +348,7 @@ $page_heading 	= "List of Products";
 										</div>
 										<div class="input-field col m2 s12">
 											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button> &nbsp;&nbsp;
-											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">All</a>
+											<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">All</a>
 										</div>
 									</div>
 								</form>
@@ -428,16 +441,16 @@ $page_heading 	= "List of Products";
 															<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																<?php
 																if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&cmd2=add&id=" . $id) ?>" title="Edit">
+																	<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=add&cmd=edit&cmd2=add&id=" . $id) ?>" title="Edit">
 																		<i class="material-icons dp48">edit</i>
 																	</a> &nbsp;&nbsp;
 																<?php }
 																if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>" title="Enable">
+																	<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>" title="Enable">
 																		<i class="material-icons dp48">add</i>
 																	</a> &nbsp;&nbsp;
 																<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
+																	<a class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
 																		<i class="material-icons dp48">delete</i>
 																	</a>&nbsp;&nbsp;
 																<?php } ?>

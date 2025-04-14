@@ -116,12 +116,31 @@ $page_heading 	= "Stock Detail";
 				<div class="card custom_margin_card_table_top custom_margin_card_table_bottom">
 					<div class="card-content custom_padding_card_content_table_top_bottom">
 						<div class="row">
-							<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+							<div class="input-field col m4 s12" style="margin-top: 3px; margin-bottom: 3px;">
 								<h6 class="media-heading">
 									<?php echo $page_heading; ?>
 								</h6>
 							</div>
-							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+							<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+								<?php
+								$sitebar_parm2 = $sitebar_parm3 = "";
+								$check_menu_permissions = check_menu_permissions($db, $conn, $_SESSION['user_id'], $_SESSION['subscriber_users_id'], $_SESSION['user_type'], 11, $selected_db_name, $sitebar_parm2, $sitebar_parm3);
+								if ($check_menu_permissions > 0) { ?>
+									<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=11&page=listing") ?>">
+										Products
+									</a>
+									</a>
+								<?php }
+								$sitebar_parm2 = $sitebar_parm3 = "";
+								$check_menu_permissions = check_menu_permissions($db, $conn, $_SESSION['user_id'], $_SESSION['subscriber_users_id'], $_SESSION['user_type'], 18, $selected_db_name, $sitebar_parm2, $sitebar_parm3);
+								if ($check_menu_permissions > 0) { ?>
+									&nbsp;&nbsp;
+									<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=18&page=listing") ?>">
+										Stock
+									</a>
+								<?php } ?>
+							</div>
+							<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<?php
 								if (access("add_perm") == 1) { ?>
 									<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">

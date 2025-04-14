@@ -203,15 +203,34 @@ $page_heading 	= "Stock Summary";
 						<div class="card custom_margin_card_table_top">
 							<div class="card-content custom_padding_card_content_table_top_bottom">
 								<div class="row">
-									<div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
+									<div class="input-field col m4 s12" style="margin-top: 3px; margin-bottom: 3px;">
 										<h6 class="media-heading">
 											<?php echo $page_heading; ?>
 										</h6>
 									</div>
-									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+									<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
+										<?php
+										$sitebar_parm2 = $sitebar_parm3 = "";
+										$check_menu_permissions = check_menu_permissions($db, $conn, $_SESSION['user_id'], $_SESSION['subscriber_users_id'], $_SESSION['user_type'], 11, $selected_db_name, $sitebar_parm2, $sitebar_parm3);
+										if ($check_menu_permissions > 0) { ?>
+											<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=11&page=listing") ?>">
+												Products
+											</a>
+											</a>
+										<?php }
+										$sitebar_parm2 = $sitebar_parm3 = "";
+										$check_menu_permissions = check_menu_permissions($db, $conn, $_SESSION['user_id'], $_SESSION['subscriber_users_id'], $_SESSION['user_type'], 18, $selected_db_name, $sitebar_parm2, $sitebar_parm3);
+										if ($check_menu_permissions > 0) { ?>
+											&nbsp;&nbsp;
+											<a class="btn gradient-45deg-green-teal waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=18&page=detailStock") ?>">
+												Stock History
+											</a>
+										<?php } ?>
+									</div>
+									<div class="input-field col m4 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 										<?php
 										if (access("add_perm") == 1) { ?>
-											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import") ?>">
+											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import") ?>">
 												Import
 											</a>
 										<?php } ?>
@@ -497,9 +516,7 @@ $page_heading 	= "Stock Summary";
 										<div class="input-field col m3 s12">
 											<button class="btn waves-effect waves-light border-round gradient-45deg-purple-deep-orange " type="submit" name="action">Search</button>
 											&nbsp;&nbsp;
-											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">Reset</a>
-											&nbsp;&nbsp;
-											<a href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock") ?>">Detail Stocks</a>
+											<a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">Reset</a>
 										</div>
 									</div>
 								</form>
@@ -822,7 +839,7 @@ $page_heading 	= "Stock Summary";
 															<td class="col-<?= strtolower($table_columns[1]); ?>">
 																<?php
 																if (access("edit_perm") == 1) { ?>
-																	<a target="_blank" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=history&id=" . $id) ?>" title="Detail View">
+																	<a target="_blank" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=history&id=" . $id) ?>" title="Detail View">
 																		<?php echo $product_uniqueid; ?>
 																	</a> &nbsp;&nbsp;
 																<?php } else {
@@ -838,7 +855,7 @@ $page_heading 	= "Stock Summary";
 																<?php
 																/*
 																if (access("edit_perm") == 1) { ?>
-																	<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																	<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																		<?php echo $total_stock_p; ?>
 																	</a> &nbsp;&nbsp;
 																<?php } else {
@@ -852,7 +869,7 @@ $page_heading 	= "Stock Summary";
 																<?php
 																/*
 																if (access("edit_perm") == 1) { ?>
-																	<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																	<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $id . "&detail_id=" . $product_uniqueid . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																		<?php echo number_format($avg_price, 2); ?>
 																	</a> &nbsp;&nbsp;
 																<?php } else {
@@ -925,7 +942,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[7]); ?> text_align_right">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																				<?php echo $data2['p_total_stock']; ?>
 																			</a>
 																			<?php } else {
@@ -936,7 +953,7 @@ $page_heading 	= "Stock Summary";
 																	<td class="col-<?= strtolower($table_columns[9]); ?>">
 																		<?php
 																		if (access("edit_perm") == 1 && $id2 > 0) { ?>
-																			<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
+																			<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																				<?php echo number_format($data2['avg_price'], 2); ?>
 																			</a> &nbsp;&nbsp;
 																		<?php } else {
@@ -982,21 +999,21 @@ $page_heading 	= "Stock Summary";
 																				$filter_3 = $data3['serial_no'];
 																				/*
 																				if (access("edit_perm") == 1) { ?>
-																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
+																					<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View" style="padding: 20px;">
 																					<?php echo $data3['p_total_stock']; ?>
 																					</a> &nbsp;&nbsp;
 																				<?php }
 																				*/ ?>
 																			</td>
 																			<td class="col-<?= set_table_headings($table_columns[8]); ?>">
-																				<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail">
+																				<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail">
 																					<?php echo $data3['serial_no']; ?>
 																				</a> &nbsp;&nbsp;
 																			</td>
 																			<td class="col-<?= set_table_headings($table_columns[9]); ?>">
 																				<?php
 																				if (access("edit_perm") == 1) { ?>
-																					<a target="_blank" class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View">
+																					<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=detailStock&id=" . $product_id . "&detail_id=" . $product_uniqueid . "&filter_1=" . $filter_1 . "&filter_2=" . $filter_2 . "&filter_3=" . $filter_3 . "&is_Submit=Y") ?>" title="Detail Stock View">
 																						<?php echo number_format($data3['price'], 2); ?>
 																					</a> &nbsp;&nbsp;
 																				<?php } else {

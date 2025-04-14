@@ -193,7 +193,7 @@ $page_heading 	= "List of Formula";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'Formula Type', 'Repair Type', 'Category', 'No of Devices Per User Per Day', 'Actions');
+										$table_columns	= array('SNo', 'Formula Type', 'Repair Type', 'Category', 'No of Devices Per User Per Day', 'Diagnostic Software License Price (Per Device)', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -250,6 +250,10 @@ $page_heading 	= "List of Formula";
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php echo $data['devices_per_user_per_day'];
+																$col_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php echo $data['diagnostic_software_license_price'];
 																$col_no++; ?>
 															</td>
 															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]); ?>">

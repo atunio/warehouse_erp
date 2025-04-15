@@ -891,6 +891,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 			$error6['sub_location_id_boken_device'] = "More than Capacity " . $bin_capacity_rc1;
 		}
 	}
+	/*
 	if (!isset($battery_boken_device) || (isset($battery_boken_device)  && ($battery_boken_device == "0" || $battery_boken_device == ""))) {
 		$error6['battery_boken_device'] = "Required";
 	}
@@ -906,6 +907,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 	if (!isset($overall_grade_boken_device) || (isset($overall_grade_boken_device)  && ($overall_grade_boken_device == "0" || $overall_grade_boken_device == ""))) {
 		$error6['overall_grade_boken_device'] = "Required";
 	}
+	*/
 	if (!isset($inventory_status_boken_device) || (isset($inventory_status_boken_device)  && ($inventory_status_boken_device == "0" || $inventory_status_boken_device == ""))) {
 		$error6['inventory_status_boken_device'] = "Required";
 	}

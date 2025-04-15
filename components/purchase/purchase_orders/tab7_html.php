@@ -463,12 +463,11 @@
                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                     <?php
                                                     echo $product_uniqueid_r1;
-                                                    echo " - " . $data_r2['product_desc'];
                                                     if ($data_r2['category_name'] != "") {
-                                                        echo " (" . $data_r2['category_name'] . ")";
+                                                        echo " (" . $data_r2['category_name'] . ") - ";
                                                     }
                                                     if ($data_r2['serial_no_barcode'] != "") {
-                                                        echo ", Serial#: " . $data_r2['serial_no_barcode'] . " - ";
+                                                        echo " Serial#: " . $data_r2['serial_no_barcode'] . " - ";
                                                     }
                                                     if ($data_r2['price'] != "") {
                                                         echo " PO Price: " . number_format($data_r2['price'], 2) . "";

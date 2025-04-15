@@ -371,13 +371,10 @@
                                             Product &nbsp;
                                             <?php
                                             if (isset($stage_status) && $stage_status != "Committed") { ?>
-                                                <a href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>" class="btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size">
-                                                    Import
-                                                </a> &nbsp;&nbsp;
                                                 <?php
                                                 if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) { ?>
                                                     <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                        Add Packages / Parts
+                                                        Packages / Parts
                                                     </a>
                                                     <?php
                                                 } ?>&nbsp;&nbsp;

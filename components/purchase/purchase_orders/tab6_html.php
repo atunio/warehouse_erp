@@ -547,7 +547,7 @@
                                                 foreach ($row_r2 as $data_r2) { ?>
                                                     <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                         <?php
-                                                        echo "Product: " . $data_r2['product_uniqueid'] . " ";
+                                                        echo "" . $data_r2['product_uniqueid'] . " ";
                                                         if ($data_r2['category_name'] != "") {
                                                             echo " (" . $data_r2['category_name'] . ") ";
                                                         }
@@ -726,11 +726,12 @@
                                         <?php
                                         $field_name     = "product_id_barcode_diagnostic";
                                         $field_label    = "Product ID";
-                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid, e1.status_name
                                                             FROM purchase_order_detail a 
                                                             INNER JOIN purchase_orders b ON b.id = a.po_id
                                                             INNER JOIN products c ON c.id = a.product_id
                                                             INNER JOIN product_categories d ON d.id = c.product_category
+                                                            LEFT JOIN inventory_status e1 ON e1.id = a.expected_status
                                                             INNER JOIN purchase_order_detail_receive e ON e.po_id = a.po_id 
                                                                                                         AND c.product_category = e.recevied_product_category  
                                                                                                         AND (e.serial_no_barcode IS NULL OR e.serial_no_barcode = '')
@@ -766,11 +767,18 @@
                                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                             <?php
                                                             echo "" . $data_r2['product_uniqueid'];
-                                                            echo " -  Product: " . $data_r2['product_desc'];
                                                             if ($data_r2['category_name'] != "") {
                                                                 echo " (" . $data_r2['category_name'] . ") ";
                                                             }
-                                                            echo " - Order QTY: " . $order_qty; ?>
+                                                            if ($data_r2['status_name'] != "") {
+                                                                echo ", Status: " . $data_r2['status_name'] . "";
+                                                            }
+                                                            if ($data_r2['product_condition'] != "") {
+                                                                echo ", Condition: " . $data_r2['product_condition'] . "";
+                                                            }
+                                                            if ($data_r2['order_price'] != "") {
+                                                                echo ", Price: " . $data_r2['order_price'] . "";
+                                                            } ?>
                                                         </option>
                                                 <?php
                                                     }
@@ -833,11 +841,12 @@
                                         <?php
                                         $field_name     = "product_id_boken_device";
                                         $field_label    = "Product ID";
-                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                        $sql            = " SELECT DISTINCT a.*, c.product_desc, d.category_name, c.product_uniqueid, e1.status_name
                                                             FROM purchase_order_detail a 
                                                             INNER JOIN purchase_orders b ON b.id = a.po_id
                                                             INNER JOIN products c ON c.id = a.product_id
                                                             INNER JOIN product_categories d ON d.id = c.product_category
+                                                            LEFT JOIN inventory_status e1 ON e1.id = a.expected_status
                                                             INNER JOIN purchase_order_detail_receive e ON e.po_id = a.po_id 
                                                                                                     AND c.product_category = e.recevied_product_category  
                                                                                                     AND (e.serial_no_barcode IS NULL OR e.serial_no_barcode = '')
@@ -873,11 +882,18 @@
                                                         <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                             <?php
                                                             echo "" . $data_r2['product_uniqueid'];
-                                                            echo " -  Product: " . $data_r2['product_desc'];
                                                             if ($data_r2['category_name'] != "") {
-                                                                echo " (" . $data_r2['category_name'] . ") ";
+                                                                echo " (" . $data_r2['category_name'] . ") - ";
                                                             }
-                                                            echo " - Order QTY: " . $order_qty; ?>
+                                                            if ($data_r2['status_name'] != "") {
+                                                                echo " Status: " . $data_r2['status_name'] . "";
+                                                            }
+                                                            if ($data_r2['product_condition'] != "") {
+                                                                echo ", Condition: " . $data_r2['product_condition'] . "";
+                                                            }
+                                                            if ($data_r2['order_price'] != "") {
+                                                                echo ", Price: " . $data_r2['order_price'] . "";
+                                                            } ?>
                                                         </option>
                                                 <?php
                                                     }
@@ -892,26 +908,6 @@
                                                 </span>
                                             </label>
                                         </div>
-                                    </div>
-                                    <div class="input-field col m3 s12">
-                                        <?php
-                                        $field_name     = "serial_no_boken_device";
-                                        $field_label    = "Serial No";
-                                        ?>
-                                        <i class="material-icons prefix">description</i>
-                                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                            echo ${$field_name};
-                                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                } ?>">
-                                        <label for="<?= $field_name; ?>">
-                                            <?= $field_label; ?>
-                                            <span class="color-red">* <?php
-                                                                        if (isset($error6[$field_name])) {
-                                                                            echo $error6[$field_name];
-                                                                        } ?>
-                                            </span>
-                                        </label>
                                     </div>
                                     <div class="input-field col m3 s12">
                                         <?php
@@ -958,6 +954,26 @@
                                             </label>
                                         </div>
                                     </div>
+                                    <div class="input-field col m3 s12">
+                                        <?php
+                                        $field_name     = "serial_no_boken_device";
+                                        $field_label    = "Serial No";
+                                        ?>
+                                        <i class="material-icons prefix">description</i>
+                                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                            echo ${$field_name};
+                                                                                                                        } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                                } ?>">
+                                        <label for="<?= $field_name; ?>">
+                                            <?= $field_label; ?>
+                                            <span class="color-red">* <?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
+                                            </span>
+                                        </label>
+                                    </div>
                                 </div> <br>
                                 <div class="row">
                                     <div class="input-field col m2 s12">
@@ -973,10 +989,10 @@
                                                                                                                                                 } ?>">
                                         <label for="<?= $field_name; ?>">
                                             <?= $field_label; ?>
-                                            <span class="color-red">* <?php
-                                                                        if (isset($error6[$field_name])) {
-                                                                            echo $error6[$field_name];
-                                                                        } ?>
+                                            <span class="color-red"><?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
                                             </span>
                                         </label>
                                     </div>
@@ -996,10 +1012,10 @@
                                             </select>
                                             <label for="<?= $field_name; ?>">
                                                 <?= $field_label; ?>
-                                                <span class="color-red">*<?php
-                                                                            if (isset($error6[$field_name])) {
-                                                                                echo $error6[$field_name];
-                                                                            } ?>
+                                                <span class="color-red"><?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
                                                 </span>
                                             </label>
                                         </div>
@@ -1020,10 +1036,10 @@
                                             </select>
                                             <label for="<?= $field_name; ?>">
                                                 <?= $field_label; ?>
-                                                <span class="color-red">*<?php
-                                                                            if (isset($error6[$field_name])) {
-                                                                                echo $error6[$field_name];
-                                                                            } ?>
+                                                <span class="color-red"><?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
                                                 </span>
                                             </label>
                                         </div>
@@ -1044,10 +1060,10 @@
                                             </select>
                                             <label for="<?= $field_name; ?>">
                                                 <?= $field_label; ?>
-                                                <span class="color-red">*<?php
-                                                                            if (isset($error6[$field_name])) {
-                                                                                echo $error6[$field_name];
-                                                                            } ?>
+                                                <span class="color-red"><?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
                                                 </span>
                                             </label>
                                         </div>
@@ -1068,10 +1084,10 @@
                                             </select>
                                             <label for="<?= $field_name; ?>">
                                                 <?= $field_label; ?>
-                                                <span class="color-red">*<?php
-                                                                            if (isset($error6[$field_name])) {
-                                                                                echo $error6[$field_name];
-                                                                            } ?>
+                                                <span class="color-red"><?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
                                                 </span>
                                             </label>
                                         </div>
@@ -1172,7 +1188,7 @@
                                             </span>
                                         </label>
                                     </div>
-                                    <div class="input-field col m2 s12">
+                                    <div class="input-field col m6 s12">
                                         <?php
                                         $field_name     = "defects_or_notes_boken_device";
                                         $field_label    = "Defect Or Notes";

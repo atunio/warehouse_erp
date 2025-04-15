@@ -596,19 +596,17 @@
                                                 foreach ($row_r2 as $data_r2) { ?>
                                                  <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                      <?php
-                                                        echo " " . $data_r2['product_desc'];
+                                                        echo " " . $data_r2['product_uniqueid'];
                                                         if ($data_r2['category_name'] != "") {
                                                             echo " (" . $data_r2['category_name'] . ") - ";
                                                         }
-                                                        echo " (" . $data_r2['product_uniqueid'] . ") ";
-
+                                                        if ($data_r2['status_name'] != "") {
+                                                            echo " Status: " . $data_r2['status_name'] . "";
+                                                        }
                                                         if ($data_r2['product_condition'] != "") {
                                                             echo ", Condition: " . $data_r2['product_condition'] . "";
                                                         }
-                                                        if ($data_r2['status_name'] != "") {
-                                                            echo ", Status: " . $data_r2['status_name'] . "";
-                                                        }
-                                                        if ($data_r2['status_name'] != "") {
+                                                        if ($data_r2['order_price'] != "") {
                                                             echo ", Price: " . $data_r2['order_price'] . "";
                                                         }
                                                         ?>
@@ -913,11 +911,12 @@
                                         $field_name     = "product_id_manual";
                                         $field_label    = "Product ID";
 
-                                        $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid
+                                        $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid, e1.status_name
                                                         FROM purchase_order_detail a 
                                                         INNER JOIN purchase_orders b ON b.id = a.po_id
                                                         INNER JOIN products c ON c.id = a.product_id
                                                         INNER JOIN product_categories d ON d.id = c.product_category
+                                                        LEFT JOIN inventory_status e1 ON e1.id = a.expected_status
                                                         WHERE 1=1 
                                                         AND a.po_id = '" . $id . "' 
                                                         AND a.enabled = 1
@@ -953,9 +952,17 @@
                                                      <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
                                                          <?php
                                                             echo "" . $data_r2['product_uniqueid'];
-                                                            echo " -  Product: " . $data_r2['product_desc'];
                                                             if ($data_r2['category_name'] != "") {
-                                                                echo " (" . $data_r2['category_name'] . ") ";
+                                                                echo " (" . $data_r2['category_name'] . ") - ";
+                                                            }
+                                                            if ($data_r2['status_name'] != "") {
+                                                                echo " Status: " . $data_r2['status_name'] . "";
+                                                            }
+                                                            if ($data_r2['product_condition'] != "") {
+                                                                echo ", Condition: " . $data_r2['product_condition'] . "";
+                                                            }
+                                                            if ($data_r2['order_price'] != "") {
+                                                                echo ", Price: " . $data_r2['order_price'] . "";
                                                             }
                                                             echo " - Order QTY: " . $order_qty . ", Total Received Yet: " . $total_received_qty; ?>
                                                      </option>

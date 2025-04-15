@@ -553,4 +553,10 @@ if (isset($module)) { ?>
             $(this).val(numberDecima2);
         });
     </script>
-<?php }
+<?php } ?>
+<script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("loader-bg").style.display = "none";
+    };
+</script>

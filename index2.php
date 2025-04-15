@@ -460,6 +460,22 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 										} else {
 											echo "vertical-modern-menu";
 										} ?>" data-col="2-columns">
+		<!-- Full-screen loader with background -->
+		<div id="loader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9998;"></div>
+		<div id="loader" class="preloader-wrapper big active"
+			style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+			<div class="spinner-layer spinner-blue-only">
+				<div class="circle-clipper left">
+					<div class="circle"></div>
+				</div>
+				<div class="gap-patch">
+					<div class="circle"></div>
+				</div>
+				<div class="circle-clipper right">
+					<div class="circle"></div>
+				</div>
+			</div>
+		</div>
 		<?php
 		if ($menu_horizontal == 1) {
 			include('sub_files/header_top_menu.php'); ?>

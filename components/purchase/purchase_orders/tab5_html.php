@@ -531,129 +531,6 @@
                  </div>
              </form>
 
-             <form id="fakeserialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
-                 <input type="hidden" name="is_Submit_tab6_2_2" id="is_Submit_tab6_2_2" value="Y" />
-                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
-                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-                                                                    echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>">
-                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
-
-                 <div class="card-panel custom_padding_card_content_table_top_bottom">
-                     <div class="row">
-                         <div class="col m6 s12">
-                             <h6>Generate Serial# </h6>
-                         </div>
-                         <div class="col m3 s12 show_fake_serial_no_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {
-                                                                                                echo "display: none;";
-                                                                                            } else {;
-                                                                                            } ?>">
-                             <a href="javascript:void(0)" class="show_fake_serial_no_section_tab6">Show Form</a>
-                         </div>
-                         <div class="col m3 s12 show_fake_serial_no_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
-                                                                                            } else {
-                                                                                                echo "display: none;";
-                                                                                            } ?>">
-                             <a href="javascript:void(0)" class="hide_fake_serial_no_section_tab6">Hide Form</a>
-                         </div>
-                     </div>
-                     <div id="fake_serial_no_section_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
-                                                                    } else {
-                                                                        echo "display: none;";
-                                                                    } ?>">
-                         <br>
-                         <div class="row">
-                             <div class="input-field col m8 s12">
-                                 <?php
-                                    $field_name     = "product_id_generate";
-                                    $field_label    = "Product ID";
-                                    $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid, e.status_name
-                                                        FROM purchase_order_detail a 
-                                                        INNER JOIN purchase_orders b ON b.id = a.po_id
-                                                        INNER JOIN products c ON c.id = a.product_id
-                                                        INNER JOIN product_categories d ON d.id = c.product_category
-                                                        LEFT JOIN inventory_status e ON e.id = a.expected_status
-                                                        WHERE 1=1 
-                                                        AND a.po_id = '" . $id . "' 
-                                                        AND a.enabled = 1
-                                                        AND a.is_fk_serial_generated = 0
-                                                        ORDER BY c.product_uniqueid, a.product_condition, e.status_name "; // echo $sql; 
-                                    $result_log2    = $db->query($conn, $sql);
-                                    $count_r2       = $db->counter($result_log2); ?>
-
-                                 <i class="material-icons prefix pt-1">add_shopping_cart</i>
-                                 <div class="select2div">
-                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                        echo ${$field_name . "_valid"};
-                                                                                                                                                                    } ?>">
-                                         <?php
-                                            if ($count_r2 > 1) { ?>
-                                             <option value="">Select</option>
-                                             <?php
-                                            }
-                                            if ($count_r2 > 0) {
-                                                $row_r2    = $db->fetch($result_log2);
-                                                foreach ($row_r2 as $data_r2) { ?>
-                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
-                                                     <?php
-                                                        echo " " . $data_r2['product_uniqueid'];
-                                                        if ($data_r2['category_name'] != "") {
-                                                            echo " (" . $data_r2['category_name'] . ") - ";
-                                                        }
-                                                        if ($data_r2['status_name'] != "") {
-                                                            echo " Status: " . $data_r2['status_name'] . "";
-                                                        }
-                                                        if ($data_r2['product_condition'] != "") {
-                                                            echo ", Condition: " . $data_r2['product_condition'] . "";
-                                                        }
-                                                        if ($data_r2['order_price'] != "") {
-                                                            echo ", Price: " . $data_r2['order_price'] . "";
-                                                        }
-                                                        ?>
-                                                 </option>
-                                         <?php
-                                                }
-                                            } ?>
-                                     </select>
-                                     <label for="<?= $field_name; ?>">
-                                         <?= $field_label; ?>
-                                         <span class="color-red"> * <?php
-                                                                    if (isset($error6[$field_name])) {
-                                                                        echo $error6[$field_name];
-                                                                    } ?>
-                                         </span>
-                                     </label>
-                                 </div>
-                             </div>
-                             <div class="input-field col m2 s12">
-                                 <?php
-                                    $field_name     = "received_qty";
-                                    $field_label    = "Total Received";
-                                    ?>
-                                 <i class="material-icons prefix">description</i>
-                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                    echo ${$field_name};
-                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                            echo ${$field_name . "_valid"};
-                                                                                                                                        } ?>">
-                                 <label for="<?= $field_name; ?>">
-                                     <?= $field_label; ?>
-                                     <span class="color-red">* <?php
-                                                                if (isset($error6[$field_name])) {
-                                                                    echo $error6[$field_name];
-                                                                } ?>
-                                     </span>
-                                 </label>
-                             </div>
-                             <div class="input-field col m2 s12 ">
-                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
-                                     <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Generate</button>
-                                 <?php } ?>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </form>
              <?php /*?>
              <form id="barcodeForm" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                  <input type="hidden" name="is_Submit_tab5_2" value="Y" />
@@ -868,6 +745,130 @@
              <?php /*?>
              </form> 
              <?php */ ?>
+
+             <form id="fakeserialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
+                 <input type="hidden" name="is_Submit_tab6_2_2" id="is_Submit_tab6_2_2" value="Y" />
+                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
+                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                    echo encrypt($_SESSION['csrf_session']);
+                                                                } ?>">
+                 <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+
+                 <div class="card-panel custom_padding_card_content_table_top_bottom">
+                     <div class="row">
+                         <div class="col m6 s12">
+                             <h6>Generate Serial# </h6>
+                         </div>
+                         <div class="col m3 s12 show_fake_serial_no_show_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {
+                                                                                                echo "display: none;";
+                                                                                            } else {;
+                                                                                            } ?>">
+                             <a href="javascript:void(0)" class="show_fake_serial_no_section_tab6">Show Form</a>
+                         </div>
+                         <div class="col m3 s12 show_fake_serial_no_hide_btn_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
+                                                                                            } else {
+                                                                                                echo "display: none;";
+                                                                                            } ?>">
+                             <a href="javascript:void(0)" class="hide_fake_serial_no_section_tab6">Hide Form</a>
+                         </div>
+                     </div>
+                     <div id="fake_serial_no_section_tab6" style="<?php if (isset($is_Submit_tab6_2_2) && $is_Submit_tab6_2_2 == 'Y') {;
+                                                                    } else {
+                                                                        echo "display: none;";
+                                                                    } ?>">
+                         <br>
+                         <div class="row">
+                             <div class="input-field col m8 s12">
+                                 <?php
+                                    $field_name     = "product_id_generate";
+                                    $field_label    = "Product ID";
+                                    $sql            = " SELECT a.*, c.product_desc, d.category_name, c.product_uniqueid, e.status_name
+                                                        FROM purchase_order_detail a 
+                                                        INNER JOIN purchase_orders b ON b.id = a.po_id
+                                                        INNER JOIN products c ON c.id = a.product_id
+                                                        INNER JOIN product_categories d ON d.id = c.product_category
+                                                        LEFT JOIN inventory_status e ON e.id = a.expected_status
+                                                        WHERE 1=1 
+                                                        AND a.po_id = '" . $id . "' 
+                                                        AND a.enabled = 1
+                                                        AND a.is_fk_serial_generated = 0
+                                                        ORDER BY c.product_uniqueid, a.product_condition, e.status_name "; // echo $sql; 
+                                    $result_log2    = $db->query($conn, $sql);
+                                    $count_r2       = $db->counter($result_log2); ?>
+
+                                 <i class="material-icons prefix pt-1">add_shopping_cart</i>
+                                 <div class="select2div">
+                                     <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                        echo ${$field_name . "_valid"};
+                                                                                                                                                                    } ?>">
+                                         <?php
+                                            if ($count_r2 > 1) { ?>
+                                             <option value="">Select</option>
+                                             <?php
+                                            }
+                                            if ($count_r2 > 0) {
+                                                $row_r2    = $db->fetch($result_log2);
+                                                foreach ($row_r2 as $data_r2) { ?>
+                                                 <option value="<?php echo $data_r2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['id']) { ?> selected="selected" <?php } ?>>
+                                                     <?php
+                                                        echo " " . $data_r2['product_uniqueid'];
+                                                        if ($data_r2['category_name'] != "") {
+                                                            echo " (" . $data_r2['category_name'] . ") - ";
+                                                        }
+                                                        if ($data_r2['status_name'] != "") {
+                                                            echo " Status: " . $data_r2['status_name'] . "";
+                                                        }
+                                                        if ($data_r2['product_condition'] != "") {
+                                                            echo ", Condition: " . $data_r2['product_condition'] . "";
+                                                        }
+                                                        if ($data_r2['order_price'] != "") {
+                                                            echo ", Price: " . $data_r2['order_price'] . "";
+                                                        }
+                                                        ?>
+                                                 </option>
+                                         <?php
+                                                }
+                                            } ?>
+                                     </select>
+                                     <label for="<?= $field_name; ?>">
+                                         <?= $field_label; ?>
+                                         <span class="color-red"> * <?php
+                                                                    if (isset($error6[$field_name])) {
+                                                                        echo $error6[$field_name];
+                                                                    } ?>
+                                         </span>
+                                     </label>
+                                 </div>
+                             </div>
+                             <div class="input-field col m2 s12">
+                                 <?php
+                                    $field_name     = "received_qty";
+                                    $field_label    = "Total Received";
+                                    ?>
+                                 <i class="material-icons prefix">description</i>
+                                 <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                    echo ${$field_name};
+                                                                                                                } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                            echo ${$field_name . "_valid"};
+                                                                                                                                        } ?>">
+                                 <label for="<?= $field_name; ?>">
+                                     <?= $field_label; ?>
+                                     <span class="color-red">* <?php
+                                                                if (isset($error6[$field_name])) {
+                                                                    echo $error6[$field_name];
+                                                                } ?>
+                                     </span>
+                                 </label>
+                             </div>
+                             <div class="input-field col m2 s12 ">
+                                 <?php if (isset($id) && $id > 0 && (($cmd6 == 'add' || $cmd6 == '') && access("add_perm") == 1)  || ($cmd6 == 'edit' && access("edit_perm") == 1) || ($cmd6 == 'delete' && access("delete_perm") == 1)) { ?>
+                                     <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Generate</button>
+                                 <?php } ?>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </form>
              <form id="receiving_manual" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab5") ?>" method="post">
                  <input type="hidden" name="is_Submit_tab5_5" value="Y" />
                  <input type="hidden" name="cmd5" value="<?php if (isset($cmd5)) echo $cmd5; ?>" />
@@ -1907,7 +1908,7 @@
                                                                     if ($data['record_type'] == "CateogryReceived") {
                                                                         echo "" . $data['category_name'] . "";
                                                                     } else {
-                                                                        echo " (" . $data['category_name'] . ")";
+                                                                        echo " " . $data['category_name'] . "";
                                                                     }
                                                                 } ?>
                                                          </td>

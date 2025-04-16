@@ -467,6 +467,10 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 						$inv_color_name			= $row_pd1[0]['color_name'];
 						$logistics_cost			= $row_pd1[0]['logistics_cost'];
 
+						if ($inv_inventory_status == "" || $inv_inventory_status == '0') {
+							$inv_inventory_status = 6;
+						}
+
 						//$po_logistic_cost = $po_receiving_labor = $po_diagnostic_labor = 0;
 						// $po_logistic_cost 		= po_logistic_cost($db, $conn, $inv_po_id, $logistics_cost);
 						// $po_receiving_labor 		= po_receiving_labor($db, $conn, $inv_po_id);
@@ -522,9 +526,12 @@ if (isset($_POST['is_Submit6_SubTab2']) && $_POST['is_Submit6_SubTab2'] == 'Y') 
 							$db->query($conn, $sql_c_up);
 						}
 
-						$sql_c_up = "UPDATE purchase_order_detail_receive SET edit_lock = '1' WHERE id = '" . $inv_receive_id . "' ";
-						// echo "<br><br>purchase_order_detail_receive: " . $sql_c_up;
+						$sql_c_up = "UPDATE purchase_order_detail_receive SET  	edit_lock 			= '1',
+																				inventory_status 	= '" . $inv_inventory_status . "'
+									 WHERE id = '" . $inv_receive_id . "' ";
+						// echo "<br>purchase_order_detail_receive: " . $sql_c_up;
 						$db->query($conn, $sql_c_up);
+
 						if (isset($inv_po_detail_id) && $inv_po_detail_id > 0) {
 							update_po_detail_status($db, $conn, $inv_po_detail_id, $tested_or_graded_status);
 						}
@@ -923,8 +930,9 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 			} else {
 				$assignment_id2 = $assignment_id;
 			}
-			$update_rec 	= "";
-			$sql_pd01 		= "	SELECT c.product_category
+			$update_rec = "";
+			$order_price1 = $c_product_id2 = 0;
+			$sql_pd01 		= "	SELECT a.product_id, a.order_price, c.product_category
 								FROM purchase_order_detail a 
 								INNER JOIN products c ON c.id = a.product_id
 								WHERE 1=1 
@@ -934,6 +942,8 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 			if ($count_pd01 > 0) {
 				$row_pd01				= $db->fetch($result_pd01);
 				$product_category_diagn	= $row_pd01[0]['product_category'];
+				$order_price1			= $row_pd01[0]['order_price'];
+				$c_product_id2			= $row_pd01[0]['product_id'];
 			}
 
 			$sql_pd01 		= "	SELECT a.* 
@@ -965,6 +975,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 																			assignment_id						= '" . $assignment_id2 . "', 
 																			po_detail_id						= '" . $product_id_boken_device . "', 
 																			serial_no_barcode					= '" . $serial_no_boken_device . "',
+																			sub_location_id						= '" . $sub_location_id_boken_device . "',
 																			sub_location_id_after_diagnostic	= '" . $sub_location_id_boken_device . "',
 																			battery								= '" . $battery_boken_device . "',
 																			body_grade							= '" . $body_grade_boken_device . "',
@@ -976,6 +987,7 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 																			processor							= '" . $processor_boken_device . "',
 																			inventory_status					= '" . $inventory_status_boken_device . "',
 																			defects_or_notes					= '" . $defects_or_notes_boken_device . "',
+																			price								= '" . $order_price1 . "',
 
 																			is_diagnost							= '1',
 																			is_import_diagnostic_data			= '1',
@@ -986,9 +998,30 @@ if (isset($_POST['is_Submit_tab6_2_1']) && $_POST['is_Submit_tab6_2_1'] == 'Y') 
 																			diagnose_timezone					= '" . $timezone . "',
 																			diagnose_date						= '" . $add_date . "',
 																			diagnose_ip							= '" . $add_ip . "' 
-						WHERE " . $update_rec . "  ";
+						WHERE " . $update_rec . "
+						AND po_id = '" . $id . "' ";
 				$ok = $db->query($conn, $sql_c_up);
 				if ($ok) {
+					/*
+					$sql_pd01 		= "	SELECT * 
+										FROM purchase_order_detail_receive
+										WHERE " . $update_rec . "
+										AND po_id = '" . $id . "'";
+					$result_pd01	= $db->query($conn, $sql_pd01);
+					$count_pd01		= $db->counter($result_pd01);
+					if ($count_pd01 > 0) {
+						$row_pd01		= $db->fetch($result_pd01);
+						$receive_id_3 	= $row_pd01[0]['id'];
+
+						$sql6 = "INSERT INTO product_stock( subscriber_users_id, receive_id, serial_no, is_final_pricing, price,
+                                                            product_id, p_total_stock, stock_grade,  p_inventory_status, sub_location, 
+                                                            add_by_user_id, add_date, add_by, add_ip, add_timezone)
+                                    VALUES('" . $subscriber_users_id . "', '" . $receive_id_3 . "', '" . $serial_no_boken_device . "', 1, '" . $order_price1 . "',
+                                    '" . $c_product_id2 . "', 1, '" . $overall_grade_boken_device . "', '" . $inventory_status_boken_device . "', '" . $sub_location_id_boken_device . "',
+                                    '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$db->query($conn, $sql6);
+					}
+					*/
 
 					update_po_detail_status($db, $conn, $product_id_boken_device, $diagnost_status_dynamic);
 					update_po_status($db, $conn, $id, $diagnost_status_dynamic);

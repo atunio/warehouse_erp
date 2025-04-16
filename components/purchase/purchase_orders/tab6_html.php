@@ -490,14 +490,14 @@
                                     $field_name     = "diagnostic_fetch_id";
                                     $field_label    = "Product";
 
-                                    $sql            = " SELECT * FROM (
-                                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
-                                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
-                                                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                                                    INNER JOIN products c ON c.id = b.product_id
-                                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                                    WHERE a.po_id = '" . $id . "'";
+                                    $sql = " SELECT * FROM (
+                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
+                                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                                    INNER JOIN products c ON c.id = b.product_id
+                                                    LEFT JOIN product_categories d ON d.id = c.product_category
+                                                    WHERE a.po_id = '" . $id . "'";
                                     if ($user_no_of_assignments > 0) {
                                         $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
                                     }
@@ -506,18 +506,18 @@
                                     }
                                     //echo $sql1;
                                     $sql           .= "
-                                                                    AND a.is_processed = 0
-                                                                    AND a.enabled = 1 
-                                                                    AND b.enabled = 1
+                                                    AND a.is_processed = 0
+                                                    AND a.enabled = 1 
+                                                    AND b.enabled = 1
 
-                                                                    UNION ALL 
+                                                    UNION ALL 
 
-                                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
-                                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
-                                                                    INNER JOIN products c ON c.id = a.product_id_not_in_po
-                                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                                    WHERE a.po_id = '" . $id . "'";
+                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
+                                                    INNER JOIN products c ON c.id = a.product_id_not_in_po
+                                                    LEFT JOIN product_categories d ON d.id = c.product_category
+                                                    WHERE a.po_id = '" . $id . "'";
                                     if ($user_no_of_assignments > 0) {
                                         $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
                                     }
@@ -526,10 +526,10 @@
                                     }
                                     //echo $sql1;
                                     $sql           .= "
-                                                                    AND a.enabled = 1
-                                                                    AND a.is_processed = 0
-                                                                ) AS t1
-                                                                ORDER BY product_uniqueid, serial_no ";
+                                                    AND a.enabled = 1
+                                                    AND a.is_processed = 0
+                                                ) AS t1
+                                                ORDER BY product_uniqueid, serial_no ";
                                     //echo $sql; 
                                     $result_log2    = $db->query($conn, $sql);
                                     $count_r2       = $db->counter($result_log2); ?>
@@ -976,6 +976,41 @@
                                     </div>
                                 </div> <br>
                                 <div class="row">
+
+                                    <div class="input-field col m2 s12">
+                                        <?php
+                                        $field_name     = "inventory_status_boken_device";
+                                        $field_label    = "Inventory Status";
+                                        $sql_status     = "SELECT id, status_name
+                                                                FROM  inventory_status  
+                                                                WHERE enabled = 1
+                                                                AND id IN (5,6)
+                                                                Order BY id";
+                                        $result_status  = $db->query($conn, $sql_status);
+                                        $count_status   = $db->counter($result_status);
+                                        ?>
+                                        <i class="material-icons prefix">question_answer</i>
+                                        <div class="select2div">
+                                            <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
+                                                <option value="">Select</option>
+                                                <?php
+                                                if ($count_status > 0) {
+                                                    $row_status    = $db->fetch($result_status);
+                                                    foreach ($row_status as $data2) { ?>
+                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
+                                                <?php }
+                                                } ?>
+                                            </select>
+                                            <label for="<?= $field_name; ?>">
+                                                <?= $field_label; ?>
+                                                <span class="color-red">*<?php
+                                                                            if (isset($error6[$field_name])) {
+                                                                                echo $error6[$field_name];
+                                                                            } ?>
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
                                     <div class="input-field col m2 s12">
                                         <?php
                                         $field_name     = "battery_boken_device";
@@ -1088,40 +1123,6 @@
                                                                         if (isset($error6[$field_name])) {
                                                                             echo $error6[$field_name];
                                                                         } ?>
-                                                </span>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="input-field col m2 s12">
-                                        <?php
-                                        $field_name     = "inventory_status_boken_device";
-                                        $field_label    = "Inventory Status";
-                                        $sql_status     = "SELECT id, status_name
-                                                                FROM  inventory_status  
-                                                                WHERE enabled = 1
-                                                                AND id IN (5,6)
-                                                                Order BY id";
-                                        $result_status  = $db->query($conn, $sql_status);
-                                        $count_status   = $db->counter($result_status);
-                                        ?>
-                                        <i class="material-icons prefix">question_answer</i>
-                                        <div class="select2div">
-                                            <select name="<?= $field_name ?>" id="<?= $field_name ?>" class="select2 browser-default">
-                                                <option value="">Select</option>
-                                                <?php
-                                                if ($count_status > 0) {
-                                                    $row_status    = $db->fetch($result_status);
-                                                    foreach ($row_status as $data2) { ?>
-                                                        <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?></option>
-                                                <?php }
-                                                } ?>
-                                            </select>
-                                            <label for="<?= $field_name; ?>">
-                                                <?= $field_label; ?>
-                                                <span class="color-red">*<?php
-                                                                            if (isset($error6[$field_name])) {
-                                                                                echo $error6[$field_name];
-                                                                            } ?>
                                                 </span>
                                             </label>
                                         </div>
@@ -1431,7 +1432,8 @@
                                                                     }
                                                                     if ($data['category_name'] != "") {
                                                                         if ($data['record_type'] == "CateogryReceived") {
-                                                                            echo "" . $data['category_name'] . "";
+                                                                            echo "" . $data['category_name'] . " (";
+                                                                            echo $data['total_qty_received'] . ")";
                                                                         } else {
                                                                             echo " (" . $data['category_name'] . ")";
                                                                         }
@@ -1518,7 +1520,8 @@
                                                                                                                                         update_by_user_id	    = '" . $_SESSION['user_id'] . "',
                                                                                                                                         update_by			    = '" . $_SESSION['username'] . "',
                                                                                                                                         update_ip			    = '" . $add_ip . "'
-                                                                                            WHERE id = '" . $detail_id2 . "' ";
+                                                                                            WHERE id        = '" . $detail_id2 . "' 
+                                                                                            AND edit_lock   = 0 ";
                                                                             // echo "<br><br>" . $sql_c_up;
                                                                             $db->query($conn, $sql_c_up);
                                                                         }

@@ -896,11 +896,11 @@ switch ($type) {
 
                     $sql6 = "INSERT INTO purchase_order_detail_receive(po_id, po_detail_id, serial_no_barcode, price, logistic_cost, receiving_labor, 
                                                                         inventory_status, overall_grade, received_during, edit_lock, is_import_diagnostic_data, is_diagnostic_bypass, 
-                                                                        defects_or_notes, sub_location_id, is_diagnost,  
+                                                                        defects_or_notes, sub_location_id, sub_location_id_after_diagnostic, is_diagnost,  
                                                                         add_by_user_id, add_date,  add_by, add_ip, add_timezone)
                                 VALUES('" . $id . "', '" . $product_id_barcode . "',  '" . $serial_no_barcode . "', '" . $new_order_price . "', '" . $item_logistic_cost . "', '" . $item_receive_labor_cost . "', 
                                             '" . $c_expected_status2 . "', '" . $c_product_condition2 . "', 'BarCodeReceive', 1, 1, 1, 
-                                        '" . $vd_defects_or_notes . "', '" . $sub_location_id_barcode . "', '1',  
+                                        '" . $vd_defects_or_notes . "', '" . $sub_location_id_barcode . "', '" . $sub_location_id_barcode . "', '1',  
                                         '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
                     $ok = $db->query($conn, $sql6);
                     if ($ok) {

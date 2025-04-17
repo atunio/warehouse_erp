@@ -774,8 +774,25 @@ switch ($type) {
             }
         }
         if (!isset($serial_no_barcode) || (isset($serial_no_barcode)  && ($serial_no_barcode == "0" || $serial_no_barcode == ""))) {
-            echo " Serial# is Required";
+            echo " Serial# is Required, ";
             $error = 1;
+        }
+        if (isset($package_id) && $package_id > "0") {
+            $field_name = "package_location";
+            if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+                echo " Package Location is Required, ";
+                $error = 1;
+            }
+            $field_name = "package_qty";
+            if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+                echo " Package Qty is Required, ";
+                $error = 1;
+            }
+            $field_name = "package_cost";
+            if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+                echo " Package Cost is Required, ";
+                $error = 1;
+            }
         }
         if ($error == 0) {
             $vd_defects_or_notes = "";
@@ -914,12 +931,29 @@ switch ($type) {
                                     '" . $c_product_id2 . "', 1, '" . $c_product_condition2 . "', '" . $c_expected_status2 . "', '" . $sub_location_id_barcode . "',
                                     '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
                         $db->query($conn, $sql6);
-
+ 
                         $status_not_in = "5";
                         update_po_detail_status($db, $conn, $product_id_barcode, $receive_status_dynamic, $status_not_in);
                         update_po_status($db, $conn, $id, $receive_status_dynamic, $status_not_in);
 
                         $disp_status_name = get_status_name($db, $conn, $receive_status_dynamic);
+
+                        if (isset($package_id) && $package_id > "0") {
+                            $per_package_cost 		= round($package_cost/$package_qty, 2); 
+                            for ($m = 0; $m < $package_qty; $m++) {
+                                $sql6 = "INSERT INTO purchase_order_detail_receive_package_material(device_po_id, package_id, device_category_id, sub_location_id, per_package_cost, add_by_user_id, add_date,  add_by, add_ip, add_timezone)
+                                        VALUES('" . $id . "', '" . $package_id . "', '" . $product_category_brc . "', '" . $package_location . "', '" . $per_package_cost . "', '" . $_SESSION['user_id'] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+                                $ok = $db->query($conn, $sql6);
+                                if ($ok) {
+                                    $sql_c_up = "	UPDATE packages  
+                                                                SET stock_in_hand = (stock_in_hand+1),
+                                                                    avg_price = round(((avg_price+".$per_package_cost.")/2), 2)
+                                                    WHERE id = '" . $package_id . "' ";
+                                    $db->query($conn, $sql_c_up);
+                                    $k++;
+                                }
+                            } 
+                        }
                         echo  "1";
                     }
                 }

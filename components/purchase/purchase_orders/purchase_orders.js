@@ -625,7 +625,7 @@ $(document).ready(function() {
     });
 
     /////////////////////////////////////////////
-    $(".show_receive_from_barcode_section").click(function() {  
+    $(".show_receive_from_barcode_section").click(function() {    
         $("#receive_from_barcode_section").show();
         $(".show_receive_from_barcode_show_btn").hide();
         $(".show_receive_from_barcode_hide_btn").show();
@@ -649,7 +649,13 @@ $(document).ready(function() {
         $("#receive_as_manual_barcodes_section").hide();
         $("#update_deduct_barcode_section").hide();
 
-          
+        $("#receive_packages_from_category_section").hide();
+        $(".show_receive_packages_from_category_hide_btn").hide();
+        $(".show_receive_packages_from_category_show_btn").show();   
+        
+        $("#fake_serial_no_section_tab6").hide();
+        $(".show_fake_serial_no_show_btn_tab6").show();
+        $(".show_fake_serial_no_hide_btn_tab6").hide();
 
     });
     $(".hide_receive_from_barcode_section").click(function() {  
@@ -660,14 +666,52 @@ $(document).ready(function() {
     /////////////////////////////////////////////
 
 
+    /////////////////////////////////////////////
+    $(".show_receive_packages_from_category_section").click(function() {  
+        $("#receive_packages_from_category_section").show();
+        $(".show_receive_packages_from_category_show_btn").hide();
+        $(".show_receive_packages_from_category_hide_btn").show();  
+        
+        $("#receive_from_barcode_section").hide();
+        $(".show_receive_from_barcode_show_btn").show();
+        $(".show_receive_from_barcode_hide_btn").hide();
+
+        $(".show_receive_as_category_show_btn").show();
+        $(".show_receive_as_manual_barcodes_show_btn").show();
+        $(".show_update_deduct_barcode_show_btn").show();
+        $(".show_receive_package_materials_show_btn").show();
+ 
+        $("#receive_as_category_section").hide();
+        $("#receive_as_manual_barcodes_section").hide();
+        $("#update_deduct_barcode_section").hide();
+        $("#receive_package_materials_section").hide();
+        
+        $(".show_receive_as_category_hide_btn").hide();
+        $(".show_receive_as_manual_barcodes_hide_btn").hide();
+        $(".show_update_deduct_barcode_hide_btn").hide();
+        $(".show_receive_package_materials_hide_btn").hide();
+
+        $("#receive_as_manual_barcodes_section").hide();
+        $("#update_deduct_barcode_section").hide();  
+        
+        $("#fake_serial_no_section_tab6").hide();
+        $(".show_fake_serial_no_show_btn_tab6").show();
+        $(".show_fake_serial_no_hide_btn_tab6").hide(); 
+    });
+    $(".hide_receive_packages_from_category_section").click(function() {  
+        $("#receive_packages_from_category_section").hide();
+        $(".show_receive_packages_from_category_hide_btn").hide();
+        $(".show_receive_packages_from_category_show_btn").show(); 
+    });
+    /////////////////////////////////////////////////////////////////
+
     
     $(".show_receive_as_category_section").click(function() {  
+
         $("#receive_as_category_section").show();
         $(".show_receive_as_category_show_btn").hide();
         $(".show_receive_as_category_hide_btn").show();
         $("#receive_package_materials_section").hide();
-        $("#receive_package_materials_section").hide();
-
         $("#receive_from_barcode_section").hide();
           $("#receive_as_manual_barcodes_section").hide();
         $("#update_deduct_barcode_section").hide();
@@ -681,6 +725,14 @@ $(document).ready(function() {
           $(".show_receive_as_manual_barcodes_show_btn").show();
          $(".show_update_deduct_barcode_show_btn").show();
          $(".show_receive_package_materials_show_btn").show();
+         
+         $("#receive_packages_from_category_section").hide();
+         $(".show_receive_packages_from_category_hide_btn").hide();
+         $(".show_receive_packages_from_category_show_btn").show();   
+        
+         $("#fake_serial_no_section_tab6").hide();
+         $(".show_fake_serial_no_show_btn_tab6").show();
+         $(".show_fake_serial_no_hide_btn_tab6").hide();   
     });
     $(".hide_receive_as_category_section").click(function() {  
         $("#receive_as_category_section").hide();
@@ -692,7 +744,7 @@ $(document).ready(function() {
     
     /////////////////////////////////////////////
 
-    $(".show_receive_package_materials_section").click(function() {  
+    $(".show_receive_package_materials_section").click(function() {
         $("#receive_package_materials_section").show();
         $(".show_receive_package_materials_show_btn").hide();
         $(".show_receive_package_materials_hide_btn").show();
@@ -711,6 +763,14 @@ $(document).ready(function() {
         $(".show_receive_as_manual_barcodes_show_btn").show();
         $(".show_update_deduct_barcode_show_btn").show();
         $(".show_receive_as_category_show_btn").show();
+        
+        $("#fake_serial_no_section_tab6").hide();
+        $(".show_fake_serial_no_show_btn_tab6").show();
+        $(".show_fake_serial_no_hide_btn_tab6").hide();
+
+        $("#receive_packages_from_category_section").hide();
+        $(".show_receive_packages_from_category_show_btn").show();
+        $(".show_receive_packages_from_category_hide_btn").hide();
     });
     $(".hide_receive_package_materials_section").click(function() {  
         $("#receive_package_materials_section").hide();
@@ -739,8 +799,15 @@ $(document).ready(function() {
         $(".show_receive_from_barcode_show_btn").show();
         $(".show_receive_as_category_show_btn").show();
         $(".show_update_deduct_barcode_show_btn").show();
-        $(".show_receive_package_materials_show_btn").show();
- 
+        $(".show_receive_package_materials_show_btn").show();  
+        
+        $("#fake_serial_no_section_tab6").hide();
+        $(".show_fake_serial_no_show_btn_tab6").show();
+        $(".show_fake_serial_no_hide_btn_tab6").hide();
+
+        $("#receive_packages_from_category_section").hide();
+        $(".show_receive_packages_from_category_show_btn").show();
+        $(".show_receive_packages_from_category_hide_btn").hide();  
 
     });
     $(".hide_receive_as_manual_barcodes_section").click(function() {  
@@ -845,6 +912,27 @@ $(document).ready(function() {
         $("#fake_serial_no_section_tab6").show();
         $(".show_fake_serial_no_show_btn_tab6").hide();
         $(".show_fake_serial_no_hide_btn_tab6").show();
+
+        $("#receive_as_category_section").hide();
+        $("#receive_package_materials_section").hide();
+        $("#receive_from_barcode_section").hide();
+        $("#receive_as_manual_barcodes_section").hide();
+        $("#update_deduct_barcode_section").hide();
+        $("#receive_packages_from_category_section").hide();
+
+        $(".show_receive_as_category_hide_btn").hide();
+        $(".show_receive_from_barcode_hide_btn").hide();
+        $(".show_receive_as_manual_barcodes_hide_btn").hide();
+        $(".show_update_deduct_barcode_hide_btn").hide();
+        $(".show_receive_package_materials_hide_btn").hide();
+        $(".show_receive_packages_from_category_hide_btn").hide();
+
+        $(".show_receive_as_category_show_btn").show();
+        $(".show_receive_from_barcode_show_btn").show();
+        $(".show_receive_as_manual_barcodes_show_btn").show();
+        $(".show_update_deduct_barcode_show_btn").show();
+        $(".show_receive_package_materials_show_btn").show();
+        $(".show_receive_packages_from_category_show_btn").show();    
     });
     $(".hide_fake_serial_no_section_tab6").click(function() {  
         $("#fake_serial_no_section_tab6").hide();
@@ -1103,13 +1191,18 @@ function showToast(message, type) {
 } 
 $('#serial_no_barcode').on('keyup', function(event) {
     event.preventDefault(); // Prevent default form submit
-    var serial_no_barcode       = $(this).val();
-    var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var serial_no_barcode           = $(this).val();
+    var sub_location_id_barcode     = $("#sub_location_id_barcode option:selected").val();
+    var package_id_bar_code         = $("#package_id_bar_code option:selected").val();
+    var package_location_bar_code   = $("#package_location_bar_code option:selected").val();
+    var package_qty_bar_code        = $("#package_qty_bar_code").val();
+    var package_cost_bar_code       = $("#package_cost_bar_code").val();
+ 
     var id                      = $("#id").val();
     var module_id               = $("#module_id").val();
     // You can add validation here if needed
     if (event.key !='Control' && id != "") {
-        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&package_id=' + package_id_bar_code + '&package_location=' + package_location_bar_code + '&package_qty=' + package_qty_bar_code + '&package_cost=' + package_cost_bar_code + '&id=' + id + '&module_id=' + module_id;
         $.ajax({
             type: "POST",
             url: "ajax/ajax_add_entries.php",
@@ -1137,10 +1230,15 @@ $('#receive_using_barcode_btn').on('click', function(event) {
     event.preventDefault(); // Prevent default form submit
     var serial_no_barcode    = $("#serial_no_barcode option:selected").val();
     var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var package_id_bar_code         = $("#package_id_bar_code option:selected").val();
+    var package_location_bar_code   = $("#package_location_bar_code option:selected").val();
+    var package_qty_bar_code        = $("#package_qty_bar_code").val();
+    var package_cost_bar_code       = $("#package_cost_bar_code").val(); 
+ 
     var id                      = $("#id").val();
     var module_id               = $("#module_id").val();
     // You can add validation here if needed
-    var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+    var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&package_id=' + package_id_bar_code + '&package_location=' + package_location_bar_code + '&package_qty=' + package_qty_bar_code + '&package_cost=' + package_cost_bar_code + '&id=' + id + '&module_id=' + module_id;
     $.ajax({
         type: "POST",
         url: "ajax/ajax_add_entries.php",
@@ -1157,15 +1255,15 @@ $('#receive_using_barcode_btn').on('click', function(event) {
                     showToast(toastHTML, "Success"); 
                     $("#serial_no_barcode").val('').focus();
 
+                    $('#package_id_bar_code').val('').trigger('change');
+                    $('#package_location_bar_code').val('').trigger('change');
+                     $("#package_qty_bar_code").val('');
+                    $("#package_cost_bar_code").val('');
 
                     $('#serial_no_barcode option[value="' + serial_no_barcode + '"]').remove();
                     $('#serial_no_barcode').val('').trigger('change');
                     $('#serial_no_barcode').select2('open');
-
-
-
-
-
+ 
                 }
             }
         },
@@ -1177,11 +1275,16 @@ $('#serial_no_barcode').on('change', function(event) {
     event.preventDefault(); // Prevent default form submit
     var serial_no_barcode    = $("#serial_no_barcode option:selected").val();
     var sub_location_id_barcode = $("#sub_location_id_barcode option:selected").val();
+    var package_id_bar_code         = $("#package_id_bar_code option:selected").val();
+    var package_location_bar_code   = $("#package_location_bar_code option:selected").val();
+    var package_qty_bar_code        = $("#package_qty_bar_code").val();
+    var package_cost_bar_code       = $("#package_cost_bar_code").val();
+     
     var id                      = $("#id").val();
     var module_id               = $("#module_id").val();
     // You can add validation here if needed
     if(serial_no_barcode !='' && serial_no_barcode != null){
-        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&id=' + id + '&module_id=' + module_id;
+        var dataString = 'type=recevie_using_barcode&serial_no_barcode=' + serial_no_barcode + '&sub_location_id_barcode=' + sub_location_id_barcode + '&package_id=' + package_id_bar_code + '&package_location=' + package_location_bar_code + '&package_qty=' + package_qty_bar_code + '&package_cost=' + package_cost_bar_code + '&id=' + id + '&module_id=' + module_id;
         $.ajax({
             type: "POST",
             url: "ajax/ajax_add_entries.php",
@@ -1198,15 +1301,14 @@ $('#serial_no_barcode').on('change', function(event) {
                         showToast(toastHTML, "Success"); 
                         $("#serial_no_barcode").val('').focus();
 
+                        $('#package_id_bar_code').val('').trigger('change');
+                        $('#package_location_bar_code').val('').trigger('change');
+                         $("#package_qty_bar_code").val('');
+                        $("#package_cost_bar_code").val('');
 
                         $('#serial_no_barcode option[value="' + serial_no_barcode + '"]').remove();
                         $('#serial_no_barcode').val('').trigger('change');
                         $('#serial_no_barcode').select2('open');
-
-
-
-
-
                     }
                 }
             },

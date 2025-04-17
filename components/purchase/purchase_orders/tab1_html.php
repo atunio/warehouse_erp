@@ -57,11 +57,14 @@
                                     Import Vendor Data
                                 </a>
                             <?php
-                            } ?>
-                            <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
-                                Import Products
-                            </a>
-                    <?php }
+                            }
+                            if ($stage_status == 'Draft') { ?>
+                                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_po_details&id=" . $id) ?>">
+                                    Import Products
+                                </a>
+                    <?php
+                            }
+                        }
                     }
                     include("tab_action_btns.php"); ?>
                 </div>

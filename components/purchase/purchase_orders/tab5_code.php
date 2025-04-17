@@ -105,6 +105,83 @@ if (isset($_POST['is_Submit_tab5_4_2']) && $_POST['is_Submit_tab5_4_2'] == 'Y') 
 		}
 	}
 }
+if (isset($_POST['is_Submit_tab5_4_3']) && $_POST['is_Submit_tab5_4_3'] == 'Y') {
+	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
+	if (!isset($delete_received_packages_ids) || (isset($delete_received_packages_ids) && sizeof($delete_received_packages_ids) == 0)) {
+		$error5['msg'] = "Select atleast one record to delete";
+	}
+	if (empty($error5)) {
+		if (po_permisions("Receive") == 0) {
+			$error5['msg'] = "You do not have add permissions.";
+		} else {
+			$k = 0;
+			foreach ($delete_received_packages_ids as $delete_received_packages_id) {
+			
+				$receviedProductId_array 	= explode("-", $delete_received_packages_id);
+				$po_detail_id1 				= $receviedProductId_array[0];
+				$sub_location_id1 			= $receviedProductId_array[1];
+				$device_category_id1 		= $receviedProductId_array[2];
+
+
+				if ($po_detail_id1  > '0') {	
+					$sql_ee12 ="SELECT a.*, b.package_id 
+								FROM purchase_order_detail_receive_package_material a
+								INNER JOIN purchase_order_packages_detail b ON b.id = a.po_detail_id
+								INNER JOIN packages d ON d.id = b.package_id
+								WHERE a.po_detail_id = '".$po_detail_id1."' ";
+
+				} else {
+					$sql_ee12 =	"SELECT * FROM purchase_order_detail_receive_package_material 
+								WHERE device_category_id = '".$device_category_id1."' 
+								AND sub_location_id = '".$sub_location_id1."' 
+								AND device_po_id = '".$id."' ";
+				}
+				// echo $sql_ee12;die;
+				$result_rc3 	= $db->query($conn, $sql_ee12);
+				$counter_rc3	= $db->counter($result_rc3); 
+				if ($counter_rc3 > 0) {
+					$row_cl_rc3 = $db->fetch($result_rc3);
+					foreach ($row_cl_rc3 as $data_rc3) {
+						$rc_id 					= $data_rc3['id'];
+						$rc_package_id 			= $data_rc3['package_id'];
+						$rc_per_package_cost 	= $data_rc3['per_package_cost'];
+					 
+						$sql_c_up = "UPDATE packages SET stock_in_hand = (stock_in_hand-1), 
+														avg_price = ((avg_price*2)-".$rc_per_package_cost.")
+										WHERE id = '" . $rc_package_id . "'";
+						$db->query($conn, $sql_c_up);
+						
+						$sql_c_up = "DELETE FROM  purchase_order_detail_receive_package_material WHERE id = " . $rc_id . "    ";
+						$db->query($conn, $sql_c_up);
+						$k++;
+						 
+					}
+				} 
+			}
+			if ($k > 0) {
+				$sql_ee13 		= " SELECT id FROM purchase_order_detail_receive   WHERE po_id = '" . $id . "' ";
+				$result_rc3 	= $db->query($conn, $sql_ee13);
+				$counter_rc3	= $db->counter($result_rc3);
+				if ($counter_rc3 == 0) {
+					update_po_detail_status2($db, $conn, $id, $arrival_status_dynamic);
+					update_po_status($db, $conn, $id, $arrival_status_dynamic);
+					$disp_status_name = get_status_name($db, $conn, $arrival_status_dynamic);
+				}
+				if ($k == 1) {
+					$msg5['msg_success'] = $k . " record has been deleted successfully.";
+				} else {
+					$msg5['msg_success'] = $k . " records have been deleted successfully.";
+				}
+			}
+		}
+	}
+}
 if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 	extract($_POST);
 	foreach ($_POST as $key => $value) {
@@ -155,11 +232,17 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 			$counter_ee1	= $db->counter($result_ee1);
 			if ($counter_ee1 == 0) {
 				foreach ($receiving_qties2 as $key => $receiving_qty) {
-					if ($receiving_qty > 0) {
+					if ($receiving_qty > 0) { 
 
-						$sql_ee12 = " SELECT a.* FROM purchase_order_detail_receive_package_material a 
-										WHERE a.po_detail_id = '" . $key . "' ";
-						// echo $sql_ee1;
+						$per_package_cost = 0;
+						$sql_ee1 		= " SELECT a.* FROM purchase_order_packages_detail a  WHERE a.id = '" . $key . "' "; // echo $sql_ee1;
+						$result_ee1 	= $db->query($conn, $sql_ee1);
+						$counter_ee1	= $db->counter($result_ee1);
+						if ($counter_ee1 > 0) {
+							$row_ee1			= $db->fetch($result_ee1);
+							$per_package_cost	= $row_ee1[0]['order_price'];
+						}
+						$sql_ee12 		= " SELECT a.* FROM purchase_order_detail_receive_package_material a  WHERE a.po_detail_id = '" . $key . "' "; // echo $sql_ee1;
 						$result_ee12 	= $db->query($conn, $sql_ee12);
 						$counter_ee12	= $db->counter($result_ee12);
 						if ($counter_ee12 > 0) {
@@ -176,12 +259,11 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 
 						for ($m = 0; $m < $receiving_qty; $m++) {
 							$receiving_location_add = $receiving_location2[$key];
-							$sql6 = "INSERT INTO purchase_order_detail_receive_package_material(po_detail_id, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-									VALUES('" . $key . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+							$sql6 = "INSERT INTO purchase_order_detail_receive_package_material(po_detail_id, per_package_cost, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+									VALUES('" . $key . "', '" . $per_package_cost . "', '" . $_SESSION['user_id'] . "', '" . $receiving_location_add . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 							$ok = $db->query($conn, $sql6);
 							if ($ok) {
 								$k++;
-
 								$sql_c_up = "	UPDATE purchase_order_packages_detail a
 												INNER JOIN packages b ON b.id = a.package_id
 
@@ -686,6 +768,26 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 			$$key = $data[$key];
 		}
 	}
+	$field_name = "package_ids";
+	if (isset(${$field_name})  && sizeof(${$field_name}) > "0") {
+		foreach (${$field_name} as $key_r3 => $data_r3) {
+			if ($data_r3 > 0) {
+				$field_name2 = "package_qties";
+				if (!isset($package_qties[$key_r3]) || (isset($package_qties[$key_r3]) && ($package_qties[$key_r3] == '0' || $package_qties[$key_r3] == ''))) {
+					$error5[$field_name2][$key_r3] = "Required";
+				}
+				$field_name2 = "package_costs";
+				if (!isset($package_costs[$key_r3]) || (isset($package_costs[$key_r3]) && ($package_costs[$key_r3] == '0' || $package_costs[$key_r3] == ''))) {
+					$error5[$field_name2][$key_r3] = "Required";
+				}  
+				$field_name2 = "package_location";
+				if (!isset($package_location[$key_r3]) || (isset($package_location[$key_r3]) && ($package_location[$key_r3] == '0' || $package_location[$key_r3] == ''))) {
+					$error5[$field_name2][$key_r3] = "Required";
+				}  
+			}
+
+		}
+	} 
 	if (!isset($receiving_location) || (isset($receiving_location)  && sizeof($receiving_location) == "0")) {
 		$error5['receiving_location'] = "Required";
 	} else {
@@ -812,6 +914,32 @@ if (isset($_POST['is_Submit_tab5']) && $_POST['is_Submit_tab5'] == 'Y') {
 								$rn++;
 							}
 						}
+
+						// echo "<br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa package_costs: ".$package_costs;
+						// echo "<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa package_qty: ".$package_qty;
+
+					
+						$package_qty = $package_qties[$key];
+						if ($package_qty > 0) { 
+
+							$package_location_id 	= $package_location[$key];
+							$package_id 			= $package_ids[$key];
+							$package_cost 			= $package_costs[$key];
+							$per_package_cost 		= round($package_cost/$package_qty, 2);
+
+							for ($m = 0; $m < $package_qty; $m++) {
+								$sql6 = "INSERT INTO purchase_order_detail_receive_package_material(device_po_id, package_id, device_category_id, sub_location_id, per_package_cost, add_by_user_id,  duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+										VALUES('" . $id . "', '" . $package_id . "', '" . $key . "', '" . $package_location_id . "', '" . $per_package_cost . "', '" . $_SESSION['user_id'] . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$ok = $db->query($conn, $sql6);
+								if ($ok) {
+									$sql_c_up = "	UPDATE packages  
+																SET stock_in_hand = (stock_in_hand+1),
+																	avg_price = round(((avg_price+".$per_package_cost.")/2), 2)
+													WHERE id = '" . $package_id . "' ";
+									$db->query($conn, $sql_c_up);
+								}
+							}
+						} 
 					}
 				}
 				if ($k > 0) {
@@ -891,5 +1019,64 @@ if (isset($_POST['is_Submit_tab5_1']) && $_POST['is_Submit_tab5_1'] == 'Y') {
 		}
 	} else {
 		$error5['msg'] = "Please check the error in form.";
+	}
+}
+if (isset($_POST['is_Submit_tab5_7']) && $_POST['is_Submit_tab5_7'] == 'Y') {
+	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
+	$field_name = "receive_package_category_id";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error5[$field_name] = "Required";
+	}  
+	$field_name = "package_id";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error5[$field_name] = "Required";
+	}   
+	$field_name = "package_qty";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error5[$field_name] = "Required";
+	}   
+	$field_name = "package_cost";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error5[$field_name] = "Required";
+	}   
+	$field_name = "package_location";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error5[$field_name] = "Required";
+	}   
+	if (empty($error5)) {
+		if (po_permisions("Receive") == 0) {
+			$error5['msg'] = "You do not have add permissions.";
+		} else {
+			$k = 0; 
+  			$per_package_cost 		= round($package_cost/$package_qty, 2); 
+			for ($m = 0; $m < $package_qty; $m++) {
+				$sql6 = "INSERT INTO purchase_order_detail_receive_package_material(device_po_id, package_id, device_category_id, sub_location_id, per_package_cost, add_by_user_id,  duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+						VALUES('" . $id . "', '" . $package_id . "', '" . $receive_package_category_id . "', '" . $package_location . "', '" . $per_package_cost . "', '" . $_SESSION['user_id'] . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+				$ok = $db->query($conn, $sql6);
+				if ($ok) {
+					$sql_c_up = "	UPDATE packages  
+												SET stock_in_hand = (stock_in_hand+1),
+													avg_price = round(((avg_price+".$per_package_cost.")/2), 2)
+									WHERE id = '" . $package_id . "' ";
+					$db->query($conn, $sql_c_up);
+					$k++;
+				}
+			} 
+			if($k>0){
+				$msg5['msg_success']	= "Packages have been received successfully.";
+				$receive_package_category_id =  $package_qty =  $package_cost = $package_location = "";
+			} else {
+				$error5['msg'] = "Please check Error in form.";
+			}
+
+		}
+	} else {
+		$error5['msg'] = "Please check Error in form.";
 	}
 }

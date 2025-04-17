@@ -1,5 +1,6 @@
 <?php
 $test_email 	= 0;
+$is_loader 		= 1;
 $module_js 		= "";
 $dashboard_section_classes 	= "card gradient-shadow gradient-45deg-red-pink border-radius-3 animate fadeUp";
 include("conf/session_start.php");
@@ -49,7 +50,8 @@ if ($count_d == 0) {
 	}
 }
 if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
-	$selected_db_name 			= $selected_for_test_on_local;
+	$selected_db_name	= $selected_for_test_on_local;
+	$is_loader			= 0;
 }
 $_SESSION["db_name"] 	= $selected_db_name;
 $company_name_array		= explode(" ", $company_name_disp);
@@ -460,22 +462,24 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 										} else {
 											echo "vertical-modern-menu";
 										} ?>" data-col="2-columns">
-		<!-- Full-screen loader with background -->
-		<div id="loader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9998;"></div>
-		<div id="loader" class="preloader-wrapper big active"
-			style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
-			<div class="spinner-layer spinner-blue-only">
-				<div class="circle-clipper left">
-					<div class="circle"></div>
-				</div>
-				<div class="gap-patch">
-					<div class="circle"></div>
-				</div>
-				<div class="circle-clipper right">
-					<div class="circle"></div>
+		<?php if(isset($is_loader) && $is_loader == 1){?>
+			<!-- Full-screen loader with background -->
+			<div id="loader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9998;"></div>
+			<div id="loader" class="preloader-wrapper big active"
+				style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 9999;">
+				<div class="spinner-layer spinner-blue-only">
+					<div class="circle-clipper left">
+						<div class="circle"></div>
+					</div>
+					<div class="gap-patch">
+						<div class="circle"></div>
+					</div>
+					<div class="circle-clipper right">
+						<div class="circle"></div>
+					</div>
 				</div>
 			</div>
-		</div>
+		<?php }?>
 		<?php
 		if ($menu_horizontal == 1) {
 			include('sub_files/header_top_menu.php'); ?>

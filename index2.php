@@ -462,7 +462,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 										} else {
 											echo "vertical-modern-menu";
 										} ?>" data-col="2-columns">
-		<?php if(isset($is_loader) && $is_loader == 1){?>
+		<?php if (isset($is_loader) && $is_loader == 1) { ?>
 			<!-- Full-screen loader with background -->
 			<div id="loader-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#fff;z-index:9998;"></div>
 			<div id="loader" class="preloader-wrapper big active"
@@ -479,7 +479,7 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 					</div>
 				</div>
 			</div>
-		<?php }?>
+		<?php } ?>
 		<?php
 		if ($menu_horizontal == 1) {
 			include('sub_files/header_top_menu.php'); ?>

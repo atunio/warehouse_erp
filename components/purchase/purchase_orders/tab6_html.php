@@ -457,11 +457,60 @@
                                                                         } ?>">
                         <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                     <?php */ ?>
+                    
+                    <?php
+                    $field_name     = "diagnostic_fetch_id";
+                    $field_label    = "Product";
+                    $sql            = " SELECT * FROM (
+                                            SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                            FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                            INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
+                                            INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
+                                            INNER JOIN products c ON c.id = b.product_id
+                                            LEFT JOIN product_categories d ON d.id = c.product_category
+                                            WHERE a.po_id = '" . $id . "'";
+                    if ($user_no_of_assignments > 0) {
+                        $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
+                    }
+                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql .=" AND a.assignment_id = '" . $assignment_id . "' ";
+                    }
+                    //echo $sql1;
+                    $sql    .= "
+                                AND a.is_processed = 0
+                                AND a.enabled = 1 
+                                AND b.enabled = 1
 
+                                UNION ALL 
+
+                                SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
+                                FROM purchase_order_detail_receive_diagnostic_fetch a 
+                                INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
+                                INNER JOIN products c ON c.id = a.product_id_not_in_po
+                                LEFT JOIN product_categories d ON d.id = c.product_category
+                                WHERE a.po_id = '" . $id . "'";
+                    if ($user_no_of_assignments > 0) {
+                        $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
+                    }
+                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
+                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
+                    }
+                    //echo $sql1;
+                    $sql .= "
+                                AND a.enabled = 1
+                                AND a.is_processed = 0
+                            ) AS t1
+                            ORDER BY product_uniqueid, serial_no ";
+                    //echo $sql; 
+                    $result_log2    = $db->query($conn, $sql);
+                    $count_r2       = $db->counter($result_log2); ?>
                     <div class="card-panel custom_padding_card_content_table_top_bottom">
                         <div class="row">
-                            <div class="col m8 s12">
-                                <h6>Process Fetched Data</h6>
+                            <div class="col m4 s12"><h6>Process Fetched Data</h6></div>
+                            <div class="col m4 s12">
+                                <?php if($count_r2 > 0){?>
+                                    <h6># of Devices Fetched Need to be Process: <span id="fetched_count"><?= $count_r2;?></span></h6>
+                                <?php }?>
                             </div>
                             <div class="col m4 s12 show_receive_from_barcode_show_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {
                                                                                                             echo "display: none;";
@@ -486,53 +535,6 @@
                             <div class="row">
 
                                 <div class="input-field col m7 s12">
-                                    <?php
-                                    $field_name     = "diagnostic_fetch_id";
-                                    $field_label    = "Product";
-
-                                    $sql = " SELECT * FROM (
-                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
-                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
-                                                    INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
-                                                    INNER JOIN products c ON c.id = b.product_id
-                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE a.po_id = '" . $id . "'";
-                                    if ($user_no_of_assignments > 0) {
-                                        $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
-                                    }
-                                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                                    }
-                                    //echo $sql1;
-                                    $sql           .= "
-                                                    AND a.is_processed = 0
-                                                    AND a.enabled = 1 
-                                                    AND b.enabled = 1
-
-                                                    UNION ALL 
-
-                                                    SELECT a.id, a.serial_no, a.model_no, c.product_desc, c.product_uniqueid, d.category_name 
-                                                    FROM purchase_order_detail_receive_diagnostic_fetch a 
-                                                    INNER JOIN users_bin_for_diagnostic a2 ON a2.id = a.assignment_id
-                                                    INNER JOIN products c ON c.id = a.product_id_not_in_po
-                                                    LEFT JOIN product_categories d ON d.id = c.product_category
-                                                    WHERE a.po_id = '" . $id . "'";
-                                    if ($user_no_of_assignments > 0) {
-                                        $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
-                                    }
-                                    if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
-                                    }
-                                    //echo $sql1;
-                                    $sql           .= "
-                                                    AND a.enabled = 1
-                                                    AND a.is_processed = 0
-                                                ) AS t1
-                                                ORDER BY product_uniqueid, serial_no ";
-                                    //echo $sql; 
-                                    $result_log2    = $db->query($conn, $sql);
-                                    $count_r2       = $db->counter($result_log2); ?>
                                     <i class="material-icons prefix pt-1">add_shopping_cart</i>
                                     <div class="select2div">
                                         <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
@@ -1292,9 +1294,7 @@
                     } else if ($user_no_of_assignments > 0) {
                         $sql1 .= " AND (a.add_by_user_id = '" . $_SESSION['user_id'] . "' || a.update_by_user_id = '" . $_SESSION['user_id'] . "') ";
                     }
-                    $sql           .= "     
-                                        ) AS t1
-                                         
+                    $sql           .= " ) AS t1
                                         ORDER BY record_type, product_category, sub_location_id, serial_no_barcode ";
                     // echo $sql;
                     // BrokenDevice
@@ -1453,9 +1453,9 @@
                                                                     $col++;
                                                                     $color          = "purple";
                                                                     $sql            = " SELECT a.* FROM vender_po_data a 
-                                                                                            WHERE a.enabled = 1 
-                                                                                            AND a.serial_no = '" . $serial_no_barcode . "' 
-                                                                                            AND a.po_id = '" . $id . "'  ";
+                                                                                        WHERE a.enabled = 1 
+                                                                                        AND a.serial_no = '" . $serial_no_barcode . "' 
+                                                                                        AND a.po_id = '" . $id . "'  ";
                                                                     $result_vebder  = $db->query($conn, $sql);
                                                                     $count_vebder   = $db->counter($result_vebder);
                                                                     if ($count_vebder > 0) {
@@ -1478,12 +1478,13 @@
                                                                                                     ORDER BY a.id DESC LIMIT 1";
                                                                             $result_pd01_4    = $db->query($conn, $sql_pd01_4);
                                                                             $count_pd01_4    = $db->counter($result_pd01_4);
-                                                                            if ($count_pd01_4 > 0) {
+                                                                            if ($count_pd01_4 > 0) { 
                                                                                 $row_pd01_4 = $db->fetch($result_pd01_4);
                                                                                 include("db_phone_check_api_data.php");
                                                                             } else {
                                                                                 $device_detail_array    = getinfo_phonecheck_imie($serial_no_barcode);
                                                                                 $jsonData2              = json_encode($device_detail_array);
+                                                                                // echo "<br><br><br>jsonData2: ".$jsonData2;
                                                                                 if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
                                                                                     include("process_phonecheck_response.php");
                                                                                     $is_diagnost = 1;

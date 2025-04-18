@@ -1,4 +1,7 @@
 $(document).ready(function() {
+    
+      // Reinitialize all added this whne select2 were not generating more then 10
+    $('.bin_user_id').select2();
    
     $('.bin_user_id').on('change', function() {
         var bin_id  = $(this).attr('id');

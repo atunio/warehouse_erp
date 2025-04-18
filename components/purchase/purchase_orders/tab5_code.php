@@ -288,7 +288,7 @@ if (isset($_POST['is_Submit_tab5_6']) && $_POST['is_Submit_tab5_6'] == 'Y') {
 		$error5['msg'] = "Please check Error in form.";
 	}
 }
-/*
+///*
 if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 	extract($_POST);
 	foreach ($_POST as $key => $value) {
@@ -303,10 +303,7 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 	}
 	if (!isset($sub_location_id_manual) || (isset($sub_location_id_manual)  && ($sub_location_id_manual == "0" || $sub_location_id_manual == ""))) {
 		$error5['sub_location_id_manual'] = "Required";
-	}
-	if (!isset($logistic_id_manual) || (isset($logistic_id_manual)  && ($logistic_id_manual == "0" || $logistic_id_manual == ""))) {
-		$error5['logistic_id_manual'] = "Required";
-	}
+	} 
 	if (!isset($product_id_manual) || (isset($product_id_manual)  && ($product_id_manual == "0" || $product_id_manual == ""))) {
 		$error5['product_id_manual'] = "Required";
 	}
@@ -327,10 +324,7 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 			$sql_ee1 = "SELECT a.* FROM purchase_order_detail_receive a 
 						INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id
 						WHERE a.enabled = 1 
-						AND (
-								a.duplication_check_token = '" . $duplication_check_token . "' 
-								AND a.logistic_id 	= '" . $logistic_id_manual . "' 
-							)  ";
+						AND ( a.duplication_check_token = '" . $duplication_check_token . "' )  ";
 			// echo $sql_ee1;
 			$result_ee1 	= $db->query($conn, $sql_ee1);
 			$counter_ee1	= $db->counter($result_ee1);
@@ -356,6 +350,7 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 												INNER JOIN products c ON c.id = a.product_id
 												INNER JOIN purchase_orders a2 ON a2.id = a.po_id
 												WHERE 1 = 1
+												AND a.po_id = '" . $id . "'
 												AND a.id 	= '" . $product_id_manual . "'";
 							$result_pd3		= $db->query($conn, $sql_pd3);
 							$count_pd3		= $db->counter($result_pd3);
@@ -366,8 +361,8 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 								$c_product_id2 					= $row_pd3[0]['product_id'];
 								$c_product_condition2 			= $row_pd3[0]['product_condition'];
 								$c_expected_status2     		= $row_pd3[0]['expected_status'];
-								$sql6 = "INSERT INTO purchase_order_detail_receive(logistic_id, po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
-										VALUES('" . $logistic_id_manual . "', '" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
+								$sql6 = "INSERT INTO purchase_order_detail_receive(po_detail_id, serial_no_barcode, price, add_by_user_id, sub_location_id, duplication_check_token, add_date,  add_by, add_ip, add_timezone)
+										 VALUES('" . $product_id_manual . "', '" . $data . "',  '" . $order_price . "', '" . $_SESSION['user_id'] . "', '" . $sub_location_id_manual . "', '" . $duplication_check_token . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "')";
 								$ok = $db->query($conn, $sql6);
 								if ($ok) {
 									$receive_id = mysqli_insert_id($conn);
@@ -434,7 +429,7 @@ if (isset($_POST['is_Submit_tab5_5']) && $_POST['is_Submit_tab5_5'] == 'Y') {
 		}
 	}
 }
-*/
+//*/
 /*
 if (isset($_POST['is_Submit_tab5_4']) && $_POST['is_Submit_tab5_4'] == 'Y') {
 	extract($_POST);

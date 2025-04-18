@@ -1340,6 +1340,9 @@ $('#process_fetch_data_barcode_btn').on('click', function(event) {
                 else{
                     var toastHTML = "Serial# has been assigned to product id.";
                     showToast(toastHTML, "Success"); 
+                    var fetched_count = parseInt($('#fetched_count').text());
+                    fetched_count = fetched_count-1;
+                    $('#fetched_count').text(fetched_count);
                     $('#diagnostic_fetch_id option[value="' + diagnostic_fetch_id + '"]').remove();
                     $('#diagnostic_fetch_id').val('').trigger('change');
                     $('#diagnostic_fetch_id').select2('open');
@@ -1375,6 +1378,9 @@ $('#diagnostic_fetch_id').on('change', function(event) {
                     else{
                         var toastHTML = "Serial# has been assigned to product id.";
                         showToast(toastHTML, "Success"); 
+                        var fetched_count = parseInt($('#fetched_count').text());
+                        fetched_count = fetched_count-1;
+                        $('#fetched_count').text(fetched_count);
                         $('#diagnostic_fetch_id option[value="' + diagnostic_fetch_id + '"]').remove();
                         $('#diagnostic_fetch_id').val('').trigger('change');
                         $('#diagnostic_fetch_id').select2('open');

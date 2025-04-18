@@ -355,7 +355,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 									<div class="row">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('SNo', 'check_all', 'Location / Bin', 'PO Detail', 'Received Date', 'Warranty Remaining', 'Details', 'Total Qty', 'Assign User');
+											$table_columns	= array('SNo', 'Location / Bin', 'PO Detail', 'Received Date', 'Warranty Remaining', 'Details', 'Total Qty', 'Assign User');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -410,19 +410,14 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																	<?php
 																	echo $i + 1;
-																	$column_no++;
-																	?>
-																</td>
-																<td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																	<?php
-																	$column_no++; ?>
-																	<label style="margin-left: 25px;">
+																	$column_no++;  ?>
+																	<label style="margin-left: 10px; ">
 																		<input type="checkbox" name="bin_ids[]" id="bin_ids[]" value="<?= $id; ?>" <?php if (isset($bin_ids) && in_array($id, $bin_ids)) {
 																																						echo "checked";
 																																					} ?> class="checkbox6 filled-in" />
 																		<span></span>
 																	</label>
-																</td>
+																</td> 
 																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																	<?php
 																	$column_no++;
@@ -479,7 +474,7 @@ $page_heading 	= "List of Bins For Diagnostic ( Manager View)";
 																	echo $total_qty;
 																	$column_no++; ?>
 																</td>
-																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<td width="300px" class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																	<div class="input-field col m12 s12">
 																		<div class="select2div">
 																			<?php

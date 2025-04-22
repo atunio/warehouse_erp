@@ -1188,7 +1188,7 @@ function showToast(message, type) {
         html: message,
         classes: toastClass
     });
-} 
+}
 $('#serial_no_barcode').on('keyup', function(event) {
     event.preventDefault(); // Prevent default form submit
     var serial_no_barcode           = $(this).val();

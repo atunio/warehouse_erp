@@ -470,7 +470,9 @@ function insert_error($db, $conn, $error_type, $field_name, $field_value, $error
 function remove_special_character($field)
 {
 	// single and double codes = &#039;, &quot;
-	$field = str_replace(array("'", "$", "\"", "&#039;", "&quot;", "=", "||", "%"), "", $field);
+	if (isset($field) && $field != "") {
+		$field = str_replace(array("'", "$", "\"", "&#039;", "&quot;", "=", "||", "%"), "", $field);
+	}
 	return $field;
 }
 function test_input($data)

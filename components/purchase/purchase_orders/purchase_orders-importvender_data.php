@@ -182,7 +182,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									AND IFNULL(b.id, 0) = 0 ";
 					$db->query($conn, $sql_dup1);
 
-
 					$product_id_not_available = "";
 					foreach ($all_data  as $data1) {
 						$update_master = $columns = $column_data = $update_column = $po_detail_data =  $po_detail_column = $update_po_detail = "";
@@ -243,7 +242,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$count_status = 0;
 								$field_name = "status";
 								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A' && $data1[$field_name] != 'NA' && $data1[$field_name] != '') {
-									$sql_status		= "SELECT * FROM inventory_status WHERE status_name = '" . $data1[$field_name] . "' ";
+									$sql_status		= "SELECT * FROM inventory_status WHERE status_name = '" . $data1[$field_name] . "' AND enabled = 1";
 									$result_status	= $db->query($conn, $sql_status);
 									$count_status	= $db->counter($result_status);
 									if ($count_status == 0) {

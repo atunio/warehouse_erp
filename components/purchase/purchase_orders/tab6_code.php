@@ -20,7 +20,6 @@ if (isset($cmd6) && $cmd6 == 'delete' && isset($detail_id)) {
 	}
 }
 
-
 if (isset($_POST['is_Submit_tab6_7']) && $_POST['is_Submit_tab6_7'] == 'Y') {
 	extract($_POST);
 	foreach ($_POST as $key => $value) {
@@ -1357,5 +1356,136 @@ if (isset($_POST['is_Submit_tab6_2_3']) && $_POST['is_Submit_tab6_2_3'] == 'Y') 
 		//*/
 	} else {
 		$error6['msg'] = "Please check Error in form.";
+	}
+}
+if (isset($_POST['is_Submit_tab6_3']) && $_POST['is_Submit_tab6_3'] == 'Y') {
+	extract($_POST);
+	foreach ($_POST as $key => $value) {
+		if (!is_array($value)) {
+			$data[$key] = remove_special_character(trim(htmlspecialchars(strip_tags(stripslashes($value)), ENT_QUOTES, 'UTF-8')));
+			$$key = $data[$key];
+		}
+	}
+	if (isset($diagnostic_date_from)  && ($diagnostic_date_from == "")) {
+		$error6['diagnostic_date_from'] = "Required";
+	}
+	if (isset($diagnostic_date_to)  && ($diagnostic_date_to == "")) {
+		$error6['diagnostic_date_to'] = "Required";
+	}
+	if (empty($error6)) {
+		if (po_permisions("Diagnostic") == 0) {
+			$error6['msg'] = "You do not have add permissions.";
+		} else {
+			$k						= 0;
+			$diagnostic_date_from1 	= convert_date_mysql_slash($diagnostic_date_from);
+			$diagnostic_date_to1 	= convert_date_mysql_slash($diagnostic_date_to);
+			$diagnostic_date_start 	= new DateTime($diagnostic_date_from1);
+			$diagnostic_date_end 	= new DateTime($diagnostic_date_to1);
+			$diagnostic_date_end->modify('+1 day'); // Include end date in loop
+			$interval 				= new DateInterval('P1D'); // 1 day interval
+			$daterange 				= new DatePeriod($diagnostic_date_start, $interval, $diagnostic_date_end);
+			foreach ($daterange as $date) {
+				$diagnostic_date1 = $date->format('Y-m-d');
+				// echo "<br><br>" . $phone_check_username;
+				$sql1		= " SELECT DISTINCT a.id, a.assignment_no, e.username as phone_check_user
+								FROM users_bin_for_diagnostic a 
+								INNER JOIN users b ON a.bin_user_id = b.id 
+								INNER JOIN warehouse_sub_locations c ON c.id = a.location_id 
+								INNER JOIN purchase_order_detail_receive d ON d.sub_location_id = c.id 
+								LEFT JOIN phone_check_users e ON e.erp_user_id = b.id
+								WHERE a.enabled = 1 
+								AND d.po_id = '" . $id . "'
+								AND a.is_processing_done = 0 "; //echo $sql1;
+				$sql1		.= "ORDER BY assignment_no ";
+				$result1	= $db->query($conn, $sql1);
+				$count1		= $db->counter($result1);
+				if ($count1 > 0) {
+					$row1 = $db->fetch($result1);
+					foreach ($row1 as $data1) {
+						$invoiceNo 				= $data1['assignment_no'];
+						$assignment_id 			= $data1['id'];
+						$phone_check_username 	= $data1['phone_check_user'];
+
+						if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP && $test_on_local == 1) {
+							if ($assignment_id == '1') {
+								$invoiceNo 			= "121824";  // Optional
+								$diagnostic_date1	= "2025-01-28";  // Filter by Date (optional)
+								$phone_check_username	= "ctinno2";  // Filter by Date (optional)
+							} else if ($assignment_id == '2') {
+								$invoiceNo 				= "PO16";  // Optional
+								$diagnostic_date1		= "2025-03-03";  // Filter by Date (optional)
+								$phone_check_username	= "ctinno2";  // Filter by Date (optional)
+							} else if ($assignment_id == '3') {
+								$invoiceNo 				= "207";  // Optional
+								$diagnostic_date1		= "2025-02-26";  // Filter by Date (optional)
+								$phone_check_username	= "ctinno5";  // Filter by Date (optional)
+							}
+						}
+						$data = [
+							'Apikey' 		=> $phoneCheck_apiKey,
+							'Username' 		=> $phone_check_username,
+							'Invoiceno' 	=> $invoiceNo,
+							'Date' 			=> $diagnostic_date1
+						];
+						$all_devices_info = v2_devices_call_phonecheck($data);
+						if (isset($all_devices_info['serial']) && sizeof($all_devices_info['serial']) > 0) {
+							$m = 1;
+							foreach ($all_devices_info['serial'] as $data) {
+								$phone_check_api_data_id = 0;
+								// $data = "DMTPD5R1FK10";
+								if ($data != "" && $data != null) {
+									$insert_bin_and_po_id_fields 	= "po_id, assignment_id, ";
+									$insert_bin_and_po_id_values 	= "'" . $id . "', '" . $assignment_id . "', ";
+									$serial_no_barcode_diagnostic 	= $data;
+
+									$sql_pd01_4		= "	SELECT  a.*
+														FROM phone_check_api_data a 
+														WHERE a.enabled = 1 
+														AND a.imei_no = '" . $data . "'
+														ORDER BY a.id DESC LIMIT 1";
+									// echo "<br>" . $sql_pd01_4;die;
+									$result_pd01_4	= $db->query($conn, $sql_pd01_4);
+									$count_pd01_4	= $db->counter($result_pd01_4);
+									if ($count_pd01_4 == 0) {
+										// echo "<br>".$sql_pd01_4;  
+										$mdm = $failed = $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+										$device_detail_array 	= getinfo_phonecheck_imie($data);
+										$jsonData2				= json_encode($device_detail_array);
+
+										if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
+											include("../components/purchase/purchase_orders/process_phonecheck_response.php");
+										} else {
+											$sql = "INSERT INTO phone_check_api_data(" . $insert_bin_and_po_id_fields . " imei_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+													VALUES	(" . $insert_bin_and_po_id_values . " '" . $data . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . TIME_ZONE . "', '" . $module_id . "')";
+											$db->query($conn, $sql);
+										}
+										$k++;
+									} else {
+										$row_pd01					= $db->fetch($result_pd01_4);
+										$phone_check_api_data_prev 	= $row_pd01[0]['phone_check_api_data'];
+										$phone_check_api_data_id 	= $row_pd01[0]['id'];
+										if ($phone_check_api_data_prev == '' || $phone_check_api_data_prev == NULL) {
+											$mdm = $failed = $model_name = $model_no = $make_name = $carrier_name = $color_name = $battery = $body_grade = $lcd_grade = $digitizer_grade = $ram = $memory = $defectsCode = $lcd_grade = $lcd_grade = $lcd_grade = $overall_grade = $sku_code = "";
+
+											$device_detail_array 	= getinfo_phonecheck_imie($data);
+											$jsonData2				= json_encode($device_detail_array);
+
+											if ($jsonData2 != '[]' && $jsonData2 != 'null' && $jsonData2 != null && $jsonData2 != '' && $jsonData2 != '{"msg":"token expired"}') {
+												include("../components/purchase/purchase_orders/process_phonecheck_response.php");
+											}
+											$k++;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			$page_path = "export/export_phonecheck_data.php?string=" . encrypt("module_id=" . $module_id . "&id=" . $id);
+			echo '<script>window.open("' . $page_path . '", "_blank");</script>';
+		}
+	} else {
+		$error6['msg'] = "There is error, Please check it.";
 	}
 }

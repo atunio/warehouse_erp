@@ -11,10 +11,10 @@
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_pricing&id=" . $id) ?>">
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_to_pricing&id=" . $id) ?>">
                     Import Pricing
                 </a>
-                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>">
+                <a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=import_to_map_data&id=" . $id) ?>">
                     Import Diagnostic Data
                 </a>
                 <?php include("tab_action_btns.php"); ?>
@@ -141,7 +141,7 @@
                 <?php } ?>
             </ul>
             <div id="tab1">
-                <input type="hidden" id="sub_tab_master_url" value="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>">
+                <input type="hidden" id="sub_tab_master_url" value="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>">
                 <?php
                 $td_padding     = "padding:5px 15px !important;";
                 $sql            = " SELECT a.id FROM purchase_order_detail_receive a WHERE a.po_id = '" . $id . "' ";   //echo $sql; 
@@ -170,7 +170,7 @@
                                                                                                 } else {
                                                                                                     echo "display: none;";
                                                                                                 } ?>">
-                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                            <form class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                 <input type="hidden" name="is_Submit_tab6_6" value="Y" />
                                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -329,7 +329,7 @@
                                 $count_preview        = $db->counter($result_preview);
                                 if ($count_preview > 0) {
                                     $row_preview = $db->fetch($result_preview); ?>
-                                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                         <input type="hidden" name="is_Submit2_preview" value="Y" />
                                         <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_top custom_margin_card_table_bottom">
                                             <div class="card-content custom_padding_card_content_table_top">
@@ -449,7 +449,7 @@
                         </div>
                     </div>
                     <?php /*?>
-                    <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                    <form id="barcodeForm2_1" class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2_3" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -457,7 +457,7 @@
                                                                         } ?>">
                         <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                     <?php */ ?>
-                    
+
                     <?php
                     $field_name     = "diagnostic_fetch_id";
                     $field_label    = "Product";
@@ -473,7 +473,7 @@
                         $sql1 .= " AND a2.bin_user_id = '" . $_SESSION['user_id'] . "' ";
                     }
                     if (isset($assignment_id) && $assignment_id > 0 && $assignment_id != '') {
-                        $sql .=" AND a.assignment_id = '" . $assignment_id . "' ";
+                        $sql .= " AND a.assignment_id = '" . $assignment_id . "' ";
                     }
                     //echo $sql1;
                     $sql    .= "
@@ -506,11 +506,13 @@
                     $count_r2       = $db->counter($result_log2); ?>
                     <div class="card-panel custom_padding_card_content_table_top_bottom">
                         <div class="row">
-                            <div class="col m4 s12"><h6>Process Fetched Data</h6></div>
                             <div class="col m4 s12">
-                                <?php if($count_r2 > 0){?>
-                                    <h6># of Devices Fetched Need to be Process: <span id="fetched_count"><?= $count_r2;?></span></h6>
-                                <?php }?>
+                                <h6>Process Fetched Data</h6>
+                            </div>
+                            <div class="col m4 s12">
+                                <?php if ($count_r2 > 0) { ?>
+                                    <h6># of Devices Fetched Need to be Process: <span id="fetched_count"><?= $count_r2; ?></span></h6>
+                                <?php } ?>
                             </div>
                             <div class="col m4 s12 show_receive_from_barcode_show_btn_tab6_2" style="<?php if (isset($is_Submit_tab6_2_3) && $is_Submit_tab6_2_3 == 'Y') {
                                                                                                             echo "display: none;";
@@ -625,7 +627,7 @@
                     <?php /*?>
                     </form>
                     <?php */ ?>
-                    <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                    <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -805,7 +807,7 @@
                             </div>
                         </div>
                     </form>
-                    <form id="serialno" class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                    <form id="serialno" class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                         <input type="hidden" name="is_Submit_tab6_2_1" id="is_Submit_tab6_2_1" value="Y" />
                         <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                         <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -1222,6 +1224,79 @@
                             </div>
                         </div>
                     </form>
+
+
+
+                    <form id="barcodeForm2" class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                        <input type="hidden" name="is_Submit_tab6_3" value="Y" />
+                        <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
+                        <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                            echo encrypt($_SESSION['csrf_session']);
+                                                                        } ?>">
+                        <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
+
+                        <div class="card-panel custom_padding_card_content_table_top_bottom">
+                            <div class="row">
+                                <div class="col m8 s12">
+                                    <h6>Export PhoneCheck Data</h6>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="row">
+                                    <div class="input-field col m2 s12">
+                                        <?php
+                                        $field_name     = "diagnostic_date_from";
+                                        $field_label    = "Date From";
+                                        ?>
+                                        <i class="material-icons prefix">date_range</i>
+                                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                            echo ${$field_name};
+                                                                                                                        } else {
+                                                                                                                            echo date('d/m/Y');
+                                                                                                                        } ?>" class="datepicker validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                echo ${$field_name . "_valid"};
+                                                                                                                                                            } ?>">
+                                        <label for="<?= $field_name; ?>">
+                                            <?= $field_label; ?>
+                                            <span class="color-red">* <?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="input-field col m2 s12">
+                                        <?php
+                                        $field_name     = "diagnostic_date_to";
+                                        $field_label    = "Date To";
+                                        ?>
+                                        <i class="material-icons prefix">date_range</i>
+                                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                                                                                                                            echo ${$field_name};
+                                                                                                                        } else {
+                                                                                                                            echo date('d/m/Y');
+                                                                                                                        } ?>" class="datepicker validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                echo ${$field_name . "_valid"};
+                                                                                                                                                            } ?>">
+                                        <label for="<?= $field_name; ?>">
+                                            <?= $field_label; ?>
+                                            <span class="color-red">* <?php
+                                                                        if (isset($error6[$field_name])) {
+                                                                            echo $error6[$field_name];
+                                                                        } ?>
+                                            </span>
+                                        </label>
+                                    </div>
+                                    <div class="input-field col m2 s12">
+                                        <?php if (isset($id) && $id > 0 && po_permisions("Diagnostic")) { ?>
+                                            <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Submit</button>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
                     <?php
                     $td_padding = "padding:5px 10px !important;";
                     $sql            = " SELECT * FROM (
@@ -1302,7 +1377,7 @@
                     $count_log      = $db->counter($result_log);
                     if ($count_log > 0) { ?>
                         <div class="card-panel custom_padding_card_content_table_top_bottom">
-                            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
+                            <form class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6" . "&active_subtab=tab1") ?>" method="post">
                                 <input type="hidden" name="is_Submit_tab6_7" value="Y" />
                                 <input type="hidden" name="cmd6" value="<?php if (isset($cmd6)) echo $cmd6; ?>" />
                                 <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
@@ -1478,7 +1553,7 @@
                                                                                                     ORDER BY a.id DESC LIMIT 1";
                                                                             $result_pd01_4    = $db->query($conn, $sql_pd01_4);
                                                                             $count_pd01_4    = $db->counter($result_pd01_4);
-                                                                            if ($count_pd01_4 > 0) { 
+                                                                            if ($count_pd01_4 > 0) {
                                                                                 $row_pd01_4 = $db->fetch($result_pd01_4);
                                                                                 include("db_phone_check_api_data.php");
                                                                             } else {
@@ -1657,7 +1732,7 @@
                 <?php } ?>
             </div>
             <div id="tab2">
-                <input type="hidden" id="pricing_tab_url" value="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>">
+                <input type="hidden" id="pricing_tab_url" value="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>">
                 <?php
                 $sql_p2         = " SELECT * FROM(
                                         SELECT 'PO Product' AS rec_type, d2.`product_uniqueid`, d2.`product_desc`, e.`category_name`, a.*, IF(a.price = 0, d.order_price, a.price) AS order_price
@@ -1684,7 +1759,7 @@
                 $count_p2        = $db->counter($result_p2);
                 if ($count_p2 > 0) {
                     $row_p2 = $db->fetch($result_p2); ?>
-                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>" method="post">
+                    <form method="post" autocomplete="off" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&assignment_id=" . $assignment_id . "&active_tab=tab6&active_subtab=tab2") ?>" method="post">
                         <input type="hidden" name="is_Submit6_SubTab2" value="Y" />
                         <div id="Form-advance2" class="card card card-default scrollspy custom_margin_card_table_bottom">
                             <div class="card-content custom_padding_card_content_table_top">

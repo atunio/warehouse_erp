@@ -38,13 +38,13 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 		}
 	}
 }
-$sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, product_category, category_name, sum(po_order_qty) as po_order_qty 
+$sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, product_type, product_category, category_name, sum(po_order_qty) as po_order_qty 
 				FROM (
 				SELECT * 
 				FROM (
 					SELECT * FROM (
 						SELECT 
-							id, product_id, product_uniqueid, product_desc, 
+							id, product_id, product_uniqueid, product_desc, product_type, 
  							GROUP_CONCAT(DISTINCT product_category) as product_category, 
 							category_name, 
 							'' as p_inventory_status, 
@@ -55,7 +55,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 						FROM (
  							SELECT  
 								c.product_uniqueid, c.id, c1.product_id,
-								c.product_desc,
+								c.product_desc, c.product_type,
 								d.category_name, c.product_category,
 								a.po_no,
 								e.status_name AS po_status_name,
@@ -78,7 +78,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 
 							SELECT   
 								c.product_uniqueid, c.id, b.product_id,
-								c.product_desc,
+								c.product_desc, c.product_type,
 								d.category_name, c.product_category,
 								a.po_no,
 								e.status_name AS po_status_name,
@@ -99,7 +99,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 							UNION ALL
 							
 							SELECT  c.product_uniqueid, c.id, b.product_id,
-								c.product_desc,
+								c.product_desc,  c.product_type,
 								d.category_name, c.product_category,
 								a.po_no,
 								e.status_name AS po_status_name,
@@ -132,7 +132,7 @@ $sql_cl		= "	SELECT distinct id, product_id, product_uniqueid, product_desc, pro
 
 					UNION ALL
 
-					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, 
+					SELECT a.id, a2.product_id, a.product_uniqueid, a.product_desc, a.product_type,
  							GROUP_CONCAT(DISTINCT a.product_category) AS product_category, 
 							b.category_name, 
  							GROUP_CONCAT(DISTINCT a2.p_inventory_status) AS p_inventory_status, 
@@ -526,7 +526,7 @@ $page_heading 	= "Stock Summary";
 									<div class="col s10">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('Detail', 'ProductID', 'Description', 'Category', 'Status', 'Condition', 'Location', 'Stock', 'SerialNo', 'AveragePrice');
+											$table_columns	= array('Detail', 'ProductID', 'Type', 'Category', 'Status', 'Condition', 'Location', 'Stock', 'SerialNo', 'AveragePrice');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -551,6 +551,10 @@ $page_heading 	= "Stock Summary";
 													foreach ($table_columns as $data_c) {
 														if ($data_c == 'Detail') {
 															$headings .= '<th class="sno_width_30 col-' . set_table_headings($data_c) . '">' . $data_c . '</th>';
+														} else if ($data_c == 'Stock') {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . '" style="width: 80px;">' . $data_c . '</th> ';
+														} else if ($data_c == 'SerialNo') {
+															$headings .= '<th class="col-' . set_table_headings($data_c) . ' text_align_center" style="width: 80px;">' . $data_c . '</th> ';
 														} else {
 															$headings .= '<th class="col-' . set_table_headings($data_c) . '">' . $data_c . '</th> ';
 														}
@@ -569,6 +573,7 @@ $page_heading 	= "Stock Summary";
 														$product_uniqueid	= $data['product_uniqueid'];
 														$category_name		= $data['category_name'];
 														$po_order_qty		= $data['po_order_qty'];
+														$product_type		= $data['product_type'];
 														$product_desc 		= ucwords(strtolower(substr((string) ($data['product_desc'] ?? ''), 0, 50)));
 														$total_stock_p 		= 0;
 														$avg_price 			= 0;
@@ -804,8 +809,7 @@ $page_heading 	= "Stock Summary";
 																					WHERE a.enabled = 1 AND b.enabled = 1
 																					AND b.order_qty > 0 
 																					
-																					
-																					GROUP BY b.product_id, b.order_price, b.expected_status, b.po_id
+																					GROUP BY b.product_id, b.po_id
 																					HAVING po_order_qty > 0
 
 																				) AS combined_data
@@ -830,7 +834,7 @@ $page_heading 	= "Stock Summary";
 															$sql_cl2 	.= " AND flt_record_type = '" . trim($flt_record_type) . "' ";
 														}
 														$sql_cl2	.= "GROUP BY status_name, stock_grade
-																		ORDER BY status_name DESC, stock_grade "; //a2.p_inventory_status
+																		ORDER BY status_name DESC, stock_grade  "; //a2.p_inventory_status
 														$result_cl2	= $db->query($conn, $sql_cl2);
 														$count_cl2	= $db->counter($result_cl2); ?>
 														<tr id="<?= $id; ?>">
@@ -851,7 +855,7 @@ $page_heading 	= "Stock Summary";
 																	echo  $product_uniqueid;
 																} ?>
 															</td>
-															<td class="col-<?= strtolower($table_columns[2]); ?>"><?php echo $product_desc; ?></td>
+															<td class="col-<?= strtolower($table_columns[2]); ?>"><?php echo $product_type; ?></td>
 															<td class="col-<?= strtolower($table_columns[3]); ?>"><?php echo $category_name; ?></td>
 															<td class="col-<?= strtolower($table_columns[4]); ?>"></td>
 															<td class="col-<?= strtolower($table_columns[5]); ?>"></td>
@@ -883,9 +887,7 @@ $page_heading 	= "Stock Summary";
 																		<td class="col-<?= strtolower($table_columns[1]); ?>">
 																			<?php echo  $product_uniqueid;  ?>
 																		</td>
-																		<td class="col-<?= strtolower($table_columns[2]); ?>">
-																			<?php echo $product_desc; ?>
-																		</td>
+																		<td class="col-<?= strtolower($table_columns[2]); ?>"><?php echo $product_type; ?></td>
 																		<td class="col-<?= strtolower($table_columns[3]); ?>"> <?php echo $category_name; ?></td>
 																		<td class="col-<?= strtolower($table_columns[4]); ?>">
 																			<?php echo $data2['status_name']; ?>
@@ -973,22 +975,34 @@ $page_heading 	= "Stock Summary";
 																	if ($count_cl3 > 0) {
 																		$row_cl3 = $db->fetch($result_cl3);
 																		foreach ($row_cl3 as $data3) {
-																			$id3 = $data3['id']; ?>
+																			$id3 = $data3['id'];
+																			$columnno3 = 0 ?>
 																			<tr class="detail_tr dt-<?= $id2; ?> datatr_<?= $id; ?>">
-																				<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[0]); ?>"></td>
-																				<td class="col-<?= set_table_headings($table_columns[1]); ?>"></td>
-																				<td class="col-<?= set_table_headings($table_columns[2]); ?>"></td>
-																				<td class="col-<?= set_table_headings($table_columns[3]); ?>"></td>
-																				<td class="col-<?= set_table_headings($table_columns[4]); ?>"><?php echo $data2['status_name']; ?></td>
-																				<td class="col-<?= set_table_headings($table_columns[5]); ?>"><?php echo $data2['stock_grade']; ?></td>
-																				<td class="col-<?= set_table_headings($table_columns[6]); ?>"><?php echo $data3['sub_location_name']; ?></td>
-																				<td class="col-<?= set_table_headings($table_columns[7]); ?> text_align_right"></td>
-																				<td class="col-<?= set_table_headings($table_columns[8]); ?>">
+																				<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$columnno3]); ?>"><?php $columnno3++; ?></td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>"><?php $columnno3++; ?></td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>"><?php $columnno3++; ?></td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>"><?php $columnno3++; ?></td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>">
+																					<?php echo $data2['status_name']; ?>
+																					<?php $columnno3++; ?>
+																				</td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>">
+																					<?php echo $data2['stock_grade']; ?>
+																					<?php $columnno3++; ?>
+																				</td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>">
+																					<?php echo $data3['sub_location_name']; ?>
+																					<?php $columnno3++; ?>
+																				</td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?> text_align_right"><?php $columnno3++; ?></td>
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>">
+																					<?php $columnno3++; ?>
 																					<a target="_blank" class="" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=serialNoDetail&id=" . $id . "&detail_id=" . $id3) ?>" title="Serial# Detail">
 																						<?php echo $data3['serial_no']; ?>
 																					</a> &nbsp;&nbsp;
 																				</td>
-																				<td class="col-<?= set_table_headings($table_columns[9]); ?>">
+																				<td class="col-<?= set_table_headings($table_columns[$columnno3]); ?>">
+																					<?php $columnno3++; ?>
 																					<?php
 																					$filter_3 = $data3['serial_no'];
 																					if (access("edit_perm") == 1) { ?>

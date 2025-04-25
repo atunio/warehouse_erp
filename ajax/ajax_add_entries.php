@@ -1141,7 +1141,7 @@ switch ($type) {
             $sql_cl2    = "	SELECT *
                             FROM (
                                 SELECT  a2.id, a2.product_id, a2.stock_grade, SUM(a2.p_total_stock) AS p_total_stock, SUM(a2.price)/SUM(a2.p_total_stock)  AS avg_price,
-                                        c.status_name, a2.p_inventory_status, b.category_name, a.product_desc, a.product_uniqueid,
+                                        c.status_name, a2.p_inventory_status, b.category_name, a.product_desc, a.product_uniqueid, a.product_type,
                                         GROUP_CONCAT(DISTINCT CONCAT(' ', COALESCE(b1.sub_location_name))) AS sub_location_names,
                                         GROUP_CONCAT( (a2.sub_location)) AS sub_location_ids,
                                         GROUP_CONCAT( (a2.serial_no)) AS serial_nos,
@@ -1164,7 +1164,7 @@ switch ($type) {
                                     SELECT 	 
                                         '0' AS id, product_id, '' AS stock_grade, SUM(po_order_qty) AS p_total_stock,
                                         ROUND(SUM(total_price) / SUM(po_order_qty), 4) AS avg_price, 
-                                        'Untested/Not Graded' AS status_name, '' AS p_inventory_status,  category_name, product_desc, product_uniqueid,
+                                        'Untested/Not Graded' AS status_name, '' AS p_inventory_status,  category_name, product_desc, product_uniqueid, product_type, 
                                         GROUP_CONCAT(DISTINCT (sub_location_name)) AS sub_location_names,
                                         GROUP_CONCAT( (sub_location_id)) AS sub_location_ids, 
                                         serial_no_barcode AS serial_nos,
@@ -1176,7 +1176,7 @@ switch ($type) {
                                     FROM (
                                         SELECT  
                                             a.po_no, b.po_id, c1.product_id, SUM(1) AS po_order_qty, SUM(b.price) AS total_price, 
-                                            d.category_name, c.product_desc, c.product_uniqueid,
+                                            d.category_name, c.product_desc, c.product_uniqueid, c.product_type,
                                             f.sub_location_name, b.sub_location_id,
                                             e.status_name AS po_status_name, b.serial_no_barcode, b.overall_grade
                                         FROM purchase_orders a 
@@ -1196,7 +1196,7 @@ switch ($type) {
                                         UNION ALL
 
                                         SELECT a.po_no, b.po_id, b.product_id, SUM(1) AS po_order_qty, SUM(b.price) AS total_price, 
-                                            d.category_name, c.product_desc, c.product_uniqueid,
+                                            d.category_name, c.product_desc, c.product_uniqueid, c.product_type,
                                             f.sub_location_name, b.sub_location_id,
                                             e.status_name AS po_status_name, b.serial_no_barcode, b.overall_grade
                                         FROM purchase_orders a 
@@ -1226,7 +1226,7 @@ switch ($type) {
                                                 WHERE f.`po_detail_id` = b.id AND f.`enabled` = 1)
                                             ) * order_price AS total_price, 
                                                 
-                                            d.category_name, c.product_desc, c.product_uniqueid,
+                                            d.category_name, c.product_desc, c.product_uniqueid, c.product_type,
                                             '' AS sub_location_name, '' AS sub_location_id,
                                             e.status_name AS po_status_name, '' as serial_no_barcode, '' as overall_grade
                                         FROM purchase_orders a 
@@ -1236,9 +1236,8 @@ switch ($type) {
                                         INNER JOIN inventory_status e ON e.id = a.order_status
                                         WHERE a.enabled = 1 AND b.enabled = 1
                                         AND b.order_qty > 0 
-                                        
-                                        
-                                        GROUP BY b.product_id, b.order_price, b.expected_status, b.po_id
+                                
+                                        GROUP BY b.product_id, b.po_id
                                         HAVING po_order_qty > 0
 
                                     ) AS combined_data
@@ -1260,6 +1259,7 @@ switch ($type) {
                     $stock_id           = $data2['id'];
                     $id2                = $stock_id;
                     $product_uniqueid   = $data2['product_uniqueid'];
+                    $product_type       = $data2['product_type'];
                     $category_name      = $data2['category_name'];
                     $product_desc       = ucwords(strtolower(substr((string) ($data2['product_desc'] ?? ''), 0, 50)));
                     $po_details         = $data2['po_details'];
@@ -1282,8 +1282,8 @@ switch ($type) {
                             $column_no++;  ?>
                         </td>
                         <td class="col-<?= strtolower($table_columns[$column_no]); ?>">
-                            <?php echo $product_desc;
-                            $column_no++; ?>
+                            <?php echo  $product_type;
+                            $column_no++;  ?>
                         </td>
                         <td class="col-<?= strtolower($table_columns[$column_no]); ?>">
                             <?php echo $category_name;

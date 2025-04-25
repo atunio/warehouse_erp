@@ -81,8 +81,8 @@ $sql_cl		= "	SELECT a.*, b.category_name, c.status_name
 if (isset($flt_product_id) && $flt_product_id != "") {
 	$sql_cl 	.= " AND a.product_uniqueid LIKE '%" . trim($flt_product_id) . "%' ";
 }
-if (isset($flt_product_desc) && $flt_product_desc != "") {
-	$sql_cl 	.= " AND a.product_desc LIKE '%" . trim($flt_product_desc) . "%' ";
+if (isset($flt_product_type) && $flt_product_type != "") {
+	$sql_cl 	.= " AND a.product_type = '" . trim($flt_product_type) . "' ";
 }
 if (isset($flt_product_category) && $flt_product_category != "") {
 	$sql_cl 	.= " AND a.product_category = '" . trim($flt_product_category) . "' ";
@@ -222,13 +222,10 @@ $page_heading 	= "List of Products";
 												</label>
 											</div>
 										</div>
-										<div class="input-field col m3 s12 custom_margin_bottom_col">
+										<div class="input-field col m2 s12 custom_margin_bottom_col">
 											<?php
-											$field_name 	= "flt_product_desc";
-											$field_label 	= "Product Description";
-											$sql1			= "SELECT DISTINCT product_desc FROM products WHERE 1=1 ";
-											$result1		= $db->query($conn, $sql1);
-											$count1         = $db->counter($result1);
+											$field_name 	= "flt_product_type";
+											$field_label 	= "Product Type";
 											?>
 											<i class="material-icons prefix">question_answer</i>
 											<div class="select2div">
@@ -236,13 +233,8 @@ $page_heading 	= "List of Products";
 																																													echo ${$field_name . "_valid"};
 																																												} ?>">
 													<option value="">All</option>
-													<?php
-													if ($count1 > 0) {
-														$row1    = $db->fetch($result1);
-														foreach ($row1 as $data2) { ?>
-															<option value="<?php echo $data2['product_desc']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['product_desc']) { ?> selected="selected" <?php } ?>><?php echo $data2['product_desc']; ?></option>
-													<?php }
-													} ?>
+													<option value="Product" <?php if (isset(${$field_name}) && ${$field_name} == 'Product') { ?> selected="selected" <?php } ?>>Product</option>
+													<option value="Placeholder" <?php if (isset(${$field_name}) && ${$field_name} == 'Placeholder') { ?> selected="selected" <?php } ?>>Placeholder<t /option>
 												</select>
 												<label for="<?= $field_name; ?>">
 													<?= $field_label; ?>
@@ -364,7 +356,7 @@ $page_heading 	= "List of Products";
 									<div class="col m10 s12">
 										<div class="text_align_right">
 											<?php
-											$table_columns	= array('SNo', 'ProductID', 'Description', 'Category', 'ModelNos', 'Actions');
+											$table_columns	= array('SNo', 'ProductID', 'Product Type', 'Description', 'Category', 'ModelNos', 'Actions');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) { ?>
 												<label>
@@ -424,6 +416,10 @@ $page_heading 	= "List of Products";
 																	<span></span>
 																</label>
 																<?php echo $data['product_uniqueid'];
+																$column_no++; ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
+																<?php echo $data['product_type'];
 																$column_no++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">

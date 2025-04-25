@@ -85,6 +85,7 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$total_stock			= $row_ee[0]['total_stock'];
 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
 	$product_model_no 		= explode(",", $row_ee[0]['product_model_no']);
+	$product_type			= $row_ee[0]['product_type'];
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {
 	$sql_ee						= "SELECT a.* FROM product_packages a WHERE a.id = '" . $detail_id . "' "; // echo $sql_ee;
@@ -140,7 +141,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, product_model_no, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, product_model_no, product_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $all_product_model_nos . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
@@ -174,6 +175,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 														product_category		= '" . $product_category . "',
 														product_uniqueid		= '" . $product_uniqueid . "', 
 														product_model_no		= '" . $all_product_model_nos . "', 
+														product_type			= '" . $product_type . "', 
 														
 														update_date				= '" . $add_date . "',
 														update_by				= '" . $_SESSION['username'] . "',
@@ -427,6 +429,31 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									</span>
 								</label>
 							</div>
+
+							<div class="input-field col m4 s12">
+								<?php
+								$field_name 	= "product_type";
+								$field_id 		= "product_type";
+								$field_label 	= "Product Type";
+								?>
+								<i class="material-icons prefix">question_answer</i>
+								<div class="select2div">
+									<select id="<?= $field_id; ?>" name="<?= $field_name; ?>" class=" select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+																																										echo ${$field_name . "_valid"};
+																																									} ?>">
+										<option value="Product" <?php if (isset(${$field_name}) && ${$field_name} == 'Product') { ?> selected="selected" <?php } ?>>Product</option>
+										<option value="Placeholder" <?php if (isset(${$field_name}) && ${$field_name} == 'Placeholder') { ?> selected="selected" <?php } ?>>Placeholder<t /option>
+									</select>
+									<label for="<?= $field_id; ?>">
+										<?= $field_label; ?>
+										<span class="color-red"><?php
+																if (isset($error[$field_name])) {
+																	echo $error[$field_name];
+																} ?>
+										</span>
+									</label>
+								</div>
+							</div>
 						</div>
 						<div class="row">
 							<?php
@@ -569,7 +596,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 									<a class="waves-effect waves-light btn modal-trigger mb-2 mr-1" href="#product_add_modal">Add New Package Material</a>
 								</div>
 								<?php */ ?>
-
 								<div class="input-field col m4 s12">
 									<?php
 									$field_name 	= "is_mandatory";
@@ -600,11 +626,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										</label>
 									</p>
 								</div>
-							</div>
-							<div class="row">
-								<div class="input-field col m3 s12">
+								<div class="input-field col m4 s12">
 									<?php if (($cmd2 == 'add' && access("add_perm") == 1)  || ($cmd2 == 'edit' && access("edit_perm") == 1)) { ?>
-										<button class="btn cyan waves-effect waves-light right" type="submit" name="action"><?php echo $button_val2; ?>
+										<button class="btn cyan waves-effect waves-light left" type="submit" name="action"><?php echo $button_val2; ?>
 											<i class="material-icons right">send</i>
 										</button>
 									<?php } ?>

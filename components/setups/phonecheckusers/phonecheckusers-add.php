@@ -231,8 +231,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 									<label for="<?= $field_name; ?>">
 										<?= $field_label; ?>
 										<span class="color-red">*<?php
-																	if (isset($error6[$field_name])) {
-																		echo $error6[$field_name];
+																	if (isset($error[$field_name])) {
+																		echo $error[$field_name];
 																	} ?>
 										</span>
 									</label>

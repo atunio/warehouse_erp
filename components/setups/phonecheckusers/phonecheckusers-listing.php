@@ -38,7 +38,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 	}
 }
 
-$sql_cl 		= "	SELECT  a.*, b.first_name, b.middle_name, b.last_name, b.username
+$sql_cl 		= "	SELECT  a.*, b.first_name, b.middle_name, b.last_name, b.username as erp_sytem_username
 					FROM phone_check_users a
 					LEFT JOIN users b ON b.id = a.erp_user_id
 					WHERE 1=1 ";
@@ -243,7 +243,7 @@ $page_heading 	= "List of PhoneCheck Users";
 																$columnno++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$columnno]); ?>">
-																<?php echo (($data['username']));
+																<?php echo $data['username'];
 																$columnno++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$columnno]); ?>">
@@ -257,8 +257,8 @@ $page_heading 	= "List of PhoneCheck Users";
 																if ($data['last_name'] != "") {
 																	echo " " . ucwords(strtolower($data['last_name']));
 																}
-																if ($data['username'] != "") {
-																	echo " (" . $data['username'] . ")";
+																if ($data['erp_sytem_username'] != "") {
+																	echo " (" . $data['erp_sytem_username'] . ")";
 																}
 																$columnno++; ?>
 															</td>

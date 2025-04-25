@@ -199,7 +199,7 @@ $page_heading 	= "List of PhoneCheck Users";
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'Username', 'Full Name', 'ERP User', 'Actions');
+										$table_columns	= array('SNo', 'Username', 'ERP User', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -244,10 +244,6 @@ $page_heading 	= "List of PhoneCheck Users";
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$columnno]); ?>">
 																<?php echo (($data['username']));
-																$columnno++; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$columnno]); ?>">
-																<?php echo ucwords(strtolower($data['full_name']));
 																$columnno++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$columnno]); ?>">

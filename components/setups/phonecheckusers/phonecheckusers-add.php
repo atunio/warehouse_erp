@@ -25,7 +25,6 @@ if ($cmd == 'edit' && isset($id)) {
 	$result_ee		= $db->query($conn, $sql_ee);
 	$row_ee			= $db->fetch($result_ee);
 	$username		= $row_ee[0]['username'];
-	$full_name		= $row_ee[0]['full_name'];
 	$erp_user_id	= $row_ee[0]['erp_user_id'];
 }
 extract($_POST);
@@ -36,11 +35,6 @@ foreach ($_POST as $key => $value) {
 	}
 }
 if (isset($is_Submit) && $is_Submit == 'Y') {
-	$field_name = "full_name";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name]			= "Required";
-		${$field_name . "_valid"}	= "invalid";
-	}
 	$field_name = "username";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name]			= "Required";
@@ -60,13 +54,13 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".phone_check_users(subscriber_users_id, username, full_name, erp_user_id, add_date, add_by, add_ip)
-							 VALUES('" . $subscriber_users_id . "', '" . $username . "','" . $full_name . "', '" . $erp_user_id . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".phone_check_users(subscriber_users_id, username, erp_user_id, add_date, add_by, add_ip)
+							 VALUES('" . $subscriber_users_id . "', '" . $username . "','" . $erp_user_id . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						if (isset($error['msg'])) unset($error['msg']);
 						$msg['msg_success'] = "Record has been added successfully.";
-						$full_name = $username = $erp_user_id = "";
+						$username = $erp_user_id = "";
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
 					}
@@ -93,8 +87,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE phone_check_users SET 	full_name		= '" . $full_name . "', 
-																username		= '" . $username . "', 
+					$sql_c_up = "UPDATE phone_check_users SET 	username		= '" . $username . "', 
 																erp_user_id		= '" . $erp_user_id . "', 
 																update_date		= '" . $add_date . "',
 																update_by		= '" . $_SESSION['username'] . "',
@@ -192,24 +185,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 								<?php
 								$field_name 	= "username";
 								$field_label 	= "PhoneCheck User";
-								?>
-								<i class="material-icons prefix">description</i>
-								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-																													echo ${$field_name};
-																												} ?>">
-								<label for="<?= $field_name; ?>">
-									<?= $field_label; ?>
-									<span class="color-red">* <?php
-																if (isset($error[$field_name])) {
-																	echo $error[$field_name];
-																} ?>
-									</span>
-								</label>
-							</div>
-							<div class="input-field col m4 s12">
-								<?php
-								$field_name 	= "full_name";
-								$field_label 	= "User Full Name";
 								?>
 								<i class="material-icons prefix">description</i>
 								<input type="text" id="<?= $field_name; ?>" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {

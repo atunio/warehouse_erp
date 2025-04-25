@@ -260,12 +260,9 @@
                                                     $row_r2    = $db->fetch($result_log2);
                                                     foreach ($row_r2 as $data_r2) { ?>
                                                         <option value="<?php echo $data_r2['username']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data_r2['username']) { ?> selected="selected" <?php } ?>>
-                                                            <?php echo $data_r2['username'];  ?><?php if ($data_r2['full_name'] != "") {
-                                                                                                    echo " (" . $data_r2['full_name'] . ")";
-                                                                                                }  ?>
+                                                            <?php echo $data_r2['username'];  ?>
                                                         </option>
-                                                <?php
-                                                    }
+                                                <?php }
                                                 } ?>
                                             </select>
                                             <label for="<?= $field_name; ?>">

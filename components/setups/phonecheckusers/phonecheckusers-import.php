@@ -21,7 +21,7 @@ foreach ($_POST as $key => $value) {
 	}
 }
 
-$supported_column_titles 	= array("username", "full_name");
+$supported_column_titles 	= array("username");
 $duplication_columns 		= array("username");
 $required_columns 			= array("username");
 

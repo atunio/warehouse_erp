@@ -1035,7 +1035,8 @@ if (isset($is_Submit3) && $is_Submit3 == 'Y') {
 																		INNER JOIN product_stock c ON b.id = c.product_id
 																		INNER JOIN packages d ON d.id = a.package_id
 																		INNER JOIN product_categories e ON e.id = d.product_category
-																		WHERE c.id = '" . $stock_id . "'
+																		WHERE c.id 		= '" . $stock_id . "'
+																		AND a.enabled 	= 1
 																		AND d.stock_in_hand > 0
 																		ORDER BY a.is_mandatory DESC, d.package_name ";
 													$result1 		= $db->query($conn, $sql1);

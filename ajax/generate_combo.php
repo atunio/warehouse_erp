@@ -70,7 +70,8 @@ switch ($source_field) {
 					INNER JOIN product_stock c ON b.id = c.product_id
 					INNER JOIN packages d ON d.id = a.package_id
 					INNER JOIN product_categories e ON e.id = d.product_category
-					WHERE c.id = '" . $stock_id_for_package_material . "'
+					WHERE a.enabled = 1
+					AND c.id = '" . $stock_id_for_package_material . "'
 					AND d.stock_in_hand >0
 					ORDER BY a.is_mandatory DESC, d.package_name  ";
 		$result	= $db->query($conn, $sql);

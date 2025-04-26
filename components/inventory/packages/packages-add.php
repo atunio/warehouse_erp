@@ -354,12 +354,13 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						</div>
 						<?php
 						$sql_cl		= " SELECT b.product_uniqueid 
-											FROM product_packages a
-											INNER JOIN products  b ON b.id = a.product_id
-											INNER JOIN packages  c ON c.id = a.package_id
-											WHERE a.package_id = '" . $id . "'
-											AND FIND_IN_SET(a.product_id, c.product_ids)
-											AND a.is_mandatory = 'Yes'  ";
+										FROM product_packages a
+										INNER JOIN products  b ON b.id = a.product_id
+										INNER JOIN packages  c ON c.id = a.package_id
+										WHERE a.package_id 	= '" . $id . "'
+										AND a.enabled 		= 1
+										AND FIND_IN_SET(a.product_id, c.product_ids)
+										AND a.is_mandatory = 'Yes'  ";
 						$result_cl2	= $db->query($conn, $sql_cl);
 						$count_cl2	= $db->counter($result_cl2);
 						if ($count_cl2 > 0) { ?>
@@ -384,7 +385,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 											FROM product_packages a
 											INNER JOIN products  b ON b.id = a.product_id
 											INNER JOIN packages  c ON c.id = a.package_id
-											WHERE a.package_id = '" . $id . "'
+											WHERE a.package_id 	= '" . $id . "'
+											AND a.enabled 		= 1
 											AND FIND_IN_SET(a.product_id, c.product_ids)
 											AND a.is_mandatory = 'No'  ";
 						$result_cl2	= $db->query($conn, $sql_cl);

@@ -141,8 +141,8 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_desc,  product_uniqueid, product_category, product_model_no, product_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $subscriber_users_id . "', '" . $product_desc . "',  '" . $product_uniqueid  . "', '" . $product_category . "',  '" . $all_product_model_nos . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".products(subscriber_users_id, product_uniqueid, product_desc, product_category, product_model_no, product_type, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							VALUES('" . $subscriber_users_id . "', '" . $product_uniqueid  . "', '" . $product_desc . "',  '" . $product_category . "',  '" . $all_product_model_nos . "','" . $product_type . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id 			= mysqli_insert_id($conn);
@@ -216,8 +216,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			} else {
 				$sql_dup	= " SELECT a.* 
 								FROM product_packages a 
-								WHERE a.product_id		= '" . $id . "'
-								AND a.package_id		= '" . $package_id . "'  ";
+								WHERE a.enabled 	= 1
+								AND a.product_id	= '" . $id . "'
+								AND a.package_id	= '" . $package_id . "'  ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
@@ -240,7 +241,8 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 				$error2['msg'] = "You do not have edit permissions.";
 			} else {
 				$sql_dup	= " SELECT a.* FROM product_packages a 
-								WHERE a.product_id		= '" . $id . "'
+								WHERE a.enabled 	= 1
+								AND a.product_id		= '" . $id . "'
 								AND a.package_id		= '" . $package_id . "' 
  								AND a.id			   != '" . $detail_id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
@@ -650,9 +652,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							FROM product_packages a1 
 							INNER JOIN packages a ON a.id = a1.package_id
 							INNER JOIN product_categories b ON b.id = a.product_category
-							WHERE 1=1
-							AND a.enabled = 1 
-							AND a1.product_id = '" . $id . "' 
+							WHERE 1 			= 1
+							AND a.enabled 		= 1
+							AND a1.enabled 		= 1
+							AND a1.product_id 	= '" . $id . "' 
 							ORDER BY a1.enabled DESC, b.category_name, a.package_name";
 			// echo $sql_cl;
 			$result_cl	= $db->query($conn, $sql_cl);

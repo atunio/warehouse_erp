@@ -160,14 +160,14 @@ if ($counter_ee11 > 0) {
 	$location_id 			= $row_ee11[0]['location_id'];
 	$sub_location_name		= $row_ee11[0]['sub_location_name'];
 	$sub_location_type		= $row_ee11[0]['sub_location_type'];
- 	if ($sub_location_type != "") {
+	if ($sub_location_type != "") {
 		$sub_location_name .= "(" . ucwords(strtolower($sub_location_type)) . ")";
 	}
 	$task_user_details		= $row_ee11[0]['task_user_details'];
 	$bin_porcess_date 		= $row_ee11[0]['add_date'];
 	$location_type = "";
-	if($sub_location_type != ""){
-		$location_type = "( " .$sub_location_type. " )";
+	if ($sub_location_type != "") {
+		$location_type = "( " . $sub_location_type . " )";
 	}
 	$report_data = '<div class="">
 						<div class="header">
@@ -223,7 +223,8 @@ if ($counter_ee11 > 0) {
 						INNER JOIN packages f ON f.id = e.package_id
 						LEFT JOIN product_categories g ON g.id = f.product_category
 						WHERE 1 = 1
-						AND a.id = '" . $id . "'
+						AND e.enabled 	= 1
+						AND a.id 		= '" . $id . "'
 						GROUP BY f.package_name, e.is_mandatory
 						ORDER BY e.is_mandatory DESC "; //echo $sql_sub;die;
 	$result_sub 	= $db->query($conn, $sql_sub);
@@ -234,7 +235,7 @@ if ($counter_ee11 > 0) {
 		foreach ($row_sub as $data_sub) {
 			$package_name 				= $data_sub['package_name'];
 			$package_materials_category	= $data_sub['package_materials_category'];
-			$total_packages				= $data_sub['total_packages']; 
+			$total_packages				= $data_sub['total_packages'];
 			$is_mandatory 				= $data_sub['is_mandatory'];
 			$report_data .= '
 			<tr>
@@ -246,7 +247,7 @@ if ($counter_ee11 > 0) {
 		}
 	}
 	$report_data .= '	</tbody>
-						</table> '; 
+						</table> ';
 	$report_data .= '
 					</div>';
 	$report_data = $report_data . $css;

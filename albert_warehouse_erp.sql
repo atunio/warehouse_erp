@@ -2942,7 +2942,7 @@ CREATE TABLE `product_ids` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=155 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `product_ids` */
 
@@ -3062,7 +3062,8 @@ insert  into `product_ids`(`id`,`subscriber_users_id`,`product_id`,`editable`,`a
 (151,1,'IPADM4-128W-GY',1,'2025-04-09 20:43:08','admin_albert Imported',NULL,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
 (152,1,'IPADM5-256W-GY',1,'2025-04-09 20:43:08','admin_albert Imported',NULL,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
 (153,1,'IPADM5-64W-GY',1,'2025-04-09 20:43:08','admin_albert Imported',NULL,'::1','Asia/Karachi',0,NULL,NULL,NULL,NULL,NULL,0,1),
-(154,1,'IPAD5',1,'2025-04-23 20:39:09','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
+(154,1,'IPAD5',1,'2025-04-23 20:39:09','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
+(155,1,'acv',1,'2025-04-26 20:35:07','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `product_packages` */
 
@@ -3201,7 +3202,7 @@ CREATE TABLE `products` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3092 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3093 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `products` */
 
@@ -3259,7 +3260,8 @@ insert  into `products`(`id`,`subscriber_users_id`,`product_no`,`product_uniquei
 (3088,1,'P3088','abc-0991','product_desc3',31,0,0,NULL,'md3,md4','Product','2025-03-29 16:47:54','admin_albert',1,'::1','Asia/Karachi',11,'2025-03-29 16:48:03','admin_albert',1,'::1','Asia/Karachi',11,1),
 (3089,1,'P3089','abc-0992','product_desc4',31,0,0,NULL,'md4','Product','2025-03-29 16:47:54','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1),
 (3090,1,NULL,'IPAD-20250404-170232','Desc 20250404170243',3,0,0,NULL,'MD20250404170243','Product','2025-04-04 17:03:03','admin_albert',NULL,'::1',NULL,0,'2025-04-04 20:10:09','admin_albert',1,'::1','Asia/Karachi',11,1),
-(3091,1,'P3091','IPAD5','xyz 20250423',29,0,0,NULL,'DMQD7TMFMF3M1,DMQD7TMFMF3M2','Placeholder','2025-04-23 20:39:26','admin_albert',1,'::1','Asia/Karachi',11,'2025-04-25 14:28:17','admin_albert',1,'::1','Asia/Karachi',11,1);
+(3091,1,'P3091','IPAD5','xyz 20250423',29,0,0,NULL,'DMQD7TMFMF3M1,DMQD7TMFMF3M2','Placeholder','2025-04-23 20:39:26','admin_albert',1,'::1','Asia/Karachi',11,'2025-04-25 14:28:17','admin_albert',1,'::1','Asia/Karachi',11,1),
+(3092,1,'P3092','acv','',1,0,0,NULL,'','Product','2025-04-26 20:38:50','admin_albert',1,'::1','Asia/Karachi',11,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `purchase_order_detail` */
 
@@ -11785,7 +11787,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -11901,7 +11903,9 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (109,'Admin',1,'Login','2025-04-21 16:44:35',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (110,'Admin',1,'Login','2025-04-22 13:02:41',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (111,'Admin',1,'Login','2025-04-23 13:37:19',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(112,'Admin',1,'Login','2025-04-25 12:52:30',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(112,'Admin',1,'Login','2025-04-25 12:52:30',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(113,'Admin',1,'Login','2025-04-26 11:21:00',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(114,'Admin',1,'Login','2025-04-26 14:10:15',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -12015,7 +12019,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-04-25 12:52:30','::1',6411821,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-04-26 14:10:15','::1',5416360,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab11@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,'2025-04-15 11:14:06','::1',7484420,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2025-04-04 19:09:47','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2025-03-25 14:53:30','admin_albert',1,'::1',0,1);
 

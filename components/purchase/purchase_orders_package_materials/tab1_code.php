@@ -151,6 +151,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$sql6 = " UPDATE package_materials_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 						$msg['msg_success'] = "Purchase Order has been created successfully.";
+						$stage_status = 'Draft';
 						// $vender_id = $po_date ="";
 						$po_date 	= date("d/m/Y");
 					} else {

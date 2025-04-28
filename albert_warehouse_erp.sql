@@ -1992,12 +1992,15 @@ CREATE TABLE `package_materials_order_detail` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(6) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail` */
 
 insert  into `package_materials_order_detail`(`id`,`po_id`,`offer_detail_id`,`package_id`,`order_qty`,`order_price`,`order_case_pack`,`product_po_desc`,`order_product_status`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,0,68,20,10,10,'',1,0,'2025-04-25 20:11:31','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
+(1,1,0,68,20,10,10,'',10,0,'2025-04-25 20:11:31','admin_albert',1,'::1','Asia/Karachi',34,'2025-04-28 17:21:40','admin_albert',1,'::1','Asia/Karachi',34,1),
+(2,7,0,67,20,10,10,'',1,0,'2025-04-28 17:33:10','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(3,7,0,68,18,10,6,'',1,0,'2025-04-28 17:33:10','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(4,7,0,69,20,10,5,'',1,0,'2025-04-28 17:33:10','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `package_materials_order_detail_logistics` */
 
@@ -2019,7 +2022,8 @@ CREATE TABLE `package_materials_order_detail_logistics` (
   `sub_location_id` int(11) DEFAULT NULL,
   `logistics_cost` double DEFAULT NULL,
   `arrival_no` int(10) DEFAULT 0,
-  `no_of_boxes` int(10) DEFAULT 1,
+  `box_no` int(10) DEFAULT 1,
+  `box_qty` int(10) DEFAULT 0,
   `edit_lock` smallint(1) DEFAULT 0,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
@@ -2035,9 +2039,13 @@ CREATE TABLE `package_materials_order_detail_logistics` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail_logistics` */
+
+insert  into `package_materials_order_detail_logistics`(`id`,`po_id`,`po_detail_id`,`courier_name`,`tracking_no`,`shipment_date`,`expected_arrival_date`,`logistics_desc`,`logistics_status`,`bill_of_landing`,`arrived_date`,`arrived_date_time`,`sub_location_id`,`logistics_cost`,`arrival_no`,`box_no`,`box_qty`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(9,1,1,'abc','20250428152821','2025-04-28','2025-04-29',NULL,12,NULL,NULL,NULL,NULL,NULL,0,1,10,1,'2025-04-28 15:28:31','admin_albert',NULL,'::1','Asia/Karachi',34,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,1),
+(10,1,1,'xyz','20250428152831','2025-04-28','2025-04-29',NULL,12,NULL,NULL,NULL,NULL,NULL,0,2,10,0,'2025-04-28 15:28:47','admin_albert',NULL,'::1','Asia/Karachi',34,'2025-04-28 17:15:19','admin_albert',1,'::1','Asia/Karachi',34,1);
 
 /*Table structure for table `package_materials_order_detail_receive` */
 
@@ -2077,9 +2085,21 @@ CREATE TABLE `package_materials_order_detail_receive` (
   `diagnose_date` datetime DEFAULT NULL,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_order_detail_receive` */
+
+insert  into `package_materials_order_detail_receive`(`id`,`logistic_id`,`po_detail_id`,`duplication_check_token`,`edit_lock`,`sub_location_id`,`sub_location_id_after_diagnostic`,`base_product_id`,`sub_product_id`,`price`,`inventory_status`,`sku_code`,`is_diagnost`,`logistic_cost`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`diagnose_by_user`,`diagnose_by_user_id`,`diagnose_ip`,`diagnose_timezone`,`diagnose_date`,`enabled`) values 
+(1,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(2,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(3,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(4,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(5,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(6,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(7,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(8,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(9,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1),
+(10,9,1,'1745842867mstn2rr3usslnb89on69573iqc',0,2299,0,NULL,NULL,10,NULL,NULL,0,0,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,0,NULL,NULL,0,NULL,0,NULL,NULL,NULL,1);
 
 /*Table structure for table `package_materials_orders` */
 
@@ -2100,6 +2120,7 @@ CREATE TABLE `package_materials_orders` (
   `stage_status` varchar(50) DEFAULT 'Draft',
   `logistics_cost` double DEFAULT 0,
   `sub_user_id` int(11) DEFAULT 0,
+  `duplication_check_token` text DEFAULT NULL,
   `edit_lock` smallint(1) DEFAULT 0,
   `add_date` datetime DEFAULT NULL,
   `add_by` varchar(255) DEFAULT NULL,
@@ -2115,12 +2136,18 @@ CREATE TABLE `package_materials_orders` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `package_materials_orders` */
 
-insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`stage_status`,`logistics_cost`,`sub_user_id`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'PPO1','20250425201122',1,0,'2025-04-25',NULL,'purchase order desc : 20250425201124','',1,'Draft',0,0,0,'2025-04-25 20:11:23','admin_albert',1,'::1','Asia/Karachi',34,'2025-04-25 20:11:31','admin_albert',1,'::1','Asia/Karachi',34,1);
+insert  into `package_materials_orders`(`id`,`subscriber_users_id`,`po_no`,`vender_invoice_no`,`vender_id`,`offer_id`,`po_date`,`estimated_receive_date`,`po_desc`,`public_note`,`order_status`,`stage_status`,`logistics_cost`,`sub_user_id`,`duplication_check_token`,`edit_lock`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
+(1,1,'PPO1','20250425201122',1,0,'2025-04-25',NULL,'purchase order desc : 20250425201124','',3,'Draft',50,0,NULL,0,'2025-04-25 20:11:23','admin_albert',1,'::1','Asia/Karachi',34,'2025-04-28 17:21:40','admin_albert',1,'::1','Asia/Karachi',34,1),
+(2,1,'PPO2',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,NULL,0,'2025-04-28 17:23:17','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(3,1,'PPO3',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,NULL,0,'2025-04-28 17:29:39','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(4,1,'PPO4',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,NULL,0,'2025-04-28 17:29:41','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(5,1,'PPO5',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,'1745843377mstn2rr3usslnb89on69573iqc',0,'2025-04-28 17:30:08','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(6,1,'PPO6',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,'1745843411mstn2rr3usslnb89on69573iqc',0,'2025-04-28 17:30:13','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1),
+(7,1,'PPO7',NULL,1,0,'2025-04-28',NULL,NULL,NULL,1,'Draft',0,0,'1745843416mstn2rr3usslnb89on69573iqc',0,'2025-04-28 17:30:20','admin_albert',1,'::1','Asia/Karachi',34,NULL,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `package_stock` */
 
@@ -2208,12 +2235,12 @@ CREATE TABLE `packages` (
 /*Data for the table `packages` */
 
 insert  into `packages`(`id`,`subscriber_users_id`,`sku_code`,`package_no`,`package_name`,`package_desc`,`stock_in_hand`,`avg_price`,`product_category`,`product_ids`,`product_sku`,`case_pack`,`pack_desc`,`inventory_status`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`add_timezone`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_timezone`,`update_from_module_id`,`enabled`) values 
-(1,1,'12233','PP1','Ipad Charger','IPad 7/8/9',1374,10.86,4,'212,3,1',NULL,11,NULL,NULL,'2025-01-14 11:37:51','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-25 12:21:12','admin_albert',1,'::1','Asia/Karachi',34,1),
-(2,1,'2223334','PP2','Screen',NULL,163,1,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-08 18:27:13','admin_albert',1,'::1','Asia/Karachi',34,1),
-(65,1,'a33422aa','Pkg65','battery','',252,0.9,6,'213',NULL,0,NULL,NULL,'2025-02-07 22:29:17','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-08 18:26:48','admin_albert',1,'::1','Asia/Karachi',34,1),
+(1,1,'12233','PP1','Ipad Charger','IPad 7/8/9',0,0,4,'212,3,1',NULL,11,NULL,NULL,'2025-01-14 11:37:51','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-25 12:21:12','admin_albert',1,'::1','Asia/Karachi',34,1),
+(2,1,'2223334','PP2','Screen',NULL,0,0,7,'34,1',NULL,10,NULL,NULL,'2025-01-24 12:08:20','admin_albert',1,'202.47.32.158','America/New_York',19,'2025-02-08 18:27:13','admin_albert',1,'::1','Asia/Karachi',34,1),
+(65,1,'a33422aa','Pkg65','battery','',0,0,6,'213',NULL,0,NULL,NULL,'2025-02-07 22:29:17','admin_albert',1,'::1','Asia/Karachi',34,'2025-02-08 18:26:48','admin_albert',1,'::1','Asia/Karachi',34,1),
 (66,1,'ADEE343','Pkg66','ABCCC',NULL,0,0,4,'undefined',NULL,34,'3434343',NULL,'2025-04-04 16:30:22','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
 (67,1,'20250404163503','Pkg67','20250404163503',NULL,0,0,4,'3035',NULL,10,'Desc 20250404163503',NULL,'2025-04-04 16:37:36','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
-(68,1,'20250404163808','Pkg68','20250404163808',NULL,0,0,7,'2994',NULL,10,'Desc 20250404163808',NULL,'2025-04-04 16:38:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
+(68,1,'20250404163808','Pkg68','20250404163808',NULL,10,12.5,7,'2994',NULL,10,'Desc 20250404163808',NULL,'2025-04-04 16:38:20','admin_albert',1,'::1','Asia/Karachi',10,'2025-04-28 17:21:11','admin_albert',1,'::1','Asia/Karachi',34,1),
 (69,1,'20250404163907','Pkg69','20250404163907',NULL,0,0,4,'2994',NULL,10,'Desc 20250404163907',NULL,'2025-04-04 16:39:20','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
 (70,1,'20250404163959','Pkg70','20250404163959',NULL,0,0,4,'2996',NULL,10,'Desc 20250404163959',NULL,'2025-04-04 16:40:11','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
 (71,1,'20250404164837','Pkg71','20250404164837',NULL,0,0,7,'3007',NULL,10,'Desc 20250404164837',NULL,'2025-04-04 16:48:50','admin_albert',1,'::1','Asia/Karachi',10,NULL,NULL,NULL,NULL,NULL,0,1),
@@ -11787,7 +11814,7 @@ CREATE TABLE `user_login_logout_history` (
   `update_from_module_id` int(11) DEFAULT 0,
   `enabled` smallint(1) DEFAULT 1,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 /*Data for the table `user_login_logout_history` */
 
@@ -11905,7 +11932,8 @@ insert  into `user_login_logout_history`(`id`,`user_type`,`user_id`,`entry_type`
 (111,'Admin',1,'Login','2025-04-23 13:37:19',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (112,'Admin',1,'Login','2025-04-25 12:52:30',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
 (113,'Admin',1,'Login','2025-04-26 11:21:00',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
-(114,'Admin',1,'Login','2025-04-26 14:10:15',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
+(114,'Admin',1,'Login','2025-04-26 14:10:15',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1),
+(115,'Admin',1,'Login','2025-04-28 11:50:51',NULL,NULL,'::1',0,NULL,NULL,NULL,NULL,0,1);
 
 /*Table structure for table `user_reg_status` */
 
@@ -12019,7 +12047,7 @@ CREATE TABLE `users` (
 /*Data for the table `users` */
 
 insert  into `users`(`id`,`subscriber_users_id`,`username`,`a_password`,`a_password_md5`,`user_type`,`p_title`,`first_name`,`middle_name`,`last_name`,`email`,`phone_no`,`date_of_birth`,`profile_pic`,`email_verification_code`,`phone_verification_code`,`email_verification_status`,`phone_verification_status`,`gender`,`reg_date`,`reg_status`,`reg_complete_level`,`user_sections`,`sec_users`,`last_login`,`last_login_ip`,`user_access_token`,`add_date`,`add_by`,`add_by_user_id`,`add_ip`,`added_from_module_id`,`update_date`,`update_by`,`update_by_user_id`,`update_ip`,`update_from_module_id`,`enabled`) values 
-(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-04-26 14:10:15','::1',5416360,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
+(1,1,'admin_albert','admin_albert','fa407b12c29e65ce61d3e486f225b6e6','Admin',NULL,'Albert','','Maimon','albert@ctinnovationsnyc.om','+17328594527',NULL,'1_66d1b73aec235.png',0,0,'Unverified','Unverified','Male',NULL,2,0,NULL,1,'2025-04-28 11:50:51','::1',3775457,'2024-08-28 22:35:56','',NULL,'',0,'2024-08-30 08:12:42','admin_albert',NULL,'::1',0,1),
 (10,1,'aftab','aftab','1171e9d2c70fc392f959a07d779b039e','Sub Users',NULL,'Aftab1',NULL,'Tunio2','aftab11@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'Processing,Repair,Diagnostic',0,'2025-04-15 11:14:06','::1',7484420,'2024-10-22 10:58:24','admin_albert',NULL,'::1',0,'2025-04-04 19:09:47','admin_albert',1,'::1',0,1),
 (12,1,'aftabtunio2','aftabtunio2','a042d0c6d663fb149dfdfb1caa2e9f03','Sub Users',NULL,'Ahmed',NULL,'Tunio','aftabatunio22aa@gmail.com',NULL,NULL,'no_image.png',0,0,'Unverified','Unverified',NULL,NULL,1,0,'',0,NULL,NULL,0,'2024-11-11 02:35:58','admin_albert',NULL,'::1',0,'2025-03-25 14:53:30','admin_albert',1,'::1',0,1);
 

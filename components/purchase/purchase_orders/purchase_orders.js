@@ -144,6 +144,8 @@ $(document).ready(function() {
         var parts       = id.split('_');
         var rowno       = parseInt(parts[1]);  
         var next_row    = rowno+1; 
+
+        
         
         if (selectedValue === 'product_add_modal') {
             // Open the modal
@@ -154,6 +156,11 @@ $(document).ready(function() {
             event.stopImmediatePropagation(); // Stop further actions
             return;
         } else if (selectedValue > 0) { 
+
+            var vender_invoice_no = $("#vender_invoice_no").val();
+            $("#invoiceno_"+rowno).val(vender_invoice_no).trigger('change'); 
+            $("#invoiceno_"+next_row).val(vender_invoice_no).trigger('change'); 
+
             $("#row_"+next_row).show();
             updateRemoveButtonVisibility();
             var total_products_in_po = parseInt($("#total_products_in_po").val());

@@ -84,6 +84,7 @@
                                                                                     echo encrypt($_SESSION['csrf_session']);
                                                                                 } ?>">
                                 <input type="hidden" name="active_tab" value="tab1" />
+                                <input type="hidden" name="duplication_check_token" value="<?php echo (time() . session_id()); ?>">
                             <?php } ?>
                             <br>
                             <div class="row">
@@ -98,26 +99,6 @@
                                                                                                                     } ?>" class=" datepicker validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                                                             echo ${$field_name . "_valid"};
                                                                                                                                                         } ?>">
-                                    <label for="<?= $field_name; ?>">
-                                        <?= $field_label; ?>
-                                        <span class="color-red">* <?php
-                                                                    if (isset($error[$field_name])) {
-                                                                        echo $error[$field_name];
-                                                                    } ?>
-                                        </span>
-                                    </label>
-                                </div>
-                                <?php
-                                $field_name     = "vender_invoice_no";
-                                $field_label     = "Vendor Invoice #";
-                                ?>
-                                <div class="input-field col m2 s12 custom_margin_bottom_col">
-                                    <i class="material-icons prefix">question_answer</i>
-                                    <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
-                                                                                                                        echo ${$field_name};
-                                                                                                                    } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                echo ${$field_name . "_valid"};
-                                                                                                                                            } ?>">
                                     <label for="<?= $field_name; ?>">
                                         <?= $field_label; ?>
                                         <span class="color-red">* <?php
@@ -223,7 +204,7 @@
                                         unset($case_pack);
                                         $sql_ee1        = " SELECT a.*
                                                             FROM package_materials_order_detail a
-                                                             WHERE a.po_id = '" . $id . "' AND a.enabled 			= 1 ";  //echo $sql_ee1;
+                                                            WHERE a.po_id = '" . $id . "' AND a.enabled 			= 1 ";  //echo $sql_ee1;
                                         $result_ee1        = $db->query($conn, $sql_ee1);
                                         $count_ee1      = $db->counter($result_ee1);
                                         if ($count_ee1 > 0) {
@@ -237,9 +218,9 @@
                                             }
                                         } else {
                                             if (isset($test_on_local) && $test_on_local == 1) {
-                                                $package_ids[] = 10;
-                                                $package_ids[] = 6;
-                                                $package_ids[] = 12;
+                                                $package_ids[] = 67;
+                                                $package_ids[] = 68;
+                                                $package_ids[] = 69;
 
                                                 $order_price[] = 10;
                                                 $order_price[] = 10;

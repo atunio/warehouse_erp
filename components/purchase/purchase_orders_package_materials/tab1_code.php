@@ -6,7 +6,6 @@ if (!isset($module)) {
 $po_date = date('d/m/Y');
 if (isset($test_on_local) && $test_on_local == 1 && $cmd == 'add') {
 	$vender_id					= "1";
-	$vender_invoice_no			= date('YmdHis');
 	$po_date 					= date('d/m/Y');
 	$po_desc					= "purchase order desc : " . date('YmdHis');
 	$order_status    			= "1";
@@ -79,7 +78,6 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$vender_id				= $row_ee[0]['vender_id'];
 	$po_desc				= $row_ee[0]['po_desc'];
 	$public_note			= $row_ee[0]['public_note'];
-	$vender_invoice_no		= $row_ee[0]['vender_invoice_no'];
 	$po_date				= str_replace("-", "/", convert_date_display($row_ee[0]['po_date']));
 	$order_date_disp		= dateformat2($row_ee[0]['po_date']);
 	$order_status    		= $row_ee[0]['order_status'];
@@ -120,11 +118,6 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
-	$field_name = "vender_invoice_no";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name] 		= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
 	$field_name = "po_date";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
@@ -139,16 +132,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 			if (access("add_perm") == 0) {
 				$error['msg'] = "You do not have add permissions.";
 			} else {
-				$sql_dup	= " SELECT a.* 
-								FROM package_materials_orders a 
-								WHERE a.vender_id	= '" . $vender_id . "'
-								AND a.po_date		= '" . $po_date1 . "'
-								AND a.vender_invoice_no	= '" . $vender_invoice_no . "' ";
+				$sql_dup	= " SELECT a.* FROM package_materials_orders a WHERE a.duplication_check_token	= '" . $duplication_check_token . "'  ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
-					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_orders(subscriber_users_id, vender_id, vender_invoice_no, po_date, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
-							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $vender_invoice_no . "', '" . $po_date1  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+					$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_orders(subscriber_users_id, vender_id, po_date, duplication_check_token, add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
+							 VALUES('" . $subscriber_users_id . "', '" . $vender_id . "', '" . $po_date1  . "', '" . $duplication_check_token  . "',  '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 					$ok = $db->query($conn, $sql6);
 					if ($ok) {
 						$id					= mysqli_insert_id($conn);
@@ -162,7 +151,7 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$sql6 = " UPDATE package_materials_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
 						$msg['msg_success'] = "Purchase Order has been created successfully.";
-						// $vender_id = $vender_invoice_no = $po_date = $vender_invoice_no = "";
+						// $vender_id = $po_date ="";
 						$po_date 	= date("d/m/Y");
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
@@ -178,14 +167,12 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 				$sql_dup	= " SELECT a.* FROM package_materials_orders a 
 								WHERE a.vender_id		= '" . $vender_id . "'
 								AND a.po_date			= '" . $po_date1 . "' 
-								AND a.vender_invoice_no	= '" . $vender_invoice_no . "' 
 								AND a.id		   	   != '" . $id . "' ";
 				$result_dup	= $db->query($conn, $sql_dup);
 				$count_dup	= $db->counter($result_dup);
 				if ($count_dup == 0) {
 					$sql_c_up = "UPDATE package_materials_orders SET 	vender_id				= '" . $vender_id . "',
 																		po_date					= '" . $po_date1 . "',
- 																		vender_invoice_no		= '" . $vender_invoice_no . "', 
 
 																		update_date				= '" . $add_date . "',
 																		update_by				= '" . $_SESSION['username'] . "',
@@ -213,11 +200,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$error[$field_name] 		= "Required";
 		${$field_name . "_valid"} 	= "invalid";
 	}
-	$field_name = "vender_invoice_no";
-	if (isset(${$field_name}) && ${$field_name} == "") {
-		$error[$field_name] 		= "Required";
-		${$field_name . "_valid"} 	= "invalid";
-	}
+
 	$field_name = "po_date";
 	if (isset(${$field_name}) && ${$field_name} == "") {
 		$error[$field_name] 		= "Required";
@@ -231,14 +214,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		$sql_dup	= " SELECT a.* FROM package_materials_orders a 
 						WHERE a.vender_id		= '" . $vender_id . "'
 						AND a.po_date			= '" . $po_date1 . "' 
-						AND a.vender_invoice_no	= '" . $vender_invoice_no . "' 
 						AND a.id		   	   != '" . $id . "' ";
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup == 0) {
 			$sql_c_up = "UPDATE package_materials_orders SET	vender_id				= '" . $vender_id . "',
 																po_date					= '" . $po_date1 . "',
-																vender_invoice_no		= '" . $vender_invoice_no . "', 
 																po_desc					= '" . $po_desc . "', 
 																public_note				= '" . $public_note . "',
 
@@ -253,10 +234,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		}
 		$k = 0;
 		if (isset($stage_status) && $stage_status != "Committed") {
-			
+
 			$filtered_id = array_values(array_filter($package_ids));
 			$current_ids = implode(',', $filtered_id);
-			if($current_ids !=""){
+			if ($current_ids != "") {
 				$sql_dup1 = "UPDATE package_materials_order_detail SET enabled = 0 
 							WHERE po_id	= '" . $id . "' 
 							AND package_id NOT IN(" . $current_ids . ") ";

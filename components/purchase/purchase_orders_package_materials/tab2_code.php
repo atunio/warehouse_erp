@@ -1,9 +1,11 @@
 <?php
 
 if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
-	$tracking_no 			= date('YmdHis');
-	$status_id 				= 10;
-	$logistics_cost			= 50.0;
+	$tracking_no	= date('YmdHis');
+	$status_id		= 10;
+	$logistics_cost	= "50.0";
+	$box_no			= 1;
+	$box_qty		= 10;
 
 	$sql_ee1 = "SELECT id
 				FROM package_materials_order_detail b 
@@ -25,16 +27,17 @@ if (isset($cmd2_1) && $cmd2_1 == 'edit' && isset($detail_id)) {
 	$result_ee1 	= $db->query($conn, $sql_ee1);
 	$counter_ee1	= $db->counter($result_ee1);
 	if ($counter_ee1 > 0) {
-		$row_ee1 							= $db->fetch($result_ee1);
-		$courier_name_update				= $row_ee1[0]['courier_name'];
-		$package_id_logistic_update			= $row_ee1[0]['po_detail_id'];
-		$tracking_no_update              	= $row_ee1[0]['tracking_no'];
-		$shipment_date_update				= $row_ee1[0]['shipment_date'];
-		$shipment_date_update				= str_replace("-", "/", convert_date_display($row_ee1[0]['shipment_date']));
-		$expected_arrival_date_update		= str_replace("-", "/", convert_date_display($row_ee1[0]['expected_arrival_date']));
-		$status_id_update					= $row_ee1[0]['logistics_status'];
-		$logistics_cost_update				= $row_ee1[0]['logistics_cost'];
-		$no_of_boxes_update					= $row_ee1[0]['no_of_boxes'];
+		$row_ee1 						= $db->fetch($result_ee1);
+		$courier_name_update			= $row_ee1[0]['courier_name'];
+		$package_id_logistic_update		= $row_ee1[0]['po_detail_id'];
+		$tracking_no_update             = $row_ee1[0]['tracking_no'];
+		$shipment_date_update			= $row_ee1[0]['shipment_date'];
+		$shipment_date_update			= str_replace("-", "/", convert_date_display($row_ee1[0]['shipment_date']));
+		$expected_arrival_date_update	= str_replace("-", "/", convert_date_display($row_ee1[0]['expected_arrival_date']));
+		$status_id_update				= $row_ee1[0]['logistics_status'];
+		$logistics_cost_update			= $row_ee1[0]['logistics_cost'];
+		$box_no_update					= $row_ee1[0]['box_no'];
+		$box_qty_update					= $row_ee1[0]['box_qty'];
 	} else {
 		$error4['msg'] = "No record found";
 	}
@@ -86,33 +89,41 @@ if (isset($cmd2_1) && $cmd2_1 == 'delete' && isset($detail_id)) {
 					${$array_key1} = $array_data1;
 				}
 			}
-			$msg3['msg_success'] = "Record has been added successfully.";
+			$msg3['msg_success'] = "Record has been deleted successfully.";
 		}
 	}
 }
 
 if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 	extract($_POST);
-
-	if (!isset($no_of_boxes) || (isset($no_of_boxes)  && ($no_of_boxes == "0" || $no_of_boxes == ""))) {
-		$error2['no_of_boxes'] = "Required";
-	}
-	if (!isset($status_id) || (isset($status_id)  && ($status_id == "0" || $status_id == ""))) {
-		$error2['status_id'] = "Required";
-	}
-	if (!isset($logistics_cost) || (isset($logistics_cost)  && ($logistics_cost == ""))) {
-		$error2['logistics_cost'] = "Required";
-	}
-	if (isset($tracking_no) && $tracking_no == "") {
-		$error2['tracking_no'] = "Required";
+	$field_name = "box_no";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error2[$field_name] = "Required";
 	} else {
-		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
-						WHERE  a.tracking_no = '" . $tracking_no . "' "; //echo $sql_dup;
+		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a  
+						WHERE a.box_no 		= '" . $box_no . "'
+						AND a.po_id 		= '" . $id . "'
+						AND a.po_detail_id 	= '" . $package_id_logistic . "' ";
 		$result_dup	= $db->query($conn, $sql_dup);
 		$count_dup	= $db->counter($result_dup);
 		if ($count_dup > 0) {
-			$error2['tracking_no'] = "The tracking no is already exist.";
+			$error2[$field_name] 	= "Exist";
 		}
+	}
+	$field_name = "box_qty";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error2[$field_name] = "Required";
+	}
+	$field_name = "status_id";
+	if (!isset(${$field_name}) || (isset(${$field_name})  && (${$field_name} == "0" || ${$field_name} == ""))) {
+		$error2[$field_name] = "Required";
+	}
+	if (isset($logistics_cost)  && ($logistics_cost == "")) {
+		$logistics_cost = "0";
+	}
+	$field_name = "tracking_no";
+	if (isset(${$field_name}) && ${$field_name} == "") {
+		$error2[$field_name] = "Required";
 	}
 	if (isset($shipment_date) && $shipment_date == "") {
 		$shipment_date1 = NULL;
@@ -141,8 +152,10 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 			if (access("add_perm") == 0) {
 				$error2['msg'] = "You do not have add permissions.";
 			} else {
-				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, po_detail_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, no_of_boxes, add_date, add_by, add_ip, add_timezone, added_from_module_id)
-							VALUES('" . $id . "', '" . $package_id_logistic . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $no_of_boxes  . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
+				$sql6 = "INSERT INTO package_materials_order_detail_logistics(po_id, po_detail_id, courier_name, tracking_no, shipment_date, expected_arrival_date, logistics_status, box_no, box_qty, 
+																																			add_date, add_by, add_ip, add_timezone, added_from_module_id)
+						 VALUES('" . $id . "', '" . $package_id_logistic . "', '" . $courier_name . "', '" . $tracking_no . "', '"  . $shipment_date1  . "', '" . $expected_arrival_date1  . "', '" . $status_id  . "', '" . $box_no  . "', '" . $box_qty  . "', 
+						 																														'" . $add_date . "', '" . $_SESSION['username'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
 				$ok = $db->query($conn, $sql6);
 				if ($ok) {
 					$tracking_no = "";
@@ -181,11 +194,9 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				} else {
 					$msg3['msg_success'] = "Logistics info has been added successfully.";
 				}
-
 				if ($_SERVER['HTTP_HOST'] != HTTP_HOST_IP) {
 					$tracking_no = "";
 				}
-
 				if ($_SERVER['HTTP_HOST'] == HTTP_HOST_IP) {
 					$tracking_no = date('YmdHis');
 				}
@@ -198,27 +209,30 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 
 if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 	extract($_POST);
-	if (!isset($no_of_boxes_update) || (isset($no_of_boxes_update)  && ($no_of_boxes_update == "0" || $no_of_boxes_update == ""))) {
-		$error2['no_of_boxes_update'] = "Required";
+	if (!isset($box_no_update) || (isset($box_no_update)  && ($box_no_update == "0" || $box_no_update == ""))) {
+		$error2['box_no_update'] = "Required";
+	} else {
+		$sql_dup 	= " SELECT a.* FROM package_materials_order_detail_logistics a  
+						WHERE  a.box_no = '" . $box_no_update . "' 
+						AND a.po_detail_id = '" . $package_id_logistic_update . "' 
+						AND id != '" . $detail_id . "' "; //echo $sql_dup;
+		$result_dup	= $db->query($conn, $sql_dup);
+		$count_dup	= $db->counter($result_dup);
+		if ($count_dup > 0) {
+			$error2['box_no_update'] = "Exist";
+		}
 	}
-	if (isset($logistics_cost_update) && $logistics_cost_update == "") {
-		$error2['logistics_cost_update'] = "Required";
+	if (!isset($box_qty_update) || (isset($box_qty_update)  && ($box_qty_update == "0" || $box_qty_update == ""))) {
+		$error2['box_qty_update'] = "Required";
+	}
+	if (isset($logistics_cost_update)  && ($logistics_cost_update == "")) {
+		$logistics_cost_update = "0";
 	}
 	if (!isset($status_id_update) || (isset($status_id_update)  && ($status_id_update == "0" || $status_id_update == ""))) {
 		$error2['status_id_update'] = "Required";
 	}
 	if (isset($tracking_no_update) && $tracking_no_update == "") {
 		$error2['tracking_no_update'] = "Required";
-	} else {
-		$sql_dup	= " SELECT a.* FROM package_materials_order_detail_logistics a 
-						WHERE  a.tracking_no = '" . $tracking_no_update . "'
-						AND id != '" . $detail_id . "' ";
-		//echo $sql_dup;
-		$result_dup	= $db->query($conn, $sql_dup);
-		$count_dup	= $db->counter($result_dup);
-		if ($count_dup > 0) {
-			$error2['tracking_no_update'] = "The tracking no is already exist.";
-		}
 	}
 	if (isset($shipment_date_update) && $shipment_date_update == "") {
 		$shipment_date_update1	= NULL;
@@ -248,7 +262,8 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 											expected_arrival_date 	= '" . $expected_arrival_date_update1 . "',
 											logistics_status		= '" . $status_id_update . "',
 											logistics_cost			= '" . $logistics_cost_update . "',
-											no_of_boxes				= '" . $no_of_boxes_update . "',
+											box_no					= '" . $box_no_update . "',
+											box_qty					= '" . $box_qty_update . "',
 											
 											update_timezone			= '" . $timezone . "',
 											update_date				= '" . $add_date . "',
@@ -305,7 +320,6 @@ if (isset($_POST['is_Submit_tab2_1']) && $_POST['is_Submit_tab2_1'] == 'Y') {
 					$db->query($conn, $sql_c_up);
 
 					$disp_status_name 	= get_status_name($db, $conn, $logistic_status_dynamic);
-
 					$table		= "inventory_status";
 					$columns	= array("status_name");
 					$get_col_from_table = get_col_from_table($db, $conn, $selected_db_name, $table, $before_logistic_status_dynamic, $columns);

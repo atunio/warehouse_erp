@@ -3,7 +3,6 @@ Created
 
 Update: 
  
-purchase_order_detail_receive_package_material =>package_id
-purchase_order_detail_receive_package_material =>device_category_id
-purchase_order_detail_receive_package_material =>device_po_id
-purchase_order_detail_receive_package_material =>per_package_cost
+package_materials_order_detail_logistics =>box_no
+package_materials_order_detail_logistics =>box_qty 
+package_materials_orders =>duplication_check_token 

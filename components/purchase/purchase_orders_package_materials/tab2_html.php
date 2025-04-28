@@ -149,7 +149,7 @@
                         $field_label    = "Box Qty";
                         ?>
                         <i class="material-icons prefix">description</i>
-                        <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                        <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                             echo ${$field_name};
                                                                                                         } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                                     echo ${$field_name . "_valid"};
@@ -562,7 +562,7 @@
                     $field_label    = "Box Qty";
                     ?>
                     <i class="material-icons prefix">description</i>
-                    <input id="<?= $field_name; ?>" type="text" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
+                    <input id="<?= $field_name; ?>" type="number" name="<?= $field_name; ?>" value="<?php if (isset(${$field_name})) {
                                                                                                         echo ${$field_name};
                                                                                                     } ?>" class="validate <?php if (isset(${$field_name . "_valid"})) {
                                                                                                                                 echo ${$field_name . "_valid"};

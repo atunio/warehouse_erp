@@ -11,27 +11,27 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-$title_heading			= "Import Products in PO";
+$title_heading			= "Import Parts / Materials";
 $button_val				= "Preview";
 
-$po_no = $vender_invoice_no = $vender_name = "";
+// $po_no = $vender_invoice_no = $vender_name = "";
 
-if (isset($id) && $id > 0) {
-	$sql_ee 		= " SELECT a.*, b.vender_name
-						FROM package_materials_orders a 
-						LEFT JOIN venders b ON b.id = a.vender_id
-						WHERE a.id = '" . $id . "' ";
-	$result_ee		= $db->query($conn, $sql_ee);
-	$counter_ee1	= $db->counter($result_ee);
-	if ($counter_ee1 > 0) {
-		$row_ee				= $db->fetch($result_ee);
-		$po_no				= $row_ee[0]['po_no'];
-		$vender_invoice_no	= $row_ee[0]['vender_invoice_no'];
-		$vender_name		= $row_ee[0]['vender_name'];
-	} else {
-		$error['msg'] = "No record found";
-	}
-}
+// if (isset($id) && $id > 0) {
+// 	$sql_ee 		= " SELECT a.*, b.vender_name
+// 						FROM purchase_orders a 
+// 						LEFT JOIN venders b ON b.id = a.vender_id
+// 						WHERE a.id = '" . $id . "' ";
+// 	$result_ee		= $db->query($conn, $sql_ee);
+// 	$counter_ee1	= $db->counter($result_ee);
+// 	if ($counter_ee1 > 0) {
+// 		$row_ee				= $db->fetch($result_ee);
+// 		$po_no				= $row_ee[0]['po_no'];
+// 		$vender_invoice_no	= $row_ee[0]['vender_invoice_no'];
+// 		$vender_name		= $row_ee[0]['vender_name'];
+// 	} else {
+// 		$error['msg'] = "No record found";
+// 	}
+// }
 extract($_POST);
 foreach ($_POST as $key => $value) {
 	if (!is_array($value)) {
@@ -110,16 +110,16 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	foreach ($required_columns as $required_column) {
 		if (!in_array($required_column, $import_colums_uniq)) {
 			if (isset($error['msg'])) {
-				$error['msg'] .= "<br>" . $required_column . " column title is required.";
+				$error['msg'] .= "<br>" . $required_column . " column is required.";
 			} else {
-				$error['msg'] = $required_column . " column title is required.";
+				$error['msg'] = $required_column . " column is required.";
 			}
 		}
 	}
 
 	// Initialize the new modified array
-	$modified_array	= array();
-	$ids_already 	= array();
+	$modified_array 		= array();
+	$package_ids_already 	= array();
 
 	$i 				= 0;
 	foreach ($all_data as $value1) {
@@ -141,108 +141,78 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 	$all_data = $modified_array;
 	$t = 1;
 	if (isset($all_data) && sizeof($all_data) > 0) {
-		if (empty($error)) {
-
-			$sql_dup1 = "	UPDATE package_materials_order_detail a
-							LEFT JOIN package_materials_order_detail_receive b ON b.po_detail_id = a.id
-								SET a.enabled = 0 
-							WHERE a.po_id	= '" . $id . "' 
-							AND IFNULL(b.id, 0) = 0 ";
-			$db->query($conn, $sql_dup1);
-
-			foreach ($all_data  as $data1) {
-				$update_master = $columns = $column_data = $update_column = "";
-				if (isset($data1['sku_code']) && $data1['sku_code'] != '' && $data1['sku_code'] != NULL && $data1['sku_code'] != 'blank') {
-					$sql1		= " SELECT a.* 
-									FROM package_materials_order_detail a
+		foreach ($duplication_columns  as $dup_data) {
+			$duplicate_colum_values = array_unique(array_column($all_data, $dup_data));
+			foreach ($duplicate_colum_values  as $duplicate_colum_values1) {
+				$db_column = $dup_data;
+				if ($dup_data == 'sku_code') {
+					$sql1		= " SELECT * FROM package_materials_order_detail a
 									INNER JOIN packages b ON b.id = a.package_id
- 									WHERE a.enabled	= 1 
-									AND a.po_id 	= '" . $id . "' 
-									AND b.sku_code 	= '" . $data1['sku_code'] . "' ";
-					if (isset($data1['order_price'])) {
-						$sql1 .= " AND a.order_price = '" . $data1['order_price'] . "' ";
-					}
-					// echo "<br><br>" . $sql1;die;
+									WHERE 1=1
+									AND b." . $db_column . " = '" . $duplicate_colum_values1 . "' ";
 					$result1	= $db->query($conn, $sql1);
 					$count1		= $db->counter($result1);
 					if ($count1 > 0) {
-						$row1			= $db->fetch($result1);
-						$detail_id		= $row1[0]['id'];
-						$package_id2	= $row1[0]['package_id'];
-					} else {
-						$package_id2 = 0;
-						$sql1		= " SELECT a.* FROM packages a WHERE a.sku_code = '" . $data1['sku_code'] . "' ";
-						$result1	= $db->query($conn, $sql1);
-						$count1		= $db->counter($result1);
-						if ($count1 > 0) {
-							$row1			= $db->fetch($result1);
-							$package_id2	= $row1[0]['id'];
-							$is_enabled		= $row1[0]['enabled'];
-							if ($is_enabled == '0') {
-								$sql6 = "UPDATE " . $selected_db_name . ".packages SET enabled = 1 WHERE sku_code = '" . $data1['sku_code'] . "' ";
-								$db->query($conn, $sql6);
-							}
-						} else {
-							$package_column_names = $package_column_values = "";
-							if ($data1['sku_code'] != '') {
-								$package_column_names .= ", sku_code";
-								$package_column_values .= ", '" . $data1['sku_code'] . "'";
-							}
-							if ($data1['description'] != '') {
-								$package_column_names 	.= ", package_name";
-								$package_column_names 	.= ", package_desc";
-								$package_column_values 	.= ", '" . $data1['description'] . "'";
-								$package_column_values 	.= ", '" . $data1['description'] . "'";
-							}
-
-							$package_column_names 	.= ", product_category";
-							$package_column_values 	.= ", '45'"; // No Category
-
-							$sql6 = "INSERT INTO " . $selected_db_name . ".packages(subscriber_users_id " . $package_column_names . ",  add_date, add_by, add_ip, add_timezone)
-									 VALUES('" . $subscriber_users_id . "' " . $package_column_values . ", '" . $add_date . "', '" . $_SESSION['username'] . "Added When Create PO', '" . $add_ip . "', '" . $timezone . "')";
-							$db->query($conn, $sql6);
-							$package_id2 = mysqli_insert_id($conn);
-							$package_no		= "PP" . $package_id2;
-							$sql6 			= "UPDATE packages SET package_no = '" . $package_no . "' WHERE id = '" . $package_id2 . "' ";
-							$db->query($conn, $sql6);
+						$row_dp1 = $db->fetch($result1);
+						foreach ($row_dp1 as $data_dp11) {
+							$package_ids_already[] = $data_dp11['package_id'];
 						}
+						/*
+						if (!isset($error['msg'])) {
+							$error['msg'] = "This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						} else {
+							$error['msg'] .= "<br>This " . $dup_data . ": <span class='color-blue'>" . $duplicate_colum_values1 . "</span> is already exist.";
+						}
+						*/
 					}
-					if ($package_id2 > 0) {
+				}
+			}
+		}
+
+		if (empty($error)) {
+			foreach ($all_data  as $data1) {
+				$update_master = $columns = $column_data = $update_column = "";
+				if (isset($data1['sku_code']) && $data1['sku_code'] != '' && $data1['sku_code'] != NULL && $data1['sku_code'] != 'blank') {
+
+					$insert_db_field_id_detail	= "package_id2";
+					$insert_db_field_id_detai2	= "sku_code";
+					$table1 					= "packages";
+
+					$sql1		= "SELECT * FROM " . $table1 . " WHERE " . $insert_db_field_id_detai2 . " = '" . $data1['sku_code'] . "' ";
+					$result1	= $db->query($conn, $sql1);
+					$count1		= $db->counter($result1);
+					if ($count1 > 0) {
+						$row1 							= $db->fetch($result1);
+						${$insert_db_field_id_detail}	= $row1[0]['id'];
+
 						foreach ($data1 as $key => $data) {
 							if (htmlspecialchars($data) == '-' || htmlspecialchars($data) == '' || htmlspecialchars($data) == 'blank') {
 								$data = "";
 							}
+
 							if ($key != "" && $key != 'is_insert') {
-								$insert_db_field_id		= $key;
-								${$insert_db_field_id} 	= $data;
-								if ($key == 'sku_code') {
-									$insert_db_field_id		= "package_id";
-									$columns 		.= ", " . $insert_db_field_id;
-									$column_data 	.= ", '" . $package_id2 . "'";
-									$update_column	.= ", " . $insert_db_field_id . " = '" . $package_id2 . "'";
-								} else 
 								if ($key == 'description') {
-
-									$insert_db_field_id		= "product_po_desc";
+									$insert_db_field_id = 'product_po_desc';
 									${$insert_db_field_id} 	= $data;
+								} else {
+									$insert_db_field_id		= $key;
+									${$insert_db_field_id} 	= $data;
+								}
 
-									$columns 		.= ", " . $insert_db_field_id;
-									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
-									$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
+								if ($key == 'sku_code') {
+									$columns 		.= ", package_id ";
+									$column_data 	.= ", '" . $package_id2 . "'";
+
+									$update_column	.= ", package_id = '" . $package_id2 . "'";
 								} else {
 									$columns 		.= ", " . $insert_db_field_id;
 									$column_data 	.= ", '" . ${$insert_db_field_id} . "'";
-									if ($key == 'order_qty') {
-										if (${$insert_db_field_id} > '0') {
-											$update_column	.= ", order_qty = (order_qty+" . ${$insert_db_field_id} . ") ";
-										}
-									} else {
-										$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
-									}
+
+									$update_column	.= ", " . $insert_db_field_id . " = '" . ${$insert_db_field_id} . "'";
 								}
 							}
 						}
-						if (isset($detail_id) && $detail_id > 0) {
+						if (isset($package_ids_already) && isset($package_id2) && in_array($package_id2, $package_ids_already)) {
 							$sql6 = "UPDATE " . $selected_db_name . "." . $master_table . " SET update_date 			= '" . $add_date . "', 
 																								update_by 				= '" . $_SESSION['username'] . "', 
 																								update_by_user_id 		= '" . $_SESSION['user_id'] . "', 
@@ -251,31 +221,22 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 																								update_from_module_id 	= '" . $module_id . "'
 																								" . $update_column . " 
 																								, enabled = '1' 
-									WHERE id 	= '" . $detail_id . "'
-									AND po_id	= '" . $id . "' ";
-							// echo "<br>" . $sql6;
+									WHERE package_id	= '" . $package_id2 . "' 
+									AND po_id 			= '" . $id . "'";
 							$ok = $db->query($conn, $sql6);
 						} else {
 							$sql6 = "INSERT INTO " . $selected_db_name . "." . $master_table . "(po_id " . $columns . ", add_date, add_by, add_by_user_id, add_ip, add_timezone, added_from_module_id)
 									VALUES('" . $id . "' " . $column_data . ", '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "', '" . $module_id . "')";
-							// echo "<br>" . $sql6;
 							$ok = $db->query($conn, $sql6);
 						}
 						if ($ok) {
 							$added++;
-						}
-					} else {
-						if (!isset($error['msg'])) {
-							$error['msg'] = "<br>This SKU <span class='color-blue'>" . $data1['sku_code'] . "</span> does not exist is system.";
-						} else {
-							$error['msg'] .= "<br>This SKU <span class='color-blue'>" . $data1['sku_code'] . "</span> does not exist is system.";
 						}
 					}
 				}
 			}
 		}
 	}
-
 	if ($added > 0) {
 		if ($added == 1) {
 			$msg['msg_success'] = $added . " record has been imported successfully.";
@@ -307,10 +268,10 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							</div>
 							<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=listing") ?>">
-									PO List
+									PPO List
 								</a>
 								<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module_id=" . $module_id . "&page=profile&cmd=edit&id=" . $id . "&active_tab=tab1") ?>">
-									PO Profile
+									PPO Profile
 								</a>
 							</div>
 						</div>
@@ -320,28 +281,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		</div>
 		<div class="col s12 m12 l12">
 			<div id="Form-advance" class="card card card-default scrollspy custom_margin_card_table_top">
-				<div class="card-panel custom_padding_card_content_table_top">
-					<div class="row">
-						<div class="col s10 m12 l8">
-							<h5 class="breadcrumbs mt-0 mb-0"><span>Master Info</span></h5>
-						</div>
-					</div>
-					<?php
-					if (isset($id)) {  ?>
-						<div class="row">
-							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>PO#:</b>" . $po_no; ?></span></h6>
-							</div>
-							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Name: </b>" . $vender_name; ?></span></h6>
-							</div>
-							<div class="input-field col m3 s12">
-								<h6 class="media-heading"><span class=""><?php echo "<b>Vendor Invoice#: </b>" . $vender_invoice_no; ?></span></h6>
-							</div>
-						</div>
-					<?php } ?>
-				</div>
-
 				<div class="card-content">
 					<h4 class="card-title">Import Excel Data</h4><br>
 					<?php
@@ -419,6 +358,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 										if (strtolower($s_heading) == 'record_id') {
 											$cell_format = "Number (Unique)";
 										}
+										if (strtolower($s_heading) == 'is_tested' || strtolower($s_heading) == 'is_wiped' || strtolower($s_heading) == 'is_imaged') {
+											$cell_format = "Yes / No";
+										}
 										if (strtolower($s_heading) == 'order_qty' || strtolower($s_heading) == 'order_price' || strtolower($s_heading) == 'warranty_period_in_days') {
 											$cell_format = "Number";
 										}
@@ -456,6 +398,37 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 													}
 													$column_name_c1 = $headings[$col_c1_no];
 													$column_name_c1_org = $column_name_c1;
+
+													if ($column_name_c1 == 'rma_status') {
+														$db_name_c1 = 'status_name';
+														$sql_dup	= " SELECT * FROM inventory_status WHERE " . $db_name_c1 . "	= '" . htmlspecialchars($cell_c1) . "' ";
+														$result_dup	= $db->query($conn, $sql_dup);
+														$count_dup	= $db->counter($result_dup);
+														if ($count_dup == 0 && $cell_c1 != '-') {
+															${$column_name_c1_org . "_array"}[] = $cell_c1;
+														}
+													}
+
+													if ($column_name_c1 == 'repair_type') {
+														$db_name_c1 = 'repair_type_name';
+														$sql_dup	= " SELECT * FROM repair_types WHERE " . $db_name_c1 . "	= '" . htmlspecialchars($cell_c1) . "' ";
+														$result_dup	= $db->query($conn, $sql_dup);
+														$count_dup	= $db->counter($result_dup);
+														if ($count_dup == 0 && $cell_c1 != '-') {
+															${$column_name_c1_org . "_array"}[] = $cell_c1;
+														}
+													}
+
+													if ($column_name_c1 == 'sub_location') {
+														$db_name_c1 = 'sub_location_name';
+														$sql_dup	= " SELECT * FROM warehouse_sub_locations WHERE " . $db_name_c1 . "	= '" . htmlspecialchars($cell_c1) . "' ";
+														$result_dup	= $db->query($conn, $sql_dup);
+														$count_dup	= $db->counter($result_dup);
+														if ($count_dup == 0 && $cell_c1 != '-') {
+															${$column_name_c1_org . "_array"}[] = $cell_c1;
+														}
+													}
+
 													$col_c1_no++;
 												}
 											}
@@ -548,15 +521,13 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 														}
 														if (in_array($db_column_excel, $duplication_columns)) {
 
-															if ($db_column == 'sku_code') {
-																$db_column = "package_id";
+															if ($db_column == 'product_id') {
+																$db_column = "product_uniqueid";
 															}
 
-															$sql_dup 	= " SELECT * FROM package_materials_order_detail a
+															$sql_dup 	= "  SELECT * FROM package_materials_order_detail a
 																			INNER JOIN packages b ON b.id = a.package_id
-																			WHERE 1=1
-																			AND a.enabled = 1
-																			AND a.po_id = '" . $id . "'
+																			WHERE a.po_id = '" . $id . "'
 																			AND " . $db_column . " = '" . htmlspecialchars($cell) . "' ";  //echo "<br>" . $sql_dup;
 															$result_dup	= $db->query($conn, $sql_dup);
 															$count_dup	= $db->counter($result_dup);

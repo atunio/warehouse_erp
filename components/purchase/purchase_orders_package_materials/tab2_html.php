@@ -310,164 +310,7 @@
                 </div>
             </form>
         </div>
-        <?php
-    }
-
-    $td_padding = "padding:5px 15px !important;";
-
-    if (isset($id)) {
-        $sql             = "SELECT a.*, c.status_name, d.logistics_cost, f.package_name, g.category_name, f.sku_code
-                            FROM package_materials_order_detail_logistics a
-                            LEFT JOIN inventory_status c ON c.id = a.logistics_status
-                            INNER JOIN package_materials_orders d ON d.id = a.po_id
-                            LEFT JOIN package_materials_order_detail e ON e.id = a.po_detail_id
-                            INNER JOIN packages f ON f.id = e.package_id
-                            INNER JOIN product_categories g ON g.id = f.product_category
-                            WHERE a.po_id = '" . $id . "'
-                            ORDER BY a.tracking_no";
-        $result_log     = $db->query($conn, $sql);
-        $count_log      = $db->counter($result_log);
-        if ($count_log > 0) { ?>
-            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
-                <input type="hidden" name="is_Submit_tab2_3" value="Y" />
-                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
-                                                                    echo encrypt($_SESSION['csrf_session']);
-                                                                } ?>">
-                <div class="card-panel">
-                    <div class="row">
-                        <div class="col m12 s12">
-                            <h5>Logistics Detail</h5>
-                            <table class="bordered">
-                                <thead>
-                                    <tr>
-                                        <?php
-                                        $headings = '	<th class="sno_width_60">
-                                                            <label>
-                                                                <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1"   ';
-                                        if (isset($all_checked3) && $all_checked3 == '1') {
-                                            $headings .= ' checked ';
-                                        }
-                                        $headings .= ' 			/>
-                                                                <span></span>
-                                                            </label>
-                                                        </th>
-                                                        <th>Package Detail</th>
-                                                        <th>Tracking</th>
-                                                        <th>Box#</th> 
-                                                        <th>Box Qty</th> 
-                                                        <th>Logistics <br>Cost (PO)</th> 
-                                                        <th>Status</th> 
-                                                        <th>Shipment Date</th>
-                                                        <th>Expected <br>Arrival Date</th>
-                                                        <th>Action</th>';
-                                        echo $headings;
-                                        $headings2 = ' '; ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $i = 0;
-                                    if ($count_log > 0) {
-                                        $row_cl1 = $db->fetch($result_log);
-                                        foreach ($row_cl1 as $data) {
-                                            $detail_id2     = $data['id'];
-                                            $arrived_date_11   = $data['arrived_date']; ?>
-                                            <tr>
-                                                <td style="text-align: center; <?= $td_padding; ?>">
-                                                    <?php
-                                                    if ($data['edit_lock'] == 0) { ?>
-                                                        <label style="margin-left: 25px;">
-                                                            <input type="checkbox" name="logistics_ids[]" id="logistics_ids[]" value="<?= $detail_id2; ?>" <?php
-                                                                                                                                                            if (isset($logistics_ids) && in_array($detail_id2, $logistics_ids)) {
-                                                                                                                                                                echo "checked";
-                                                                                                                                                            } ?> class="checkbox3 filled-in" />
-                                                            <span></span>
-                                                        </label>
-                                                    <?php
-                                                    } ?>
-                                                </td>
-                                                <td style="<?= $td_padding; ?>">
-                                                    <?php echo ucwords(strtolower($data['package_name'])); ?> (<?php echo $data['category_name']; ?>)</br>
-                                                    SKU: <?php echo $data['sku_code']; ?>
-                                                </td>
-                                                <td style="<?= $td_padding; ?>">
-                                                    <?php echo $data['courier_name'] != '' ? "<b>Courier: </b>" . $data['courier_name'] : ""; ?></br>
-                                                    <b>Tracking#: </b><?php echo $data['tracking_no']; ?>
-                                                </td>
-                                                <td style="<?= $td_padding; ?>"><?php echo $data['box_no']; ?></td>
-                                                <td style="<?= $td_padding; ?>"><?php echo $data['box_qty']; ?></td>
-                                                <td style="<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>
-                                                <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
-                                                <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['shipment_date']); ?></td>
-                                                <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['expected_arrival_date']); ?></td>
-                                                <td style="<?= $td_padding; ?>">
-                                                    <?php
-                                                    if ($data['edit_lock'] == 0 && access("edit_perm") == 1) { ?>
-                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=edit&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
-                                                            <i class="material-icons dp48">edit</i>
-                                                        </a> &nbsp;
-
-                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=delete&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
-                                                            <i class="material-icons dp48">delete</i>
-                                                        </a>
-                                                    <?php } ?>
-                                                </td>
-                                            </tr>
-                                    <?php
-                                            $i++;
-                                        }
-                                    } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="input-field col m12 s12">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col m6 s12">
-                            <?php
-                            $field_name     = "logistics_status";
-                            $field_label     = "Status";
-                            $sql1             = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(4, 11) ORDER BY status_name DESC ";
-                            $result1         = $db->query($conn, $sql1);
-                            $count1         = $db->counter($result1);
-                            ?>
-                            <i class="material-icons prefix">question_answer</i>
-                            <div class="select2div">
-                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
-                                                                                                                                                                    echo ${$field_name . "_valid"};
-                                                                                                                                                                } ?>">
-                                    <option value="">Select</option>
-                                    <?php
-                                    if ($count1 > 0) {
-                                        $row1    = $db->fetch($result1);
-                                        foreach ($row1 as $data2) { ?>
-                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?> </option>
-                                    <?php }
-                                    } ?>
-                                </select>
-                                <label for="<?= $field_name; ?>">
-                                    <?= $field_label; ?>
-                                    <span class="color-red">* <?php
-                                                                if (isset($error2[$field_name])) {
-                                                                    echo $error2[$field_name];
-                                                                } ?>
-                                    </span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="input-field col m6 s12">
-                            <?php if (access("edit_perm")) { ?>
-                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
-                            <?php } ?>
-                        </div>
-                    </div>
-                </div>
-            </form>
-    <?php }
+    <?php
     } ?>
     <form class="infovalidate" action="?string=<?php echo encrypt("module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
         <div class="card-panel">
@@ -716,11 +559,166 @@
                 <div class="input-field col m12 s12 text_align_center">
                     <?php
                     if (access("add_perm")) { ?>
-                        <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Create</button>
+                        <button class="btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="add">Create</button>
                     <?php } ?>
                 </div>
-                <div class="input-field col m5 s12"></div>
             </div>
         </div>
     </form>
+    <?php
+    $td_padding = "padding:5px 15px !important;";
+    if (isset($id)) {
+        $sql             = "SELECT a.*, c.status_name, d.logistics_cost, f.package_name, g.category_name, f.sku_code
+                            FROM package_materials_order_detail_logistics a
+                            LEFT JOIN inventory_status c ON c.id = a.logistics_status
+                            INNER JOIN package_materials_orders d ON d.id = a.po_id
+                            LEFT JOIN package_materials_order_detail e ON e.id = a.po_detail_id
+                            INNER JOIN packages f ON f.id = e.package_id
+                            INNER JOIN product_categories g ON g.id = f.product_category
+                            WHERE a.po_id = '" . $id . "'
+                            ORDER BY a.tracking_no";
+        $result_log     = $db->query($conn, $sql);
+        $count_log      = $db->counter($result_log);
+        if ($count_log > 0) { ?>
+            <form class="infovalidate" action="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=edit&id=" . $id . "&active_tab=tab2") ?>" method="post">
+                <input type="hidden" name="is_Submit_tab2_3" value="Y" />
+                <input type="hidden" name="csrf_token" value="<?php if (isset($_SESSION['csrf_session'])) {
+                                                                    echo encrypt($_SESSION['csrf_session']);
+                                                                } ?>">
+                <div class="card-panel">
+                    <div class="row">
+                        <div class="col m12 s12">
+                            <h5>Logistics Detail</h5>
+                            <table class="bordered">
+                                <thead>
+                                    <tr>
+                                        <?php
+                                        $headings = '	<th class="sno_width_60">
+                                                            <label>
+                                                                <input type="checkbox" id="all_checked3" class="filled-in" name="all_checked3" value="1"   ';
+                                        if (isset($all_checked3) && $all_checked3 == '1') {
+                                            $headings .= ' checked ';
+                                        }
+                                        $headings .= ' 			/>
+                                                                <span></span>
+                                                            </label>
+                                                        </th>
+                                                        <th>Package Detail</th>
+                                                        <th>Tracking</th>
+                                                        <th>Box#</th> 
+                                                        <th>Box Qty</th> 
+                                                        <th>Logistics <br>Cost (PO)</th> 
+                                                        <th>Status</th> 
+                                                        <th>Shipment Date</th>
+                                                        <th>Expected <br>Arrival Date</th>
+                                                        <th>Action</th>';
+                                        echo $headings;
+                                        $headings2 = ' '; ?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $i = 0;
+                                    if ($count_log > 0) {
+                                        $row_cl1 = $db->fetch($result_log);
+                                        foreach ($row_cl1 as $data) {
+                                            $detail_id2     = $data['id'];
+                                            $arrived_date_11   = $data['arrived_date']; ?>
+                                            <tr>
+                                                <td style="text-align: center; <?= $td_padding; ?>">
+                                                    <?php
+                                                    if ($data['edit_lock'] == 0) { ?>
+                                                        <label style="margin-left: 25px;">
+                                                            <input type="checkbox" name="logistics_ids[]" id="logistics_ids[]" value="<?= $detail_id2; ?>" <?php
+                                                                                                                                                            if (isset($logistics_ids) && in_array($detail_id2, $logistics_ids)) {
+                                                                                                                                                                echo "checked";
+                                                                                                                                                            } ?> class="checkbox3 filled-in" />
+                                                            <span></span>
+                                                        </label>
+                                                    <?php
+                                                    } ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php echo ucwords(strtolower($data['package_name'])); ?> (<?php echo $data['category_name']; ?>)</br>
+                                                    SKU: <?php echo $data['sku_code']; ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php echo $data['courier_name'] != '' ? "<b>Courier: </b>" . $data['courier_name'] : ""; ?></br>
+                                                    <b>Tracking#: </b><?php echo $data['tracking_no']; ?>
+                                                </td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['box_no']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['box_qty']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo number_format($data['logistics_cost'], 2); ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo $data['status_name']; ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['shipment_date']); ?></td>
+                                                <td style="<?= $td_padding; ?>"><?php echo dateformat2($data['expected_arrival_date']); ?></td>
+                                                <td style="<?= $td_padding; ?>">
+                                                    <?php
+                                                    if ($data['edit_lock'] == 0 && access("edit_perm") == 1) { ?>
+                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=edit&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
+                                                            <i class="material-icons dp48">edit</i>
+                                                        </a> &nbsp;
+
+                                                        <a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=" . $page . "&cmd=" . $cmd . "&cmd2_1=delete&active_tab=tab2&id=" . $id . "&detail_id=" . $detail_id2) ?>">
+                                                            <i class="material-icons dp48">delete</i>
+                                                        </a>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                            $i++;
+                                        }
+                                    } ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="input-field col m12 s12">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="input-field col m6 s12">
+                            <?php
+                            $field_name     = "logistics_status";
+                            $field_label     = "Status";
+                            $sql1             = "SELECT * FROM inventory_status WHERE enabled = 1 AND id IN(4, 11) ORDER BY status_name DESC ";
+                            $result1         = $db->query($conn, $sql1);
+                            $count1         = $db->counter($result1);
+                            ?>
+                            <i class="material-icons prefix">question_answer</i>
+                            <div class="select2div">
+                                <select id="<?= $field_name; ?>" name="<?= $field_name; ?>" class="select2 browser-default select2-hidden-accessible validate <?php if (isset(${$field_name . "_valid"})) {
+                                                                                                                                                                    echo ${$field_name . "_valid"};
+                                                                                                                                                                } ?>">
+                                    <option value="">Select</option>
+                                    <?php
+                                    if ($count1 > 0) {
+                                        $row1    = $db->fetch($result1);
+                                        foreach ($row1 as $data2) { ?>
+                                            <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}) && ${$field_name} == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['status_name']; ?> </option>
+                                    <?php }
+                                    } ?>
+                                </select>
+                                <label for="<?= $field_name; ?>">
+                                    <?= $field_label; ?>
+                                    <span class="color-red">* <?php
+                                                                if (isset($error2[$field_name])) {
+                                                                    echo $error2[$field_name];
+                                                                } ?>
+                                    </span>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-field col m6 s12">
+                            <?php if (access("edit_perm")) { ?>
+                                <button class="mb-6 btn waves-effect waves-light gradient-45deg-purple-deep-orange" type="submit" name="update_logistics">Update</button>
+                            <?php } ?>
+                        </div>
+                    </div>
+                </div>
+            </form>
+    <?php }
+    } ?>
 </div>

@@ -159,6 +159,7 @@ if (isset($_POST['is_Submit_tab2']) && $_POST['is_Submit_tab2'] == 'Y') {
 				$ok = $db->query($conn, $sql6);
 				if ($ok) {
 					$tracking_no = "";
+					$box_no++;
 					$sql_c_up = "UPDATE  package_materials_order_detail SET order_product_status	= '" . $status_id . "',
  
 																			update_timezone			= '" . $timezone . "',

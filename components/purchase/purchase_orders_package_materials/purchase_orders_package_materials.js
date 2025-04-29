@@ -457,11 +457,7 @@ $(document).on('change', '#stage_status', function(event) {
                     else{
                         var toastHTML = "Stage status updated successfully.";
                         showToast(toastHTML, "Success");
-                        if((stage_status == 'Committed' && previous_stage_status != 'Committed') ){
-                            location.reload();
-                        }else if((stage_status != 'Committed' && previous_stage_status == 'Committed')){
-                            location.reload();
-                        }
+                        location.href = window.location.href;
                     }
                     
                 }

@@ -145,48 +145,16 @@ if (isset($is_Submit) && $is_Submit == 'Y') {
 						$po_date_disp		= dateformat2($po_date1);
 						$cmd 				= 'edit';
 						$order_status 		= 1;
+						$stage_status 		= 'Draft';
 						$disp_status_name 	= get_status_name($db, $conn, $order_status);
 						$order_date_disp	= dateformat2($po_date1);
 
 						$sql6 = " UPDATE package_materials_orders SET po_no = '" . $po_no . "' WHERE id = '" . $id . "' ";
 						$db->query($conn, $sql6);
+
 						$msg['msg_success'] = "Purchase Order has been created successfully.";
-						$stage_status = 'Draft';
-						// $vender_id = $po_date ="";
-						$po_date 	= date("d/m/Y");
 					} else {
 						$error['msg'] = "There is Error, Please check it again OR contact Support Team.";
-					}
-				} else {
-					$error['msg'] = "This record is already exist.";
-				}
-			}
-		} else if ($cmd == 'edit') {
-			if (access("edit_perm") == 0) {
-				$error['msg'] = "You do not have edit permissions.";
-			} else {
-				$sql_dup	= " SELECT a.* FROM package_materials_orders a 
-								WHERE a.vender_id		= '" . $vender_id . "'
-								AND a.po_date			= '" . $po_date1 . "' 
-								AND a.id		   	   != '" . $id . "' ";
-				$result_dup	= $db->query($conn, $sql_dup);
-				$count_dup	= $db->counter($result_dup);
-				if ($count_dup == 0) {
-					$sql_c_up = "UPDATE package_materials_orders SET 	vender_id				= '" . $vender_id . "',
-																		po_date					= '" . $po_date1 . "',
-
-																		update_date				= '" . $add_date . "',
-																		update_by				= '" . $_SESSION['username'] . "',
-																		update_by_user_id		= '" . $_SESSION['user_id'] . "',
-																		update_ip				= '" . $add_ip . "',
-																		update_timezone			= '" . $timezone . "',
-																		update_from_module_id	= '" . $module_id . "'
-								WHERE id = '" . $id . "' ";
-					$ok = $db->query($conn, $sql_c_up);
-					if ($ok) {
-						$msg['msg_success'] = "Record Updated Successfully.";
-					} else {
-						$error['msg'] = "There is Error, record does not update, Please check it again OR contact Support Team.";
 					}
 				} else {
 					$error['msg'] = "This record is already exist.";
@@ -233,6 +201,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						WHERE id = '" . $id . "' ";
 			$ok = $db->query($conn, $sql_c_up);
 		}
+		/*
 		$k = 0;
 		if (isset($stage_status) && $stage_status != "Committed") {
 
@@ -244,6 +213,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							AND package_id NOT IN(" . $current_ids . ") ";
 				$db->query($conn, $sql_dup1);
 			}
+			echo "<br><br><br><br><br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: ";
+			print_r($filtered_id);
+			die;
 
 			$i = 0; // Initialize the counter before the loop
 			$r = 1;
@@ -291,6 +263,150 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		} else {
 			if (isset($error2['msg'])) unset($error2['msg']);
 			$msg2['msg_success'] = "Record has been added successfully.";
+		}
+		*/
+
+
+
+
+
+
+
+		$k = 0;
+		if (isset($stage_status) && $stage_status != "Committed") {
+
+			$filtered_id 			= array_values(array_filter($package_ids));
+			$current_ids 			= implode(',', $filtered_id);
+			$order_qty 				= array_values(array_filter($order_qty));
+			$order_price 			= array_values(array_filter($order_price));
+
+			$matches_po_detail_ids = array();
+			foreach ($filtered_id as $index => $product) {
+				$price = isset($order_price[$index]) ? $order_price[$index] : "";
+				if (isset($product_detail)) {
+					foreach ($product_detail as $key => $entry) {
+						if (isset($entry[0]) && $entry[1] && $entry[0] == $product && $entry[1] == $price) {
+							$sql_old = "	SELECT id FROM package_materials_order_detail
+											WHERE 1=1 
+											AND enabled 			= 1 
+											AND po_id				= '" . $id . "'
+											AND package_id 			= '" . $product . "'
+  											AND order_price			= '" . $price . "' ";
+							$result_p_old 	= $db->query($conn, $sql_old);
+							$counter_p_old	= $db->counter($result_p_old);
+							if ($counter_p_old > 0) {
+								$row_p_old = $db->fetch($result_p_old);
+								foreach ($row_p_old as $data_p_old) {
+									$matches_po_detail_ids[] = $data_p_old['id'];
+								}
+							}
+							break;
+						}
+					}
+				}
+			}
+			$all_matches_po_detail_ids = "''";
+			if (!empty($matches_po_detail_ids)) {
+				$all_matches_po_detail_ids = implode(",", $matches_po_detail_ids);
+			}
+
+			$sql_dup1 = "UPDATE package_materials_order_detail a
+						 LEFT JOIN package_materials_order_detail_receive b ON b.po_detail_id = a.id
+							SET a.enabled = 0 
+						WHERE a.po_id	= '" . $id . "' 
+						AND IFNULL(b.id, 0) = 0
+						AND a.id NOT IN(" . $all_matches_po_detail_ids . ") ";
+			$db->query($conn, $sql_dup1);
+
+			$i = 0; // Initialize the counter before the loop
+			$r = 1;
+
+			// echo "<br><br><br><br><br><br><br>aaaaaaaaaaaaaaaaaaaa <pre>";
+			// print_r($filtered_id);
+			// print_r($order_qty);
+			// print_r($order_price);
+			// print_r($product_condition);
+
+			foreach ($filtered_id as $data_p) {
+				if ($data_p != "") {
+
+					$order_price[$i] 		= isset($order_price[$i]) ? $order_price[$i] : "";
+					$order_qty[$i] 			= isset($order_qty[$i]) ? $order_qty[$i] : "";
+
+					$sql_dup 	= " SELECT a.* FROM package_materials_order_detail a 
+									WHERE a.enabled 			= 1
+									AND a.po_id 			= '" . $id . "' 
+									AND a.package_id 		= '" . $data_p . "'
+ 									AND a.order_price 		= '" . $order_price[$i] . "' ";
+					//echo "<br><br>".$sql_dup;
+					$result_dup = $db->query($conn, $sql_dup);
+					$count_dup 	= $db->counter($result_dup);
+					if ($count_dup > 0) {
+						$row_dup = $db->fetch($result_dup);
+						foreach ($row_dup as $data_dup) {
+							$po_detail_id1 = $data_dup['id'];
+							if ($po_detail_id1 > 0) {
+								$sql_c_up = "UPDATE  package_materials_order_detail SET 	order_qty 			= '" . $order_qty[$i] . "',
+																							order_price			= '" . $order_price[$i] . "',
+																							enabled				= '1',
+																							
+																							update_timezone	= '" . $timezone . "',
+																							update_date		= '" . $add_date . "',
+																							update_by		= '" . $_SESSION['username'] . "',
+																							update_ip		= '" . $add_ip . "'
+											WHERE id = '" . $po_detail_id1 . "' ";
+								$db->query($conn, $sql_c_up);
+							}
+						}
+						$package_ids[$i] 			= "";
+						$order_price[$i] 			= "";
+						$order_qty[$i] 				= "";
+						$i++;
+					} else {
+						// Check if all required array elements exist
+						$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail (po_id, package_id, order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$ok = $db->query($conn, $sql6);
+						if ($ok) {
+							$k++; // Increment the counter only if the insertion is successful
+						}
+						$i++;
+					}
+				}
+			}
+		}
+		if ($k == 1) {
+			if (isset($error2['msg'])) unset($error2['msg']);
+			$msg2['msg_success'] = "Record has been added successfully.";
+		} else {
+			if (isset($error2['msg'])) unset($error2['msg']);
+			$msg2['msg_success'] = "Record has been added successfully.";
+		}
+		if (isset($stage_status) && $stage_status != "Committed") {
+			$sql_msg 	= " SELECT DISTINCT c.sku_code, a.order_price
+							FROM package_materials_order_detail a
+							INNER JOIN package_materials_order_detail_receive b ON b.po_detail_id = a.id
+							INNER JOIN packages c ON c.id = a.package_id
+ 							WHERE a.po_id	= '" . $id . "'
+							AND IFNULL(b.id, 0) > 0
+							AND a.enabled = 1 AND b.enabled = 1
+							AND a.id NOT IN(" . $all_matches_po_detail_ids . ") ";
+			// echo "<br><br><br><br>" . $sql_msg;
+			$result_msg	= $db->query($conn, $sql_msg);
+			$count_msg 	= $db->counter($result_msg);
+			if ($count_msg > 0) {
+				if (isset($error2['msg'])) {
+					$error2['msg'] .= "<br>The SKU Code/s with following detail already has/have been recieved, Please remove receiving before removing from PO:<br>";
+				} else {
+					$error2['msg'] = "<br>The SKU Code/s with following detail already has/have been recieved, Please remove receiving before removing from PO:<br>";
+				}
+				$row_msg = $db->fetch($result_msg);
+				foreach ($row_msg as $data_msg) {
+					$sku_code				= $data_msg['sku_code'];
+					$order_price_msg		= $data_msg['order_price'];
+					$error2['msg'] .= "<br>SKU: " . $sku_code . ", Price: " . $order_price_msg;
+				}
+			}
 		}
 	}
 }

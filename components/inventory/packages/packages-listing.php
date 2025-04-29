@@ -75,7 +75,7 @@ if (isset($cmd) && ($cmd == 'disabled' || $cmd == 'enabled') && access("delete_p
 }
 $sql_cl		= "	SELECT a.*, b.category_name, c.status_name, GROUP_CONCAT('<br>', d.product_uniqueid) AS compatible_product_uniqueids, b.category_type
 				FROM packages a
-				INNER JOIN product_categories b ON b.id = a.product_category
+				LEFT JOIN product_categories b ON b.id = a.product_category
 				LEFT JOIN inventory_status c ON c.id = a.inventory_status
 				LEFT JOIN products d ON  FIND_IN_SET(d.id, a.product_ids)
 				WHERE 1=1 ";
@@ -313,7 +313,7 @@ $page_heading 	= "List of Packages / Parts";
 										<div class="text_align_right">
 											<?php
 											$hide_column 	= "Devices Compatible";
-											$table_columns	= array('SNo', 'SKU Code', 'Package Name / Description', 'Category', 'Category Type', 'Devices Compatible', 'Quantity', 'Avg Cost', 'Case Pack', 'Action');
+											$table_columns	= array('SNo', '-', 'SKU Code', 'Package Name / Description', 'Category', 'Category Type', 'Devices Compatible', 'Quantity', 'Avg Cost', 'Case Pack', 'Action');
 											$k 				= 0;
 											foreach ($table_columns as $data_c1) {
 												$checked = "checked";
@@ -373,13 +373,19 @@ $page_heading 	= "List of Packages / Parts";
 																	$column_no++; ?>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																	<label>
-																		<input type="checkbox" name="record_ids[]" id="record_ids[]" value="<?= $id; ?>" <?php
-																																							if (isset($record_ids) && in_array($id, $record_ids)) {
-																																								echo "checked";
-																																							} ?> class="checkbox filled-in" />
-																		<span></span>
-																	</label>
+																	<?php
+																	if ($data['stock_in_hand'] == '0') { ?>
+																		<label>
+																			<input type="checkbox" name="record_ids[]" id="record_ids[]" value="<?= $id; ?>" <?php
+																																								if (isset($record_ids) && in_array($id, $record_ids)) {
+																																									echo "checked";
+																																								} ?> class="checkbox filled-in" />
+																			<span></span>
+																		</label>
+																	<?php }
+																	$column_no++; ?>
+																</td>
+																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																	<?php echo $data['sku_code'];
 																	$column_no++; ?>
 																</td>
@@ -421,16 +427,18 @@ $page_heading 	= "List of Packages / Parts";
 																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>" title="Edit">
 																			<i class="material-icons dp48">edit</i>
 																		</a> &nbsp;&nbsp;
+																		<?php }
+																	if ($data['stock_in_hand'] == '0') {
+																		if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>" title="Enable">
+																				<i class="material-icons dp48">add</i>
+																			</a> &nbsp;&nbsp;
+																		<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
+																				<i class="material-icons dp48">delete</i>
+																			</a>&nbsp;&nbsp;
 																	<?php }
-																	if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>" title="Enable">
-																			<i class="material-icons dp48">add</i>
-																		</a> &nbsp;&nbsp;
-																	<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" title="Disable" onclick="return confirm('Are you sure, You want to delete this record?')">
-																			<i class="material-icons dp48">delete</i>
-																		</a>&nbsp;&nbsp;
-																	<?php } ?>
+																	} ?>
 																</td>
 															</tr>
 													<?php $i++;

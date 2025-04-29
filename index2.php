@@ -447,6 +447,12 @@ if (isset($_SESSION["username"]) && isset($_SESSION["user_id"]) && isset($_SESSI
 				background-position: right center !important;
 				/* Gradient animation on hover */
 			}
+
+			.desc_po_detail {
+				padding: 0px !important;
+				min-height: 1rem !important;
+				height: 2rem !important;
+			}
 		</style>
 	</head>
 	<!-- END: Head-->

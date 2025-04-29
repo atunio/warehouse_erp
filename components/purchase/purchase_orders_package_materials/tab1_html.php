@@ -146,7 +146,8 @@
                             </div>
                             <?php if (($cmd == 'add' && access("add_perm") == 1)) { ?>
                                 <div class="row">
-                                    <div class="input-field col m6 s12">
+                                    <div class="input-field col m2 s12"></div>
+                                    <div class="input-field col m2 s12">
                                         <button class="btn cyan waves-effect waves-light right custom_btn_size" type="submit" name="action"><?php echo $button_val; ?>
                                             <i class="material-icons right">send</i>
                                         </button>
@@ -196,6 +197,7 @@
                                 </thead>
                                 <tbody>
                                     <?php
+                                    $product_detail = array();
                                     if (isset($id) && $id > 0) {
                                         unset($package_ids);
                                         unset($order_qty);
@@ -204,7 +206,9 @@
                                         unset($case_pack);
                                         $sql_ee1        = " SELECT a.*
                                                             FROM package_materials_order_detail a
-                                                            WHERE a.po_id = '" . $id . "' AND a.enabled 			= 1 ";  //echo $sql_ee1;
+                                                            WHERE a.po_id   = '" . $id . "' 
+                                                            AND a.enabled   = 1 ";
+                                        //echo $sql_ee1;
                                         $result_ee1        = $db->query($conn, $sql_ee1);
                                         $count_ee1      = $db->counter($result_ee1);
                                         if ($count_ee1 > 0) {
@@ -278,7 +282,18 @@
                                                                 ORDER BY a.package_name, b.category_name";
                                         $result1         = $db->query($conn, $sql1);
                                         $count1         = $db->counter($result1);
-                                    ?>
+
+                                        if (isset(${$field_name}[$i - 1])) { ?>
+                                            <input type="hidden" name="product_detail[<?= $i ?>][0]" Value="<?= ${$field_name}[$i - 1]; ?>" />
+                                            <?php
+                                            if (isset($order_price[$i - 1])) { ?>
+                                                <input type="hidden" name="product_detail[<?= $i ?>][1]" Value="<?= $order_price[$i - 1]; ?>" />
+                                            <?php
+                                            } else { ?>
+                                                <input type="hidden" name="product_detail[<?= $i ?>][1]" Value="" />
+                                        <?php
+                                            }
+                                        } ?>
                                         <tr class="dynamic-row" id="row_<?= $i; ?>" <?php echo $style; ?>>
                                             <td>
                                                 <select <?php echo $disabled;
@@ -302,9 +317,9 @@
                                                 $field_id       = "productpodesc_" . $i;
                                                 ?>
                                                 <textarea <?php echo $disabled;
-                                                            echo $readonly; ?> id="<?= $field_id; ?>" name="<?= $field_name; ?>[]" class="materialize-textarea validate "><?php if (isset($product_po_desc[$i - 1])) {
-                                                                                                                                                                                echo $product_po_desc[$i - 1];
-                                                                                                                                                                            } ?></textarea>
+                                                            echo $readonly; ?> id="<?= $field_id; ?>" name="<?= $field_name; ?>[]" class="materialize-textarea validate desc_po_detail"><?php if (isset($product_po_desc[$i - 1])) {
+                                                                                                                                                                                            echo $product_po_desc[$i - 1];
+                                                                                                                                                                                        } ?></textarea>
 
                                             </td>
                                             <td>

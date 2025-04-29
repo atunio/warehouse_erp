@@ -324,14 +324,16 @@ $page_heading 	= "List of Product Categories";
 																	$column_no++; ?>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																	<label>
-																		<input type="checkbox" name="record_ids[]" id="record_ids[]" value="<?= $id; ?>" <?php
-																																							if (isset($record_ids) && in_array($id, $record_ids)) {
-																																								echo "checked";
-																																							} ?> class="checkbox filled-in" />
-																		<span></span>
-																	</label>
 																	<?php
+																	if ($data['category_name'] != "No Category") { ?>
+																		<label>
+																			<input type="checkbox" name="record_ids[]" id="record_ids[]" value="<?= $id; ?>" <?php
+																																								if (isset($record_ids) && in_array($id, $record_ids)) {
+																																									echo "checked";
+																																								} ?> class="checkbox filled-in" />
+																			<span></span>
+																		</label>
+																	<?php }
 																	if ($data['category_name'] != "") {
 																		echo ucwords(strtolower($data['category_name']));
 																	}
@@ -346,20 +348,22 @@ $page_heading 	= "List of Product Categories";
 																</td>
 																<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]); ?>">
 																	<?php
-																	if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
-																			<i class="material-icons dp48">edit</i>
-																		</a> &nbsp;&nbsp;
+																	if ($data['category_name'] != "No Category") {
+																		if ($data['enabled'] == 1 && access("view_perm") == 1) { ?>
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&id=" . $id) ?>">
+																				<i class="material-icons dp48">edit</i>
+																			</a> &nbsp;&nbsp;
+																		<?php }
+																		if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
+																				<i class="material-icons dp48">add</i>
+																			</a> &nbsp;&nbsp;
+																		<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
+																			<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
+																				<i class="material-icons dp48">delete</i>
+																			</a>&nbsp;&nbsp;
 																	<?php }
-																	if ($data['enabled'] == 0 && access("edit_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=enabled&id=" . $id) ?>">
-																			<i class="material-icons dp48">add</i>
-																		</a> &nbsp;&nbsp;
-																	<?php } else if ($data['enabled'] == 1 && access("delete_perm") == 1) { ?>
-																		<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing&cmd=disabled&id=" . $id) ?>" onclick="return confirm('Are you sure, You want to delete this record?')">
-																			<i class="material-icons dp48">delete</i>
-																		</a>&nbsp;&nbsp;
-																	<?php } ?>
+																	} ?>
 																</td>
 															</tr>
 													<?php $i++;

@@ -7,7 +7,7 @@
         <div class="row">
             <div class="input-field col m6 s12" style="margin-top: 3px; margin-bottom: 3px;">
                 <h6 class="media-heading">
-                    <?= $general_heading; ?> --> Logistics
+                    <?= $general_heading; ?> --> Receive
                 </h6>
             </div>
             <div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
@@ -71,19 +71,7 @@
                 <div class="card-panel">
                     <div class="row">
                         <div class="col m6 s12">
-                            <h5>Receive Items</h5>
-                        </div>
-                        <div class="col m6 s12 show_receive_as_category_show_btn" style="display: none <?php if (isset($is_Submit_tab3) && $is_Submit_tab3 == 'Y') {
-                                                                                                            //echo "display: none;";
-                                                                                                        } else {;
-                                                                                                        } ?>">
-                            <a href="javascript:void(0)" class="show_receive_as_category_section">Show Form</a>
-                        </div>
-                        <div class="col m6 s12 show_receive_as_category_hide_btn" style="display: none  <?php if (isset($is_Submit_tab3) && $is_Submit_tab3 == 'Y') {;
-                                                                                                        } else {
-                                                                                                            //echo "display: none;";
-                                                                                                        } ?>">
-                            <a href="javascript:void(0)" class="hide_receive_as_category_section">Hide Form</a>
+                            <h6>Receive Items</h6>
                         </div>
                     </div>
                     <div id="receive_as_category_section" style="<?php if (isset($is_Submit_tab3) && $is_Submit_tab3 == 'Y') {;
@@ -129,7 +117,7 @@
                                                                                                                                                                         echo ${$field_name . "_valid"};
                                                                                                                                                                     } ?>">
                                         <?php
-                                        if ($count_r2_2 > 1) { ?>
+                                        if ($count_r2_2 > 1 && $_SERVER['HTTP_HOST'] != HTTP_HOST_IP) { ?>
                                             <option value="">Select</option>
                                             <?php
                                         }

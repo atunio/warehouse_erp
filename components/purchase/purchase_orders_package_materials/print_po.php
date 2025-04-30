@@ -142,11 +142,12 @@ if ($counter_ee1 > 0) {
 	$s_address				= $row_ee1[0]['s_address'];
 	$compnay_phone_no		= $row_ee1[0]['compnay_phone_no'];
 }
-$sql_ee1 = "SELECT   a.*, c.po_no,c.po_date, c.vender_invoice_no, d.vender_name, d.address, d.phone_no
+$sql_ee1 = "SELECT   a.*, c.po_no,c.po_date, d.vender_name, d.address, d.phone_no
 			FROM  package_materials_order_detail a
 			INNER JOIN package_materials_orders c ON c.id = a.po_id
 			INNER JOIN venders d ON d.id = c.vender_id 
 			WHERE a.po_id = '" . $id . "'
+			AND a.enabled = 1
 			GROUP BY a.po_id ";
 $result_ee11 	= $db->query($conn, $sql_ee1);
 $counter_ee11	= $db->counter($result_ee11);
@@ -158,7 +159,6 @@ if ($counter_ee11 > 0) {
 	$phone_no			= $row_ee11[0]['phone_no'];
 	$address			= $row_ee11[0]['address'];
 	$po_id				= $row_ee11[0]['po_id'];
-	$vender_invoice_no	= $row_ee11[0]['vender_invoice_no'];
 
 	$report_data = '<div class="">
 						<div class="header">
@@ -170,7 +170,7 @@ if ($counter_ee11 > 0) {
 									<td>
 										<p align="center"><img src="../../../app-assets/images/logo/' . $company_logo . '" style="width:50px;height:50px;"></p>
 									</td>
-									<td>
+									<td width="50%">
 										<p>' . $s_address . ',<br>Phone: ' . $compnay_phone_no . '</p>
 									</td>
 									<td width="2%"></td>
@@ -184,10 +184,6 @@ if ($counter_ee11 > 0) {
 												<tr>
 													<td><strong>PO Date: </strong></td>
 													<td><p>' . dateformat2($po_date) . '</p></td>
-												</tr> 
-												<tr>
-													<td><strong>Vendor Invoice#: </strong></td>
-													<td><p>' . $vender_invoice_no . '</p></td>
 												</tr> 
 											</tbody>
 										</table>
@@ -230,14 +226,15 @@ if ($counter_ee11 > 0) {
 							</thead>
 							<tbody>';
 
-	$sql_sub = "SELECT  b1.order_price, b1.product_po_desc, b1.order_qty,
-										c.package_name, b.order_status, d.category_name,c.case_pack
-								FROM package_materials_orders b 
-								INNER JOIN `package_materials_order_detail` b1 ON b1.po_id = b.id 
-								INNER JOIN packages c ON c.id = b1.package_id
-								LEFT JOIN product_categories d ON d.id = c.product_category
- 								WHERE b.id = '" . $po_id . "'
-								ORDER BY b1.id"; //echo $sql_sub;die;
+	$sql_sub 		= " SELECT  b1.order_price, b1.product_po_desc, b1.order_qty,
+								c.package_name, b.order_status, d.category_name,c.case_pack
+						FROM package_materials_orders b 
+						INNER JOIN `package_materials_order_detail` b1 ON b1.po_id = b.id 
+						INNER JOIN packages c ON c.id = b1.package_id
+						LEFT JOIN product_categories d ON d.id = c.product_category
+						WHERE b.id = '" . $po_id . "'
+						AND b1.enabled = 1
+						ORDER BY b1.id"; //echo $sql_sub;die;
 	$result_sub 	= $db->query($conn, $sql_sub);
 	$counter_sub	= $db->counter($result_sub);
 	$sub_total = $total = $sum_order_qty = $sum_value = 0;

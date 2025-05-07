@@ -401,8 +401,10 @@
                                                                                     if ($count_pd03 > 0) {
                                                                                         $row_pd03 = $db->fetch($result_pd03);
                                                                                         foreach ($row_pd03 as $data_pd03) {
-                                                                                            $product_model_no_fetch_array = explode(", ", $data_pd03['product_model_no']); ?>
-                                                                                            <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if (in_array($phone_check_model_no, $product_model_no_fetch_array)) {
+                                                                                            if ($data_pd03['product_model_no'] != "") {
+                                                                                                $product_model_no_fetch_array = explode(", ", $data_pd03['product_model_no']);
+                                                                                            } ?>
+                                                                                            <option value="<?php echo $data_pd03['product_uniqueid']; ?>" <?php if (isset($product_model_no_fetch_array) && in_array($phone_check_model_no, $product_model_no_fetch_array)) {
                                                                                                                                                                 echo " selected ";
                                                                                                                                                             } ?>>
                                                                                                 ProductID: <?php echo $data_pd03['product_uniqueid']; ?>, Model#: <?php echo $data_pd03['product_model_no']; ?>, (<?php echo $data_pd03['category_name']; ?> )

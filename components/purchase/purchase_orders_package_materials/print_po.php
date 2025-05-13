@@ -216,18 +216,17 @@ if ($counter_ee11 > 0) {
 						<table class="table1">
 							<thead>
 								<tr>
+									<th>SKU Code</th>
 									<th>Package/Part</th>
-									<th>Case Pack</th>
-									<th>Total Case Pack</th>
-									<th>Qty</th>
 									<th>Price</th>
+									<th>Qty</th>
 									<th>Value</th>
 								</tr>
 							</thead>
 							<tbody>';
 
 	$sql_sub 		= " SELECT  b1.order_price, b1.product_po_desc, b1.order_qty,
-								c.package_name, b.order_status, d.category_name,c.case_pack
+								c.package_name, c.sku_code, b.order_status, d.category_name,c.case_pack
 						FROM package_materials_orders b 
 						INNER JOIN `package_materials_order_detail` b1 ON b1.po_id = b.id 
 						INNER JOIN packages c ON c.id = b1.package_id
@@ -242,6 +241,7 @@ if ($counter_ee11 > 0) {
 		$row_sub				= $db->fetch($result_sub);
 		foreach ($row_sub as $data_sub) {
 			$package_name			= remove_special_character($data_sub['package_name']);
+			$sku_code				= $data_sub['sku_code'];
 			$category_name			= $data_sub['category_name'];
 			$order_price			= $data_sub['order_price'];
 			$order_qty				= $data_sub['order_qty'];
@@ -256,11 +256,10 @@ if ($counter_ee11 > 0) {
 			$sum_value			   += $value;
 			$report_data .= '
 								<tr>
+									<td>' . $sku_code . '</td>
  									<td>' . $package_name . ' (' . $category_name . ') </td>
-									<td>' . ($case_pack) . '</td>
-									<td>' . ceil($totat_case_pack) . '</td>
-									<td>' . $order_qty . ' </td>
 									<td>' . number_format($order_price, 2) . '</td>
+  									<td>' . $order_qty . ' </td>
 									<td>' . number_format($value, 2) . '</td>
 								</tr>';
 		}
@@ -269,7 +268,6 @@ if ($counter_ee11 > 0) {
 									<tr> 
 										<td colspan="3"></td>
 										<td>' . $sum_order_qty . '</td>
-										<td></td>
 										<td><b>' . number_format($sum_value, 2) . '</b></td>
 									</tr>';
 

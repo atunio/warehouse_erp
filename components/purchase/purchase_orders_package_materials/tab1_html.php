@@ -211,6 +211,7 @@
                                         //echo $sql_ee1;
                                         $result_ee1        = $db->query($conn, $sql_ee1);
                                         $count_ee1      = $db->counter($result_ee1);
+                                        $total_products_in_po = $count_ee1;
                                         if ($count_ee1 > 0) {
                                             $row_ee1    = $db->fetch($result_ee1);
                                             foreach ($row_ee1 as $data2) {
@@ -252,11 +253,15 @@
                                         $readonly = "readonly='readonly'";
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
-                                    for ($i = 1; $i <= 10; $i++) {
+                                    $max_products = 25;
+                                    if (isset($total_products_in_po) && $total_products_in_po >= $max_products) {
+                                        $max_products = $total_products_in_po + 10;
+                                    }
+                                    for ($i = 1; $i <= $max_products; $i++) {
                                         $field_name     = "package_ids";
                                         $field_id       = "packageids_" . $i;
-                                        $style_btn = '';
-                                        $style = "";
+                                        $style_btn      = '';
+                                        $style          = "";
 
                                         if (!isset(${$field_name}[$i - 1]) || (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "" || ${$field_name}[$i - 1] == 0)) {
                                             if ($i > 1) {

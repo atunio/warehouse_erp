@@ -371,20 +371,7 @@
                                 <thead>
                                     <tr>
                                         <th style="width: %;">
-                                            Product &nbsp;
-                                            <?php
-                                            if (isset($stage_status) && $stage_status != "Committed") { ?>
-                                                <?php
-                                                if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) { ?>
-                                                    <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                        Packages / Parts
-                                                    </a>
-                                                    <?php
-                                                } ?>&nbsp;&nbsp;
-                                                    <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                        <i class="material-icons  dp48 md-36">add_circle</i>
-                                                    </a>
-                                                <?php } ?>
+                                            Product
                                         </th>
                                         <th style="width: 150px;">Invoice#</th>
                                         <th style="width: 100px;">Pkg Stock</th>
@@ -412,7 +399,7 @@
                                     }
                                     $sum_value = $sum_qty =  $sum_price = 0;
                                     $max_products = 25;
-                                    if (isset($total_products_in_po) && $total_products_in_po > $max_products) {
+                                    if (isset($total_products_in_po) && $total_products_in_po >= $max_products) {
                                         $max_products = $total_products_in_po + 10;
                                     }
                                     for ($i = 1; $i <= $max_products; $i++) {
@@ -623,190 +610,205 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <div id="package_parts" style="<?php if (isset($package_ids) && $package_ids > 0) {;
-                                                            } else {
-                                                                echo "display:none;";
-                                                            } ?>">
-                                <br>
-                                <table id="page-length-option2" class="bordered addproducttable" cellpadding="0" cellspacing="0">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: %;">
-                                                Package / Part &nbsp;&nbsp;
-                                                <a class="add-more add-part-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row_part" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
-                                                    <i class="material-icons  dp48 md-36">add_circle</i>
-                                                </a>
-                                            </th>
-                                            <th style="width: 100px;">Qty</th>
-                                            <th style="width: 100px;">Price</th>
-                                            <th style="width: 100px;">Value</th>
-                                            <th style="width: 120px;">Case Pack</th>
-                                            <th style="width: 200px;">Total Case Pack</th>
-                                            <th style="width: 150px;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <input type="hidden" id="total_products_part_in_po" value="<?php if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) {
-                                                                                                        echo "1";
-                                                                                                    } else {
-                                                                                                        echo sizeof($package_ids);
-                                                                                                    } ?>">
-                                        <?php
-                                        $package_detail = array();
-                                        $disabled = $readonly = "";
-                                        if (isset($stage_status) && $stage_status == "Committed") {
-                                            $disabled = "disabled='disabled'";
-                                            $readonly = "readonly='readonly'";
-                                        }
-                                        $sum_part_value = $sum_part_qty =  $sum_part_price = 0;
-                                        for ($i = 1; $i <= 25; $i++) {
-                                            $field_name     = "package_ids";
-                                            $field_id       = "packageids_" . $i;
-                                            $style_btn = '';
-                                            $style = "";
 
-                                            if (!isset(${$field_name}[$i - 1]) || (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "" || ${$field_name}[$i - 1] == 0)) {
-                                                if ($i > 1) {
-                                                    if (isset($package_ids) && sizeof($package_ids) > 0) {
-                                                        $style = 'style="display:none;"';
+                            <?php
+                            if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                <?php
+                                if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) { ?>
+                                    <a class=" btn gradient-45deg-amber-amber waves-effect waves-light custom_btn_size package_material_parts" style="line-height: 32px;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                        Add Packages / Parts
+                                    </a>
+                                    <?php
+                                } ?>&nbsp;&nbsp;
+                                    <a class="add-more add-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                        <i class="material-icons  dp48 md-36">add_circle</i>
+                                    </a>
+                                <?php
+                            } ?>
+                                <div id="package_parts" style="<?php if (isset($package_ids) && $package_ids > 0) {;
+                                                                } else {
+                                                                    echo "display:none;";
+                                                                } ?>">
+                                    <br>
+                                    <table id="page-length-option2" class="bordered addproducttable" cellpadding="0" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: %;">
+                                                    Package / Part &nbsp;&nbsp;
+                                                    <a class="add-more add-part-more-btn2 btn-sm btn-floating waves-effect waves-light cyan first_row_part" style="line-height: 32px; display: none;" id="add-more^0" href="javascript:void(0)" style="display: none;">
+                                                        <i class="material-icons  dp48 md-36">add_circle</i>
+                                                    </a>
+                                                </th>
+                                                <th style="width: 100px;">Qty</th>
+                                                <th style="width: 100px;">Price</th>
+                                                <th style="width: 100px;">Value</th>
+                                                <th style="width: 120px;">Case Pack</th>
+                                                <th style="width: 200px;">Total Case Pack</th>
+                                                <th style="width: 150px;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <input type="hidden" id="total_products_part_in_po" value="<?php if (!isset($package_ids) || (isset($package_ids) && sizeof($package_ids) == 0)) {
+                                                                                                            echo "1";
+                                                                                                        } else {
+                                                                                                            echo sizeof($package_ids);
+                                                                                                        } ?>">
+                                            <?php
+                                            $package_detail = array();
+                                            $disabled = $readonly = "";
+                                            if (isset($stage_status) && $stage_status == "Committed") {
+                                                $disabled = "disabled='disabled'";
+                                                $readonly = "readonly='readonly'";
+                                            }
+                                            $sum_part_value = $sum_part_qty =  $sum_part_price = 0;
+                                            for ($i = 1; $i <= 25; $i++) {
+                                                $field_name     = "package_ids";
+                                                $field_id       = "packageids_" . $i;
+                                                $style_btn = '';
+                                                $style = "";
+
+                                                if (!isset(${$field_name}[$i - 1]) || (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == "" || ${$field_name}[$i - 1] == 0)) {
+                                                    if ($i > 1) {
+                                                        if (isset($package_ids) && sizeof($package_ids) > 0) {
+                                                            $style = 'style="display:none;"';
+                                                        } else {
+                                                            $style = $i === 1 ? '' : 'style="display:none;"';
+                                                        }
+                                                    }
+                                                } else {
+                                                    if (isset($package_ids) && is_array($package_ids) && sizeof($package_ids) > 1) {
+                                                        $style = $i <= sizeof($package_ids) ? '' : 'style="display:none;"';
+                                                        $style_btn = $i <= sizeof($package_ids) ? 'style="display:none;"' : '';
                                                     } else {
                                                         $style = $i === 1 ? '' : 'style="display:none;"';
+                                                        $style_btn = $i === 1 ? 'style="display:none;"' : '';
                                                     }
                                                 }
-                                            } else {
-                                                if (isset($package_ids) && is_array($package_ids) && sizeof($package_ids) > 1) {
-                                                    $style = $i <= sizeof($package_ids) ? '' : 'style="display:none;"';
-                                                    $style_btn = $i <= sizeof($package_ids) ? 'style="display:none;"' : '';
-                                                } else {
-                                                    $style = $i === 1 ? '' : 'style="display:none;"';
-                                                    $style_btn = $i === 1 ? 'style="display:none;"' : '';
-                                                }
-                                            }
-                                            $sql1       = " SELECT b.category_name, GROUP_CONCAT(' ',  c.product_uniqueid) AS product_uniqueids, a.*
+                                                $sql1       = " SELECT b.category_name, GROUP_CONCAT(' ',  c.product_uniqueid) AS product_uniqueids, a.*
                                                             FROM packages a
                                                             LEFT JOIN product_categories b ON b.id = a.product_category
                                                             LEFT JOIN products c ON FIND_IN_SET(c.id, a.product_ids)
                                                             WHERE a.enabled = 1 
                                                             GROUP BY a.id
                                                             ORDER BY a.package_name, b.category_name";
-                                            $result1    = $db->query($conn, $sql1);
-                                            $count1     = $db->counter($result1); ?>
-                                            <tr class="dynamic-row-part" id="row_part_<?= $i; ?>" <?php echo $style; ?>>
-                                                <?php
-                                                if (isset(${$field_name}[$i - 1])) { ?>
-                                                    <input type="hidden" name="package_detail[<?= $i ?>][0]" Value="<?= ${$field_name}[$i - 1]; ?>" />
+                                                $result1    = $db->query($conn, $sql1);
+                                                $count1     = $db->counter($result1); ?>
+                                                <tr class="dynamic-row-part" id="row_part_<?= $i; ?>" <?php echo $style; ?>>
                                                     <?php
-                                                    if (isset($order_part_price[$i - 1])) { ?>
-                                                        <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="<?= $order_part_price[$i - 1]; ?>" />
-                                                    <?php
-                                                    } else { ?>
-                                                        <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="" />
-                                                    <?php
-                                                    }
-                                                    if (isset($order_part_qty[$i - 1])) { ?>
-                                                        <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="<?= $order_part_qty[$i - 1]; ?>" />
-                                                    <?php
-                                                    } else { ?>
-                                                        <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="" />
-                                                <?php
-                                                    }
-                                                } ?>
-                                                <td>
-                                                    <select <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?= $field_name ?>_<?= $i ?>">
-                                                        <option value="">Select a Package</option>
+                                                    if (isset(${$field_name}[$i - 1])) { ?>
+                                                        <input type="hidden" name="package_detail[<?= $i ?>][0]" Value="<?= ${$field_name}[$i - 1]; ?>" />
                                                         <?php
-                                                        if ($count1 > 0) {
-                                                            $row1    = $db->fetch($result1);
-                                                            foreach ($row1 as $data2) { ?>
-                                                                <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
-                                                                                                                                                                                                                                                                                                                        echo "SKU Code: " . $data2['sku_code'];
-                                                                                                                                                                                                                                                                                                                    } ?></option>
-                                                        <?php }
-                                                        } ?>
-                                                        <option value="package_add_modal">+Add New Package/Part</option>
-                                                    </select>
-                                                </td>
-
-                                                <td>
-                                                    <?php
-                                                    $field_name     = "order_part_qty";
-                                                    $field_id       = "orderpartqty_" . $i;
-
-                                                    if (isset($order_part_qty[$i - 1])) {
-                                                        $sum_part_qty += $order_part_qty[$i - 1];
-                                                    }
-                                                    ?>
-                                                    <input <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
-                                                                                                                                                            echo ${$field_name}[$i - 1];
-                                                                                                                                                        } ?>" class="validate custom_input order_part_qty">
-                                                </td>
-                                                <td>
-                                                    <?php
-                                                    $field_name     = "order_part_price";
-                                                    $field_id       = "orderpartprice_" . $i;
-                                                    ?>
-                                                    <input <?php echo $disabled;
-                                                            echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
-                                                                                                                                                            echo ${$field_name}[$i - 1];
-                                                                                                                                                        } ?>" class="validate custom_input order_part_price">
-                                                </td>
-                                                <td class="text_align_right">
-                                                    <span id="part_value_<?= $i; ?>">
+                                                        if (isset($order_part_price[$i - 1])) { ?>
+                                                            <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="<?= $order_part_price[$i - 1]; ?>" />
                                                         <?php
-                                                        $part_value = 0;
-                                                        if (isset($order_part_qty[$i - 1]) && isset($order_part_price[$i - 1])) {
-                                                            $part_value =  ($order_part_price[$i - 1] * $order_part_qty[$i - 1]);
-                                                            $sum_part_price += $order_part_price[$i - 1];
+                                                        } else { ?>
+                                                            <input type="hidden" name="package_detail[<?= $i ?>][1]" Value="" />
+                                                        <?php
                                                         }
-                                                        echo number_format($part_value, 2);
-                                                        $sum_part_value += $part_value; ?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i - 1])) {
-                                                                                        echo $case_pack[$i - 1];
-                                                                                    } ?></span>
-                                                </td>
-                                                <td>
-                                                    <span id="total_case_pack_<?= $i; ?>">
+                                                        if (isset($order_part_qty[$i - 1])) { ?>
+                                                            <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="<?= $order_part_qty[$i - 1]; ?>" />
                                                         <?php
-                                                        if (isset($case_pack[$i - 1]) && $case_pack[$i - 1] > 0 && isset($order_part_qty[$i - 1]) && $order_part_qty[$i - 1] > 0) {
-                                                            echo ceil($order_part_qty[$i - 1] / $case_pack[$i - 1]);
-                                                        } ?>
-                                                    </span>
-                                                </td>
-                                                <td colspan="3">
+                                                        } else { ?>
+                                                            <input type="hidden" name="package_detail[<?= $i ?>][2]" Value="" />
                                                     <?php
-                                                    if (isset($stage_status) && $stage_status != "Committed") { ?>
-                                                        <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
-                                                            <i class="material-icons dp48">cancel</i>
-                                                        </a> &nbsp;
-                                                        <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?= $i ?>" href="javascript:void(0)">
-                                                            <i class="material-icons dp48">add_circle</i>
-                                                        </a>&nbsp;&nbsp;
-                                                    <?php } ?>
+                                                        }
+                                                    } ?>
+                                                    <td>
+                                                        <select <?php echo $disabled;
+                                                                echo $readonly; ?> name="<?= $field_name ?>[]" id="<?= $field_id ?>" class="select2-theme browser-default select2-hidden-accessible product_packages <?= $field_name ?>_<?= $i ?>">
+                                                            <option value="">Select a Package</option>
+                                                            <?php
+                                                            if ($count1 > 0) {
+                                                                $row1    = $db->fetch($result1);
+                                                                foreach ($row1 as $data2) { ?>
+                                                                    <option value="<?php echo $data2['id']; ?>" <?php if (isset(${$field_name}[$i - 1]) && ${$field_name}[$i - 1] == $data2['id']) { ?> selected="selected" <?php } ?>><?php echo $data2['package_name']; ?> (<?php echo $data2['category_name']; ?>) - <?php if ($data2['sku_code'] != "") {
+                                                                                                                                                                                                                                                                                                                            echo "SKU Code: " . $data2['sku_code'];
+                                                                                                                                                                                                                                                                                                                        } ?></option>
+                                                            <?php }
+                                                            } ?>
+                                                            <option value="package_add_modal">+Add New Package/Part</option>
+                                                        </select>
+                                                    </td>
+
+                                                    <td>
+                                                        <?php
+                                                        $field_name     = "order_part_qty";
+                                                        $field_id       = "orderpartqty_" . $i;
+
+                                                        if (isset($order_part_qty[$i - 1])) {
+                                                            $sum_part_qty += $order_part_qty[$i - 1];
+                                                        }
+                                                        ?>
+                                                        <input <?php echo $disabled;
+                                                                echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                                echo ${$field_name}[$i - 1];
+                                                                                                                                                            } ?>" class="validate custom_input order_part_qty">
+                                                    </td>
+                                                    <td>
+                                                        <?php
+                                                        $field_name     = "order_part_price";
+                                                        $field_id       = "orderpartprice_" . $i;
+                                                        ?>
+                                                        <input <?php echo $disabled;
+                                                                echo $readonly; ?> name="<?= $field_name; ?>[]" type="number" id="<?= $field_id; ?>" value="<?php if (isset(${$field_name}[$i - 1])) {
+                                                                                                                                                                echo ${$field_name}[$i - 1];
+                                                                                                                                                            } ?>" class="validate custom_input order_part_price">
+                                                    </td>
+                                                    <td class="text_align_right">
+                                                        <span id="part_value_<?= $i; ?>">
+                                                            <?php
+                                                            $part_value = 0;
+                                                            if (isset($order_part_qty[$i - 1]) && isset($order_part_price[$i - 1])) {
+                                                                $part_value =  ($order_part_price[$i - 1] * $order_part_qty[$i - 1]);
+                                                                $sum_part_price += $order_part_price[$i - 1];
+                                                            }
+                                                            echo number_format($part_value, 2);
+                                                            $sum_part_value += $part_value; ?>
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="case_pack_<?= $i; ?>"><?php if (isset($case_pack[$i - 1])) {
+                                                                                            echo $case_pack[$i - 1];
+                                                                                        } ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span id="total_case_pack_<?= $i; ?>">
+                                                            <?php
+                                                            if (isset($case_pack[$i - 1]) && $case_pack[$i - 1] > 0 && isset($order_part_qty[$i - 1]) && $order_part_qty[$i - 1] > 0) {
+                                                                echo ceil($order_part_qty[$i - 1] / $case_pack[$i - 1]);
+                                                            } ?>
+                                                        </span>
+                                                    </td>
+                                                    <td colspan="3">
+                                                        <?php
+                                                        if (isset($stage_status) && $stage_status != "Committed") { ?>
+                                                            <a class="remove-row-part btn-sm btn-floating waves-effect waves-light red" style="line-height: 32px;" id="removepartrow_<?= $i ?>" href="javascript:void(0)">
+                                                                <i class="material-icons dp48">cancel</i>
+                                                            </a> &nbsp;
+                                                            <a class="add-more add-more-part-btn btn-sm btn-floating waves-effect waves-light cyan" style="line-height: 32px; display:none;" id="addpartmore_<?= $i ?>" href="javascript:void(0)">
+                                                                <i class="material-icons dp48">add_circle</i>
+                                                            </a>&nbsp;&nbsp;
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
+                                            <?php }
+                                            $field_name     = "product_id_for_package_material";
+                                            ?>
+                                            <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
+                                            <tr>
+                                                <td class="text_align_right"><b>Total: </b></td>
+                                                <td class="text_align_left">
+                                                    <span id="total_part_qty"><?php echo ($sum_part_qty); ?></b></span>
                                                 </td>
+                                                <td></td>
+                                                <td class="text_align_right"><b>
+                                                        <span id="total_part_value"><?php echo number_format($sum_part_value, 2); ?></b></span>
+                                                </td>
+                                                <td colspan="3"></td>
                                             </tr>
-                                        <?php }
-                                        $field_name     = "product_id_for_package_material";
-                                        ?>
-                                        <input name="<?= $field_name; ?>" type="hidden" id="<?= $field_name; ?>" value="">
-                                        <tr>
-                                            <td class="text_align_right"><b>Total: </b></td>
-                                            <td class="text_align_left">
-                                                <span id="total_part_qty"><?php echo ($sum_part_qty); ?></b></span>
-                                            </td>
-                                            <td></td>
-                                            <td class="text_align_right"><b>
-                                                    <span id="total_part_value"><?php echo number_format($sum_part_value, 2); ?></b></span>
-                                            </td>
-                                            <td colspan="3"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
                     </div>
                 </div>

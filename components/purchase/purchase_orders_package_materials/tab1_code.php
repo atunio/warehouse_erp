@@ -266,12 +266,6 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 		}
 		*/
 
-
-
-
-
-
-
 		$k = 0;
 		if (isset($stage_status) && $stage_status != "Committed") {
 
@@ -279,6 +273,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 			$current_ids 			= implode(',', $filtered_id);
 			$order_qty 				= array_values(array_filter($order_qty));
 			$order_price 			= array_values(array_filter($order_price));
+			$case_pack 			= array_values(array_filter($case_pack));
 
 			$matches_po_detail_ids = array();
 			foreach ($filtered_id as $index => $product) {
@@ -332,6 +327,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 
 					$order_price[$i] 		= isset($order_price[$i]) ? $order_price[$i] : "";
 					$order_qty[$i] 			= isset($order_qty[$i]) ? $order_qty[$i] : "";
+					$case_pack[$i] 			= isset($case_pack[$i]) ? $case_pack[$i] : "";
 
 					$sql_dup 	= " SELECT a.* FROM package_materials_order_detail a 
 									WHERE a.enabled 			= 1
@@ -348,6 +344,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							if ($po_detail_id1 > 0) {
 								$sql_c_up = "UPDATE  package_materials_order_detail SET 	order_qty 			= '" . $order_qty[$i] . "',
 																							order_price			= '" . $order_price[$i] . "',
+																							order_case_pack		= '" . $case_pack[$i] . "',
 																							enabled				= '1',
 																							
 																							update_timezone	= '" . $timezone . "',
@@ -361,11 +358,12 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 						$package_ids[$i] 			= "";
 						$order_price[$i] 			= "";
 						$order_qty[$i] 				= "";
+						$case_pack[$i] 				= "";
 						$i++;
 					} else {
 						// Check if all required array elements exist
-						$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail (po_id, package_id, order_qty, order_price, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
-								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
+						$sql6 = "INSERT INTO " . $selected_db_name . ".package_materials_order_detail (po_id, package_id, order_qty, order_price, order_case_pack, add_date, add_by, add_by_user_id, add_ip, add_timezone) 
+								 VALUES ('" . $id . "', '" . $data_p . "', '" . $order_qty[$i] . "', '" . $order_price[$i] . "', '" . $case_pack[$i] . "', '" . $add_date . "', '" . $_SESSION['username'] . "', '" . $_SESSION['user_id'] . "', '" . $add_ip . "', '" . $timezone . "')";
 						$ok = $db->query($conn, $sql6);
 						if ($ok) {
 							$k++; // Increment the counter only if the insertion is successful

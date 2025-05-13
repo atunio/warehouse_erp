@@ -84,7 +84,10 @@ if ($cmd == 'edit' && isset($id) && $id > 0) {
 	$inventory_status		= $row_ee[0]['inventory_status'];
 	$total_stock			= $row_ee[0]['total_stock'];
 	$product_uniqueid		= $row_ee[0]['product_uniqueid'];
-	$product_model_no 		= explode(",", $row_ee[0]['product_model_no']);
+	$product_model_no 		= array();
+	if ($row_ee[0]['product_model_no'] != "") {
+		$product_model_no	= explode(",", $row_ee[0]['product_model_no']);
+	}
 	$product_type			= $row_ee[0]['product_type'];
 }
 if ($cmd2 == 'edit' && isset($detail_id) && $detail_id > 0) {

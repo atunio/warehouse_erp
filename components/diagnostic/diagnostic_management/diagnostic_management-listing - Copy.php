@@ -1,6 +1,6 @@
 <?php
 if (!isset($module)) {
-	require_once('../../../../conf/functions.php');
+	require_once('../../../conf/functions.php');
 	disallow_direct_school_directory_access();
 }
 
@@ -9,29 +9,29 @@ $selected_db_name 		= $_SESSION["db_name"];
 $subscriber_users_id 	= $_SESSION["subscriber_users_id"];
 $user_id 				= $_SESSION["user_id"];
 
-
-$sql_cl 		= "	SELECT DISTINCT a2.id, a2.assignment_no, b.po_no, a.po_id, b2.sub_location_name, b2.sub_location_type,
-							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(c2.first_name, ''), ' ', COALESCE(c2.middle_name, ''), ' ', COALESCE(c2.last_name, ''), ' (', COALESCE(c2.username, ''), ')') ) AS task_user_details,
-							a2.add_date, g.vender_name
-					FROM users_bin_for_diagnostic a2
-					INNER JOIN warehouse_sub_locations b2 ON b2.id = a2.location_id
-					INNER JOIN users c2 ON c2.id = a2.bin_user_id 
-					INNER JOIN purchase_order_detail_receive a ON a.sub_location_id  = b2.id
-					INNER JOIN purchase_orders b ON b.id = a.po_id
- 					INNER JOIN venders g ON g.id = b.vender_id  
-					WHERE a.enabled = 1
-					AND a2.id = '" . $detail_id . "' 
-					GROUP BY a.po_id ";
-$result_cl 		= $db->query($conn, $sql_cl);
-$count_cl 		= $db->counter($result_cl);
-$page_heading 	= "Diagnostic";
+$sql_cl			= " SELECT a.id, a.assignment_no, a.location_id, b.sub_location_name, b.sub_location_type, 
+							GROUP_CONCAT(DISTINCT CONCAT( '', COALESCE(d.first_name, ''), ' ', COALESCE(d.middle_name, ''), ' ', COALESCE(d.last_name, ''), ' (', COALESCE(d.username, ''), ')') ) AS task_user_details,
+							a.add_date
+					FROM users_bin_for_diagnostic a
+					INNER JOIN warehouse_sub_locations b ON b.id = a.location_id
+					INNER JOIN users d ON d.id = a.bin_user_id 
+					INNER JOIN purchase_order_detail_receive e ON e.sub_location_id = a.location_id
+					WHERE 1 = 1 ";
+if (po_permisions("ALL Bins") != '1') {
+	$sql_cl	.= " AND a.bin_user_id = '" . $_SESSION['user_id'] . "' ";
+}
+$sql_cl	.= "GROUP BY a.id
+			ORDER BY a.order_by";
+// echo $sql_cl;
+$result_cl		= $db->query($conn, $sql_cl);
+$count_cl		= $db->counter($result_cl);
+$page_heading 	= "Bins For Diagnostic";
 ?>
 <!-- BEGIN: Page Main-->
 <div id="main" class="<?php echo $page_width; ?>">
 	<div class="row">
 		<div class="content-wrapper-before gradient-45deg-indigo-purple"></div>
 		<div class="col s12">
-			<!-- <div class="container"> -->
 			<div class="section section-data-tables">
 				<div class="row">
 					<div class="col s12">
@@ -42,14 +42,6 @@ $page_heading 	= "Diagnostic";
 										<h6 class="media-heading">
 											<?php echo $page_heading; ?>
 										</h6>
-									</div>
-									<div class="input-field col m6 s12" style="text-align: right; margin-top: 3px; margin-bottom: 3px;">
-										<?php
-										if (access("add_perm") == 1) { ?>
-											<a class="btn cyan waves-effect waves-light custom_btn_size" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=listing") ?>">
-												List
-											</a>
-										<?php } ?>
 									</div>
 								</div>
 							</div>
@@ -88,11 +80,12 @@ $page_heading 	= "Diagnostic";
 											</div>
 										</div>
 									</div>
-								<?php } ?><br>
+								<?php } ?>
+								<br>
 								<div class="row">
 									<div class="text_align_right">
 										<?php
-										$table_columns	= array('SNo', 'AssignmentNo',  'Assignment Date', 'PO No', 'Vendor', 'Location', 'User Detail', 'Actions');
+										$table_columns	= array('SNo', 'Location / Bin', 'AssignmentNo', 'Task Users', 'Assign Date', 'Actions');
 										$k 				= 0;
 										foreach ($table_columns as $data_c1) { ?>
 											<label>
@@ -125,49 +118,42 @@ $page_heading 	= "Diagnostic";
 											<tbody>
 												<?php
 												$i = 0;
-												$col_no = 0;
 												if ($count_cl > 0) {
 													$row_cl = $db->fetch($result_cl);
 													foreach ($row_cl as $data) {
-														$detail_id2 			= $data['po_id'];
-														$bin_for_diagnostic_id 	= $data['id']; ?>
+														$col_no = 0;
+														$id = $data['id']; ?>
 														<tr>
 															<td style="text-align: center;" class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php echo $i + 1;
 																$col_no++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
+																<?php $col_no++;
+																echo $data['sub_location_name'];
+																if ($data['sub_location_type'] != "") {
+																	echo "(" . ucwords(strtolower($data['sub_location_type'])) . ")";
+																} ?>
+															</td>
+															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
 																<?php echo $data['assignment_no'];
 																$col_no++; ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
-																<?php echo dateformat2($data['add_date']);
-																$col_no++; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['po_no'];
-																																$col_no++; ?>
+																<?php $col_no++;
+																if ($data['task_user_details'] != "   ()") {
+																	echo "" . $data['task_user_details'] . "";
+																} ?>
 															</td>
 															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>">
-																<?php echo ($data['vender_name']);
+																<?php echo "" . dateformat2($data['add_date']) . "";
 																$col_no++; ?>
 															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]);
-																			$col_no++; ?>">
-																<?php echo $data['sub_location_name']; ?>
-																<?php if ($data['sub_location_type'] != "") echo " (" . $data['sub_location_type'] . ")"; ?>
-															</td>
-															<td class="col-<?= set_table_headings($table_columns[$col_no]); ?>"><?php echo $data['task_user_details'];
-																																$col_no++; ?>
-															</td>
 															<td class="text-align-center col-<?= set_table_headings($table_columns[$col_no]); ?>">
-																<?php
-																if (po_permisions2("Diagnostic", 10) == 1) { ?>
-																	<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=10&page=profile&cmd=edit&id=" . $detail_id2 . "&assignment_id=" . $bin_for_diagnostic_id . "&active_tab=tab6") ?>">
-																		<i class="material-icons dp48">list</i>
-																	</a>
-																<?php }
-																$col_no++;
-																?>
+																<?php $col_no++; ?>
+																<a class="" href="?string=<?php echo encrypt("module=" . $module . "&module_id=" . $module_id . "&page=add&cmd=edit&detail_id=" . $id . "&cmd2=add") ?>">
+																	<i class="material-icons dp48">list</i>
+																</a>
 															</td>
 														</tr>
 												<?php $i++;
@@ -190,9 +176,6 @@ $page_heading 	= "Diagnostic";
 			</div><!-- START RIGHT SIDEBAR NAV -->
 
 			<?php include('sub_files/right_sidebar.php'); ?>
-			<!-- </div> -->
-
-			<!-- <div class="content-overlay"></div> -->
 		</div>
 	</div>
 </div>

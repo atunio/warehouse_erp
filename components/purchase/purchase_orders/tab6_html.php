@@ -1619,9 +1619,6 @@
                                                                     }
                                                                     if ($mdm != '') {
                                                                         echo "MDM: " . $mdm . "<br>";
-                                                                    }
-                                                                    if ($failed != '') {
-                                                                        echo "Failed: " . $failed . "<br>";
                                                                     } ?>
                                                                 </td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
@@ -1663,9 +1660,23 @@
                                                                     <?php
                                                                     $col++;
                                                                     // if ($price != '') { echo "Price: " . number_format($price, 2) . "<br>"; }
-                                                                    if ($defectsCode != '') {
-                                                                        echo "Defects: " . $defectsCode . "<br>";
-                                                                    } ?>
+                                                                    // if ($defectsCode != '') { echo "Defects: " . $defectsCode . "<br>"; }
+                                                                    if ($failed != '') {
+                                                                        $defects_or_notes_array = explode(",", $failed);
+                                                                        foreach ($defects_or_notes_array as $data_codes) {
+                                                                            $sql_defects_or_note    = "SELECT * FROM defect_codes WHERE FIND_IN_SET('" . $data_codes . "', defect_code) ORDER BY ID LIMIT 1";
+                                                                            $result_defects_or_note = $db->query($conn, $sql_defects_or_note);
+                                                                            $count_defects_or_note  = $db->counter($result_defects_or_note);
+                                                                            if ($count_defects_or_note > 0) {
+                                                                                $row_dfc = $db->fetch($result_defects_or_note);
+                                                                                echo "" . $row_dfc[0]['defect_code_name'] . "<br>";
+                                                                                $one_code_exist = 1;
+                                                                            } else {
+                                                                                echo "Failed: " . $data_codes . "<br>";
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    ?>
                                                                 </td>
                                                                 <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[$col]); ?>">
                                                                     <?php

@@ -299,7 +299,7 @@ $page_heading 	= "List of Defect Codes";
 																	$column_no++; ?>
 																</td>
 																<td class="col-<?= set_table_headings($table_columns[$column_no]); ?>">
-																	<?php echo ucwords(strtolower($data['defect_code']));
+																	<?php echo (($data['defect_code']));
 																	$column_no++; ?>
 																</td>
 																<td class="text-align-center col-<?= set_table_headings($table_columns[$column_no]); ?>">

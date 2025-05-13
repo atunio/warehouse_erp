@@ -154,7 +154,7 @@
                                     c.product_desc, d.category_name, 
                                     e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
                                     i.sub_location_name AS sub_location_name_after_diagnostic,
-                                    c1.order_price, h.status_name, c.product_uniqueid
+                                    c1.order_price, h.status_name, c.product_uniqueid, a.failed
                                 FROM purchase_order_detail_receive a
 	                            LEFT JOIN purchase_order_detail_receive_rma  a1 ON a.id = a1.receive_id
                                 INNER JOIN purchase_order_detail c1 ON c1.id = a.po_detail_id
@@ -177,7 +177,7 @@
                                     c.product_desc, d.category_name, 
                                     e.first_name, e.middle_name, e.last_name, e.username, i.sub_location_name, 
                                     i.sub_location_name AS sub_location_name_after_diagnostic,
-                                    a.price, h.status_name, c.product_uniqueid
+                                    a.price, h.status_name, c.product_uniqueid, a.failed
                                 FROM purchase_order_detail_receive a
 	                            LEFT JOIN purchase_order_detail_receive_rma  a1 ON a.id = a1.receive_id
                                 INNER JOIN purchase_orders d1 ON d1.id = a.po_id
@@ -407,7 +407,7 @@
                                 $field_label    = "Product";
                                 $sql            = " SELECT * FROM(
                                                         SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,
-                                                                c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                                c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price, a.failed
                                                         FROM purchase_order_detail_receive a
                                                         INNER JOIN purchase_order_detail b ON b.id = a.po_detail_id AND b.enabled = 1
                                                         INNER JOIN products c ON c.id = b.product_id
@@ -425,7 +425,7 @@
                                                         UNION ALL 
 
                                                         SELECT  a.id, a.po_detail_id, a.edit_lock, a.serial_no_barcode, c.product_uniqueid AS base_product_id,
-                                                            c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price
+                                                            c.product_desc, d.category_name,  c.product_uniqueid, a.is_rma_processed, a.price, a.failed
                                                         FROM purchase_order_detail_receive a
                                                         INNER JOIN products c ON c.id = a.product_id
                                                         LEFT JOIN product_categories d ON d.id = c.product_category
@@ -785,6 +785,7 @@
                                                 $order_price                = $data['order_price'];
                                                 $is_rma_processed           = $data['is_rma_processed'];
                                                 $is_rma_added               = $data['is_rma_added'];
+                                                $failed                     = $data['failed'];
                                                 $is_diagnost                = 0; ?>
                                                 <tr>
                                                     <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[0]); ?>">
@@ -883,9 +884,25 @@
                                                             echo "Processor: " . $processor;
                                                         } ?>
                                                         <br>
-                                                        <?php if ($defectsCode != '') {
-                                                            echo "Defect: " . substr($defectsCode, 0, 50) . "..<br>";
-                                                        } ?>
+                                                        <?php
+                                                        // if ($defectsCode != '') { echo "Defect: " . substr($defectsCode, 0, 50) . "..<br>";}
+                                                        if ($failed != '') {
+                                                            $defects_or_notes_array = explode(",", $failed);
+                                                            foreach ($defects_or_notes_array as $data_codes) {
+                                                                $sql_defects_or_note    = "SELECT * FROM defect_codes WHERE FIND_IN_SET('" . $data_codes . "', defect_code) ORDER BY ID LIMIT 1";
+                                                                $result_defects_or_note = $db->query($conn, $sql_defects_or_note);
+                                                                $count_defects_or_note  = $db->counter($result_defects_or_note);
+                                                                if ($count_defects_or_note > 0) {
+                                                                    $row_dfc = $db->fetch($result_defects_or_note);
+                                                                    echo "" . $row_dfc[0]['defect_code_name'] . "<br>";
+                                                                    $one_code_exist = 1;
+                                                                } else {
+                                                                    echo "Failed: " . $data_codes . "<br>";
+                                                                }
+                                                            }
+                                                        }
+
+                                                        ?>
                                                     </td>
                                                     <td style="<?= $td_padding; ?>" class="col-<?= set_table_headings($table_columns[4]); ?>">
                                                         <?php if ($body_grade != '') {

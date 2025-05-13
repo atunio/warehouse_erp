@@ -227,10 +227,17 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 								$count_defects_or_note = 0;
 								$field_name = "defects_or_notes";
 								if ($data1[$field_name] != '' && $data1[$field_name] != NULL  && $data1[$field_name] != '-'  && $data1[$field_name] != 'blank'  && $data1[$field_name] != 'N/A'  && $data1[$field_name] != 'NA'  && $data1[$field_name] != '') {
-									$sql_defects_or_note	= "SELECT * FROM defect_codes WHERE defect_code = '" . $data1[$field_name] . "' ";
-									$result_defects_or_note	= $db->query($conn, $sql_defects_or_note);
-									$count_defects_or_note	= $db->counter($result_defects_or_note);
-									if ($count_defects_or_note == 0) {
+									$one_code_exist = '0';
+									$defects_or_notes_array	= explode("&", $data1[$field_name]);
+									foreach ($defects_or_notes_array as $data_codes) {
+										$sql_defects_or_note		= "SELECT * FROM defect_codes WHERE FIND_IN_SET('" . $data_codes . "', defect_code) ";
+										$result_defects_or_note		= $db->query($conn, $sql_defects_or_note);
+										$count_defects_or_note		= $db->counter($result_defects_or_note);
+										if ($count_defects_or_note > 0) {
+											$one_code_exist = 1;
+										}
+									}
+									if ($one_code_exist == '0') {
 										$do_not_import_row = 1;
 										if (!isset($error['msg'])) {
 											$error['msg'] = "The defective_code of serial# <span class='color-blue'> " . $data1['serial_no'] . "</span> does not exist in the system.";
@@ -601,7 +608,7 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 							<div class="row">
 								<div class="col m12 s12">
 									<h4 class="card-title">Supported column titles</h4>
-									<table class="bordered striped" style="padding: 0px; width: 50%;">
+									<table class="bordered striped" style="padding: 0px; width: 80%;">
 										<tr>
 											<td style='padding: 3px 15px  !important; text-align: center; '>Column Name</td>
 											<td style='padding: 3px 15px !important; '>Column Heading</td>
@@ -615,6 +622,9 @@ if (isset($is_Submit2) && $is_Submit2 == 'Y') {
 											$cell_format = "Text";
 											if ($s_heading == 'price') {
 												$cell_format = "Number";
+											}
+											if ($s_heading == 'defects_or_notes') {
+												$cell_format = "Text (Multiple Codes separated by the '&' symbol.) Example: BH-A&Grading";
 											}
 											echo " <tr>
 														<td style='padding: 3px 15px !important; text-align: center; '>" . strtoupper($char) . "</td>

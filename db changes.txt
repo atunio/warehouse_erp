@@ -1,8 +1,0 @@
-
-Created  
-
-Update: 
- 
-package_materials_order_detail_logistics =>box_no
-package_materials_order_detail_logistics =>box_qty 
-package_materials_orders =>duplication_check_token 
